@@ -110,7 +110,7 @@ public abstract class Bullet extends Entity implements
 
 
 	/**
-	 * Notify all register listen event observers.
+	 * Notify all register observers.
 	 */
 	protected void notifyObservers() {
 		switch (state) {

@@ -33,7 +33,7 @@ public abstract class Tank extends Entity
 
 	protected int direction			= DIR_NONE;
 	protected int tankType			= TT_ENEMY;
-	protected int fireDistance		= 200;
+	protected int fireDistance		= 200; //ms
 	protected long lastFireTime		= -1;
 
 	protected final int X_MIN		= GameMap.MAP_LEFT;

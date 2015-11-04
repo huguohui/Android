@@ -8,20 +8,10 @@ import android.graphics.Rect;
  * @since 2015/11/01
  */
 public interface CollisionCheckable {
-
-
-
     /**
-     * Get a rect of this object collision range.
-     * @return A rect of this object collision range.
+     * Checks this object if collisded some entity.
+     * @param entity.
+     * @return If collided true else false.
      */
-    Rect getCollisionRange();
-
-
-    /**
-     *
-     * @param object
-     * @return If collided, true else false.
-     */
-    boolean isCollision(CollisionCheckable object);
+    boolean isCollision(Entity entity);
 }

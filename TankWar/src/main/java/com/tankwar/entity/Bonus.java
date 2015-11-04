@@ -10,7 +10,7 @@ import com.tankwar.utils.GameRes;
 import com.tankwar.utils.GameSound;
 import com.tankwar.client.GameView;
 
-final public class Bonus {
+final public class Bonus extends Entity implements CollisionCheckable {
 	public final static int BT_LIFEUP = 0;
 	public final static int BT_TIMER  = 1;
 	public final static int BT_SPADER = 2;
@@ -106,16 +106,16 @@ final public class Bonus {
 
 
 	public final void create() {
-		x = (int) Math.abs(Math.random() * 10240 % GameMap.MAP_WIDTH);
-		y = (int) Math.abs(Math.random() * 10240 % GameMap.MAP_HEIGHT);
+		x = (int) Math.abs(Math.random() * 10240 % (GameMap.MAP_WIDTH - width));
+		y = (int) Math.abs(Math.random() * 10240 % (GameMap.MAP_HEIGHT - height));
 		bonusType = (int) Math.abs(Math.random() * 64 % 6);
 		isBonus = true;
 		GameSound.play(SOUND_ID);
 	}
 
 
-	public final boolean isCollisions(int x1, int y1, int w1, int h1, int x2, int y2,
-		int w2, int h2) {
+	public final boolean isCollisions(Entity entity/*int x1, int y1, int w1, int h1, int x2, int y2,
+		int w2, int h2*/) {
 		if (x1 >= x2 && x1 >= x2 + w2)
 			return false;
 		else if (x1 <= x2 && x1 + w1 <= x2)
