@@ -14,5 +14,5 @@ public interface Drawable {
 	 * When screen was updated,
 	 * this method will be called.
 	 */
-	void onDraw(Canvas canvas);
+	void draw(Canvas canvas);
 }

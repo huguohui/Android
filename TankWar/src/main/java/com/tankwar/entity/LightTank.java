@@ -67,6 +67,7 @@ final public class LightTank extends Tank {
 
     }
 
+
     /**
      * When screen was updated,
      * this method will be called.
@@ -74,7 +75,7 @@ final public class LightTank extends Tank {
      * @param canvas
      */
     @Override
-    public void onDraw(Canvas canvas) {
+    public void draw(Canvas canvas) {
 
     }
 }

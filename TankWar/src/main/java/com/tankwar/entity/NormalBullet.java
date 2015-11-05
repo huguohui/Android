@@ -48,6 +48,7 @@ public class NormalBullet extends Bullet {
         return 0;
     }
 
+
     /**
      * When screen was updated,
      * this method will be called.
@@ -55,7 +56,7 @@ public class NormalBullet extends Bullet {
      * @param canvas
      */
     @Override
-    public void onFrameUpdate(Canvas canvas) {
+    public void draw(Canvas canvas) {
 
     }
 }
