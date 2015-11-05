@@ -3,13 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
-
     defaultConfig {
         applicationId "com.example.astarttest"
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 18
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -19,6 +17,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
     }
 }
 

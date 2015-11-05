@@ -1,8 +1,5 @@
 package com.tankwar.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,8 +7,10 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.tankwar.entity.Explosion;
 import com.tankwar.entity.Tile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 final public class GameMap
@@ -62,7 +61,6 @@ final public class GameMap
 	private Bitmap		MAP_BUFFER;
 	private Bitmap		tileWall;
 	private Bitmap		tileIron;
-	private GameView mGameView;
 
 	public final Point[]enemyBornPos	 = {new Point(0, 0), new Point(6,0), new Point(12, 0)};
 	public final Point[]playerBornPos	 = {new Point(3, 12), new Point(9, 12)};
@@ -89,13 +87,13 @@ final public class GameMap
 
 
 
-	public GameMap(Bitmap[] tiles, GameView gv) {
-		mapTiles  = tiles;
-		mapRect	  = new Rect(LEFT_MARGIN, TOP_MARGIN, MAP_WIDTH + LEFT_MARGIN, MAP_HEIGHT + TOP_MARGIN);
-		mInstance = this;
-		mGameView = gv;
-		initPositions();
-	}
+//	public GameMap(Bitmap[] tiles, GameView gv) {
+//		mapTiles  = tiles;
+//		mapRect	  = new Rect(LEFT_MARGIN, TOP_MARGIN, MAP_WIDTH + LEFT_MARGIN, MAP_HEIGHT + TOP_MARGIN);
+//		mInstance = this;
+//		mGameView = gv;
+//		initPositions();
+//	}
 
 
 	public synchronized final void draw(Canvas c, Paint p) {
@@ -270,7 +268,7 @@ final public class GameMap
 
 
 	public final synchronized void onDestroySymbol() {
-		new Explosion(playerSymbolPos.x << 5, playerSymbolPos.y << 5, mGameView);
+//		new Explosion(playerSymbolPos.x << 5, playerSymbolPos.y << 5, mGameView);
 		onChangeTile(playerSymbolPos.x, playerSymbolPos.y, new Tile(playerSymbolPos.x << 5,
 				playerSymbolPos.y << 5, TILE_WIDTH, TILE_HEIGHT, TILE_DESTROY));
 	}

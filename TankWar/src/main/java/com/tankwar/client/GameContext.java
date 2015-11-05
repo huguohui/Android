@@ -1,6 +1,6 @@
 package com.tankwar.client;
 
-/**   				Ӧ�ó���ȫ�ֳ�ʼ����
+/**   				Game context class.
  * 			    Copyright (C) 2015 By Guohui Hu
  * This program is free software: you can redistribute it and/or modify it under the terms of
  * the GNU General Public License as published by the Free Software Foundation, either version
@@ -23,7 +23,7 @@ final public class GameContext extends Application
 	private static GameContext instance			= null;
 	private static HashMap<String, Object> data	= new HashMap<String, Object>();
 
-	public static String DS	= "/";
+	public final static String DS = "/";
 
 	public final void onCreate() {
 		super.onCreate();

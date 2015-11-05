@@ -27,7 +27,6 @@ import android.view.WindowManager;
 import com.tankwar.utils.GameLog;
 
 final public class GameActivity extends Activity {
-	private GameView gameView = null;
 	private boolean  isExited = false;
 	private static GameActivity mInstance = null;
 
@@ -38,17 +37,14 @@ final public class GameActivity extends Activity {
     						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		mInstance = this;
-		gameView = new GameView(this);
-		setContentView(gameView);
-		gameView.onGameStart();
 	}
 
 
 	public final void onBackPressed() {
 		try {
-			gameView.onGameStop();
-			gameView.getViewThread().join();
-			gameView.release();
+//			gameView.onGameStop();
+//			gameView.getViewThread().join();
+//			gameView.release();
 			finish();
 		} catch (Throwable e) {
 			GameLog.e(e);
@@ -63,13 +59,13 @@ final public class GameActivity extends Activity {
 
 	protected final void onPause() {
 		super.onPause();
-		gameView.onGamePause();
+//		gameView.onGamePause();
 	}
 
 
 	protected final void onResume() {
 		super.onResume();
-		gameView.onGameResume();
+//		gameView.onGameResume();
 	}
 
 

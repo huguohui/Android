@@ -1,8 +1,7 @@
-package com.tankwar.ui;
+package com.tankwar.engine;
 
 
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 
 /**
  * To listening game per frame updates,
@@ -10,10 +9,10 @@ import android.graphics.drawable.Drawable;
  * @author  hgh
  * @since 2015/10/29
  */
-public interface FrameUpdateListener {
+public interface Drawable {
 	/**
 	 * When screen was updated,
 	 * this method will be called.
 	 */
-	void onFrameUpdate(Canvas canvas);
+	void onDraw(Canvas canvas);
 }

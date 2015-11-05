@@ -1,154 +1,78 @@
 package com.tankwar.entity;
 
-import java.util.Timer;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
 import com.tankwar.client.GameMap;
-import com.tankwar.utils.GameRes;
-import com.tankwar.utils.GameSound;
-import com.tankwar.client.GameView;
+import com.tankwar.engine.CollisionCheckable;
 
 final public class Bonus extends Entity implements CollisionCheckable {
-	public final static int BT_LIFEUP = 0;
-	public final static int BT_TIMER  = 1;
-	public final static int BT_SPADER = 2;
-	public final static int BT_BOMB   = 3;
-	public final static int BT_ATKUP  = 4;
-	public final static int BT_SHIELD = 5;
-
-	private int x = 0;
-	private int y = 0;
-	private int width = 28;
-	private int height = 28;
-	private int bonusType = -1;
-	private int createTime = 0;
-	private int frameCounter = 0;
-
-	private final int SOUND_ID = GameSound.GSD_BONUS;
-	private final int DURATION = 10;
-
-	private boolean		isBonus;
-	private Bitmap[]	bonusBitmap;
-	private GameMap 	mGameMap;
-	private GameView	mGameView;
-	private Timer		mShowTimer;
-
-
-	public Bonus(GameMap GameMap, GameView GameView) {
-		mGameMap = GameMap;
-		mGameView = GameView;
-		bonusBitmap = GameRes.getBonus();
-	}
-
-
-	public final void draw(Canvas c) {
-		if (isBonus) {
-			int curFps = mGameView.getFPS() >> 2;
-			int showDistance = curFps >> 1;
-			if (++frameCounter < showDistance)
-				c.drawBitmap(bonusBitmap[bonusType], GameMap.LEFT_MARGIN + x, GameMap.TOP_MARGIN + y, null);
-			else if (frameCounter >= curFps)
-				frameCounter = 0;
-
-			if (mGameView.getSecondCounter() - createTime > DURATION)
-				isBonus = false;
-		}
-	}
-
-
-	public final int getX() {
-		return x;
-	}
-
-
-	public final int getY() {
-		return y;
-	}
-
-
-	public final int getHeight() {
-		return height;
-	}
-
-
-	public final int getType() {
-		return bonusType;
-	}
-
-
-	public final int getWidth() {
-		return width;
-	}
-
-
-	public final boolean isGetBonus(Tank t) {
-		if (isBonus) {
-			createTime = (int) mGameView.getSecondCounter();
-			if (isCollisions(x, y, width, height, t.getX(), t.getY(),
-				t.getW(), t.getH())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-	public final void deleteBonus() {
-		isBonus = false;
-	}
-
-
-	public final int getBonus() {
-		return bonusType;
-	}
-
 
 	public final void create() {
 		x = (int) Math.abs(Math.random() * 10240 % (GameMap.MAP_WIDTH - width));
 		y = (int) Math.abs(Math.random() * 10240 % (GameMap.MAP_HEIGHT - height));
-		bonusType = (int) Math.abs(Math.random() * 64 % 6);
-		isBonus = true;
-		GameSound.play(SOUND_ID);
 	}
 
 
-	public final boolean isCollisions(Entity entity/*int x1, int y1, int w1, int h1, int x2, int y2,
-		int w2, int h2*/) {
-		if (x1 >= x2 && x1 >= x2 + w2)
-			return false;
-		else if (x1 <= x2 && x1 + w1 <= x2)
-			return false;
-		else if (y1 >= y2 && y1 >= y2 + h2)
-			return false;
-		else if (y1 <= y2 && y1 + h1 <= y2)
-			return false;
+	public boolean isCollisions(Entity entity/*int x1, int y1, int w1, int h1, int x2, int y2,
+//		int w2, int h2*/) {
+//		if (x1 >= x2 && x1 >= x2 + w2)
+//			return false;
+//		else if (x1 <= x2 && x1 + w1 <= x2)
+//			return false;
+//		else if (y1 >= y2 && y1 >= y2 + h2)
+//			return false;
+//		else if (y1 <= y2 && y1 + h1 <= y2)
+//			return false;
 
 		return true;
 	}
 
 
-	public final void onGetBonus(Tank t) {
-		switch(bonusType) {
-			case Bonus.BT_ATKUP:
-				t.onGetAttack();
-				break;
-			case Bonus.BT_BOMB:
-				t.onGetBomb();
-				break;
-			case Bonus.BT_LIFEUP:
-				t.onGetLife();
-				break;
-			case Bonus.BT_SPADER:
-				t.onGetSpader();
-				break;
-			case Bonus.BT_SHIELD:
-				t.onGetShield();
-				break;
-			case Bonus.BT_TIMER:
-				t.onGetTimer();
-				break;
-		}
-	}
+    /**
+     * Checks this object if collisded some entity.
+     *
+     * @param entity@return If collided true else false.
+     */
+    @Override
+    public boolean isCollision(Entity entity) {
+        return false;
+    }
+
+    /**
+     * Get width of entity.
+     *
+     * @return Width of entity.
+     */
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Get heigth of entity.
+     *
+     * @return Height of entity.
+     */
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * Get the entity x value.
+     *
+     * @return The entity x value.
+     */
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * Get the entity y value.
+     *
+     * @return The entity y value.
+     */
+    @Override
+    public int getY() {
+        return y;
+    }
 }

@@ -8,7 +8,7 @@ import android.graphics.RectF;
 
 import com.tankwar.client.GameMap;
 import com.tankwar.client.GameView;
-import com.tankwar.entity.PlayerTank;
+import com.tankwar.entity.LightTank;
 import com.tankwar.entity.Tank;
 import com.tankwar.utils.GameSound;
 
@@ -34,7 +34,7 @@ final public class VirtualPad {
 	public RectF rkRealRect = new RectF();
 	public RectF akRealRect = new RectF();
 
-	private PlayerTank myPlayer = null;
+	private LightTank myPlayer = null;
 
 	public final int KEY_UP		= 1;
 	public final int KEY_RIGHT	= 2;
@@ -70,7 +70,7 @@ final public class VirtualPad {
 	}
 
 
-	public VirtualPad(PlayerTank t) {
+	public VirtualPad(LightTank t) {
 		this();
 		myPlayer = t;
 	}
@@ -222,7 +222,7 @@ final public class VirtualPad {
 	}
 
 
-	public void setPlayer(PlayerTank playerOne) {
+	public void setPlayer(LightTank playerOne) {
 		myPlayer = playerOne;
 	}
 }
