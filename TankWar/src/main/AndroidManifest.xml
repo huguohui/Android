@@ -10,7 +10,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application android:allowBackup="true" android:icon="@drawable/ico"
-        android:label="@string/app_name" android:theme="@style/AppTheme" android:name=".client.GameContext">
+        android:label="@string/app_name" android:theme="@style/AppTheme" android:name=".engine.Context">
 
         <activity android:name=".client.GameLuncher"
             android:label="@string/app_name" android:configChanges="orientation|screenSize">
@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".client.Game" android:launchMode="standard"
+        <activity android:name=".client.Client" android:launchMode="standard"
             android:screenOrientation="landscape" android:multiprocess="true"
             android:configChanges="orientation|screenSize">
             <intent-filter>

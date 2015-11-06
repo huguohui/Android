@@ -1,6 +1,6 @@
-package com.tankwar.client;
+package com.tankwar.engine;
 
-/**   				Game context class.
+/**   				Client context class.
  * 			    Copyright (C) 2015 By Guohui Hu
  * This program is free software: you can redistribute it and/or modify it under the terms of
  * the GNU General Public License as published by the Free Software Foundation, either version
@@ -18,9 +18,9 @@ import java.util.HashMap;
 import android.app.Application;
 import android.widget.Toast;
 
-final public class GameContext extends Application
+final public class Context extends Application
 {
-	private static GameContext instance	= null;
+	private static Context instance	= null;
 	private static HashMap<String, Object> data	= new HashMap<String, Object>();
 
 	public final static String DS = "/";
@@ -47,11 +47,11 @@ final public class GameContext extends Application
 
 
 	public final static void toast(String s) {
-		Toast.makeText(GameContext.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
+		Toast.makeText(Context.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
 	}
 
 
-	public final static GameContext getGameContext() {
+	public final static Context getGameContext() {
 		return instance;
 	}
 }

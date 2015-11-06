@@ -2,7 +2,7 @@ package com.tankwar.utils;
 
 import android.os.Environment;
 
-import com.tankwar.client.GameContext;
+import com.tankwar.engine.Context;
 
 import java.io.*;
 import java.util.Date;
@@ -12,7 +12,7 @@ final public class Log
 {
 	public static String LOG_FILE_NAME = "game.log";
 	public static String LOG_FILE_PATH = Environment.getExternalStorageDirectory().getPath()
-											+ GameContext.DS + LOG_FILE_NAME;
+											+ Context.DS + LOG_FILE_NAME;
 
 	public final static void e(Throwable e) {
 		try {

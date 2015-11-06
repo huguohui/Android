@@ -1,8 +1,5 @@
 package com.tankwar.engine;
 
-import com.tankwar.client.GameContext;
-import com.tankwar.engine.Module;
-
 /**
  * Implements a physical engine.
  * @author hgh
@@ -15,7 +12,7 @@ class PhysicalModule extends Module {
      *
      * @param context The module rely.
      */
-    public PhysicalModule(GameContext context) {
+    public PhysicalModule(Context context) {
         super(context);
     }
 

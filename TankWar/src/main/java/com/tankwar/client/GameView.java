@@ -24,9 +24,9 @@
 //final public class GameView extends SurfaceView
 //		implements SurfaceHolder.Callback, Runnable
 //{
-//	public final static int SCREEN_WIDTH  	= Game.getInstance().getResources()
+//	public final static int SCREEN_WIDTH  	= Client.getInstance().getResources()
 //												.getDisplayMetrics().widthPixels;
-//	public final static int SCREEN_HEIGHT 	= Game.getInstance().getResources()
+//	public final static int SCREEN_HEIGHT 	= Client.getInstance().getResources()
 //												.getDisplayMetrics().heightPixels;
 //
 //	public final static int GM_SINGLE_PLAY	= 1;
@@ -71,7 +71,7 @@
 //	private TankAI			mTankAI;
 //	private GameWorker mGameWorker;
 //	private SurfaceHolder 	mHolder;
-//	private Game 	mActivity;
+//	private Client 	mActivity;
 //	private Matrix			mMatrix;
 //	private VirtualPad mVirtualPad;
 //
@@ -81,7 +81,7 @@
 //
 //	public GameView(Context context) {
 //		super(context);
-//		mActivity = (Game) context;
+//		mActivity = (Client) context;
 //		initGame();
 //	}
 //
