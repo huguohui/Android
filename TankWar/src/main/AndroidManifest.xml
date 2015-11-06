@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".client.GameActivity" android:launchMode="standard"
+        <activity android:name=".client.Game" android:launchMode="standard"
             android:screenOrientation="landscape" android:multiprocess="true"
             android:configChanges="orientation|screenSize">
             <intent-filter>

@@ -1,5 +1,6 @@
 package com.tankwar.net.http;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -35,8 +36,7 @@ public abstract class Http extends Socket {
 	 */
 	protected HttpBody body;
 
-
-	/**
+    /**
 	 * Is security HTTP?
 	 */
 	protected boolean isSecurity;
@@ -49,24 +49,6 @@ public abstract class Http extends Socket {
 	public Http(URL url) {
 		this.url = url;
 	}
-
-
-	/**
-	 * Open a HTTP connection, when success return true,
-	 * if error, some exception will throws.
-	 * @return If connect success, return true else false.
-	 */
-	public abstract boolean connect() throws SocketException,
-			SocketTimeoutException, SocketTimeoutException;
-
-
-	/**
-	 * Open a HTTP connection by a special URL.
-	 * @param url The special URL.
-	 * @return If connect success, return true else false.
-	 */
-	public abstract boolean connect(URL url) throws SocketException,
-			SocketTimeoutException, SocketTimeoutException;
 
 
 	public URL getUrl() {
@@ -107,4 +89,13 @@ public abstract class Http extends Socket {
 	public void setBody(HttpBody body) {
 		this.body = body;
 	}
+
+
+    public boolean isSecurity() {
+        return isSecurity;
+    }
+
+    public void setIsSecurity(boolean isSecurity) {
+        this.isSecurity = isSecurity;
+    }
 }

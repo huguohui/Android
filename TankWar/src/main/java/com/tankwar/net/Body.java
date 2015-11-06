@@ -8,7 +8,7 @@ import java.io.Reader;
  * @author HGH
  * @since 2015/11/05
  */
-public class Body {
+public abstract class Body {
 	/**
 	 * content of binary.
 	 */
@@ -28,19 +28,19 @@ public class Body {
 	/**
 	 * The content of body.
 	 */
-	private byte[] content;
+	protected byte[] content;
 
 	
 	/**
 	 * The encoding of body.
 	 */
-	private String encoding;
+	protected String encoding;
 
 
 	/**
 	 * The length of body.
 	 */
-	private long length;
+	protected long length;
 
 
 	/**
@@ -49,7 +49,7 @@ public class Body {
 	 * 1 is text.
 	 * 2 is mixed.
 	 */
-	private String type;
+	protected String type;
 
 
 	/**
@@ -57,7 +57,7 @@ public class Body {
 	 * @param body The content source.
 	 */
 	public Body(InputStream body) {
-		
+        fetchData(body);
 	}
 
 
@@ -66,7 +66,7 @@ public class Body {
 	 * @param body The content source.
 	 */
 	public Body(Reader body) {
-		
+		fetchData(body);
 	}
 
 
@@ -75,8 +75,29 @@ public class Body {
 	 * @param body The content.
 	 */
 	public Body(String body) {
-
+        fetchData(body);
 	}
+
+
+    /**
+     * Fetch content from input stream.
+     * @param source Content source
+     */
+    public abstract void fetchData(InputStream source);
+
+
+    /**
+     * Fetch content from reader.
+     * @param source Content source
+     */
+    public abstract void fetchData(Reader source);
+
+
+    /**
+     * Fetch content from source.
+     * @param source Content source
+     */
+    public abstract void fetchData(String source);
 
 
 	public byte[] getContent() {

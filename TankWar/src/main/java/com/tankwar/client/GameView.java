@@ -17,16 +17,16 @@
 //import com.tankwar.entity.Bullet;
 //import com.tankwar.entity.LightTank;
 //import com.tankwar.ui.VirtualPad;
-//import com.tankwar.utils.GameLog;
+//import com.tankwar.utils.Log;
 //import com.tankwar.utils.GameRes;
 //import com.tankwar.utils.GameSound;
 //
 //final public class GameView extends SurfaceView
 //		implements SurfaceHolder.Callback, Runnable
 //{
-//	public final static int SCREEN_WIDTH  	= GameActivity.getInstance().getResources()
+//	public final static int SCREEN_WIDTH  	= Game.getInstance().getResources()
 //												.getDisplayMetrics().widthPixels;
-//	public final static int SCREEN_HEIGHT 	= GameActivity.getInstance().getResources()
+//	public final static int SCREEN_HEIGHT 	= Game.getInstance().getResources()
 //												.getDisplayMetrics().heightPixels;
 //
 //	public final static int GM_SINGLE_PLAY	= 1;
@@ -71,7 +71,7 @@
 //	private TankAI			mTankAI;
 //	private GameWorker mGameWorker;
 //	private SurfaceHolder 	mHolder;
-//	private GameActivity 	mActivity;
+//	private Game 	mActivity;
 //	private Matrix			mMatrix;
 //	private VirtualPad mVirtualPad;
 //
@@ -81,7 +81,7 @@
 //
 //	public GameView(Context context) {
 //		super(context);
-//		mActivity = (GameActivity) context;
+//		mActivity = (Game) context;
 //		initGame();
 //	}
 //
@@ -413,7 +413,7 @@
 //				}
 //			}
 //		}catch(Throwable e) {
-//			GameLog.e(e);
+//			Log.e(e);
 //		}
 //	}
 //

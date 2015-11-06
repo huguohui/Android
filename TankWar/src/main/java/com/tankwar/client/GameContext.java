@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 final public class GameContext extends Application
 {
-	private static GameContext instance			= null;
+	private static GameContext instance	= null;
 	private static HashMap<String, Object> data	= new HashMap<String, Object>();
 
 	public final static String DS = "/";

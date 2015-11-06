@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.Date;
 
 
-final public class GameLog
+final public class Log
 {
 	public static String LOG_FILE_NAME = "game.log";
 	public static String LOG_FILE_PATH = Environment.getExternalStorageDirectory().getPath()

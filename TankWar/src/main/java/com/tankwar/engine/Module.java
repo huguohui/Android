@@ -1,4 +1,6 @@
-package com.tankwar.engine.
+package com.tankwar.engine;
+
+import com.tankwar.client.GameContext;
 
 /**
  * A module implements some functions.

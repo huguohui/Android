@@ -8,8 +8,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.tankwar.utils.GameLog;
-
 final public class GameRes {
 	private static Resources	 mResource 	= null;
 	private static AssetManager  mAssets 	= null;
@@ -55,7 +53,7 @@ final public class GameRes {
 				loadTankBitmap();
 				isLoaded = true;
 			}catch(Throwable e) {
-				GameLog.e(e);
+				Log.e(e);
 			}
 		}
 	}
@@ -175,7 +173,7 @@ final public class GameRes {
 				}
 			}
 		}catch(Throwable e) {
-			GameLog.e(e);
+			Log.e(e);
 		}finally{
 			isLoaded = false;
 		}
