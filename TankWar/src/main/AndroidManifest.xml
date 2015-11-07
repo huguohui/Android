@@ -12,14 +12,7 @@
     <application android:allowBackup="true" android:icon="@drawable/ico"
         android:label="@string/app_name" android:theme="@style/AppTheme" android:name=".engine.Context">
 
-        <activity android:name=".client.GameLuncher"
-            android:label="@string/app_name" android:configChanges="orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".client.Client" android:launchMode="standard"
+        <activity android:name="com.tankwar.client.Client" android:launchMode="standard"
             android:screenOrientation="landscape" android:multiprocess="true"
             android:configChanges="orientation|screenSize">
             <intent-filter>
@@ -27,7 +20,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <service android:name="TService" android:exported="false">
+        <service android:name="." android:exported="false">
             <intent-filter>
                 <action android:name="TEST"/>
                 <category android:name="android.intent.category.DEFAULT" />

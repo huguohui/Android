@@ -19,17 +19,25 @@
 package com.tankwar.client;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+
+import com.tankwar.R;
 
 
 /**
  * The game base class.
  * @since 2015/11/06
  */
-public abstract class Client extends Activity {
+final public class Client extends Activity
+        implements View.OnClickListener {
     private boolean mIsMenuOpen = false;
+    private boolean mIsSinglePlay = true;
+    private boolean mIsCustomGame = false;
     private Game mGame;
 
 
@@ -38,7 +46,44 @@ public abstract class Client extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
     						WindowManager.LayoutParams.FLAG_FULLSCREEN);
-	}
+        setContentView(R.layout.game_launcher);
+
+        findViewById(R.id.btnStart).setOnClickListener(this);
+        findViewById(R.id.btnExit).setOnClickListener(this);
+        findViewById(R.id.rdbSingle).setOnClickListener(this);
+        findViewById(R.id.rdbDouble).setOnClickListener(this);
+        findViewById(R.id.ckbCustomMap).setOnClickListener(this);
+        findViewById(R.id.ckbMusicCase).setOnClickListener(this);
+    }
+
+
+    protected void startGame() {
+
+    }
+
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnStart:
+                break;
+            case R.id.btnExit:
+                finish();
+                break;
+            case R.id.rdbDouble:
+                mIsSinglePlay = false;
+                break;
+            case R.id.rdbSingle:
+                mIsSinglePlay = true;
+                break;
+            case R.id.ckbCustomMap:
+                if (((CheckBox)v).isChecked()) {
+                    mIsCustomGame = true;
+                }else{
+                    mIsCustomGame = false;
+                }
+                break;
+        }
+    }
 
 
 	public final void onBackPressed() {
@@ -57,6 +102,11 @@ public abstract class Client extends Activity {
 	protected final void onResume() {
 		super.onResume();
 	}
+
+
+    public final void onConfigurationChanged(Configuration cfg) {
+        super.onConfigurationChanged(cfg);
+    }
 }
 
 
