@@ -1,6 +1,6 @@
 //package com.tankwar.client;
 //
-//import android.content.Context;
+//import android.content.GameContext;
 //import android.graphics.Canvas;
 //import android.graphics.Color;
 //import android.graphics.Matrix;
@@ -79,7 +79,7 @@
 //	private static GameView mInstance = null;
 //
 //
-//	public GameView(Context context) {
+//	public GameView(GameContext context) {
 //		super(context);
 //		mActivity = (Client) context;
 //		initGame();

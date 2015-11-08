@@ -5,22 +5,22 @@ package com.tankwar.engine;
  * @author hgh
  * @since 2015/11/06
  */
-class PhysicalModule extends Module {
+class PhysicalSubsystem extends Subsystem {
 
     /**
-     * Construct a module object by context.
+     * Construct a module object by gameContext.
      *
-     * @param context The module rely.
+     * @param gameContext The module rely.
      */
-    public PhysicalModule(Context context) {
-        super(context);
+    public PhysicalSubsystem(GameContext gameContext) {
+        super(gameContext);
     }
 
     /**
      * The work of module can do.
      */
     @Override
-    public void doWork() {
+    public void run() {
 
     }
 
@@ -32,15 +32,8 @@ class PhysicalModule extends Module {
 
     }
 
-    /**
-     * Check if module is enable.
-     */
-    @Override
-    public boolean isEnable() {
-        return false;
-    }
 
-    /**
+   /**
      * Disable a module.
      */
     @Override

@@ -18,9 +18,9 @@ import java.util.HashMap;
 import android.app.Application;
 import android.widget.Toast;
 
-final public class Context extends Application
+final public class GameContext extends Application
 {
-	private static Context instance	= null;
+	private static GameContext instance	= null;
 	private static HashMap<String, Object> data	= new HashMap<String, Object>();
 
 	public final static String DS = "/";
@@ -47,11 +47,11 @@ final public class Context extends Application
 
 
 	public final static void toast(String s) {
-		Toast.makeText(Context.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
+		Toast.makeText(GameContext.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
 	}
 
 
-	public final static Context getGameContext() {
+	public final static GameContext getGameContext() {
 		return instance;
 	}
 }

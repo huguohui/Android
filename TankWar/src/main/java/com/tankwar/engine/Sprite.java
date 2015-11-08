@@ -10,5 +10,5 @@ public interface Sprite {
 	/**
 	 * Get sprite graphics.
 	 */
-	public void getSprite(Bitmap resource);
+	public Bitmap[] getSprite();
 }

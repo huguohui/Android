@@ -5,19 +5,19 @@ package com.tankwar.engine;
  * @since 2015/11/06
  */
 
-public class GraphicsModule extends Module {
+public class GraphicsSubsystem extends Subsystem {
 	/**
 	 * Only constructor.
 	 */
-	public GraphicsModule(Context context) {
-        super(context);
+	public GraphicsSubsystem(GameContext gameContext) {
+        super(gameContext);
 	}
 
 
 	/**
 	 * Do some work.
 	 */
-	public void doWork() {
+	public void run() {
 
 	}
 
@@ -29,13 +29,6 @@ public class GraphicsModule extends Module {
 
     }
 
-    /**
-     * Check if module is enable.
-     */
-    @Override
-    public boolean isEnable() {
-        return false;
-    }
 
     /**
      * Disable a module.

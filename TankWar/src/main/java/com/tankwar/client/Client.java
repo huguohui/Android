@@ -27,20 +27,38 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.tankwar.R;
+import com.tankwar.engine.GameContext;
+import com.tankwar.engine.GameEngine;
 
 
 /**
  * The game base class.
  * @since 2015/11/06
  */
-final public class Client extends Activity
-        implements View.OnClickListener {
-    private boolean mIsMenuOpen = false;
-    private boolean mIsSinglePlay = true;
-    private boolean mIsCustomGame = false;
+final public class Client extends Activity implements View.OnClickListener {
+    /**
+     * The game instance.
+     */
     private Game mGame;
 
 
+    /**
+     * The game options.
+     */
+    private Game.Option mOption;
+
+
+    /**
+     * A state of menu whatever open.
+     */
+    private boolean mIsMenuOpen = false;
+
+
+    /**
+     * When application was launcher, this method will be called
+     * by android os.
+     * @param bundle Data bundle.
+     */
 	protected final void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -57,29 +75,42 @@ final public class Client extends Activity
     }
 
 
+    /**
+     * The game controller, to start a game.
+     */
     protected void startGame() {
-
+        mGame = GameFactory.createGame(mOption);
+        mGame.setGameContext(GameContext.getGameContext());
+        mGame.setEngine(GameEngine.getEngine());
+        mGame.start();
     }
 
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnStart:
+                startGame();
                 break;
             case R.id.btnExit:
                 finish();
                 break;
             case R.id.rdbDouble:
-                mIsSinglePlay = false;
+                mOption.setIsSinglePlay(false);
                 break;
             case R.id.rdbSingle:
-                mIsSinglePlay = true;
+                mOption.setIsSinglePlay(true);
                 break;
             case R.id.ckbCustomMap:
                 if (((CheckBox)v).isChecked()) {
-                    mIsCustomGame = true;
+                    mOption.setIsCustomGame(true);
                 }else{
-                    mIsCustomGame = false;
+                    mOption.setIsCustomGame(false);
+                }
+            case R.id.ckbMusicCase:
+                if (((CheckBox)v).isChecked()) {
+                    mOption.setIsSoundOn(true);
+                }else{
+                    mOption.setIsSoundOn(false);
                 }
                 break;
         }

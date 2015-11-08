@@ -6,24 +6,30 @@ package com.tankwar.engine;
  */
 public interface EngineStateListener {
     /**
-     * When engine start initialize.
+     * When engine initialized.
      */
-    void onInit();
+    void onInitialized(Engine engine);
 
 
     /**
      * When engine start work.
      */
-    void onStart();
+    void onStarted(Engine engine);
 
 
     /**
      * When engine stop work.
      */
-    void onStop();
+    void onStoped(Engine engine);
 
 
     /**
-     * When engine
+     * When engine initialize failed.
+     */
+    void onInitFailed(Engine engine);
+
+
+    /**
+     *
      */
 }
