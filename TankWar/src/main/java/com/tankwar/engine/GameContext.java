@@ -18,12 +18,18 @@ import java.util.HashMap;
 import android.app.Application;
 import android.widget.Toast;
 
+import com.tankwar.client.Client;
+import com.tankwar.client.Game;
+
 final public class GameContext extends Application
 {
-	private static GameContext instance	= null;
-	private static HashMap<String, Object> data	= new HashMap<String, Object>();
-
+	private static GameContext instance  = null;
+	private HashMap<String, Object> data = new HashMap<String, Object>();
+    private Game mGame;
+    private Client mClient;
+    private Engine mEngine;
 	public final static String DS = "/";
+
 
 	public final void onCreate() {
 		super.onCreate();
@@ -31,22 +37,23 @@ final public class GameContext extends Application
 	}
 
 
+
 	private final void initialize() {
 		instance = this;
 	}
 
 
-	public final static void setData(String key, Object obj) {
+	public final void setData(String key, Object obj) {
 		data.put(key, obj);
 	}
 
 
-	public final static Object getData(String key) {
+	public final Object getData(String key) {
 		return data.get(key);
 	}
 
 
-	public final static void toast(String s) {
+	public final void toast(String s) {
 		Toast.makeText(GameContext.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
 	}
 

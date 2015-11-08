@@ -23,6 +23,18 @@ public abstract class Subsystem {
     private long mStartTime;
 
 
+    /**
+     * Is pause?
+     */
+    private boolean mIsPause = false;
+
+
+    /**
+     * Is stop?
+     */
+    private boolean mIsStop = false;
+
+
 	/**
 	 * Construct a module object by gameContext.
 	 * @param gameContext The module rely.
@@ -43,17 +55,59 @@ public abstract class Subsystem {
 	/**
 	 * The work of module can do.
 	 */
-	public abstract void run();
+	public abstract void start();
+
+
+    /**
+     * Stop subsystem.
+     */
+    public void stop() {
+        this.mIsStop = true;
+    }
 
 
 	/**
 	 * Enable a module.
 	 */
-	public abstract void enable();
+	public void enable() {
+        this.mIsEnable = true;
+    }
 
 
 	/**
 	 * Disable a module.
 	 */
-	public abstract void disable();
+	public void disable() {
+        this.mIsPause = false;
+    }
+
+
+    /**
+     * Pause!
+     */
+    public void pause() {
+        this.mIsPause = true;
+    }
+
+
+    public void resume() {
+        this.mIsPause = false;
+    }
+
+
+    /**
+     * Get pause state.
+     */
+    public boolean isPause() {
+        return mIsPause;
+    }
+
+
+    /**
+     * Get stop state.
+     */
+    public boolean isStop() {
+        return mIsStop;
+    }
+
 }

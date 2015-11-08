@@ -17,9 +17,17 @@ public class GraphicsSubsystem extends Subsystem {
 	/**
 	 * Do some work.
 	 */
-	public void run() {
+	public void start() {
 
 	}
+
+    /**
+     * Stop subsystem.
+     */
+    @Override
+    public void stop() {
+
+    }
 
     /**
      * Enable a module.

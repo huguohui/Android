@@ -1,5 +1,6 @@
 package com.tankwar.engine;
 
+import com.tankwar.client.Game;
 import com.tankwar.entity.Entity;
 
 import java.util.ArrayList;
@@ -15,6 +16,23 @@ public abstract class Engine implements Runnable {
      * Start time.
      */
     private long mStartTime;
+
+
+    /**
+     * This subsystem whatever enable.
+     */
+    private boolean mIsEnable = true;
+
+    /**
+     * Is pause?
+     */
+    private boolean mIsPause = false;
+
+
+    /**
+     * Is stop?
+     */
+    private boolean mIsStop = false;
 
 
     /**
@@ -38,7 +56,7 @@ public abstract class Engine implements Runnable {
     /**
      * State listeners.
      */
-    private List<EngineStateListener> mStateListeners = new ArrayList<>();
+    private List<StateListener> mStateListeners = new ArrayList<>();
 
 
     /**
@@ -57,8 +75,8 @@ public abstract class Engine implements Runnable {
      * Constructor.
      * @param gameContext Game gameContext.
      */
-    public Engine(GameContext gameContext) {
-        this.mGameContext = gameContext;
+    public Engine() {
+        this.mGameContext = GameContext.getGameContext();
     }
 
 
@@ -73,7 +91,7 @@ public abstract class Engine implements Runnable {
     /**
      * Get all listeners.
      */
-    public List<EngineStateListener> getStateListners() {
+    public List<StateListener> getStateListners() {
         return mStateListeners;
     }
 
@@ -89,8 +107,16 @@ public abstract class Engine implements Runnable {
     /**
      * Add a state listener.
      */
-    public void addStateListener(EngineStateListener stateListener) {
+    public void addStateListener(StateListener stateListener) {
         mStateListeners.add(stateListener);
+    }
+
+
+    /**
+     * Get game context.
+     */
+    public GameContext getGameContext() {
+        return mGameContext;
     }
 
 
@@ -107,7 +133,7 @@ public abstract class Engine implements Runnable {
     /**
      * Initialization control.
      */
-    public abstract void init();
+    public abstract void initialize();
 
 
     /**
@@ -119,19 +145,25 @@ public abstract class Engine implements Runnable {
     /**
      * Pause command.
      */
-    public abstract void pause();
+    public synchronized void pause() {
+        mIsPause = true;
+    }
 
 
     /**
      * Resume command.
      */
-    public abstract void resume();
+    public synchronized void resume() {
+        mIsPause = false;
+    }
 
 
     /**
      * Stop command.
      */
-    public abstract void stop();
+    public synchronized void stop() {
+        mIsStop = true;
+    }
 
 
 	/**
@@ -139,5 +171,60 @@ public abstract class Engine implements Runnable {
 	 */
     public static Engine getEngine() {
         return null;
+    }
+
+
+
+
+    /**
+     * Get pause state.
+     */
+    public boolean isPause() {
+        return mIsPause;
+    }
+
+
+    /**
+     * Get stop state.
+     */
+    public boolean isStop() {
+        return mIsStop;
+    }
+
+
+
+    /**
+     * Engine state listener.
+     * @since 2015/11/06
+     */
+    public interface StateListener {
+        /**
+         * When engine initialized.
+         */
+        void onInitialized(Engine engine);
+
+
+        /**
+         * When engine start work.
+         */
+        void onStarted(Engine engine);
+
+
+        /**
+         * When engine stop work.
+         */
+        void onStop(Engine engine);
+
+
+        /**
+         * When engine initialize failed.
+         */
+        void onInitFailed(Engine engine);
+
+
+        /**
+         * When engine start failed.
+         */
+        void onStartFailed(Engine engine);
     }
 }

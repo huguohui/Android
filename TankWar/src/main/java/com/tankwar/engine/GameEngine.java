@@ -1,5 +1,7 @@
 package com.tankwar.engine;
 
+import com.tankwar.utils.Log;
+
 /**
  * Client engine implements.
  * @since 2015/11/06
@@ -8,16 +10,19 @@ public class GameEngine extends Engine {
 
     /**
      * Construct a engine instance.
-        */
+     */
     private GameEngine() {
+        this.initialize();
     }
 
     /**
      * Initialization control.
      */
     @Override
-    public void init() {
-
+    public void initialize() {
+        this.addSubsystem(new WorldSubsystem(this.getGameContext()));
+        this.addSubsystem(new PhysicalSubsystem(this.getGameContext()));
+        this.addSubsystem(new GraphicsSubsystem(this.getGameContext()));
     }
 
     /**
@@ -25,7 +30,28 @@ public class GameEngine extends Engine {
      */
     @Override
     public void start() {
+        for (Subsystem subsystem : this.getSubsystems()) {
+            subsystem.start();
+        }
+    }
 
+
+    /**
+     * Starts executing the active part of the class' code. This method is
+     * called when a thread is started that has been created with a class which
+     * implements {@code Runnable}.
+     */
+    @Override
+    public void run() {
+        try {
+            while (!this.isStop()) {
+                if (this.isPause()) {
+                    wait();
+                }
+            }
+        }catch(InterruptedException ex) {
+            Log.e(ex);
+        }
     }
 
     /**
@@ -33,7 +59,7 @@ public class GameEngine extends Engine {
      */
     @Override
     public void pause() {
-
+        super.pause();
     }
 
     /**
@@ -41,7 +67,7 @@ public class GameEngine extends Engine {
      */
     @Override
     public void resume() {
-
+        super.resume();
     }
 
     /**
@@ -49,7 +75,7 @@ public class GameEngine extends Engine {
      */
     @Override
     public void stop() {
-
+        super.stop();
     }
 
 

@@ -3,6 +3,9 @@ package com.tankwar.client;
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.Engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A 'game' is real game.
  * The game can start, stop, pause, resume, and exit.
@@ -35,9 +38,16 @@ public class Game {
 
 
     /**
+     * Game state listener.
+     */
+    private List<StateListener> mStateListeners = new ArrayList<>();
+
+
+    /**
      * Private constructor.
      */
     private Game() {
+        this.initialize();
     }
 
 
@@ -95,10 +105,19 @@ public class Game {
 
 
     /**
+     * Do some initialize work.
+     */
+    private void initialize() {
+        for (StateListener listener : mStateListeners)
+            listener.onInitialized();
+    }
+
+
+    /**
      * Start a game.
      */
     public void start() {
-
+        this.mEngine.start();
     }
 
 
@@ -148,10 +167,33 @@ public class Game {
      */
     public interface StateListener {
         /**
+         * When game initialized().
+         */
+        public void onInitialized();
+
+
+        /**
+         * When game initialize failed.
+         */
+        public void onInitializeFailed();
+
+
+        /**
          * When game start success, trigger this event.
          */
         public void onStarted();
 
+
+        /**
+         * When game start failed.
+         */
+        public void onStartFailed();
+
+
+        /**
+         * When game stop.
+         */
+        public void onStop();
     }
 
 

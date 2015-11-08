@@ -20,8 +20,16 @@ class PhysicalSubsystem extends Subsystem {
      * The work of module can do.
      */
     @Override
-    public void run() {
+    public void start() {
 
+    }
+
+    /**
+     * Stop subsystem.
+     */
+    @Override
+    public void stop() {
+        super.stop();
     }
 
     /**
