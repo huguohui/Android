@@ -7,11 +7,9 @@ package com.tankwar.engine;
 public class WorldSubsystem extends Subsystem {
     /**
      * Construct a module object by gameContext.
-     *
-     * @param gameContext The module rely.
      */
-    public WorldSubsystem(GameContext gameContext) {
-        super(gameContext);
+    public WorldSubsystem(Engine engine) {
+        super(engine);
     }
 
     /**

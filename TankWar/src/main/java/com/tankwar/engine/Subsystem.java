@@ -35,12 +35,17 @@ public abstract class Subsystem {
     private boolean mIsStop = false;
 
 
+    /**
+     * Game engine.
+     */
+    private Engine mEngine;
+
+
 	/**
 	 * Construct a module object by gameContext.
-	 * @param gameContext The module rely.
 	 */
-	public Subsystem(GameContext gameContext) {
-		this.mGameContext = gameContext;
+	public Subsystem(Engine engine) {
+        this.mEngine = engine;
 	}
 
 
@@ -108,6 +113,15 @@ public abstract class Subsystem {
      */
     public boolean isStop() {
         return mIsStop;
+    }
+
+
+    /**
+     * Get the game engine.
+     * @return Game engine.
+     */
+    public Engine getEngine() {
+        return mEngine;
     }
 
 }

@@ -9,8 +9,8 @@ public class GraphicsSubsystem extends Subsystem {
 	/**
 	 * Only constructor.
 	 */
-	public GraphicsSubsystem(GameContext gameContext) {
-        super(gameContext);
+	public GraphicsSubsystem(Engine engine) {
+        super(engine);
 	}
 
 

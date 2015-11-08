@@ -6,14 +6,17 @@ package com.tankwar.engine;
  * @since 2015/11/06
  */
 class PhysicalSubsystem extends Subsystem {
+    /**
+     * World subsystem reference.
+     */
+    private WorldSubsystem mWorldSubsystem;
+
 
     /**
      * Construct a module object by gameContext.
-     *
-     * @param gameContext The module rely.
      */
-    public PhysicalSubsystem(GameContext gameContext) {
-        super(gameContext);
+    public PhysicalSubsystem(Engine engine) {
+        super(engine);
     }
 
     /**
@@ -21,7 +24,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void start() {
-
+       // mWorldSubsystem = getEngine().getSubsystems().contains();
     }
 
     /**

@@ -20,9 +20,9 @@ public class GameEngine extends Engine {
      */
     @Override
     public void initialize() {
-        this.addSubsystem(new WorldSubsystem(this.getGameContext()));
-        this.addSubsystem(new PhysicalSubsystem(this.getGameContext()));
-        this.addSubsystem(new GraphicsSubsystem(this.getGameContext()));
+        this.addSubsystem(new WorldSubsystem(this));
+        this.addSubsystem(new PhysicalSubsystem(this));
+        this.addSubsystem(new GraphicsSubsystem(this));
     }
 
     /**

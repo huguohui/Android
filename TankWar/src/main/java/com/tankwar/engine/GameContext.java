@@ -15,6 +15,8 @@ package com.tankwar.engine;
  */
 
 import java.util.HashMap;
+import java.util.List;
+
 import android.app.Application;
 import android.widget.Toast;
 
@@ -41,7 +43,6 @@ final public class GameContext extends Application
 	private final void initialize() {
 		instance = this;
 	}
-
 
 	public final void setData(String key, Object obj) {
 		data.put(key, obj);
