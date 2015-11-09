@@ -72,7 +72,7 @@ final public class GameContext extends Application
 	/**
 	 * Set a global shared variable, storage as key => value.
 	 * @param key Variable key of value.
-	 * @param value Variable value.
+	 * @param obj Variable value.
 	 */
 	public final void setData(String key, Object obj) {
 		data.put(key, obj);

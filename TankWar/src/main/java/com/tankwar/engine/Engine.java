@@ -4,7 +4,10 @@ import com.tankwar.client.Game;
 import com.tankwar.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Engine core class.
@@ -73,7 +76,6 @@ public abstract class Engine implements Runnable {
 
     /**
      * Constructor.
-     * @param gameContext Game gameContext.
      */
     public Engine() {
         this.mGameContext = GameContext.getGameContext();
@@ -107,7 +109,7 @@ public abstract class Engine implements Runnable {
     /**
      * Get a subsystem.
      */
-    public void getSubsystem(Class<? extends Subsystem> subsystem) {
+    public Subsystem getSubsystem(Class<? extends Subsystem> subsystem) {
         return mSubsystems.get(subsystem);
     }
 

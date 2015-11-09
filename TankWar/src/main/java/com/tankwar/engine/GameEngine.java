@@ -30,7 +30,7 @@ public class GameEngine extends Engine {
      */
     @Override
     public void start() {
-        for (Set<Class<? extends Subsystem> key : this.getSubsystems()) {
+        for (Class<? extends Subsystem> key : this.getSubsystems()) {
             Subsystem subsystem = getSubsystem(key);
             subsystem.start();
 
@@ -52,7 +52,7 @@ public class GameEngine extends Engine {
                 }
             }
 
-            for (Set<Class<? extends Subsystem> key : this.getSubsystems()) {
+            for (Class<? extends Subsystem> key : this.getSubsystems()) {
                 Tick tick = getSubsystem(key);
                 tick.tick();
             }

@@ -5,20 +5,25 @@ package com.tankwar.engine;
  * @since 2015/11/08
  */
 public class WorldSubsystem extends Subsystem {
-    /** World top.*/
+    /** World top margin.*/
     public final static int WORLD_TOP = 20;
 
 
-    /** World left. */
+    /** World left margin. */
     public final static int WORLD_LEFT = 20;
 
 
-    /** World right. */
+    /** World right margin. */
     public final static int WORLD_RIGHT = 20;
 
 
-    /** World bottom.*/
+    /** World bottom margin.*/
     public final static int WORLD_BOTTOM = 20;
+
+
+    /** World height.*/
+    public static int WORLD_HEIGHT = 13 * 28;
+
 
 
     /**
@@ -70,5 +75,5 @@ public class WorldSubsystem extends Subsystem {
 
 
     /**
-     * 
+     */
 }
