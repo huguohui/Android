@@ -5,6 +5,22 @@ package com.tankwar.engine;
  * @since 2015/11/08
  */
 public class WorldSubsystem extends Subsystem {
+    /** World top.*/
+    public final static int WORLD_TOP = 20;
+
+
+    /** World left. */
+    public final static int WORLD_LEFT = 20;
+
+
+    /** World right. */
+    public final static int WORLD_RIGHT = 20;
+
+
+    /** World bottom.*/
+    public final static int WORLD_BOTTOM = 20;
+
+
     /**
      * Construct a module object by gameContext.
      */
@@ -43,4 +59,16 @@ public class WorldSubsystem extends Subsystem {
     public void disable() {
 
     }
+
+
+    /**
+     * Game loop tick.
+     */
+    public void tick() {
+        
+    }
+
+
+    /**
+     * 
 }

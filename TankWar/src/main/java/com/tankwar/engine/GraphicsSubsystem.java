@@ -18,7 +18,6 @@ public class GraphicsSubsystem extends Subsystem {
 	 * Do some work.
 	 */
 	public void start() {
-
 	}
 
     /**
@@ -26,7 +25,7 @@ public class GraphicsSubsystem extends Subsystem {
      */
     @Override
     public void stop() {
-
+        super.stop();
     }
 
     /**
@@ -34,7 +33,7 @@ public class GraphicsSubsystem extends Subsystem {
      */
     @Override
     public void enable() {
-
+        super.enable();
     }
 
 
@@ -43,6 +42,14 @@ public class GraphicsSubsystem extends Subsystem {
      */
     @Override
     public void disable() {
+        super.disable();
+    }
 
+
+    /**
+     * Game loop tick.
+     */
+    public void tick() {
+        
     }
 }

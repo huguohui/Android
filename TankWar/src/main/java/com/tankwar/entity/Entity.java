@@ -3,29 +3,29 @@ package com.tankwar.entity;
 /**
  * Describe a entity in game world.
  */
-public abstract class Entity {
+public abstract class Entity implements CollisionCheckable, CollisionListener {
 	/**
 	 * The entity x value.
 	 */
-	protected int x;
+	private int x;
 
 
 	/**
 	 * The entity y value.
 	 */
-	protected int y;
+	private int y;
 
 
 	/**
 	 * Width of entity.
 	 */
-	protected int width;
+	private int width;
 
 
 	/**
 	 * Height of entity.
 	 */
-	protected int height;
+	private int height;
 
 
 	/**

@@ -13,6 +13,11 @@ class PhysicalSubsystem extends Subsystem {
 
 
     /**
+     * All
+     */
+
+
+    /**
      * Construct a module object by gameContext.
      */
     public PhysicalSubsystem(Engine engine) {
@@ -24,7 +29,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void start() {
-       // mWorldSubsystem = getEngine().getSubsystems().contains();
+        mWorldSubsystem = getEngine().getSubsystem(WorldSubSystem.class);
     }
 
     /**
@@ -50,5 +55,13 @@ class PhysicalSubsystem extends Subsystem {
     @Override
     public void disable() {
 
+    }
+
+
+    /**
+     * Game loop tick.
+     */
+    public void tick() {
+        
     }
 }

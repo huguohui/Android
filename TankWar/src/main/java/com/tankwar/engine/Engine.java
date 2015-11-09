@@ -50,7 +50,7 @@ public abstract class Engine implements Runnable {
     /**
      * Modules.
      */
-    private List<Subsystem> mSubsystems = new ArrayList<>();
+    private Map<Class<? extends Subsystem>, Subsystem> mSubsystems = new HashMap<>();
 
 
     /**
@@ -83,8 +83,8 @@ public abstract class Engine implements Runnable {
     /**
      * Get all subsystems.
      */
-    public List<Subsystem> getSubsystems() {
-        return this.mSubsystems;
+    public Set<Class<? extends Subsystem>> getSubsystems() {
+        return this.mSubsystems.keySet();
     }
 
 
@@ -100,7 +100,15 @@ public abstract class Engine implements Runnable {
      * Add a subsystem.
      */
     public void addSubsystem(Subsystem subsystem) {
-        mSubsystems.add(subsystem);
+        mSubsystems.put(subsystem.getClass(), subsystem);
+    }
+
+
+    /**
+     * Get a subsystem.
+     */
+    public void getSubsystem(Class<? extends Subsystem> subsystem) {
+        return mSubsystems.get(subsystem);
     }
 
 

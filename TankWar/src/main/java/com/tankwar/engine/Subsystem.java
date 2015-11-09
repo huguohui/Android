@@ -4,7 +4,7 @@ package com.tankwar.engine;
  * A subsystem implements some functions.
  * @since 2015/11/06
  */
-public abstract class Subsystem {
+public abstract class Subsystem implements Tick {
 	/**
 	 * The context of module rely.
 	 */
@@ -123,5 +123,4 @@ public abstract class Subsystem {
     public Engine getEngine() {
         return mEngine;
     }
-
 }
