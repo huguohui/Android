@@ -50,6 +50,15 @@ final public class GameContext extends Application
     /** Directory separator. */
 	public final static String DS = "/";
 
+	/** The sd card root path. */
+	public final static String BASE_PATH = "";
+
+	/** THe game log directory. */
+	public final static String GAME_LOG_PATH = "Logs";
+
+	/** The game cache directory */
+	public final static String GAME_CACHE_PATH = "Cache";
+
 	/** Device screen width. */
 	public final static int SCREEN_WIDTH = 0;
 
@@ -57,13 +66,45 @@ final public class GameContext extends Application
 	public final static int SCREEN_HEIGHT = 0;
 
 
+	/**
+	 * When game context creating, this method will run once.
+	 */
 	public final void onCreate() {
 		super.onCreate();
 		initialize();
 	}
 
 
+	/**
+	 * Get game engine instance.
+	 * @param Game engine.
+	 */
+	public final Engine getEngine() {
+		return mEngine
+	}
 
+
+	/**
+	 * Get client instance.
+	 * @return Clietn instance.
+	 */
+	public final Client getClient() {
+		return mClient;
+	}
+
+
+	/**
+	 * Get game instance.
+	 * @return game instance.
+	 */
+	public final Game getGame() {
+		return mGame;
+	}
+
+
+	/**
+	 * Do some initialization work in this place.
+	 */
 	private final void initialize() {
 		instance = this;
 	}
@@ -88,11 +129,33 @@ final public class GameContext extends Application
 	}
 
 
-	public final void toast(String s) {
-		Toast.makeText(GameContext.getGameContext().getBaseContext(), s, Toast.LENGTH_SHORT).show();
+	/**
+	 * A package of toast message, use this method will faster
+	 * to show toast message.
+	 *
+	 * @param message The toast messsage.
+	 * @param isLongShow The message if long time exists.
+	 */
+	public final void toast(String Message, boolean isLongShow) {
+		Toast.makeText(insatnce, message, isLongShow ? Toast.LENGTH_SHORT :
+				Toast.LENTH_LONG).show();
 	}
 
 
+	/**
+	 * A package of toast message, use this method will faster
+	 * to show toast message.
+	 *
+	 * @param message The toast messsage.
+	 */
+	public final void toast(String message) {
+		toast(message, false);
+	}
+
+
+	/**
+	 * Only method to get game context instance.
+	 */
 	public final static GameContext getGameContext() {
 		return instance;
 	}

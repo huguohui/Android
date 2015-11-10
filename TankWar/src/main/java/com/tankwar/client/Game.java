@@ -48,6 +48,7 @@ public class Game {
      */
     private Game() {
         this.initialize();
+        
     }
 
 
@@ -80,7 +81,6 @@ public class Game {
     /**
      * Set game option.
      * @param mOption Game option.
-
      */
     public void setOption(Option mOption) {
         this.mOption = mOption;
@@ -109,7 +109,9 @@ public class Game {
      */
     private void initialize() {
         for (StateListener listener : mStateListeners)
-            listener.onInitialized();
+            listener.onInitialize();
+
+
     }
 
 
@@ -159,41 +161,6 @@ public class Game {
      */
     public static Game create() {
         return mGame == null ? (mGame = new Game()) : mGame;
-    }
-
-
-    /**
-     * Game state listener.
-     */
-    public interface StateListener {
-        /**
-         * When game initialized().
-         */
-        public void onInitialized();
-
-
-        /**
-         * When game initialize failed.
-         */
-        public void onInitializeFailed();
-
-
-        /**
-         * When game start success, trigger this event.
-         */
-        public void onStarted();
-
-
-        /**
-         * When game start failed.
-         */
-        public void onStartFailed();
-
-
-        /**
-         * When game stop.
-         */
-        public void onStop();
     }
 
 

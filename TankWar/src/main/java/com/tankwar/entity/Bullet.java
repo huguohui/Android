@@ -23,7 +23,7 @@ import java.util.List;
  * @version 1.0
  * @since 2015/10/29
  */
-public abstract class Bullet extends DrawableEntity {
+public abstract class Bullet extends MovableEntity {
     private int x;
     private int y;
     private int speed;
