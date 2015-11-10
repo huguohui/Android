@@ -76,4 +76,12 @@ public class ArmorPiercingBullet extends Bullet {
     public Bitmap[] getSprite() {
         return new Bitmap[0];
     }
+
+    /**
+     * This method implemets move behavior.
+     */
+    @Override
+    public void move() {
+
+    }
 }

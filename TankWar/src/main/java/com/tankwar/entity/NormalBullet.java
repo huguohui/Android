@@ -1,5 +1,6 @@
 package com.tankwar.entity;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
@@ -24,7 +25,7 @@ public class NormalBullet extends Bullet {
      * @param object
      */
     @Override
-    public void onCollision(Object object) {
+    public void onCollision(Entity object) {
 
     }
 
@@ -58,5 +59,21 @@ public class NormalBullet extends Bullet {
     @Override
     public void draw(Canvas canvas) {
 
+    }
+
+    /**
+     * This method implemets move behavior.
+     */
+    @Override
+    public void move() {
+
+    }
+
+    /**
+     * Get sprite graphics.
+     */
+    @Override
+    public Bitmap[] getSprite() {
+        return new Bitmap[0];
     }
 }
