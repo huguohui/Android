@@ -12,7 +12,7 @@ import com.tankwar.entity.Entity;
 public interface CollisionCheckable {
     /**
      * Checks this object if collisded some entity.
-     * @param entity.
+     * @param entity THe entity.
      * @return If collided true else false.
      */
     boolean isCollision(Entity entity);

@@ -1,5 +1,6 @@
 package com.tankwar.entity;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -16,7 +17,7 @@ import com.tankwar.engine.CollisionCheckable;
 public class ArmorPiercingBullet extends Bullet {
 
     /**
-     * Checks this object if collisded some entity.
+     * Checks this object if collided some entity.
      *
      * @param entity If collided true else false.
      */
@@ -29,10 +30,10 @@ public class ArmorPiercingBullet extends Bullet {
      * When this object colliding another object,
      * this method will be called.
      *
-     * @param object
+     * @param object The entity.
      */
     @Override
-    public void onCollision(Object object) {
+    public void onCollision(Entity object) {
 
     }
 
@@ -66,5 +67,13 @@ public class ArmorPiercingBullet extends Bullet {
     @Override
     public void draw(Canvas canvas) {
 
+    }
+
+    /**
+     * Get sprite graphics.
+     */
+    @Override
+    public Bitmap[] getSprite() {
+        return new Bitmap[0];
     }
 }

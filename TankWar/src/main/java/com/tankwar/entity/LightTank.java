@@ -1,5 +1,6 @@
 package com.tankwar.entity;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
@@ -47,7 +48,7 @@ final public class LightTank extends Tank {
     }
 
     /**
-     * Checks this object if collisded some entity.
+     * Checks this object if collided some entity.
      *
      * @param entity@return If collided true else false.
      */
@@ -60,10 +61,10 @@ final public class LightTank extends Tank {
      * When this object colliding another object,
      * this method will be called.
      *
-     * @param object
+     * @param object The entity.
      */
     @Override
-    public void onCollision(Object object) {
+    public void onCollision(Entity object) {
 
     }
 
@@ -77,5 +78,13 @@ final public class LightTank extends Tank {
     @Override
     public void draw(Canvas canvas) {
 
+    }
+
+    /**
+     * Get sprite graphics.
+     */
+    @Override
+    public Bitmap[] getSprite() {
+        return new Bitmap[0];
     }
 }
