@@ -13,7 +13,7 @@ class PhysicalSubsystem extends Subsystem {
 
 
     /**
-     * All
+     * All 
      */
 
 
@@ -29,7 +29,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void start() {
-        mWorldSubsystem = getEngine().getSubsystem(WorldSubSystem.class);
+        mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubSystem.class);
     }
 
     /**
