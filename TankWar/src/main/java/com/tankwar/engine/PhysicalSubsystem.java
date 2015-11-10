@@ -24,7 +24,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void start() {
-        mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubSystem.class);
+        mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubsystem.class);
         
     }
 
