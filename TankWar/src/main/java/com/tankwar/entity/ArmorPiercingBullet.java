@@ -78,7 +78,7 @@ public class ArmorPiercingBullet extends Bullet {
     }
 
     /**
-     * This method implemets move behavior.
+     * This method implements move behavior.
      */
     @Override
     public void move() {

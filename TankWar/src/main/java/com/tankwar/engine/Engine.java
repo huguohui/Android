@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Engine core class.
+ * Engine abstract base class.
  * @author hgh.
  * @since 2015/11/06
  */

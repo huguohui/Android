@@ -1,5 +1,15 @@
 package com.tankwar.engine;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+
+import java.util.List;
+
 /**
  * The engine of handling graphics.
  * @since 2015/11/06
@@ -31,7 +41,7 @@ public class GraphicsSubsystem extends Subsystem {
 	 * Do some work.
 	 */
 	public void start() {
-        engine.getGameContext().getClient().setContentView(mCanvasView);
+        getEngine().getGameContext().getClient().setContentView((View)mCanvasView);
 	}
 
     /**
@@ -64,8 +74,8 @@ public class GraphicsSubsystem extends Subsystem {
      * Game loop tick.
      */
     public void tick() {
-        for (Layer layer : mlayers) {
-            layer.show(mCanvas);
+        for (Layer layer : mLayers) {
+            layer.draw(mCanvasBuffer);
         }
     }
 
@@ -83,13 +93,15 @@ public class GraphicsSubsystem extends Subsystem {
 
         /** Bitmap buffer. */
         private Bitmap mBitmapBuffer = Bitmap.createBitmap(WorldSubsystem.WORLD_WIDTH,
-                    WorldSubsystem.WORLD_HEIGHT);
+                    WorldSubsystem.WORLD_HEIGHT, Bitmap.Config.RGB_565);
 
         /** Canvas buffer. */
         private Canvas mCanvasBuffer = null;
 
-        /** canvas constructor. */
+        /** canvas constructor.
+         * @param context*/
         public CanvasView(Context context) {
+            super(context);
             mHolder = getHolder();
         }
 
@@ -110,7 +122,7 @@ public class GraphicsSubsystem extends Subsystem {
          * @return canvas object.
          */
         public final Canvas getCanvas() {
-            return mCanvas = lockCanvas(null);
+            return mCanvas = mHolder.lockCanvas(null);
         }
 
 
@@ -119,7 +131,7 @@ public class GraphicsSubsystem extends Subsystem {
          */
         public final void freeCanvas() {
             if (mCanvas != null) {
-                mHolder.unlockAndPostCanvas(mCanvas);
+                mHolder.unlockCanvasAndPost(mCanvas);
             }
         }
 
@@ -129,7 +141,7 @@ public class GraphicsSubsystem extends Subsystem {
          */
         public final void updateFrame() {
             if (mBitmapBuffer != null) {
-                getCanvas().drawBitmap(mBitmapBuffer, 0, 0);
+                getCanvas().drawBitmap(mBitmapBuffer, 0f, 0f, new Paint());
                 freeCanvas();
             }
         }

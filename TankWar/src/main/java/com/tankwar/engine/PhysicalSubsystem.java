@@ -13,14 +13,15 @@ class PhysicalSubsystem extends Subsystem {
 
 
     /**
-     * Construct a module object by gameContext.
+     * Construct a physical subsystem object.
+     * @param engine Game engine.
      */
     public PhysicalSubsystem(Engine engine) {
         super(engine);
     }
 
     /**
-     * The work of module can do.   
+     * Start physical subsystem.
      */
     @Override
     public void start() {
@@ -41,7 +42,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void enable() {
-
+        super.enable();
     }
 
 
@@ -50,7 +51,7 @@ class PhysicalSubsystem extends Subsystem {
      */
     @Override
     public void disable() {
-
+        super.disable();
     }
 
 

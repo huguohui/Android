@@ -4,7 +4,7 @@ package com.tankwar.entity;
  * Destroyable is a kind of object, that could be destory.
  * @since 2015/11/10
  */
-public interface Destoryable {
+public interface Destroyable {
 	/**
 	 * Method destory to implements destory a object.
 	 */

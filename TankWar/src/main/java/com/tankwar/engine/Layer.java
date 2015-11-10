@@ -1,5 +1,9 @@
 package com.tankwar.engine;
 
+import android.graphics.Canvas;
+
+import java.util.List;
+
 /**
  * A graphics layer hold some drawable objects,
  * when this layer was showed, all objects will be showed.
