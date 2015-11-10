@@ -13,11 +13,6 @@ class PhysicalSubsystem extends Subsystem {
 
 
     /**
-     * All 
-     */
-
-
-    /**
      * Construct a module object by gameContext.
      */
     public PhysicalSubsystem(Engine engine) {
@@ -25,11 +20,12 @@ class PhysicalSubsystem extends Subsystem {
     }
 
     /**
-     * The work of module can do.
+     * The work of module can do.   
      */
     @Override
     public void start() {
         mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubSystem.class);
+        
     }
 
     /**

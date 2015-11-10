@@ -1,10 +1,11 @@
-package com.tankwar.entity;
+package com.tankwar.engine;
 
 /**
- * Describe a terrian.
+ * The base class of terrian. Everyone terrian entity must extends
+ * this abstract class.
+ *
  * @since 2015/11/09
  */
-public abstract clas Terrian extends Entity {
-	
-	
+public abstract class Terrian extends DrawableEntity {
+
 }

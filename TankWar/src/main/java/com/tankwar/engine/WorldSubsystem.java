@@ -35,8 +35,11 @@ public class WorldSubsystem extends Subsystem {
 	/** World width. */
 	public static int WORLD_WIDTH = WORLD_HOR_GRID_NUM * WORLD_GRID_WIDTH;
 
-	/** World system data. */
-	private int[][] mWorldData = int[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
+	/** World system terrian data. */
+	private Entity[][] mWorldData = int[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
+
+	/** All entity exclude terrain in world. */
+	private List<Entity> mAllEntity = new ArrayList<>();
 
 
 	/**
@@ -46,6 +49,32 @@ public class WorldSubsystem extends Subsystem {
 	public WorldSubsystem(Engine engine) {
 		super(engine);
 	}
+
+
+	/**
+	 * Initialize world system.
+	 */
+	private void initializeSystem() {
+		for (int i = 0; i < WORLD_VER_GRID_NUM; i++) {
+			for (int j = 0; j < WORLD_HOR_GRID_NUM; j++) {
+				mWorldData[i][j] = null;
+			}
+		}
+	}
+
+	/**
+	 * Add enity to world. 
+	 * @param entity Will be added entity.
+	 */
+	public void addEntity(Entity entity) {
+		mAllEntity.add(entity);
+	}
+
+
+	public void getEntitys() {
+		return mAllEntity;
+	}
+
 
 	/**
 	 * The work of module can do.

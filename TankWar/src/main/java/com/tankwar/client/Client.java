@@ -35,7 +35,8 @@ import com.tankwar.engine.GameEngine;
  * The game base class.
  * @since 2015/11/06
  */
-final public class Client extends Activity implements View.OnClickListener {
+final public class Client extends Activity
+                    implements View.OnClickListener{
     /**
      * The game instance.
      */
