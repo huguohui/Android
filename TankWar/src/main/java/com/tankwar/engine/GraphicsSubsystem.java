@@ -34,9 +34,7 @@ public class GraphicsSubsystem extends Subsystem {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
         mCanvasBuffer = mCanvasView.getBuffer();
-<<<<<<< HEAD
         engine.getGameContext().getClient().setContentView(mCanvasView);
-=======
 	}
 
 
@@ -44,8 +42,7 @@ public class GraphicsSubsystem extends Subsystem {
 	 * Do some work.
 	 */
 	public void start() {
-        getEngine().getGameContext().getClient().setContentView((View)mCanvasView);
->>>>>>> origin/HEAD
+        getEngine().getGameContext().getClient().setContentView(mCanvasView);
 	}
 
     /**
@@ -95,7 +92,8 @@ public class GraphicsSubsystem extends Subsystem {
         private Canvas mCanvasBuffer = null;
 
         /** canvas constructor.
-         * @param context*/
+         * @param context Game context.
+         */
         public CanvasView(Context context) {
             super(context);
             mHolder = getHolder();

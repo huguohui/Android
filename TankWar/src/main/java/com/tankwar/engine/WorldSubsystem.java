@@ -87,26 +87,8 @@ public class WorldSubsystem extends Subsystem {
 	}
 
 
-	/**
-<<<<<<< HEAD
-=======
-	 * Start the world subsystem.
-	 */
-	@Override
-	public void start() {
-
-	}
 
 	/**
-	 * Stop subsystem.
-	 */
-	@Override
-	public void stop() {
-		
-	}
-
-	/**
->>>>>>> origin/HEAD
 	 * Enable a module.
 	 */
 	@Override

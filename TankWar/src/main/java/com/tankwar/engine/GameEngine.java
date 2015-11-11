@@ -23,6 +23,7 @@ public class GameEngine extends Engine {
         this.addSubsystem(new WorldSubsystem(this));
         this.addSubsystem(new PhysicalSubsystem(this));
         this.addSubsystem(new GraphicsSubsystem(this));
+        this.setPower(this.allocThread(this));
     }
 
     /**
@@ -30,11 +31,7 @@ public class GameEngine extends Engine {
      */
     @Override
     public void start() {
-        for (Class<? extends Subsystem> key : this.getSubsystems()) {
-            Subsystem subsystem = getSubsystem(key);
-            subsystem.start();
-
-        }
+        this.getPower().start();
     }
 
 
@@ -47,7 +44,6 @@ public class GameEngine extends Engine {
     public void run() {
         try {
             while (!this.isStop()) {
-                
                 if (this.isPause()) {
                     wait();
                 }
@@ -62,13 +58,28 @@ public class GameEngine extends Engine {
         }
     }
 
+    /**
+     * Pause command.
+     */
+    @Override
+    public synchronized void pause() {
+        this.setIsPause(true);
+    }
+
+    /**
+     * Resume command.
+     */
+    @Override
+    public synchronized void resume() {
+        this.setIsPause(false);
+    }
 
     /**
      * Stop command.
      */
     @Override
-    public void stop() {
-        super.stop();
+    public synchronized void stop() {
+        this.setIsStop(true);
     }
 
 

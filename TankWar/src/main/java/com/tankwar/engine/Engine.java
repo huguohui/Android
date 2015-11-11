@@ -41,7 +41,7 @@ public abstract class Engine implements Runnable {
     /**
      * Game context.
      */
-    private GameContext mGameContext;
+    private GameContext mGameContext = GameContext.getGameContext();
 
 
     /**
@@ -75,11 +75,9 @@ public abstract class Engine implements Runnable {
 
 
     /**
-     * Constructor.
+     * The engine power.
      */
-    public Engine() {
-        this.mGameContext = GameContext.getGameContext();
-    }
+    private Thread mPower;
 
 
     /**
@@ -123,9 +121,17 @@ public abstract class Engine implements Runnable {
 
 
     /**
+     * Get get game instance.
+     */
+    public final Game getGame() {
+        return this.getGameContext().getGame();
+    }
+
+
+    /**
      * Get game context.
      */
-    public GameContext getGameContext() {
+    public final GameContext getGameContext() {
         return mGameContext;
     }
 
@@ -133,7 +139,7 @@ public abstract class Engine implements Runnable {
     /**
      * Alloc a thread by a runnable.
      */
-    public Thread allocThread(Runnable runnable) {
+    public synchronized Thread allocThread(Runnable runnable) {
         Thread thread = new Thread(runnable);
         mAllocedThread.add(thread);
         return thread;
@@ -152,13 +158,22 @@ public abstract class Engine implements Runnable {
     public abstract void start();
 
 
+    /**
+     * Pause command.
+     */
+    public abstract void pause();
+
+
+    /**
+     * Resume command.
+     */
+    public abstract void resume();
+
 
     /**
      * Stop command.
      */
-    public synchronized void stop() {
-        mIsStop = true;
-    }
+    public abstract void stop();
 
 
 	/**
@@ -170,9 +185,83 @@ public abstract class Engine implements Runnable {
 
 
     /**
+     * Set if stop.
+     * @param mIsStop  stop?
+     */
+    public void setIsStop(boolean mIsStop) {
+        this.mIsStop = mIsStop;
+    }
+
+
+    /**
+     * Set if pause.
+     * @param mIsPause pause?
+     */
+    public void setIsPause(boolean mIsPause) {
+        this.mIsPause = mIsPause;
+    }
+
+    /**
+     * Get pause state.
+     */
+    public boolean isPause() {
+        return mIsPause;
+    }
+
+
+    /**
      * Get stop state.
      */
     public boolean isStop() {
         return mIsStop;
+    }
+
+
+    /**
+     * The game power.
+     * @param power Game power.
+     */
+    public final void setPower(Thread power) {
+        mPower = power;
+    }
+
+
+    /**
+     * Get game power.
+     * @return game power.
+     */
+    public final Thread getPower() {
+        return mPower;
+    }
+
+
+
+    /**
+     * Engine state listener.
+     * @since 2015/11/06
+     */
+    public interface StateListener {
+        /**
+         * When engine initialized.
+         */
+        void onInitialize(Engine engine);
+
+
+        /**
+         * When engine start work.
+         */
+        void onStart(Engine engine);
+
+
+        /**
+         * When engine stop work.
+         */
+        void onStop(Engine engine);
+
+
+        /**
+         * When appear exception.
+         */
+        void onException(Engine engine);
     }
 }

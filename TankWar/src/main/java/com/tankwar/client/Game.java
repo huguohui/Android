@@ -38,12 +38,6 @@ public class Game {
 
 
     /**
-     * Game state listener.
-     */
-    private List<StateListener> mStateListeners = new ArrayList<>();
-
-
-    /**
      * Private constructor.
      */
     private Game() {
@@ -108,9 +102,6 @@ public class Game {
      * Do some initialize work.
      */
     private void initialize() {
-        for (StateListener listener : mStateListeners)
-            listener.onInitialize();
-
 
     }
 
@@ -135,7 +126,7 @@ public class Game {
      * Pause a game.
      */
     public void pause() {
-
+        this.mEngine.pause();
     }
 
 
@@ -143,7 +134,7 @@ public class Game {
      * Resume a game.
      */
     public void resume() {
-
+        this.mEngine.resume();
     }
 
 
@@ -151,7 +142,7 @@ public class Game {
      * Stop a game.
      */
     public void stop() {
-
+        this.mEngine.stop();
     }
 
 
