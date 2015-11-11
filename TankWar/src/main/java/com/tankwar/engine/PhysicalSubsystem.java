@@ -17,24 +17,9 @@ class PhysicalSubsystem extends Subsystem {
      */
     public PhysicalSubsystem(Engine engine) {
         super(engine);
-    }
-
-    /**
-     * The work of module can do.   
-     */
-    @Override
-    public void start() {
         mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubSystem.class);
-        
     }
 
-    /**
-     * Stop subsystem.
-     */
-    @Override
-    public void stop() {
-        super.stop();
-    }
 
     /**
      * Enable a module.

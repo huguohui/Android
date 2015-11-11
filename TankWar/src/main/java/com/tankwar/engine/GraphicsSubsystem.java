@@ -24,23 +24,8 @@ public class GraphicsSubsystem extends Subsystem {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
         mCanvasBuffer = mCanvasView.getBuffer();
-	}
-
-
-	/**
-	 * Do some work.
-	 */
-	public void start() {
         engine.getGameContext().getClient().setContentView(mCanvasView);
 	}
-
-    /**
-     * Stop subsystem.
-     */
-    @Override
-    public void stop() {
-        super.stop();
-    }
 
     /**
      * Enable a module.

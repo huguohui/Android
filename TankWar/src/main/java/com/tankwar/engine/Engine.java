@@ -152,21 +152,6 @@ public abstract class Engine implements Runnable {
     public abstract void start();
 
 
-    /**
-     * Pause command.
-     */
-    public synchronized void pause() {
-        mIsPause = true;
-    }
-
-
-    /**
-     * Resume command.
-     */
-    public synchronized void resume() {
-        mIsPause = false;
-    }
-
 
     /**
      * Stop command.
@@ -184,57 +169,10 @@ public abstract class Engine implements Runnable {
     }
 
 
-
-
-    /**
-     * Get pause state.
-     */
-    public boolean isPause() {
-        return mIsPause;
-    }
-
-
     /**
      * Get stop state.
      */
     public boolean isStop() {
         return mIsStop;
-    }
-
-
-
-    /**
-     * Engine state listener.
-     * @since 2015/11/06
-     */
-    public interface StateListener {
-        /**
-         * When engine initialized.
-         */
-        void onInitialized(Engine engine);
-
-
-        /**
-         * When engine start work.
-         */
-        void onStarted(Engine engine);
-
-
-        /**
-         * When engine stop work.
-         */
-        void onStop(Engine engine);
-
-
-        /**
-         * When engine initialize failed.
-         */
-        void onInitFailed(Engine engine);
-
-
-        /**
-         * When engine start failed.
-         */
-        void onStartFailed(Engine engine);
     }
 }

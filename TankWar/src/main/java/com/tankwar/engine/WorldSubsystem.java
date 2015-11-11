@@ -48,6 +48,7 @@ public class WorldSubsystem extends Subsystem {
 	 */
 	public WorldSubsystem(Engine engine) {
 		super(engine);
+		initializeSystem();
 	}
 
 
@@ -75,22 +76,6 @@ public class WorldSubsystem extends Subsystem {
 		return mAllEntity;
 	}
 
-
-	/**
-	 * The work of module can do.
-	 */
-	@Override
-	public void start() {
-
-	}
-
-	/**
-	 * Stop subsystem.
-	 */
-	@Override
-	public void stop() {
-		
-	}
 
 	/**
 	 * Enable a module.
