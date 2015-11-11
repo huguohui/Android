@@ -1,5 +1,7 @@
 package com.tankwar.engine;
 
+import com.tankwar.entity.Entity;
+
 /**
  * A collision event observer interface.
  * @author hgh
@@ -10,5 +12,5 @@ public interface CollisionListener {
      * When this object colliding another object,
      * this method will be called.
      */
-    void onCollision(Object object);
+    void onCollision(Entity object);
 }

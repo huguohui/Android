@@ -1,5 +1,8 @@
 package com.tankwar.entity;
 
+import com.tankwar.engine.CollisionCheckable;
+import com.tankwar.engine.CollisionListener;
+
 /**
  * Describe a entity in game world.
  */

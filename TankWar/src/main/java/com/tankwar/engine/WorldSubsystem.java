@@ -1,5 +1,11 @@
 package com.tankwar.engine;
 
+import com.tankwar.entity.Entity;
+import com.tankwar.entity.Terrain;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The game world subsystem implements.
  * @since 2015/11/08
@@ -36,7 +42,7 @@ public class WorldSubsystem extends Subsystem {
 	public static int WORLD_WIDTH = WORLD_HOR_GRID_NUM * WORLD_GRID_WIDTH;
 
 	/** World system terrian data. */
-	private Entity[][] mWorldData = int[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
+	private Terrain[][] mWorldData = new Terrain[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
 
 	/** All entity exclude terrain in world. */
 	private List<Entity> mAllEntity = new ArrayList<>();
@@ -72,12 +78,35 @@ public class WorldSubsystem extends Subsystem {
 	}
 
 
-	public void getEntitys() {
+    /**
+     * Get all created entities.
+     * @return All created entities.
+     */
+	public List<Entity> getEntitys() {
 		return mAllEntity;
 	}
 
 
 	/**
+<<<<<<< HEAD
+=======
+	 * Start the world subsystem.
+	 */
+	@Override
+	public void start() {
+
+	}
+
+	/**
+	 * Stop subsystem.
+	 */
+	@Override
+	public void stop() {
+		
+	}
+
+	/**
+>>>>>>> origin/HEAD
 	 * Enable a module.
 	 */
 	@Override
