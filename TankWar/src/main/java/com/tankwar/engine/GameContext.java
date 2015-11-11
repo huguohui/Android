@@ -33,7 +33,7 @@ import com.tankwar.client.Game;
 final public class GameContext extends Application
 {
 	/** Game context static instance. */
-	private static GameContext instance  = null;
+	private static GameContext mInstance  = null;
 
 	/** Shared data. */
 	private HashMap<String, Object> data = new HashMap<String, Object>();
@@ -77,10 +77,10 @@ final public class GameContext extends Application
 
 	/**
 	 * Get game engine instance.
-	 * @param Game engine.
+	 * @return Game engine.
 	 */
 	public final Engine getEngine() {
-		return mEngine
+		return mEngine;
 	}
 
 
@@ -106,7 +106,7 @@ final public class GameContext extends Application
 	 * Do some initialization work in this place.
 	 */
 	private final void initialize() {
-		instance = this;
+		mInstance = this;
 	}
 
 
@@ -136,9 +136,9 @@ final public class GameContext extends Application
 	 * @param message The toast messsage.
 	 * @param isLongShow The message if long time exists.
 	 */
-	public final void toast(String Message, boolean isLongShow) {
-		Toast.makeText(insatnce, message, isLongShow ? Toast.LENGTH_SHORT :
-				Toast.LENTH_LONG).show();
+	public final void toast(String message, boolean isLongShow) {
+		Toast.makeText(mInstance, message, isLongShow ? Toast.LENGTH_SHORT
+                : Toast.LENGTH_LONG).show();
 	}
 
 
@@ -157,6 +157,6 @@ final public class GameContext extends Application
 	 * Only method to get game context instance.
 	 */
 	public final static GameContext getGameContext() {
-		return instance;
+		return mInstance;
 	}
 }
