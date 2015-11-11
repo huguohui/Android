@@ -47,6 +47,7 @@ public class GameEngine extends Engine {
     public void run() {
         try {
             while (!this.isStop()) {
+                
                 if (this.isPause()) {
                     wait();
                 }
@@ -61,21 +62,6 @@ public class GameEngine extends Engine {
         }
     }
 
-    /**
-     * Pause command.
-     */
-    @Override
-    public void pause() {
-        super.pause();
-    }
-
-    /**
-     * Resume command.
-     */
-    @Override
-    public void resume() {
-        super.resume();
-    }
 
     /**
      * Stop command.

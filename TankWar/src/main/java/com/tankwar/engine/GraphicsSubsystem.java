@@ -34,6 +34,9 @@ public class GraphicsSubsystem extends Subsystem {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
         mCanvasBuffer = mCanvasView.getBuffer();
+<<<<<<< HEAD
+        engine.getGameContext().getClient().setContentView(mCanvasView);
+=======
 	}
 
 
@@ -42,15 +45,8 @@ public class GraphicsSubsystem extends Subsystem {
 	 */
 	public void start() {
         getEngine().getGameContext().getClient().setContentView((View)mCanvasView);
+>>>>>>> origin/HEAD
 	}
-
-    /**
-     * Stop subsystem.
-     */
-    @Override
-    public void stop() {
-        super.stop();
-    }
 
     /**
      * Enable a module.

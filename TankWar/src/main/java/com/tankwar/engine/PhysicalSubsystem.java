@@ -18,6 +18,9 @@ class PhysicalSubsystem extends Subsystem {
      */
     public PhysicalSubsystem(Engine engine) {
         super(engine);
+<<<<<<< HEAD
+        mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubSystem.class);
+=======
     }
 
     /**
@@ -27,15 +30,9 @@ class PhysicalSubsystem extends Subsystem {
     public void start() {
         mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubsystem.class);
         
+>>>>>>> origin/HEAD
     }
 
-    /**
-     * Stop subsystem.
-     */
-    @Override
-    public void stop() {
-        super.stop();
-    }
 
     /**
      * Enable a module.

@@ -54,6 +54,7 @@ public class WorldSubsystem extends Subsystem {
 	 */
 	public WorldSubsystem(Engine engine) {
 		super(engine);
+		initializeSystem();
 	}
 
 
@@ -87,6 +88,8 @@ public class WorldSubsystem extends Subsystem {
 
 
 	/**
+<<<<<<< HEAD
+=======
 	 * Start the world subsystem.
 	 */
 	@Override
@@ -103,6 +106,7 @@ public class WorldSubsystem extends Subsystem {
 	}
 
 	/**
+>>>>>>> origin/HEAD
 	 * Enable a module.
 	 */
 	@Override
