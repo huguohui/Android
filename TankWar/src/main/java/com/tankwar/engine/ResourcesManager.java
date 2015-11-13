@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.SoundPool;
 
+import com.tankwar.utils.Log;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,9 @@ public class ResourcesManager {
     /** The game context. */
     private GameContext mGameContext;
 
+    /** Is load? */
+    private boolean mIsLoaded = false;
+
 
     /**
      * The constructor.
@@ -42,8 +47,28 @@ public class ResourcesManager {
         mResources = context.getBaseContext().getResources();
         mAssetManager = context.getBaseContext().getAssets();
         mGameContext = context;
-        loadBitmaps();
-        loadSounds();
+    }
+
+
+    /**
+     * Load all resources.
+     */
+    public final void loadAll() {
+        if (!mIsLoaded) {
+            loadBitmaps();
+            loadSounds();
+        }
+    }
+
+
+    /**
+     * Release all resources.
+     */
+    public final void releaseAll() {
+        if (mIsLoaded) {
+            unloadBitmaps();
+            unloadSounds();
+        }
     }
 
 
@@ -52,13 +77,11 @@ public class ResourcesManager {
      */
     public void loadBitmaps() {
         try {
-            for (String assetName : mAssetManager.list(
-                    mGameContext.getBaseContext().getFilesDir().getPath())) {
-                mBitmaps.put(assetName, BitmapFactory.decodeStream(
-                        mAssetManager.open(assetName)));
+            for (String assetName : mAssetManager.list(GameContext.BITMAP_DIR)) {
+                mBitmaps.put(assetName, BitmapFactory.decodeStream(mAssetManager.open(assetName)));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(e);
         }
     }
 
@@ -68,14 +91,53 @@ public class ResourcesManager {
      */
     public void loadSounds() {
         try {
-            for (String assetName : mAssetManager.list(mGameContext
-                    .getBaseContext().getFilesDir().getPath())) {
+            for (String assetName : mAssetManager.list(GameContext.SOUND_DIR)) {
                 SoundPool sp = new SoundPool(0, 0, 0);
                 sp.load(assetName, 0);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(e);
         }
+    }
+
+
+    /**
+     * Unload all bitmaps.
+     */
+    public final void unloadBitmaps() {
+        for (String name : mBitmaps.keySet()) {
+            Bitmap bitmap = mBitmaps.get(name);
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+                bitmap = null;
+            }
+        }
+        mBitmaps = null;
+    }
+
+
+    /**
+     * Unload all sounds.
+     */
+    public final void unloadSounds() {
+        for (String name : mSounds.keySet()) {
+            SoundPool sp = mSounds.get(name);
+            if (sp != null) {
+                sp.release();
+                sp = null;
+            }
+        }
+        mSounds = null;
+    }
+
+
+    /**
+     * Get a sprite.
+     * @param name Bitmap name.
+     * @return A sprite.
+     */
+    public Sprite getSprite(String name) {
+        return new Sprite(getBitmap(name));
     }
 
 
@@ -83,7 +145,7 @@ public class ResourcesManager {
      * Get bitmap by name.
      * @param name Bitmap name.
      */
-    public Bitmap getBitmap(String name) {
+    public final Bitmap getBitmap(String name) {
         return mBitmaps.get(name);
     }
 
@@ -92,7 +154,7 @@ public class ResourcesManager {
      * Get sound by name.
      * @param name Sound name.
      */
-    public SoundPool getSound(String name) {
+    public final SoundPool getSound(String name) {
         return mSounds.get(name);
     }
 }

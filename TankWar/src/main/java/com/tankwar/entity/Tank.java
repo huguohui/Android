@@ -6,7 +6,6 @@ package com.tankwar.entity;
  */
 public abstract class Tank extends DrawableEntity
 {
-
     /**
      * The constructor of entity.
      *
@@ -16,5 +15,11 @@ public abstract class Tank extends DrawableEntity
     public Tank(int x, int y) {
         super(x, y);
     }
+
+
+    /**
+     * Empty constructor.
+     */
+    public Tank() {}
 }
 

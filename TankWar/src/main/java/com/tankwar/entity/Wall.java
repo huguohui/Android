@@ -8,6 +8,16 @@ import android.graphics.Canvas;
  */
 public class Wall extends Obstacle {
     /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public Wall(int x, int y) {
+        super(x, y);
+    }
+
+    /**
      * Method destory to implements destory a object.
      */
     @Override

@@ -42,6 +42,14 @@ public abstract class Entity implements CollisionCheckable, CollisionListener {
     }
 
 
+    /**
+     * The empty constructor.
+     */
+    public Entity() {
+
+    }
+
+
 	/**
 	 * Get width of entity.
 	 * @return Width of entity.

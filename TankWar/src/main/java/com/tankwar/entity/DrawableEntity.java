@@ -20,4 +20,7 @@ public abstract class DrawableEntity extends Entity
     public DrawableEntity(int x, int y) {
         super(x, y);
     }
+
+
+    public DrawableEntity() {}
 }

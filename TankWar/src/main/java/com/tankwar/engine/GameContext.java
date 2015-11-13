@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Application;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.tankwar.client.Client;
@@ -47,29 +49,32 @@ final public class GameContext extends Application
     /** Engine instance. */
     private Engine mEngine;
 
+    /** ResourcesManager instance. */
+    private ResourcesManager mResourcesManager;
+
     /** Directory separator. */
 	public final static String DS = "/";
 
 	/** The sd card root path. */
-	public static String BASE_PATH = "";
+	public static String SDCARD_ROOT = Environment.getExternalStorageDirectory().getPath();
+
+    /** The game directory. */
+    public static String APP_ROOT = "";
+
+    /** The game directory on sdcard. */
+    public static String SDCARD_APP_ROOT = "";
 
 	/** THe game log directory. */
-	public final static String GAME_LOG_PATH = "Logs";
+	public final static String LOG_DIR = "Logs";
 
 	/** The game cache directory */
-	public final static String GAME_CACHE_PATH = "Cache";
-
-	/** Device screen width. */
-	public final static int SCREEN_WIDTH = 0;
-
-	/** Device screen height. */
-	public final static int SCREEN_HEIGHT = 0;
+	public final static String CACHE_DIR = "Cache";
 
     /** The game bitmaps directory. */
-    public final static String BITMAP_DIR = "/bitmaps";
+    public final static String BITMAP_DIR = "bitmaps";
 
     /** The game sounds directory. */
-    public final static String SOUND_DIR = "/sounds";
+    public final static String SOUND_DIR = "sounds";
 
 
 	/**
@@ -79,6 +84,17 @@ final public class GameContext extends Application
 		super.onCreate();
 		initialize();
 	}
+
+
+    /**
+     * Do some initialization work in this place.
+     */
+    private final void initialize() {
+        mInstance = this;
+        APP_ROOT = this.getApplicationInfo().dataDir + DS + this.getApplicationInfo().packageName;
+        SDCARD_APP_ROOT = SDCARD_ROOT + DS + this.getApplicationInfo().packageName;
+        mResourcesManager = new ResourcesManager(this);
+    }
 
 
 	/**
@@ -108,12 +124,40 @@ final public class GameContext extends Application
 	}
 
 
-	/**
-	 * Do some initialization work in this place.
-	 */
-	private final void initialize() {
-		mInstance = this;
-	}
+    /**
+     * Get resources manager.
+     * @return ResourcesManager.
+     */
+    public final ResourcesManager getResourcesManager() {
+        return mResourcesManager;
+    }
+
+
+    /**
+     * Get screen width of device.
+     * @return Screen width of device.
+     */
+    public final int getScreenWidth() {
+        return this.getResources().getDisplayMetrics().widthPixels;
+    }
+
+
+    /**
+     * Get screen height of device.
+     * @return Screen height device.
+     */
+    public final int getScreenHeight() {
+        return this.getResources().getDisplayMetrics().heightPixels;
+    }
+
+
+    /**
+     * Get the display metrics.
+     * @return Display metrics.
+     */
+    public final DisplayMetrics getDisplayMetrics() {
+        return this.getResources().getDisplayMetrics();
+    }
 
 
 	/**

@@ -1,12 +1,19 @@
 package com.tankwar.engine;
 
+import com.tankwar.entity.Entity;
 import com.tankwar.utils.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Client engine implements.
  * @since 2015/11/06
  */
 public class GameEngine extends Engine {
+    /** All entity exclude terrain in world. */
+    private List<Entity> mEntitys = new ArrayList<>();
+
 
     /**
      * Construct a engine instance.
@@ -26,8 +33,9 @@ public class GameEngine extends Engine {
         this.setPower(this.allocThread(this));
     }
 
+
     /**
-     * Start command.
+     * Start Engine.
      */
     @Override
     public void start() {
@@ -58,8 +66,26 @@ public class GameEngine extends Engine {
         }
     }
 
+
     /**
-     * Pause command.
+     * Create a entity and add entity to list.
+     */
+    public void createTank() {
+        //mEntitys.add();
+    }
+
+
+    /**
+     * Get all created entities.
+     * @return All created entities.
+     */
+    public List<Entity> getEntitys() {
+        return mEntitys;
+    }
+
+
+    /**
+     * Pause engine.
      */
     @Override
     public synchronized void pause() {
@@ -67,7 +93,7 @@ public class GameEngine extends Engine {
     }
 
     /**
-     * Resume command.
+     * Resume engine.
      */
     @Override
     public synchronized void resume() {
@@ -75,7 +101,7 @@ public class GameEngine extends Engine {
     }
 
     /**
-     * Stop command.
+     * Stop engine.
      */
     @Override
     public synchronized void stop() {

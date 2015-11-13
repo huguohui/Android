@@ -44,9 +44,6 @@ public class WorldSubsystem extends Subsystem {
 	/** World system terrian data. */
 	private Terrain[][] mWorldData = new Terrain[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
 
-	/** All entity exclude terrain in world. */
-	private List<Entity> mAllEntity = new ArrayList<>();
-
 
 	/**
 	 * Construct a module object by gameContext.
@@ -62,30 +59,13 @@ public class WorldSubsystem extends Subsystem {
 	 * Initialize world system.
 	 */
 	private void initializeSystem() {
+        getEngine().getGameContext().getResourcesManager().loadAll();
 		for (int i = 0; i < WORLD_VER_GRID_NUM; i++) {
 			for (int j = 0; j < WORLD_HOR_GRID_NUM; j++) {
 				mWorldData[i][j] = null;
 			}
 		}
 	}
-
-	/**
-	 * Add enity to world. 
-	 * @param entity Will be added entity.
-	 */
-	public void addEntity(Entity entity) {
-		mAllEntity.add(entity);
-	}
-
-
-    /**
-     * Get all created entities.
-     * @return All created entities.
-     */
-	public List<Entity> getEntitys() {
-		return mAllEntity;
-	}
-
 
 
 	/**

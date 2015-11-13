@@ -23,6 +23,15 @@ public class Sprite {
 
 
     /**
+     * To constructing a sprite.
+     * @param source The source.
+     */
+    public Sprite(Bitmap source) {
+        mSprites = new Bitmap[]{source};
+    }
+
+
+    /**
      * Get sprites.
      * @return All sprites.
      */

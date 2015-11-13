@@ -24,10 +24,6 @@ import java.util.List;
  * @since 2015/10/29
  */
 public abstract class Bullet extends MovableEntity {
-    private int x;
-    private int y;
-    private int speed;
-    private int direction;
     private boolean isExplosion;
     private boolean canDestroyIron = false;
 
@@ -182,14 +178,6 @@ public abstract class Bullet extends MovableEntity {
 
     public void setBulletBitmaps(Bitmap[] bulletBitmap) {
         this.bulletBitmaps = bulletBitmap;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
     }
 
     public boolean isExplosion() {

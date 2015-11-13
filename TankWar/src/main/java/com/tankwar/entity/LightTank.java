@@ -9,6 +9,25 @@ import android.graphics.Canvas;
 final public class LightTank extends Tank {
 
     /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public LightTank(int x, int y) {
+        super(x, y);
+    }
+
+
+    /**
+     * Empty constructor.
+     */
+    public LightTank() {
+        super();
+    }
+
+
+    /**
      * Checks this object if collided some entity.
      *
      * @param entity@return If collided true else false.

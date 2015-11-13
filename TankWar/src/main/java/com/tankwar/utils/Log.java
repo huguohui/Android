@@ -11,19 +11,19 @@ import java.util.Date;
 final public class Log
 {
 	public static String LOG_FILE_NAME = "game.log";
-	public static String LOG_FILE_PATH = Environment.getExternalStorageDirectory().getPath()
-											+ GameContext.DS + LOG_FILE_NAME;
+	public static String LOG_FILE_PATH = GameContext.SDCARD_APP_ROOT + GameContext.DS + LOG_FILE_NAME;
 
-	public final static void e(Throwable e) {
+	public final synchronized static void e(Throwable e) {
+        FileWriter fw = null;
 		try {
-			FileWriter fw = new FileWriter(LOG_FILE_PATH, true);
-			File f = new File(LOG_FILE_PATH);
+            fw = new FileWriter(LOG_FILE_PATH, true);
+			File file = new File(LOG_FILE_PATH);
 			String date = new Date().toString();
 			String eMsg = null;
 
-			if (f.length() > 1024 * 100) {
-				f.delete();
-				f.createNewFile();
+            if (file.length() > 1024 * 100) {
+				file.delete();
+				file.createNewFile();
 			}
 
 			eMsg = "Messages: " + e.getMessage() + "\nException: " + e.getClass() + "\n";
@@ -37,16 +37,25 @@ final public class Log
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-			err.printStackTrace();
-		}
+            android.util.Log.e("error", err.getMessage());
+		}finally{
+            if (fw != null) {
+                try {
+                    fw.flush();
+                    fw.close();
+                } catch (IOException e1) {
+                    android.util.Log.e("error", e1.getMessage());
+                }
+            }
+        }
 	}
 
 
-	public final static void s(String s) {
+	public final synchronized static void s(String s) {
 		try {
 			FileWriter fw = new FileWriter(LOG_FILE_PATH, true);
 			File f = new File(LOG_FILE_PATH);
-			String date = new Date().toLocaleString();
+			String date = new Date().toString();
 
 			if (f.length() > 1024 * 100) {
 				f.delete();
@@ -57,7 +66,7 @@ final public class Log
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-			err.printStackTrace();
+            android.util.Log.e("error", err.getMessage());
 		}
 	}
 }

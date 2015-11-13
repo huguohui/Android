@@ -20,6 +20,16 @@ public abstract class Obstacle extends Terrain
     /** Obstacle is valid? */
     private boolean mIsValid = false;
 
+    /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public Obstacle(int x, int y) {
+        super(x, y);
+    }
+
 
     /**
      * Get destoryable regions.
