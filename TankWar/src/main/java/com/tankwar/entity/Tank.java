@@ -7,5 +7,14 @@ package com.tankwar.entity;
 public abstract class Tank extends DrawableEntity
 {
 
+    /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public Tank(int x, int y) {
+        super(x, y);
+    }
 }
 

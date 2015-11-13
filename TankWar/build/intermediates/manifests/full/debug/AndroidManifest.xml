@@ -30,7 +30,7 @@
         </activity>
 
         <service
-            android:name="com.tankwar."
+            android:name="com.tankwar.abc"
             android:exported="false" >
             <intent-filter>
                 <action android:name="TEST" />

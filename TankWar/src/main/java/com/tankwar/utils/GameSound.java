@@ -8,17 +8,6 @@ import com.tankwar.R;
 
 public class GameSound extends SoundPool{
 	public static final int[] soundIds   = {
-		R.raw.game_start,
-		R.raw.game_over,
-		R.raw.blast,
-		R.raw.bomb, 
-		R.raw.bonus,
-		R.raw.get_bonus,
-		R.raw.fire,
-		R.raw.get_life,
-		R.raw.hit_wall,
-		R.raw.player_move,
-		R.raw.enemy_move,
 	};
 
 	public final static int GSD_START		= 0;

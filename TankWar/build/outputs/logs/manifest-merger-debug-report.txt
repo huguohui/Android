@@ -61,10 +61,10 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:20:17
 	android:name
 		ADDED from AndroidManifest.xml:20:27
-service#com.tankwar.
+service#com.tankwar.abc
 ADDED from AndroidManifest.xml:23:9
 	android:exported
-		ADDED from AndroidManifest.xml:23:35
+		ADDED from AndroidManifest.xml:23:37
 	android:name
 		ADDED from AndroidManifest.xml:23:18
 intent-filter#TEST+android.intent.category.DEFAULT

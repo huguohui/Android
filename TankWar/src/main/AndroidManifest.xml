@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application android:allowBackup="true" android:icon="@drawable/ico"
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <service android:name="." android:exported="false">
+        <service android:name="abc" android:exported="false">
             <intent-filter>
                 <action android:name="TEST"/>
                 <category android:name="android.intent.category.DEFAULT" />

@@ -28,20 +28,20 @@ final public class GameRes {
 	private static Bitmap[][] EnemyTanks	= new Bitmap[4][16];
 	private static Bitmap[][][] PlayerTanks	= new Bitmap[2][4][8];
 
-	public static final String PNG_TILE		= "tile.png";
-	public static final String PNG_BORE		= "bore.png";
-	public static final String PNG_BONUS	= "bonus.png";
-	public static final String PNG_BULLET	= "bullet.png";
-	public static final String PNG_ENEMY	= "enemy.png";
-	public static final String PNG_EXPLODE1 = "explode1.png";
-	public static final String PNG_EXPLODE2 = "explode2.png";
-	public static final String PNG_FLAG		= "flag.png";
-	public static final String PNG_GAMEOVER = "gameover.png";
-	public static final String PNG_GAMEICO	= "gameico.png";
-	public static final String PNG_NUMBER	= "number.png";
-	public static final String PNG_PLAYER1	= "player1.png";
-	public static final String PNG_PLAYER2  = "player2.png";
-	public static final String PNG_SHIELD	= "shield.png";
+	public static final String PNG_TILE		= "bitmaps/tile.png";
+	public static final String PNG_BORE		= "bitmaps/bore.png";
+	public static final String PNG_BONUS	= "bitmaps/bonus.png";
+	public static final String PNG_BULLET	= "bitmaps/bullet.png";
+	public static final String PNG_ENEMY	= "bitmaps/enemy.png";
+	public static final String PNG_EXPLODE1 = "bitmaps/explode1.png";
+	public static final String PNG_EXPLODE2 = "bitmaps/explode2.png";
+	public static final String PNG_FLAG		= "bitmaps/flag.png";
+	public static final String PNG_GAMEOVER = "bitmaps/gameover.png";
+	public static final String PNG_GAMEICO	= "bitmaps/gameico.png";
+	public static final String PNG_NUMBER	= "bitmaps/number.png";
+	public static final String PNG_PLAYER1	= "bitmaps/player1.png";
+	public static final String PNG_PLAYER2  = "bitmaps/player2.png";
+	public static final String PNG_SHIELD	= "bitmaps/shield.png";
 
 
 	public final static void initialize(Resources resource) {

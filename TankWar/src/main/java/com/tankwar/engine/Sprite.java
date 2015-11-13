@@ -3,12 +3,42 @@ package com.tankwar.engine;
 import android.graphics.Bitmap;
 
 /**
- * Sprite picture interface.
+ * Sprite graphics interface.
  * @since 2015/11/06
  */
-public interface Sprite {
-	/**
-	 * Get sprite graphics.
-	 */
-	public Bitmap[] getSprite();
+public class Sprite {
+    /** The sprites. */
+    private Bitmap[] mSprites;
+
+
+    /**
+     * To constructing a sprite.
+     * @param source The sprite source.
+     * @param width The per sprite width.
+     * @param height The per sprite height.
+     */
+    public Sprite(Bitmap source, int width, int height) {
+
+    }
+
+
+    /**
+     * Get sprites.
+     * @return All sprites.
+     */
+    public Bitmap[] getAll() {
+        return mSprites;
+    }
+
+
+    /**
+     * Get a sprite.
+     * @return A sprite.
+     */
+    public Bitmap get(int index) {
+        if (index < mSprites.length) {
+            return mSprites[index];
+        }
+        return null;
+    }
 }

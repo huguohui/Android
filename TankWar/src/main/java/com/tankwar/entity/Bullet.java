@@ -62,6 +62,7 @@ public abstract class Bullet extends MovableEntity {
      * @param owner The bullet owner tank.
      */
     public Bullet(Tank owner) {
+        super(owner.getX(), owner.getY());
     }
 
 
@@ -69,7 +70,7 @@ public abstract class Bullet extends MovableEntity {
      * The default constructor.
      */
     public Bullet() {
-
+        super(0, 0);
     }
 
 
@@ -173,22 +174,6 @@ public abstract class Bullet extends MovableEntity {
 
     public synchronized void removeOnHitTankListener(OnHitTankListener listener) {
         hitTankListeners.remove(listener);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public Bitmap[] getBulletBitmaps() {

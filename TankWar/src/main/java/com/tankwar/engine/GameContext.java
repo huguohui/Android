@@ -51,7 +51,7 @@ final public class GameContext extends Application
 	public final static String DS = "/";
 
 	/** The sd card root path. */
-	public final static String BASE_PATH = "";
+	public static String BASE_PATH = "";
 
 	/** THe game log directory. */
 	public final static String GAME_LOG_PATH = "Logs";
@@ -62,8 +62,14 @@ final public class GameContext extends Application
 	/** Device screen width. */
 	public final static int SCREEN_WIDTH = 0;
 
-	/** Device screen heigth. */
+	/** Device screen height. */
 	public final static int SCREEN_HEIGHT = 0;
+
+    /** The game bitmaps directory. */
+    public final static String BITMAP_DIR = "/bitmaps";
+
+    /** The game sounds directory. */
+    public final static String SOUND_DIR = "/sounds";
 
 
 	/**
@@ -115,7 +121,7 @@ final public class GameContext extends Application
 	 * @param key Variable key of value.
 	 * @param obj Variable value.
 	 */
-	public final void setData(String key, Object obj) {
+	public final void set(String key, Object obj) {
 		data.put(key, obj);
 	}
 
@@ -124,7 +130,7 @@ final public class GameContext extends Application
 	 * Get a global shared variable by a key.
 	 * @param key Variable key.
 	 */
-	public final Object getData(String key) {
+	public final Object get(String key) {
 		return data.get(key);
 	}
 

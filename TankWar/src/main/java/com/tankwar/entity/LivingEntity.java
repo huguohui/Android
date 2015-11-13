@@ -17,8 +17,18 @@ public abstract class LivingEntity extends MovableEntity {
 	 */
 	private int mFullHitPoint = 100;
 
+    /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public LivingEntity(int x, int y) {
+        super(x, y);
+    }
 
-	/**
+
+    /**
 	 * Get hit-point.
 	 * @return HP.
 	 */
@@ -43,4 +53,12 @@ public abstract class LivingEntity extends MovableEntity {
 	public int getFullHitPoint() {
 		return mFullHitPoint;
 	}
+
+
+    /**
+     * Set full hp.
+     */
+    public void setFullHitPoint(int hp) {
+        this.mFullHitPoint = hp;
+    }
 }

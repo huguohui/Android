@@ -10,6 +10,14 @@ public class ControlSubsystem extends Subsystem {
 	 * @param engine Engine instance.
 	 */
 	public ControlSubsystem(Engine engine) {
-		
-	}
+        super(engine);
+    }
+
+    /**
+     * Per loop will call this method.
+     */
+    @Override
+    public void tick() {
+
+    }
 }

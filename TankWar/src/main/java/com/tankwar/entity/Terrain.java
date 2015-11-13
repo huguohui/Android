@@ -7,4 +7,13 @@ package com.tankwar.entity;
  */
 public abstract class Terrain extends DrawableEntity {
 
+    /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public Terrain(int x, int y) {
+        super(x, y);
+    }
 }

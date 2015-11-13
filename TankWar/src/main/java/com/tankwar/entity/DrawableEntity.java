@@ -10,6 +10,14 @@ import com.tankwar.engine.Sprite;
  * @since 2015/11/04
  */
 public abstract class DrawableEntity extends Entity
-        implements Drawable, Sprite {
-
+        implements Drawable {
+    /**
+     * The constructor of entity.
+     *
+     * @param x The default x coordinate.
+     * @param y The default y coordinate.
+     */
+    public DrawableEntity(int x, int y) {
+        super(x, y);
+    }
 }

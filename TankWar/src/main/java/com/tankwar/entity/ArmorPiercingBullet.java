@@ -37,26 +37,6 @@ public class ArmorPiercingBullet extends Bullet {
 
     }
 
-    /**
-     * Get width of entity.
-     *
-     * @return Width of entity.
-     */
-    @Override
-    public int getWidth() {
-        return 0;
-    }
-
-    /**
-     * Get heigth of entity.
-     *
-     * @return Height of entity.
-     */
-    @Override
-    public int getHeight() {
-        return 0;
-    }
-
 
     /**
      * When screen was updated,
@@ -67,14 +47,6 @@ public class ArmorPiercingBullet extends Bullet {
     @Override
     public void draw(Canvas canvas) {
 
-    }
-
-    /**
-     * Get sprite graphics.
-     */
-    @Override
-    public Bitmap[] getSprite() {
-        return new Bitmap[0];
     }
 
     /**

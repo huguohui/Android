@@ -34,7 +34,6 @@ public class GraphicsSubsystem extends Subsystem {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
         mCanvasBuffer = mCanvasView.getBuffer();
-        engine.getGameContext().getClient().setContentView(mCanvasView);
 	}
 
 
@@ -76,7 +75,7 @@ public class GraphicsSubsystem extends Subsystem {
     /**
      * CanvasView object.
      */
-    final public class CanvasView extends SurfaceView
+    final private class CanvasView extends SurfaceView
         implements SurfaceHolder.Callback {
         /** Canvas object.*/
         private Canvas mCanvas = null;
