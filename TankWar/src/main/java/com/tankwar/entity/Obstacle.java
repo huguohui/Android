@@ -2,6 +2,8 @@ package com.tankwar.entity;
 
 import com.tankwar.engine.CollisionCheckable;
 import com.tankwar.engine.CollisionListener;
+import com.tankwar.engine.GameContext;
+
 import android.graphics.Rect;
 
 /**
@@ -23,11 +25,21 @@ public abstract class Obstacle extends Terrain
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public Obstacle(int x, int y) {
-        super(x, y);
+    public Obstacle(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
+    }
+
+
+    /**
+     * The default constructor.
+     * @param gameContext The game context.
+     */
+    public Obstacle(GameContext gameContext) {
+        super(gameContext);
     }
 
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.*;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -34,6 +35,7 @@ public class GraphicsSubsystem extends Subsystem {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
         mCanvasBuffer = mCanvasView.getBuffer();
+        mLayers.add(new Layer());
 	}
 
 
@@ -63,17 +65,83 @@ public class GraphicsSubsystem extends Subsystem {
 
 
     /**
+     * Get all layers.
+     * @return All layers.
+     */
+    public List<Layer> getLayers() {
+        return mLayers;
+    }
+
+
+    /**
+     * Get a layer.
+     * @return A {@link Layer}.
+     */
+    public Layer getLayer(int index) {
+        return mLayers.get(index);
+    }
+
+
+    /**
+     * Add a layer.
+     * @param layer A {@link Layer}.
+     */
+    public void addLayer(Layer layer) {
+        mLayers.add(layer);
+    }
+
+
+    /**
+     * Get draw buffer.
+     * @return A buffer.
+     */
+    public Canvas getCanvasBuffer() {
+        return mCanvasBuffer;
+    }
+
+
+    /**
+     * Set draw buffer.
+     * @param canvasBuffer Buffer.
+     */
+    public void setCanvasBuffer(Canvas canvasBuffer) {
+        mCanvasBuffer = canvasBuffer;
+    }
+
+
+    /**
+     * Get the view of draw.
+     * @return The view of draw.
+     */
+    public CanvasView getCanvasView() {
+        return mCanvasView;
+    }
+
+
+    /**
+     * Set view of draw
+     * @param canvasView View of draw.
+     */
+    public void setCanvasView(CanvasView canvasView) {
+        mCanvasView = canvasView;
+    }
+
+    /**
      * Game loop tick.
      */
     public void tick() {
         for (Layer layer : mLayers) {
-            layer.draw(mCanvasBuffer);
+            for (Drawable drawable : layer.getObjects()) {
+                drawable.draw(mCanvasBuffer);
+            }
         }
+        mCanvasView.updateFrame();
     }
 
 
     /**
      * CanvasView object.
+     * @since 2015/11/14
      */
     final private class CanvasView extends SurfaceView
         implements SurfaceHolder.Callback {

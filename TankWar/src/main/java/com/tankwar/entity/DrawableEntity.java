@@ -3,6 +3,7 @@ package com.tankwar.entity;
 import com.tankwar.engine.CollisionCheckable;
 import com.tankwar.engine.CollisionListener;
 import com.tankwar.engine.Drawable;
+import com.tankwar.engine.GameContext;
 import com.tankwar.engine.Sprite;
 
 /**
@@ -14,16 +15,20 @@ public abstract class DrawableEntity extends Entity
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public DrawableEntity(int x, int y) {
-        super(x, y);
+    public DrawableEntity(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
 
     /**
      * The default constructor.
+     * @param gameContext The game context.
      */
-    public DrawableEntity() {}
+    public DrawableEntity(GameContext gameContext) {
+        super(gameContext);
+    }
 }

@@ -1,5 +1,6 @@
 package com.tankwar.entity;
 
+import com.tankwar.engine.GameContext;
 import com.tankwar.engine.Sprite;
 
 /**
@@ -20,35 +21,43 @@ public abstract class Tank extends LivingEntity {
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public Tank(int x, int y) {
-        super(x, y);
+    public Tank(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
 
     /**
      * Empty constructor.
+     * @param gameContext The game context.
      */
-    public Tank() {}
+    public Tank(GameContext gameContext) {
+        super(gameContext);
+    }
 
 
     /**
      * Constructing a tank with model.
+     * @param gameContext The game context.
      * @param model Tank model.
      */
-    public Tank(Enum<?> model) {
+    public Tank(GameContext gameContext, Enum<?> model) {
+        super(gameContext);
         mModel = model;
     }
 
 
     /**
      * Constructing a tank with model and color.
+     * @param gameContext The game context.
      * @param model Tank model.
      * @param color Tank color.
      */
-    public Tank(Enum<?> model, Enum<?> color) {
+    public Tank(GameContext gameContext, Enum<?> model, Enum<?> color) {
+        super(gameContext);
         mModel = model;
         mColor = color;
     }

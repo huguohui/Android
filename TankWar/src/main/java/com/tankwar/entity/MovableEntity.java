@@ -1,6 +1,8 @@
 package com.tankwar.entity;
 
 
+import com.tankwar.engine.GameContext;
+
 /**
  * Movable enity.
  * @since 2015/11/09
@@ -26,18 +28,22 @@ public abstract class MovableEntity extends DrawableEntity implements Movable {
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public MovableEntity(int x, int y) {
-        super(x, y);
+    public MovableEntity(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
 
     /**
      * Default constructor.
+     * @param gameContext The game context.
      */
-    public MovableEntity() {super();}
+    public MovableEntity(GameContext gameContext) {
+        super(gameContext);
+    }
 
 
     /**

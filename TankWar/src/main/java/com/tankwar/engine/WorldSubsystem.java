@@ -41,8 +41,8 @@ public class WorldSubsystem extends Subsystem {
 	/** World width. */
 	public static int WORLD_WIDTH = WORLD_HOR_GRID_NUM * WORLD_GRID_WIDTH;
 
-	/** World system terrian data. */
-	private Terrain[][] mWorldData = new Terrain[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
+	/** World system terrain data. */
+	private Terrain[][] mWorld = new Terrain[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
 
 
 	/**
@@ -62,7 +62,7 @@ public class WorldSubsystem extends Subsystem {
         getEngine().getGameContext().getResourcesManager().loadAll();
 		for (int i = 0; i < WORLD_VER_GRID_NUM; i++) {
 			for (int j = 0; j < WORLD_HOR_GRID_NUM; j++) {
-				mWorldData[i][j] = null;
+				mWorld[i][j] = null;
 			}
 		}
 	}

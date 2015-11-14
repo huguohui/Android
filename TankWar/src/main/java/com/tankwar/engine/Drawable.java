@@ -4,15 +4,14 @@ package com.tankwar.engine;
 import android.graphics.Canvas;
 
 /**
- * To listening game per frame updates,
- * you can implement this interface.
+ * A drawable describe a can draw power.
  * @author  hgh
  * @since 2015/10/29
  */
 public interface Drawable {
 	/**
-	 * When screen was updated,
-	 * this method will be called.
+     * To draw itself.
+     * @param canvas The canvas.
 	 */
 	void draw(Canvas canvas);
 }

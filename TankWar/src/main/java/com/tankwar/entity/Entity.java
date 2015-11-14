@@ -2,6 +2,7 @@ package com.tankwar.entity;
 
 import com.tankwar.engine.CollisionCheckable;
 import com.tankwar.engine.CollisionListener;
+import com.tankwar.engine.GameContext;
 
 /**
  * Describe a entity in game world.
@@ -12,31 +13,33 @@ public abstract class Entity implements CollisionCheckable, CollisionListener {
 	 */
 	private int mX;
 
-
 	/**
 	 * The entity y value.
 	 */
 	private int mY;
-
 
 	/**
 	 * Width of entity.
 	 */
 	private int mWidth;
 
-
 	/**
 	 * Height of entity.
 	 */
 	private int mHeight;
 
+    /** The context. */
+    private GameContext mGameContext;
+
 
     /**
      * The constructor of entity.
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public Entity(int x, int y) {
+    public Entity(GameContext gameContext, int x, int y) {
+        this.mGameContext = gameContext;
         this.mX = x;
         this.mY = y;
     }
@@ -45,8 +48,8 @@ public abstract class Entity implements CollisionCheckable, CollisionListener {
     /**
      * The empty constructor.
      */
-    public Entity() {
-
+    public Entity(GameContext gameContext) {
+        this.mGameContext = gameContext;
     }
 
 
@@ -85,6 +88,13 @@ public abstract class Entity implements CollisionCheckable, CollisionListener {
         return mY;
     }
 
+    public GameContext getGameContext() {
+        return mGameContext;
+    }
+
+    public void setGameContext(GameContext gameContext) {
+        mGameContext = gameContext;
+    }
 
     public void setX(int x) {
         mX = x;

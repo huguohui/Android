@@ -2,6 +2,8 @@ package com.tankwar.entity;
 
 import android.graphics.Canvas;
 
+import com.tankwar.engine.GameContext;
+
 /**
  * A light tank.
  */
@@ -20,38 +22,42 @@ final public class LightTank extends Tank {
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public LightTank(int x, int y) {
-        super(x, y);
+    public LightTank(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
 
     /**
      * Empty constructor.
+     * @param gameContext The game context.
      */
-    public LightTank() {
-        super();
+    public LightTank(GameContext gameContext) {
+        super(gameContext);
     }
 
 
     /**
      * Constructing a tank with model.
+     * @param gameContext The game context.
      * @param model Tank model.
      */
-    public LightTank(Enum<?> model) {
-        super(model);
+    public LightTank(GameContext gameContext, Enum<?> model) {
+        super(gameContext, model);
     }
 
 
     /**
      * Constructing a tank with model and color.
+     * @param gameContext The game context.
      * @param model Tank model.
      * @param color Tank color.
      */
-    public LightTank(Enum<?> model, Enum<?> color) {
-        super(model, color);
+    public LightTank(GameContext gameContext, Enum<?> model, Enum<?> color) {
+        super(gameContext, model, color);
     }
 
 

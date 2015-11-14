@@ -3,6 +3,8 @@ package com.tankwar.entity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import com.tankwar.engine.GameContext;
+
 /**
  * A kind of obstacle, it can destroy.
  */
@@ -10,11 +12,12 @@ public class Wall extends Obstacle {
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public Wall(int x, int y) {
-        super(x, y);
+    public Wall(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
     /**

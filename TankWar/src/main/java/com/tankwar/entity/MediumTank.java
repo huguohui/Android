@@ -2,6 +2,9 @@ package com.tankwar.entity;
 
 import android.graphics.Canvas;
 
+import com.tankwar.engine.GameContext;
+import com.tankwar.engine.GameEngine;
+
 /**
  * A light tank.
  */
@@ -20,38 +23,42 @@ final public class MediumTank extends Tank {
     /**
      * The constructor of entity.
      *
+     * @param gameContext The game context.
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public MediumTank(int x, int y) {
-        super(x, y);
+    public MediumTank(GameContext gameContext, int x, int y) {
+        super(gameContext, x, y);
     }
 
 
     /**
      * Empty constructor.
+     * @param gameContext The game context.
      */
-    public MediumTank() {
-        super();
+    public MediumTank(GameContext gameContext) {
+        super(gameContext);
     }
 
 
     /**
      * Constructing a tank with model.
+     * @param gameContext The game context.
      * @param model Tank model.
      */
-    public MediumTank(Enum<?> model) {
-        super(model);
+    public MediumTank(GameContext gameContext, Enum<?> model) {
+        super(gameContext, model);
     }
 
 
     /**
      * Constructing a tank with model and color.
+     * @param gameContext The game context.
      * @param model Tank model.
      * @param color Tank color.
      */
-    public MediumTank(Enum<?> model, Enum<?> color) {
-        super(model, color);
+    public MediumTank(GameContext gameContext, Enum<?> model, Enum<?> color) {
+        super(gameContext, model, color);
     }
 
 

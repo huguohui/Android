@@ -9,16 +9,23 @@ import java.util.List;
  * when this layer was showed, all objects will be showed.
  * @since 2015/11/10
  */
-public class Layer implements Drawable {
+public class Layer {
 	/** All holds objects. */
 	private List<Drawable> mObjects;
 
-	/**
-	 * Draw all objects in the layer.
-	 */
-	public void draw(Canvas canvas) {
-		for (Drawable drawable : mObjects) {
-			drawable.draw(canvas);
-		}
-	}
+    /**
+     * Get all drawable objects.
+     * @return All drawable objects.
+     */
+    public List<Drawable> getObjects() {
+        return mObjects;
+    }
+
+    /**
+     * Add a drawable object.
+     * @param object Drawable object.
+     */
+    public void addObject(Drawable object) {
+        mObjects.add(object);
+    }
 }

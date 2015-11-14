@@ -1,5 +1,6 @@
 package com.tankwar.entity.factory;
 
+import com.tankwar.engine.GameContext;
 import com.tankwar.entity.HeavyTank;
 import com.tankwar.entity.LightTank;
 import com.tankwar.entity.Tank;
@@ -33,7 +34,7 @@ public class HeavyTankFactory implements TankFactory {
      */
     @Override
     public HeavyTank create() {
-        return new HeavyTank();
+        return new HeavyTank(GameContext.getGameContext());
     }
 
 
@@ -44,7 +45,7 @@ public class HeavyTankFactory implements TankFactory {
      */
     @Override
     public HeavyTank create(Enum<?> model) {
-        return new HeavyTank(model);
+        return new HeavyTank(GameContext.getGameContext(), model);
     }
 
     /**
@@ -55,6 +56,6 @@ public class HeavyTankFactory implements TankFactory {
      */
     @Override
     public HeavyTank create(Enum<?> model, Enum<?> color) {
-        return new HeavyTank(model, color);
+        return new HeavyTank(GameContext.getGameContext(), model, color);
     }
 }
