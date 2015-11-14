@@ -22,5 +22,8 @@ public abstract class DrawableEntity extends Entity
     }
 
 
+    /**
+     * The default constructor.
+     */
     public DrawableEntity() {}
 }

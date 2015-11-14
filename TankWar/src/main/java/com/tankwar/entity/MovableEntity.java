@@ -35,6 +35,12 @@ public abstract class MovableEntity extends DrawableEntity implements Movable {
 
 
     /**
+     * Default constructor.
+     */
+    public MovableEntity() {super();}
+
+
+    /**
      * Get speed of entity.
      * @return Speed of entity.
      */

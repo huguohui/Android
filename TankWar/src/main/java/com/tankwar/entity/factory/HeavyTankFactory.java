@@ -1,27 +1,29 @@
 package com.tankwar.entity.factory;
 
+import com.tankwar.entity.HeavyTank;
 import com.tankwar.entity.LightTank;
+import com.tankwar.entity.Tank;
 
 /**
  * A factory to product tank.
  * @since 2015/11/13
  */
-public class LightTankFactory implements TankFactory {
+public class HeavyTankFactory implements TankFactory {
     /** Instance. **/
-    private static LightTankFactory ourInstance = new LightTankFactory();
+    private static HeavyTankFactory ourInstance = new HeavyTankFactory();
 
     /**
      * Get instance.
      * @return Factory instance.
      */
-    public static LightTankFactory getInstance() {
+    public static HeavyTankFactory getInstance() {
         return ourInstance;
     }
 
     /**
      * Default constructor.
      */
-    private LightTankFactory() {
+    private HeavyTankFactory() {
     }
 
 
@@ -30,8 +32,8 @@ public class LightTankFactory implements TankFactory {
      * @return A light tank.
      */
     @Override
-    public LightTank create() {
-        return new LightTank();
+    public HeavyTank create() {
+        return new HeavyTank();
     }
 
 
@@ -41,8 +43,8 @@ public class LightTankFactory implements TankFactory {
      * @param model Tank model.
      */
     @Override
-    public LightTank create(Enum<?> model) {
-        return new LightTank(model);
+    public HeavyTank create(Enum<?> model) {
+        return new HeavyTank(model);
     }
 
     /**
@@ -52,7 +54,7 @@ public class LightTankFactory implements TankFactory {
      * @param color Tank color.
      */
     @Override
-    public LightTank create(Enum<?> model, Enum<?> color) {
-        return new LightTank(model, color);
+    public HeavyTank create(Enum<?> model, Enum<?> color) {
+        return new HeavyTank(model, color);
     }
 }

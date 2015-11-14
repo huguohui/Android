@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 /**
  * A light tank.
  */
-final public class LightTank extends Tank {
-    /** The model of tank. */
+final public class HeavyTank extends Tank {
+    /** The models of tank. */
     public enum Model {
         P1, P2, E1
     }
@@ -23,7 +23,7 @@ final public class LightTank extends Tank {
      * @param x The default x coordinate.
      * @param y The default y coordinate.
      */
-    public LightTank(int x, int y) {
+    public HeavyTank(int x, int y) {
         super(x, y);
     }
 
@@ -31,7 +31,7 @@ final public class LightTank extends Tank {
     /**
      * Empty constructor.
      */
-    public LightTank() {
+    public HeavyTank() {
         super();
     }
 
@@ -40,7 +40,7 @@ final public class LightTank extends Tank {
      * Constructing a tank with model.
      * @param model Tank model.
      */
-    public LightTank(Enum<?> model) {
+    public HeavyTank(Enum<?> model) {
         super(model);
     }
 
@@ -50,7 +50,7 @@ final public class LightTank extends Tank {
      * @param model Tank model.
      * @param color Tank color.
      */
-    public LightTank(Enum<?> model, Enum<?> color) {
+    public HeavyTank(Enum<?> model, Enum<?> color) {
         super(model, color);
     }
 
@@ -88,7 +88,6 @@ final public class LightTank extends Tank {
     public void draw(Canvas canvas) {
 
     }
-
 
     /**
      * This method implemets move behavior.

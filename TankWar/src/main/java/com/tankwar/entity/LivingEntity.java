@@ -29,6 +29,14 @@ public abstract class LivingEntity extends MovableEntity {
 
 
     /**
+     * Default constructor.
+     */
+    public LivingEntity() {
+        super();
+    }
+
+
+    /**
 	 * Get hit-point.
 	 * @return HP.
 	 */
