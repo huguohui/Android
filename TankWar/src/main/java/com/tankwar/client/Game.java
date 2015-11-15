@@ -42,7 +42,6 @@ public class Game {
      */
     private Game() {
         this.initialize();
-        
     }
 
 
@@ -102,7 +101,7 @@ public class Game {
      * Do some initialize work.
      */
     private void initialize() {
-
+        GameContext.getGameContext().setGame(this);
     }
 
 
@@ -158,7 +157,7 @@ public class Game {
     /**
      * Describe game option.
      */
-    public class Option {
+    public static class Option {
         private boolean mIsSinglePlay = true;
         private boolean mIsCustomGame = false;
         private boolean mIsSoundOn    = true;

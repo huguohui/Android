@@ -11,7 +11,8 @@ import java.util.Date;
 final public class Log
 {
 	public static String LOG_FILE_NAME = "game.log";
-	public static String LOG_FILE_PATH = GameContext.SDCARD_APP_ROOT + GameContext.DS + LOG_FILE_NAME;
+	public static String LOG_FILE_PATH = GameContext.SDCARD_APP_ROOT + GameContext.DS +
+            GameContext.LOG_DIR + GameContext.DS + LOG_FILE_NAME;
 
 	public final synchronized static void e(Throwable e) {
         FileWriter fw = null;

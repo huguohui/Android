@@ -3,12 +3,19 @@ package com.tankwar.engine;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.*;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.tankwar.entity.MediumTank;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,14 +25,11 @@ import java.util.List;
 
 public class GraphicsSubsystem extends Subsystem {
     /** All the layers. */
-    private List<Layer> mLayers;
-
-    /** The buffer canvas. */
-    private Canvas mCanvasBuffer;
-
+    private List<Layer> mLayers = new ArrayList<>();
 
     /** The canvas view. */
     private CanvasView mCanvasView;
+    int i;
 
 
 	/**
@@ -34,15 +38,7 @@ public class GraphicsSubsystem extends Subsystem {
 	public GraphicsSubsystem(Engine engine) {
         super(engine);
         mCanvasView   = new CanvasView(engine.getGameContext());
-        mCanvasBuffer = mCanvasView.getBuffer();
         mLayers.add(new Layer());
-	}
-
-
-	/**
-	 * Do some work.
-	 */
-	public void start() {
         getEngine().getGameContext().getClient().setContentView(mCanvasView);
 	}
 
@@ -92,24 +88,6 @@ public class GraphicsSubsystem extends Subsystem {
 
 
     /**
-     * Get draw buffer.
-     * @return A buffer.
-     */
-    public Canvas getCanvasBuffer() {
-        return mCanvasBuffer;
-    }
-
-
-    /**
-     * Set draw buffer.
-     * @param canvasBuffer Buffer.
-     */
-    public void setCanvasBuffer(Canvas canvasBuffer) {
-        mCanvasBuffer = canvasBuffer;
-    }
-
-
-    /**
      * Get the view of draw.
      * @return The view of draw.
      */
@@ -130,12 +108,28 @@ public class GraphicsSubsystem extends Subsystem {
      * Game loop tick.
      */
     public void tick() {
-        for (Layer layer : mLayers) {
-            for (Drawable drawable : layer.getObjects()) {
-                drawable.draw(mCanvasBuffer);
+//        for (Layer layer : mLayers) {
+//            for (Drawable drawable : layer.getObjects()) {
+//                drawable.draw(mCanvasBuffer);
+//            }
+//        }
+
+        Paint p = new Paint();
+        p.setColor(Color.WHITE);
+        p.setTextSize(100);
+
+
+        Canvas canvas = mCanvasView.getCanvas();
+        if (canvas != null) {
+            canvas.drawColor(Color.BLACK);
+            canvas.drawText("XXXXXXXXXXXXXXXXXXXXX", 0, i ++, p);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            mCanvasView.updateFrame();
         }
-        mCanvasView.updateFrame();
     }
 
 
@@ -151,39 +145,22 @@ public class GraphicsSubsystem extends Subsystem {
         /** Surface holder. */
         private SurfaceHolder mHolder = null;
 
-        /** Bitmap buffer. */
-        private Bitmap mBitmapBuffer = Bitmap.createBitmap(WorldSubsystem.WORLD_WIDTH,
-                    WorldSubsystem.WORLD_HEIGHT, Bitmap.Config.RGB_565);
-
-        /** Canvas buffer. */
-        private Canvas mCanvasBuffer = null;
-
         /** canvas constructor.
          * @param context Game context.
          */
         public CanvasView(Context context) {
             super(context);
             mHolder = getHolder();
+            mHolder.addCallback(this);
         }
 
-
-        /**
-         * Get canvas buffer.
-         * @return canvas buffer.
-         */
-        public final Canvas getBuffer() {
-            if (mCanvasBuffer == null) {
-                mCanvasBuffer = new Canvas(mBitmapBuffer);
-            }
-            return mCanvasBuffer;
-        }
 
         /** 
          * Get canvas object.
          * @return canvas object.
          */
         public final Canvas getCanvas() {
-            return mCanvas = mHolder.lockCanvas(null);
+            return mCanvas = mHolder.lockCanvas(new Rect(0, 0, 1920, 1080));
         }
 
 
@@ -201,10 +178,7 @@ public class GraphicsSubsystem extends Subsystem {
          * Update frame.
          */
         public final void updateFrame() {
-            if (mBitmapBuffer != null) {
-                getCanvas().drawBitmap(mBitmapBuffer, 0f, 0f, new Paint());
-                freeCanvas();
-            }
+            freeCanvas();
         }
 
 

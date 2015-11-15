@@ -31,6 +31,7 @@ import com.tankwar.engine.GameContext;
 import com.tankwar.engine.GameEngine;
 
 
+
 /**
  * The game base class.
  * @since 2015/11/06
@@ -46,7 +47,7 @@ final public class Client extends Activity
     /**
      * The game options.
      */
-    private Game.Option mOption;
+    private Game.Option mOption = new Game.Option();
 
 
     /**
@@ -64,7 +65,7 @@ final public class Client extends Activity
 		super.onCreate(bundle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-    						WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.game_launcher);
 
         findViewById(R.id.btnStart).setOnClickListener(this);
@@ -73,6 +74,7 @@ final public class Client extends Activity
         findViewById(R.id.rdbDouble).setOnClickListener(this);
         findViewById(R.id.ckbCustomMap).setOnClickListener(this);
         findViewById(R.id.ckbMusicCase).setOnClickListener(this);
+        GameContext.getGameContext().setClient(this);
     }
 
 
@@ -123,6 +125,9 @@ final public class Client extends Activity
         if (mIsMenuOpen){
             super.openOptionsMenu();
         }
+
+        if (mGame != null) mGame.stop();
+        finish();
 	}
 
 

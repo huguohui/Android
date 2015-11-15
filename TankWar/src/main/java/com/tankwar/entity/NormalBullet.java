@@ -3,11 +3,33 @@ package com.tankwar.entity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import com.tankwar.engine.GameContext;
+
 /**
  * Defines a normal bullet.
  * @since 2015/11/04
  */
 public class NormalBullet extends Bullet {
+    /**
+     * The constructor to do some initialize work,
+     * parameter tank tell bullet belong which tank.
+     *
+     * @param gameContext The game context.
+     * @param owner       The bullet owner tank.
+     */
+    public NormalBullet(GameContext gameContext, Tank owner) {
+        super(gameContext, owner);
+    }
+
+    /**
+     * The default constructor.
+     *
+     * @param gameContext The game context.
+     */
+    public NormalBullet(GameContext gameContext) {
+        super(gameContext);
+    }
+
     /**
      * Checks this object if collisded some entity.
      *

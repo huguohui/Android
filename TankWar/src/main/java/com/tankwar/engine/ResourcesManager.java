@@ -8,6 +8,7 @@ import android.media.SoundPool;
 
 import com.tankwar.utils.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,10 +78,12 @@ public class ResourcesManager {
      */
     public void loadBitmaps() {
         try {
-            for (String assetName : mAssetManager.list(GameContext.BITMAP_DIR)) {
-                mBitmaps.put(assetName, BitmapFactory.decodeStream(mAssetManager.open(assetName)));
+            String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.BITMAP_DIR
+                                + GameContext.DS;
+            for (String assetName : new File(path).list()) {
+                mBitmaps.put(assetName, BitmapFactory.decodeFile(path + GameContext.DS + assetName));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(e);
         }
     }
@@ -91,11 +94,14 @@ public class ResourcesManager {
      */
     public void loadSounds() {
         try {
-            for (String assetName : mAssetManager.list(GameContext.SOUND_DIR)) {
-                SoundPool sp = new SoundPool(0, 0, 0);
-                sp.load(assetName, 0);
+            String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.SOUND_DIR
+                            + GameContext.DS;
+            for (String assetName : new File(path).list()) {
+                SoundPool sp = new SoundPool(1, 1, 10);
+                sp.load(path + GameContext.DS + assetName, 1);
+                mSounds.put(assetName, sp);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(e);
         }
     }

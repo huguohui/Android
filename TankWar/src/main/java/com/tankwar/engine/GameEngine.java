@@ -19,6 +19,7 @@ public class GameEngine extends Engine {
      * Construct a engine instance.
      */
     private GameEngine() {
+        getGameContext().setEngine(this);
         this.initialize();
     }
 
@@ -55,11 +56,11 @@ public class GameEngine extends Engine {
                 if (this.isPause()) {
                     wait();
                 }
-            }
 
-            for (Class<? extends Subsystem> key : this.getSubsystems()) {
-                Tick tick = getSubsystem(key);
-                tick.tick();
+                for (Class<? extends Subsystem> key : this.getSubsystems()) {
+                    Tick tick = getSubsystem(key);
+                    tick.tick();
+                }
             }
         }catch(InterruptedException ex) {
             Log.e(ex);

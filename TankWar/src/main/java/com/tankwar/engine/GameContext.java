@@ -14,16 +14,21 @@ package com.tankwar.engine;
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.Application;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tankwar.client.Client;
 import com.tankwar.client.Game;
+import com.tankwar.utils.FileOperator;
 
 
 /**
@@ -64,14 +69,23 @@ final public class GameContext extends Application
     /** The game directory on sdcard. */
     public static String SDCARD_APP_ROOT = "";
 
+    /** The android directory on sdcard. */
+    public final static String SDCARD_ANDROID_DIR = "Android";
+
+    /** The android data directory on sdcard. */
+    public final static String SDCARD_DATA_DIR = "data";
+
 	/** THe game log directory. */
-	public final static String LOG_DIR = "Logs";
+	public final static String LOG_DIR = "logs";
 
 	/** The game cache directory */
-	public final static String CACHE_DIR = "Cache";
+	public final static String CACHE_DIR = "cache";
 
     /** The game bitmaps directory. */
     public final static String BITMAP_DIR = "bitmaps";
+
+    /** The game maps directory. */
+    public final static String MAP_DIR = "maps";
 
     /** The game sounds directory. */
     public final static String SOUND_DIR = "sounds";
@@ -91,9 +105,63 @@ final public class GameContext extends Application
      */
     private final void initialize() {
         mInstance = this;
-        APP_ROOT = this.getApplicationInfo().dataDir + DS + this.getApplicationInfo().packageName;
-        SDCARD_APP_ROOT = SDCARD_ROOT + DS + this.getApplicationInfo().packageName;
+        APP_ROOT = this.getApplicationInfo().dataDir;
+        SDCARD_APP_ROOT = SDCARD_ROOT + DS + SDCARD_ANDROID_DIR + DS
+                    + SDCARD_DATA_DIR + DS + this.getApplicationInfo().packageName;
         mResourcesManager = new ResourcesManager(this);
+
+        checkAndCreateDirs();
+        releaseResToSdcard();
+    }
+
+
+    /**
+     * If directory not exists, create it.
+     */
+    private void checkAndCreateDirs() {
+        File file;
+        String[] paths = {
+                SDCARD_APP_ROOT, SDCARD_APP_ROOT + DS + LOG_DIR,
+                SDCARD_APP_ROOT + DS + CACHE_DIR,
+                SDCARD_APP_ROOT + DS + BITMAP_DIR,
+                SDCARD_APP_ROOT + DS + SOUND_DIR,
+                SDCARD_APP_ROOT + DS + MAP_DIR
+
+        };
+        for (String path : paths) {
+            if (!(file = new File(path)).isDirectory()) {
+                if (!file.mkdir()) {
+                    this.toast("Can't create directory: " + file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Release game resource to sdcard.
+     */
+    private void releaseResToSdcard() {
+        try {
+            if (new File(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + ".exists").isFile() &&
+                new File(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + ".exists").isFile())
+                return;
+
+            for (String assetName : getAssets().list(BITMAP_DIR)) {
+                new FileOperator(getAssets().open(BITMAP_DIR + DS + assetName))
+                        .copyTo(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + assetName);
+            }
+
+            for (String assetName : getAssets().list(SOUND_DIR)) {
+                if (assetName.matches(".+\\.(wav|mp3|mid|ogg)$"))
+                    new FileOperator(getAssets().open(SOUND_DIR + DS + assetName))
+                            .copyTo(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + assetName);
+            }
+            new File(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + ".exists").createNewFile();
+            new File(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + ".exists").createNewFile();
+        } catch (IOException e) {
+            com.tankwar.utils.Log.e(e);
+        }
     }
 
 
@@ -192,7 +260,19 @@ final public class GameContext extends Application
 	}
 
 
-	/**
+    public void setGame(Game game) {
+        mGame = game;
+    }
+
+    public void setClient(Client client) {
+        mClient = client;
+    }
+
+    public void setEngine(Engine engine) {
+        mEngine = engine;
+    }
+
+    /**
 	 * A package of toast message, use this method will faster
 	 * to show toast message.
 	 *

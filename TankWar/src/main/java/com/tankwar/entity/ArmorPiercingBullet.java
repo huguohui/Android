@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import com.tankwar.engine.CollisionCheckable;
+import com.tankwar.engine.GameContext;
 
 /**
  * A subclass of bullet, to denoting a armor piercing bullet.
@@ -15,6 +16,26 @@ import com.tankwar.engine.CollisionCheckable;
  * @since 2015/10/30
  */
 public class ArmorPiercingBullet extends Bullet {
+
+    /**
+     * The constructor to do some initialize work,
+     * parameter tank tell bullet belong which tank.
+     *
+     * @param gameContext The game context.
+     * @param owner       The bullet owner tank.
+     */
+    public ArmorPiercingBullet(GameContext gameContext, Tank owner) {
+        super(gameContext, owner);
+    }
+
+    /**
+     * The default constructor.
+     *
+     * @param gameContext The game context.
+     */
+    public ArmorPiercingBullet(GameContext gameContext) {
+        super(gameContext);
+    }
 
     /**
      * Checks this object if collided some entity.

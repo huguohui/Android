@@ -2,6 +2,7 @@ package com.tankwar.engine;
 
 import android.graphics.Canvas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class Layer {
 	/** All holds objects. */
-	private List<Drawable> mObjects;
+	private List<Drawable> mObjects = new ArrayList<>();
 
     /**
      * Get all drawable objects.

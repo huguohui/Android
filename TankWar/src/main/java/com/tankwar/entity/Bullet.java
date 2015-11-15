@@ -5,6 +5,7 @@ import android.graphics.Rect;
 
 import com.tankwar.client.GameMap;
 import com.tankwar.engine.BulletEventListener;
+import com.tankwar.engine.GameContext;
 import com.tankwar.utils.GameSound;
 import com.tankwar.engine.BulletEventListener.OnExplosionListener;
 import com.tankwar.engine.BulletEventListener.OnFiringListener;
@@ -55,18 +56,20 @@ public abstract class Bullet extends MovableEntity {
      * The constructor to do some initialize work,
      * parameter tank tell bullet belong which tank.
      *
+     * @param gameContext The game context.
      * @param owner The bullet owner tank.
      */
-    public Bullet(Tank owner) {
-        super(owner.getX(), owner.getY());
+    public Bullet(GameContext gameContext, Tank owner) {
+        super(gameContext, owner.getX(), owner.getY());
     }
 
 
     /**
      * The default constructor.
+     * @param gameContext The game context.
      */
-    public Bullet() {
-        super(0, 0);
+    public Bullet(GameContext gameContext) {
+        super(gameContext);
     }
 
 
