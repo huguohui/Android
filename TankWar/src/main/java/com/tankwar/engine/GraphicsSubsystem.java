@@ -108,28 +108,30 @@ public class GraphicsSubsystem extends Subsystem {
      * Game loop tick.
      */
     public void tick() {
-//        for (Layer layer : mLayers) {
-//            for (Drawable drawable : layer.getObjects()) {
-//                drawable.draw(mCanvasBuffer);
-//            }
-//        }
-
         Paint p = new Paint();
         p.setColor(Color.WHITE);
         p.setTextSize(100);
 
 
         Canvas canvas = mCanvasView.getCanvas();
-        if (canvas != null) {
-            canvas.drawColor(Color.BLACK);
-            canvas.drawText("XXXXXXXXXXXXXXXXXXXXX", 0, i ++, p);
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            mCanvasView.updateFrame();
+        if (canvas == null) return;
+
+        canvas.drawColor(Color.BLACK);
+        canvas.drawText("------------------>", 0, i ++, p);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        mCanvasView.updateFrame();
+
+        for (Layer layer : mLayers) {
+            for (Drawable drawable : layer.getObjects()) {
+                drawable.draw(canvas);
+            }
+        }
+
+
     }
 
 
