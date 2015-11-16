@@ -148,14 +148,18 @@ final public class GameContext extends Application
                 return;
 
             for (String assetName : getAssets().list(BITMAP_DIR)) {
-                new FileOperator(getAssets().open(BITMAP_DIR + DS + assetName))
-                        .copyTo(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + assetName);
+                if (!new FileOperator(getAssets().open(BITMAP_DIR + DS + assetName))
+                        .copyTo(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + assetName)) {
+                    com.tankwar.utils.Log.s(assetName + " copy failed!");
+                }
             }
 
             for (String assetName : getAssets().list(SOUND_DIR)) {
                 if (assetName.matches(".+\\.(wav|mp3|mid|ogg)$"))
-                    new FileOperator(getAssets().open(SOUND_DIR + DS + assetName))
-                            .copyTo(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + assetName);
+                    if (!new FileOperator(getAssets().open(SOUND_DIR + DS + assetName))
+                            .copyTo(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + assetName)) {
+                        com.tankwar.utils.Log.s(assetName + "copy failed!");
+                    }
             }
             new File(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + ".exists").createNewFile();
             new File(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + ".exists").createNewFile();

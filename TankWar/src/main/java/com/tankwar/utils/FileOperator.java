@@ -13,10 +13,10 @@ import java.io.OutputStream;
  */
 public class FileOperator {
     /** The file that to operating. */
-    private File mFile;
+    private File mFile = null;
 
     /** The input stream of operating. */
-    private InputStream mInputStream;
+    private InputStream mInputStream = null;
 
     /** The buffer of input stream. */
     private byte[] buffer = new byte[1024*1024];
@@ -58,7 +58,7 @@ public class FileOperator {
             os = new FileOutputStream(target);
             int len = 0;
 
-            while ((is.read(buffer)) != -1) {
+            while ((len = is.read(buffer)) != -1) {
                 os.write(buffer, 0, len);
             }
             return true;
