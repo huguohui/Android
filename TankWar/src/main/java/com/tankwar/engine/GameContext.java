@@ -14,21 +14,18 @@ package com.tankwar.engine;
  * if not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.Application;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.tankwar.client.Client;
 import com.tankwar.client.Game;
 import com.tankwar.utils.FileOperator;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 
 /**

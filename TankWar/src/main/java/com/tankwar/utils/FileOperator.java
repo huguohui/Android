@@ -45,7 +45,7 @@ public class FileOperator {
      * @param target Target position.
      * @return true success, false failed.
      */
-    public boolean copyTo(String target) {
+    public synchronized boolean copyTo(String target) {
         InputStream is = mInputStream;
         OutputStream os = null;
         if ((is == null && mFile == null) || (mFile != null && !mFile.exists()))
