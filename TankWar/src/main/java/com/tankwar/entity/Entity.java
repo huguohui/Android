@@ -7,7 +7,7 @@ import com.tankwar.engine.GameContext;
 /**
  * Describe a entity in game world.
  */
-public abstract class Entity implements CollisionCheckable, CollisionListener {
+public abstract class Entity {
 	/**
 	 * The entity x value.
 	 */

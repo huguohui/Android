@@ -2,6 +2,7 @@ package com.tankwar.engine;
 
 import com.tankwar.client.Game;
 import com.tankwar.entity.Entity;
+import com.tankwar.utils.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,70 +15,47 @@ import java.util.Set;
  * @author hgh.
  * @since 2015/11/06
  */
-public abstract class Engine implements Runnable {
-    /**
-     * Start time.
-     */
+public class Engine implements Runnable {
+    /** Start time. */
     private long mStartTime;
 
-
-    /**
-     * This subsystem whatever enable.
-     */
+    /** This subsystem whatever enable. */
     private boolean mIsEnable = true;
 
-    /**
-     * Is pause?
-     */
+    /** Is pause? */
     private boolean mIsPause = false;
 
-
-    /**
-     * Is stop?
-     */
+    /** Is stop? */
     private boolean mIsStop = false;
 
-
-    /**
-     * Game context.
-     */
+    /** Game context. */
     private GameContext mGameContext = GameContext.getGameContext();
 
-
-    /**
-     * All entity.
-     */
-    private List<Entity> mEntitys;
-
-
-    /**
-     * Modules.
-     */
+    /** Modules. */
     private Map<Class<? extends Subsystem>, Subsystem> mSubsystems = new HashMap<>();
 
-
-    /**
-     * State listeners.
-     */
+    /** State listeners. */
     private List<StateListener> mStateListeners = new ArrayList<>();
 
-
-    /**
-     * All threads.
-     */
+    /** All threads. */
     private List<Thread> mAllocedThread = new ArrayList<>();
 
+    /** All entity exclude terrain in world. */
+    private List<Entity> mEntitys = new ArrayList<>();
 
-    /**
-     * Singleton instance.
-     */
+    /** Singleton instance. */
     private static Engine mEngine;
 
-
-    /**
-     * The engine power.
-     */
+    /** The engine power. */
     private Thread mPower;
+
+    /** The world subsystem. */
+    private WorldSubsystem mWorldSubsystem;
+
+    /** The physical subsystem. */
+    private PhysicalSubsystem mPhysicalSubsystem;
+
+
 
 
     /**
@@ -149,40 +127,97 @@ public abstract class Engine implements Runnable {
     /**
      * Initialization control.
      */
-    public abstract void initialize();
-
-
-    /**
-     * Start command.
-     */
-    public abstract void start();
-
-
-    /**
-     * Pause command.
-     */
-    public abstract void pause();
-
-
-    /**
-     * Resume command.
-     */
-    public abstract void resume();
-
-
-    /**
-     * Stop command.
-     */
-    public abstract void stop();
-
-
-	/**
-	 * Get single instance of engine.
-	 */
-    public static Engine getEngine() {
-        return null;
+    public void initialize() {
+        this.addSubsystem(new WorldSubsystem(this));
+        this.addSubsystem(new PhysicalSubsystem(this));
+        this.addSubsystem(new ControlSubsystem(this));
+        this.addSubsystem(new GraphicsSubsystem(this));
+        this.setPower(this.allocThread(this));
     }
 
+
+    /**
+     * Start Engine.
+     */
+    public void start() {
+        this.getPower().start();
+    }
+
+
+    /**
+     * Starts executing the active part of the class' code. This method is
+     * called when a thread is started that has been created with a class which
+     * implements {@code Runnable}.
+     */
+    public void run() {
+        try {
+            while (!this.isStop()) {
+                if (this.isPause()) {
+                    wait();
+                }
+
+                for (Class<? extends Subsystem> key : this.getSubsystems()) {
+                    Tick tick = getSubsystem(key);
+                    tick.tick();
+                }
+            }
+        }catch(InterruptedException ex) {
+            Log.e(ex);
+        }finally {
+            for (Thread thread : mAllocedThread) {
+                if (thread.getState().equals(Thread.State.TERMINATED)) {
+                    thread = null;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Create a entity and add entity to list.
+     */
+    public void createTank() {
+        //mEntitys.add();
+    }
+
+
+    /**
+     * Get all created entities.
+     * @return All created entities.
+     */
+    public List<Entity> getEntitys() {
+        return mEntitys;
+    }
+
+
+    /**
+     * Pause engine.
+     */
+    public synchronized void pause() {
+        this.setIsPause(true);
+    }
+
+    /**
+     * Resume engine.
+     */
+    public synchronized void resume() {
+        this.setIsPause(false);
+    }
+
+    /**
+     * Stop engine.
+     */
+    public synchronized void stop() {
+        this.setIsStop(true);
+    }
+
+
+    /**
+     * Get single instance of engine.
+     */
+    public static Engine getEngine() {
+        return new Engine();
+    }
 
     /**
      * Set if stop.

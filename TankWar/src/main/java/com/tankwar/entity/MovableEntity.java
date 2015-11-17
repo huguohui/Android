@@ -1,13 +1,16 @@
 package com.tankwar.entity;
 
 
+import com.tankwar.engine.CollisionCheckable;
+import com.tankwar.engine.CollisionListener;
 import com.tankwar.engine.GameContext;
 
 /**
  * Movable enity.
  * @since 2015/11/09
  */
-public abstract class MovableEntity extends DrawableEntity implements Movable {
+public abstract class MovableEntity extends DrawableEntity
+        implements Movable, CollisionListener, CollisionCheckable {
     /**
      * The moving direction of entity.
      */

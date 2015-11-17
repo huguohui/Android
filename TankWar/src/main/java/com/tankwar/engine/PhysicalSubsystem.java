@@ -1,5 +1,10 @@
 package com.tankwar.engine;
 
+import com.tankwar.entity.Entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Implements a physical engine.
  * @author hgh
@@ -10,6 +15,9 @@ class PhysicalSubsystem extends Subsystem {
      * World subsystem reference.
      */
     private WorldSubsystem mWorldSubsystem;
+
+    /** The collidable enitys. */
+    private List<Entity> mCollisionCheckables = new ArrayList<>();
 
 
     /**
@@ -41,9 +49,41 @@ class PhysicalSubsystem extends Subsystem {
 
 
     /**
+     * Add a entity that would like to check collision.
+     * @param entity A {@lick Entity}.
+     */
+    public void addEntity(Entity entity) {
+        this.mCollisionCheckables.add(entity);
+    }
+
+
+    /**
+     * Get all entitys.
+     * @return All {@link Entity}s.
+     */
+    public List<Entity> getEntitys() {
+        return this.mCollisionCheckables;
+    }
+
+
+    /**
      * Game loop tick.
      */
     public void tick() {
-        
+        Entity temp = null;
+        for (Entity entity : mCollisionCheckables) {
+            if (temp == null)
+                temp = entity;
+
+            if (temp != null && entity != null && !temp.equals(entity)) {
+                if (temp instanceof CollisionCheckable && temp instanceof CollisionListener
+                        && entity instanceof CollisionCheckable) {
+                    if (((CollisionCheckable) temp).isCollision(entity)) {
+                        ((CollisionListener) entity).onCollision(temp);
+                    }
+                }
+            }
+        }
+
     }
 }

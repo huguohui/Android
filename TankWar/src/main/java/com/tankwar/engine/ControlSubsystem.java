@@ -1,10 +1,13 @@
 package com.tankwar.engine;
 
+import android.view.MotionEvent;
+import android.view.View;
+
 /**
  * The control subsystem.
  * @since 2015/11/10
  */
-public class ControlSubsystem extends Subsystem {
+public class ControlSubsystem extends Subsystem implements View.OnTouchListener{
 	/**
 	 * Constructor.
 	 * @param engine Engine instance.
@@ -19,5 +22,19 @@ public class ControlSubsystem extends Subsystem {
     @Override
     public void tick() {
 
+    }
+
+    /**
+     * Called when a touch event is dispatched to a view. This allows listeners to
+     * get a chance to respond before the target view.
+     *
+     * @param v     The view the touch event has been dispatched to.
+     * @param event The MotionEvent object containing full information about
+     *              the event.
+     * @return True if the listener has consumed the event, false otherwise.
+     */
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 }

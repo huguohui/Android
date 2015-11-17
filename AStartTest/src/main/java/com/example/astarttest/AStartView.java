@@ -16,32 +16,46 @@ public class AStartView extends SurfaceView implements Callback, Runnable {
 	int F = 0;
 	int H = 0;
 	int G = 0;
-	int tileW = 50;
-	int tileH = 50;
+	int tileW = 5;
+	int tileH = 5;
 	int tileXNum = 0;
 	int tileYNum = 0;
 	int[][] allTiles;
+    long startTime = 0;
 	boolean isFind = false;
 	boolean isExit = false;
-	AStartNode targetNode = new AStartNode(20, 25, null, null);
-	AStartNode currentNode = new AStartNode(8, 25, null, targetNode);
+	AStartNode targetNode;
+	AStartNode currentNode;
 	ArrayList<AStartNode> openList = new ArrayList<AStartNode>();
 	ArrayList<AStartNode> closeList = new ArrayList<AStartNode>();
 
 	public AStartView(Context context) {
 		super(context);
-		int width = ((Activity)context).getWindowManager().getDefaultDisplay().getWidth();
-		int height = ((Activity) context).getWindowManager().getDefaultDisplay().getHeight();
+		int width = ((Activity)context).getResources().getDisplayMetrics().widthPixels;
+		int height = ((Activity) context).getResources().getDisplayMetrics().heightPixels;
 		tileXNum = width / tileW;
 		tileYNum = height / tileH;
 		allTiles = new int[tileXNum][tileYNum];
-		allTiles[8][25] = 3;
-		for (int i = 0; i < 3; i++) {
-			allTiles[10][24+i] = 1;
+        targetNode = new AStartNode(800 / tileW, 800 / tileH, null, null);
+        currentNode = new AStartNode(50 / tileW, 50 / tileH, null, targetNode);
+
+		allTiles[targetNode.x][targetNode.y] = 2;
+		for (int i = 1; i < 30; i++) {
+			allTiles[20][1+i] = 1;
 		}
-		allTiles[20][25] = 2;
+		allTiles[currentNode.x][currentNode.y] = 3;
 		initPos();
 		getHolder().addCallback(this);
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(!isExit) {
+//                    myLogic();
+//                }
+//            }
+//        }).start();
+        startTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -63,9 +77,9 @@ public class AStartView extends SurfaceView implements Callback, Runnable {
 	public void run() {
 		try{
 		while(!isExit) {
-			myDraw();
-			Thread.sleep(500);
-			myLogic();
+            myLogic();
+            myDraw();
+            //Thread.sleep(20);
 		}
 		}catch(Throwable e) {
 			Log.e("?", "?", e);
@@ -74,7 +88,9 @@ public class AStartView extends SurfaceView implements Callback, Runnable {
 
 	private void myDraw() {
 		Paint pa = new Paint();
+        //if (!isFind) return;
 		Canvas c = getHolder().lockCanvas();
+        //c.drawColor(Color.BLACK);
 		if (c != null) {
 			for (int i = 0; i < tileXNum; i++) {
 				for (int j = 0; j < tileYNum; j++) {
@@ -111,10 +127,11 @@ public class AStartView extends SurfaceView implements Callback, Runnable {
 					c.drawRect(node.x*tileW+1, node.y*tileH+1, node.x* tileW + tileW, node.y*tileH+tileH, pa);
 					node = node.getParent();
 				}while(node != null);
+                isExit = true;
 			}
 			pa.setTextSize(50);
-			pa.setColor(Color.RED);
 			c.drawText(F + "=" + G + "+" + H, 200, 1000, pa);
+            c.drawText("Time: " + (System.currentTimeMillis() - startTime), 200, 1200, pa);
 			getHolder().unlockCanvasAndPost(c);
 		}
 	}

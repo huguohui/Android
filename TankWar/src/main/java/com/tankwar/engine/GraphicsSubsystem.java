@@ -17,6 +17,7 @@ import com.tankwar.entity.MediumTank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * The engine of handling graphics.
@@ -24,12 +25,14 @@ import java.util.List;
  */
 
 public class GraphicsSubsystem extends Subsystem {
+    /** The max layers number. */
+    public final int MAX_LAYERS = 5;
+
     /** All the layers. */
     private List<Layer> mLayers = new ArrayList<>();
 
     /** The canvas view. */
     private CanvasView mCanvasView;
-    int i;
 
 
 	/**
@@ -40,6 +43,12 @@ public class GraphicsSubsystem extends Subsystem {
         mCanvasView   = new CanvasView(engine.getGameContext());
         mLayers.add(new Layer());
         getEngine().getGameContext().getClient().setContentView(mCanvasView);
+        mCanvasView.setOnTouchListener((ControlSubsystem) getEngine()
+                .getSubsystem(ControlSubsystem.class));
+
+        for (int i = 0; i < MAX_LAYERS; i++) {
+            mLayers.add(new Layer());
+        }
 	}
 
     /**
@@ -66,6 +75,16 @@ public class GraphicsSubsystem extends Subsystem {
      */
     public List<Layer> getLayers() {
         return mLayers;
+    }
+
+
+    /**
+     * Add a drawable to special layer.
+     * @param drawable A {@link Drawable}.
+     * @param index The layer index.
+     */
+    public void addDrawable(Drawable drawable, int index) {
+        mLayers.get(index).addObject(drawable);
     }
 
 
@@ -117,7 +136,7 @@ public class GraphicsSubsystem extends Subsystem {
         if (canvas == null) return;
 
         canvas.drawColor(Color.BLACK);
-        canvas.drawText("------------------>", 0, i ++, p);
+        canvas.drawText("------------------>", 0, 0, p);
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
@@ -130,8 +149,6 @@ public class GraphicsSubsystem extends Subsystem {
                 drawable.draw(canvas);
             }
         }
-
-
     }
 
 

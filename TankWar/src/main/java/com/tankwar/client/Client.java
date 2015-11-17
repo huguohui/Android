@@ -27,9 +27,8 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 
 import com.tankwar.R;
+import com.tankwar.engine.Engine;
 import com.tankwar.engine.GameContext;
-import com.tankwar.engine.GameEngine;
-
 
 
 /**
@@ -84,7 +83,7 @@ final public class Client extends Activity
     protected void startGame() {
         mGame = GameFactory.createGame(mOption);
         mGame.setGameContext(GameContext.getGameContext());
-        mGame.setEngine(GameEngine.getEngine());
+        mGame.setEngine(Engine.getEngine());
         mGame.start();
     }
 
