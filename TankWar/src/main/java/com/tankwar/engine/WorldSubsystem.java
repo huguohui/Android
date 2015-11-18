@@ -1,10 +1,6 @@
 package com.tankwar.engine;
 
-import com.tankwar.entity.Entity;
 import com.tankwar.entity.Terrain;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The game world subsystem implements.
@@ -29,11 +25,23 @@ public class WorldSubsystem extends Subsystem {
 	/** World base grid height. */
 	public final static int WORLD_GRID_HEIGHT = 32;
 
+    /** The default width of device. */
+    public final static int DEFAULT_DEVICE_HEIGHT = 320;
+
+    /** The default width of device. */
+    public final static int DEFAULT_DEVICE_WIDTH = 480;
+
 	/** World horizontal gird count. */
 	public static int WORLD_HOR_GRID_NUM = 13;
 
 	/** World vertical gird count. */
 	public static int WORLD_VER_GRID_NUM = 13;
+
+    /** The current device height. */
+    public final static int DEVICE_HEIGHT = GameContext.getGameContext().getScreenHeight();
+
+    /** The current device width. */
+    public final static int DEVICE_WIDTH = GameContext.getGameContext().getScreenWidth();
 
 	/** World height.*/
 	public static int WORLD_HEIGHT = WORLD_VER_GRID_NUM * WORLD_GRID_HEIGHT;
@@ -44,6 +52,9 @@ public class WorldSubsystem extends Subsystem {
 	/** World system terrain data. */
 	private Terrain[][] mWorld = new Terrain[WORLD_HOR_GRID_NUM][WORLD_VER_GRID_NUM];
 
+    /** The graphics subsystem instance. */
+    private GraphicsSubsystem mGraphicsSubsystem;
+
 
 	/**
 	 * Construct a module object by gameContext.
@@ -52,6 +63,7 @@ public class WorldSubsystem extends Subsystem {
 	public WorldSubsystem(Engine engine) {
 		super(engine);
 		initializeSystem();
+        mGraphicsSubsystem = (GraphicsSubsystem)getEngine().getSubsystem(GraphicsSubsystem.class);
 	}
 
 
@@ -59,13 +71,21 @@ public class WorldSubsystem extends Subsystem {
 	 * Initialize world system.
 	 */
 	private void initializeSystem() {
-        getEngine().getGameContext().getResourcesManager().loadAll();
 		for (int i = 0; i < WORLD_VER_GRID_NUM; i++) {
 			for (int j = 0; j < WORLD_HOR_GRID_NUM; j++) {
 				mWorld[i][j] = null;
 			}
 		}
 	}
+
+
+    /**
+     * Set the world map data.
+     * @param terrain The terrain data.
+     */
+    public void setWorld(Terrain[][] terrain) {
+        mWorld = terrain;
+    }
 
 
 	/**
@@ -89,7 +109,7 @@ public class WorldSubsystem extends Subsystem {
 	 * Game loop tick.
 	 */
 	public void tick() {
-		
+        mGraphicsSubsystem.getCanvasView().getCanvas();
 	}
 
 

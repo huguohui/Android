@@ -1,10 +1,8 @@
 package com.tankwar.client;
 
-import com.tankwar.engine.GameContext;
-import com.tankwar.engine.Engine;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.tankwar.engine.Engine;
+import com.tankwar.engine.GameContext;
 
 /**
  * A 'game' is real game.
@@ -26,7 +24,7 @@ public class Game {
 
 
     /**
-     * A game engine instance;
+     * A game game instance;
      */
     private Engine mEngine;
 
@@ -80,8 +78,8 @@ public class Game {
     }
 
     /**
-     * Set game engine.
-     * @param engine Game engine.
+     * Set game context.
+     * @param engine Game context.
      */
     public void setEngine(Engine engine) {
         this.mEngine = engine;
@@ -89,8 +87,8 @@ public class Game {
 
 
     /**
-     * Get game engine instance.
-     * @return Gmae engine.
+     * Get game game instance.
+     * @return Gmae context.
      */
     public Engine getEngine() {
         return mEngine;
@@ -185,5 +183,54 @@ public class Game {
         public void setIsSoundOn(boolean mIsSoundOn) {
             this.mIsSoundOn = mIsSoundOn;
         }
+    }
+
+
+
+
+    /**
+     * Game state listener.
+     * @since 2015/11/06
+     */
+    public interface StateListener {
+        /**
+         * When game initialized.
+         * @param context Game context.
+         */
+        void onInitialize(GameContext context);
+
+
+        /**
+         * When game start work.
+         * @param context Game context.
+         */
+        void onStart(GameContext context);
+
+        /**
+         * When game pause.
+         * @param context Game context.
+         */
+        void onPause(GameContext context);
+
+
+        /**
+         * When game resume.
+         * @param context Game context.
+         */
+        void onResume(GameContext context);
+
+
+        /**
+         * When game stop work.
+         * @param context Game context.
+         */
+        void onExit(GameContext context);
+
+
+        /**
+         * When appear exception.
+         * @param context Game context.
+         */
+        void onException(GameContext context);
     }
 }

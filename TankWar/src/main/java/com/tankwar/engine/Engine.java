@@ -34,9 +34,6 @@ public class Engine implements Runnable {
     /** Modules. */
     private Map<Class<? extends Subsystem>, Subsystem> mSubsystems = new HashMap<>();
 
-    /** State listeners. */
-    private List<StateListener> mStateListeners = new ArrayList<>();
-
     /** All threads. */
     private List<Thread> mAllocedThread = new ArrayList<>();
 
@@ -56,21 +53,11 @@ public class Engine implements Runnable {
     private PhysicalSubsystem mPhysicalSubsystem;
 
 
-
-
     /**
      * Get all subsystems.
      */
     public Set<Class<? extends Subsystem>> getSubsystems() {
         return this.mSubsystems.keySet();
-    }
-
-
-    /**
-     * Get all listeners.
-     */
-    public List<StateListener> getStateListners() {
-        return mStateListeners;
     }
 
 
@@ -87,14 +74,6 @@ public class Engine implements Runnable {
      */
     public Subsystem getSubsystem(Class<? extends Subsystem> subsystem) {
         return mSubsystems.get(subsystem);
-    }
-
-
-    /**
-     * Add a state listener.
-     */
-    public void addStateListener(StateListener stateListener) {
-        mStateListeners.add(stateListener);
     }
 
 
@@ -128,10 +107,10 @@ public class Engine implements Runnable {
      * Initialization control.
      */
     public void initialize() {
-        this.addSubsystem(new WorldSubsystem(this));
         this.addSubsystem(new PhysicalSubsystem(this));
-        this.addSubsystem(new ControlSubsystem(this));
         this.addSubsystem(new GraphicsSubsystem(this));
+        this.addSubsystem(new WorldSubsystem(this));
+        this.addSubsystem(new ControlSubsystem(this));
         this.setPower(this.allocThread(this));
     }
 
@@ -267,36 +246,5 @@ public class Engine implements Runnable {
      */
     public final Thread getPower() {
         return mPower;
-    }
-
-
-
-    /**
-     * Engine state listener.
-     * @since 2015/11/06
-     */
-    public interface StateListener {
-        /**
-         * When engine initialized.
-         */
-        void onInitialize(Engine engine);
-
-
-        /**
-         * When engine start work.
-         */
-        void onStart(Engine engine);
-
-
-        /**
-         * When engine stop work.
-         */
-        void onStop(Engine engine);
-
-
-        /**
-         * When appear exception.
-         */
-        void onException(Engine engine);
     }
 }

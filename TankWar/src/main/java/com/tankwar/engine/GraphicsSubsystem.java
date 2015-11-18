@@ -1,30 +1,23 @@
 package com.tankwar.engine;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.*;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
-import com.tankwar.entity.MediumTank;
+import com.tankwar.client.Game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * The engine of handling graphics.
  * @since 2015/11/06
  */
 
-public class GraphicsSubsystem extends Subsystem {
+public class GraphicsSubsystem extends Subsystem implements Game.StateListener {
     /** The max layers number. */
     public final int MAX_LAYERS = 5;
 
@@ -33,6 +26,12 @@ public class GraphicsSubsystem extends Subsystem {
 
     /** The canvas view. */
     private CanvasView mCanvasView;
+
+    /** The width scale value of the default device to current device. */
+    private float mWidthScale;
+
+    /** The height scale value of the default device to current device. */
+    private float mHeightScale;
 
 
 	/**
@@ -51,6 +50,7 @@ public class GraphicsSubsystem extends Subsystem {
         }
 	}
 
+
     /**
      * Enable a module.
      */
@@ -66,6 +66,24 @@ public class GraphicsSubsystem extends Subsystem {
     @Override
     public void disable() {
         super.disable();
+    }
+
+
+    /**
+     * Get the width scale.
+     * @return The width scale.
+     */
+    public float getWidthScale() {
+        return mWidthScale;
+    }
+
+
+    /**
+     * Get the height scale.
+     * @return The height scale.
+     */
+    public float getHeightScale() {
+        return mHeightScale;
     }
 
 
@@ -116,14 +134,6 @@ public class GraphicsSubsystem extends Subsystem {
 
 
     /**
-     * Set view of draw
-     * @param canvasView View of draw.
-     */
-    public void setCanvasView(CanvasView canvasView) {
-        mCanvasView = canvasView;
-    }
-
-    /**
      * Game loop tick.
      */
     public void tick() {
@@ -153,10 +163,71 @@ public class GraphicsSubsystem extends Subsystem {
 
 
     /**
+     * When game initialized.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onInitialize(GameContext context) {
+
+    }
+
+    /**
+     * When game start work.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onStart(GameContext context) {
+
+    }
+
+    /**
+     * When game pause.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onPause(GameContext context) {
+
+    }
+
+    /**
+     * When game resume.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onResume(GameContext context) {
+
+    }
+
+    /**
+     * When game stop work.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onExit(GameContext context) {
+
+    }
+
+    /**
+     * When appear exception.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onException(GameContext context) {
+
+    }
+
+
+    /**
      * CanvasView object.
      * @since 2015/11/14
      */
-    final private class CanvasView extends SurfaceView
+    final public class CanvasView extends SurfaceView
         implements SurfaceHolder.Callback {
         /** Canvas object.*/
         private Canvas mCanvas = null;
@@ -179,7 +250,7 @@ public class GraphicsSubsystem extends Subsystem {
          * @return canvas object.
          */
         public final Canvas getCanvas() {
-            return mCanvas = mHolder.lockCanvas(new Rect(0, 0, 1920, 1080));
+            return mCanvas = mHolder.lockCanvas(null);
         }
 
 

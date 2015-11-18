@@ -6,10 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.SoundPool;
 
+import com.tankwar.client.Game;
 import com.tankwar.utils.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ import java.util.Map;
  * The game resources manager.
  * @since 2015/11/12
  */
-public class ResourcesManager {
+public class ResourcesManager implements Game.StateListener {
     /** The system resource. */
     private Resources mResources;
 
@@ -162,5 +162,66 @@ public class ResourcesManager {
      */
     public final SoundPool getSound(String name) {
         return mSounds.get(name);
+    }
+
+
+    /**
+     * When game initialized.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onInitialize(GameContext context) {
+
+    }
+
+    /**
+     * When game start work.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onStart(GameContext context) {
+
+    }
+
+    /**
+     * When game pause.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onPause(GameContext context) {
+
+    }
+
+    /**
+     * When game resume.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onResume(GameContext context) {
+
+    }
+
+    /**
+     * When game stop work.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onExit(GameContext context) {
+
+    }
+
+    /**
+     * When appear exception.
+     *
+     * @param context Game context.
+     */
+    @Override
+    public void onException(GameContext context) {
+
     }
 }
