@@ -1,4 +1,4 @@
-package com.tankwar.client;
+package com.tankwar.game;
 
 
 import com.tankwar.engine.Engine;
@@ -224,13 +224,6 @@ public class Game {
          * When game stop work.
          * @param context Game context.
          */
-        void onExit(GameContext context);
-
-
-        /**
-         * When appear exception.
-         * @param context Game context.
-         */
-        void onException(GameContext context);
+        void onStop(GameContext context);
     }
 }

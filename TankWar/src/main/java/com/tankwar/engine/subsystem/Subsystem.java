@@ -1,4 +1,8 @@
-package com.tankwar.engine;
+package com.tankwar.engine.subsystem;
+
+import com.tankwar.engine.Engine;
+import com.tankwar.engine.GameContext;
+import com.tankwar.engine.Tick;
 
 /**
  * A subsystem implements some functions.

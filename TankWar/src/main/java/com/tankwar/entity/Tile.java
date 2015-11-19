@@ -2,7 +2,7 @@ package com.tankwar.entity;
 
 import android.graphics.Rect;
 
-import com.tankwar.client.GameMap;
+import com.tankwar.game.GameMap;
 
 public class Tile {
 	protected int absX;

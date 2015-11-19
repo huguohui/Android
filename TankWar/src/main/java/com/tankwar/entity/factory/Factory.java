@@ -1,8 +1,6 @@
 package com.tankwar.entity.factory;
 
-import com.tankwar.entity.Entity;
-import com.tankwar.entity.LightTank;
-import com.tankwar.entity.MediumTank;
+import com.tankwar.entity.absentity.Entity;
 
 /**
  * Tank factory interface.

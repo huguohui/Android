@@ -1,7 +1,12 @@
 package com.tankwar.engine;
 
-import com.tankwar.client.Game;
-import com.tankwar.entity.Entity;
+import com.tankwar.game.Game;
+import com.tankwar.engine.subsystem.ControlSubsystem;
+import com.tankwar.engine.subsystem.GraphicsSubsystem;
+import com.tankwar.engine.subsystem.PhysicalSubsystem;
+import com.tankwar.engine.subsystem.Subsystem;
+import com.tankwar.engine.subsystem.WorldSubsystem;
+import com.tankwar.entity.absentity.Entity;
 import com.tankwar.utils.Log;
 
 import java.util.ArrayList;
@@ -40,6 +45,9 @@ public class Engine implements Runnable {
     /** All entity exclude terrain in world. */
     private List<Entity> mEntitys = new ArrayList<>();
 
+    /** All state listeners. */
+    private List<StateListener> mStateListeners = new ArrayList<>();
+
     /** Singleton instance. */
     private static Engine mEngine;
 
@@ -52,6 +60,16 @@ public class Engine implements Runnable {
     /** The physical subsystem. */
     private PhysicalSubsystem mPhysicalSubsystem;
 
+
+    /**
+     * Constructor.
+     */
+    private Engine() {
+        this.addSubsystem(new PhysicalSubsystem(this));
+        this.addSubsystem(new GraphicsSubsystem(this));
+        this.addSubsystem(new WorldSubsystem(this));
+        this.addSubsystem(new ControlSubsystem(this));
+    }
 
     /**
      * Get all subsystems.
@@ -104,13 +122,21 @@ public class Engine implements Runnable {
 
 
     /**
+     * Add state listener.
+     * @param stateListener The state listener.
+     */
+    public void addStateListener(StateListener stateListener) {
+        this.mStateListeners.add(stateListener);
+    }
+
+
+    /**
      * Initialization control.
      */
     public void initialize() {
-        this.addSubsystem(new PhysicalSubsystem(this));
-        this.addSubsystem(new GraphicsSubsystem(this));
-        this.addSubsystem(new WorldSubsystem(this));
-        this.addSubsystem(new ControlSubsystem(this));
+        for (StateListener listener : mStateListeners) {
+            listener.onInitialize(this);
+        }
         this.setPower(this.allocThread(this));
     }
 
@@ -119,6 +145,10 @@ public class Engine implements Runnable {
      * Start Engine.
      */
     public void start() {
+        initialize();
+        for (StateListener listener : mStateListeners) {
+            listener.onStart(this);
+        }
         this.getPower().start();
     }
 
@@ -246,5 +276,53 @@ public class Engine implements Runnable {
      */
     public final Thread getPower() {
         return mPower;
+    }
+
+
+    
+    /**
+     * Game engine state listener.
+     * @since 2015/11/06
+     */
+    public interface StateListener {
+        /**
+         * When engine initialized.
+         * @param engine engine engine.
+         */
+        void onInitialize(Engine engine);
+
+
+        /**
+         * When engine start work.
+         * @param engine engine engine.
+         */
+        void onStart(Engine engine);
+
+        /**
+         * When engine pause.
+         * @param engine engine engine.
+         */
+        void onPause(Engine engine);
+
+
+        /**
+         * When engine resume.
+         * @param engine engine engine.
+         */
+        void onResume(Engine engine);
+
+
+        /**
+         * When engine stop work.
+         * @param engine engine engine.
+         */
+        void onStop(Engine engine);
+
+
+        /**
+         * When engine exit.
+         * @pram engine engine engine.
+         */
+        void onExit(Engine engine);
     }
 }

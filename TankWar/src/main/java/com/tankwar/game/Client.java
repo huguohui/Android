@@ -16,7 +16,7 @@
  * 2015/6/10 02:24 Wed																			*
  ************************************************************************************************/
 
-package com.tankwar.client;
+package com.tankwar.game;
 
 import android.app.Activity;
 import android.content.res.Configuration;

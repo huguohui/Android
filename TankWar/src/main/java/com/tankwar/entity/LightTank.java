@@ -3,6 +3,7 @@ package com.tankwar.entity;
 import android.graphics.Canvas;
 
 import com.tankwar.engine.GameContext;
+import com.tankwar.entity.absentity.Entity;
 
 /**
  * A light tank.

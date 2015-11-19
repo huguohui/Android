@@ -1,4 +1,4 @@
-package com.tankwar.engine;
+package com.tankwar.engine.subsystem;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,9 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.tankwar.client.Game;
+import com.tankwar.engine.Drawable;
+import com.tankwar.engine.Engine;
+import com.tankwar.engine.Layer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
  * @since 2015/11/06
  */
 
-public class GraphicsSubsystem extends Subsystem implements Game.StateListener {
+public class GraphicsSubsystem extends Subsystem implements Engine.StateListener {
     /** The max layers number. */
     public final int MAX_LAYERS = 5;
 
@@ -39,15 +41,7 @@ public class GraphicsSubsystem extends Subsystem implements Game.StateListener {
 	 */
 	public GraphicsSubsystem(Engine engine) {
         super(engine);
-        mCanvasView   = new CanvasView(engine.getGameContext());
-        mLayers.add(new Layer());
-        getEngine().getGameContext().getClient().setContentView(mCanvasView);
-        mCanvasView.setOnTouchListener((ControlSubsystem) getEngine()
-                .getSubsystem(ControlSubsystem.class));
-
-        for (int i = 0; i < MAX_LAYERS; i++) {
-            mLayers.add(new Layer());
-        }
+        engine.addStateListener(this);
 	}
 
 
@@ -163,62 +157,69 @@ public class GraphicsSubsystem extends Subsystem implements Game.StateListener {
 
 
     /**
-     * When game initialized.
+     * When engine initialized.
      *
-     * @param context Game context.
+     * @param engine engine engine.
      */
     @Override
-    public void onInitialize(GameContext context) {
+    public void onInitialize(Engine engine) {
+        mCanvasView = new CanvasView(getEngine().getGameContext());
+        for (Layer layer : mLayers) {
+            this.addLayer(layer);
+        }
+    }
+
+    /**
+     * When engine start work.
+     *
+     * @param engine engine engine.
+     */
+    @Override
+    public void onStart(Engine engine) {
+
+        mCanvasView.setOnTouchListener((ControlSubsystem) getEngine()
+                .getSubsystem(ControlSubsystem.class));
+        getEngine().getGameContext().getClient().setContentView(mCanvasView);
+    }
+
+    /**
+     * When engine pause.
+     *
+     * @param engine engine engine.
+     */
+    @Override
+    public void onPause(Engine engine) {
 
     }
 
     /**
-     * When game start work.
+     * When engine resume.
      *
-     * @param context Game context.
+     * @param engine engine engine.
      */
     @Override
-    public void onStart(GameContext context) {
+    public void onResume(Engine engine) {
 
     }
 
     /**
-     * When game pause.
+     * When engine stop work.
      *
-     * @param context Game context.
+     * @param engine engine engine.
      */
     @Override
-    public void onPause(GameContext context) {
+    public void onStop(Engine engine) {
 
     }
 
     /**
-     * When game resume.
+     * When engine exit.
      *
-     * @param context Game context.
+     * @param engine
+     * @pram engine engine engine.
      */
     @Override
-    public void onResume(GameContext context) {
-
-    }
-
-    /**
-     * When game stop work.
-     *
-     * @param context Game context.
-     */
-    @Override
-    public void onExit(GameContext context) {
-
-    }
-
-    /**
-     * When appear exception.
-     *
-     * @param context Game context.
-     */
-    @Override
-    public void onException(GameContext context) {
+    public void onExit(Engine engine) {
 
     }
 

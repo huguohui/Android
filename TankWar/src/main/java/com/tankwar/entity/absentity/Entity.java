@@ -1,4 +1,4 @@
-package com.tankwar.entity;
+package com.tankwar.entity.absentity;
 
 import com.tankwar.engine.CollisionCheckable;
 import com.tankwar.engine.CollisionListener;

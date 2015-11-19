@@ -1,7 +1,9 @@
-package com.tankwar.engine;
+package com.tankwar.engine.subsystem;
 
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.tankwar.engine.Engine;
 
 /**
  * The control subsystem.

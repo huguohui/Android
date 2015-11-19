@@ -1,6 +1,4 @@
-package com.tankwar.client;
-
-import com.tankwar.engine.GameContext;
+package com.tankwar.game;
 
 /**
  * The factory of game creation.

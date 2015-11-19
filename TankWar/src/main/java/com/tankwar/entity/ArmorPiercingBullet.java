@@ -1,12 +1,9 @@
 package com.tankwar.entity;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 
-import com.tankwar.engine.CollisionCheckable;
 import com.tankwar.engine.GameContext;
+import com.tankwar.entity.absentity.Entity;
 
 /**
  * A subclass of bullet, to denoting a armor piercing bullet.

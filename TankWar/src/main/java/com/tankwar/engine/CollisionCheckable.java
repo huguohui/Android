@@ -1,8 +1,6 @@
 package com.tankwar.engine;
 
-import android.graphics.Rect;
-
-import com.tankwar.entity.Entity;
+import com.tankwar.entity.absentity.Entity;
 
 /**
  * General function of collision checking interface.

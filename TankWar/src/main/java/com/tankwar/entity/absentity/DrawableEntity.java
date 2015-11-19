@@ -1,10 +1,7 @@
-package com.tankwar.entity;
+package com.tankwar.entity.absentity;
 
-import com.tankwar.engine.CollisionCheckable;
-import com.tankwar.engine.CollisionListener;
 import com.tankwar.engine.Drawable;
 import com.tankwar.engine.GameContext;
-import com.tankwar.engine.Sprite;
 
 /**
  * Describe a drawable entity in game world.

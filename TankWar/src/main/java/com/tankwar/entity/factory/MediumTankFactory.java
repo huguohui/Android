@@ -1,7 +1,7 @@
 package com.tankwar.entity.factory;
 
 import com.tankwar.engine.GameContext;
-import com.tankwar.entity.MediumTank;
+import com.tankwar.entity.absentity.MediumTank;
 
 /**
  * A factory to product tank.

@@ -1,6 +1,9 @@
-package com.tankwar.engine;
+package com.tankwar.engine.subsystem;
 
-import com.tankwar.entity.Entity;
+import com.tankwar.engine.CollisionCheckable;
+import com.tankwar.engine.CollisionListener;
+import com.tankwar.engine.Engine;
+import com.tankwar.entity.absentity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
  * @author hgh
  * @since 2015/11/06
  */
-class PhysicalSubsystem extends Subsystem {
+public class PhysicalSubsystem extends Subsystem {
     /**
      * World subsystem reference.
      */

@@ -1,6 +1,6 @@
 package com.tankwar.engine;
 
-import com.tankwar.entity.Entity;
+import com.tankwar.entity.absentity.Entity;
 
 /**
  * A collision event observer interface.

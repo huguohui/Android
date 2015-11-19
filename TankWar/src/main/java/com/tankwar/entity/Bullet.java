@@ -3,9 +3,10 @@ package com.tankwar.entity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-import com.tankwar.client.GameMap;
+import com.tankwar.game.GameMap;
 import com.tankwar.engine.BulletEventListener;
 import com.tankwar.engine.GameContext;
+import com.tankwar.entity.absentity.MovableEntity;
 import com.tankwar.utils.GameSound;
 import com.tankwar.engine.BulletEventListener.OnExplosionListener;
 import com.tankwar.engine.BulletEventListener.OnFiringListener;

@@ -19,8 +19,8 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-import com.tankwar.client.Client;
-import com.tankwar.client.Game;
+import com.tankwar.game.Client;
+import com.tankwar.game.Game;
 import com.tankwar.utils.FileOperator;
 
 import java.io.File;
@@ -50,9 +50,6 @@ final public class GameContext extends Application
 
     /** Engine instance. */
     private Engine mEngine;
-
-    /** ResourcesManager instance. */
-    private ResourcesManager mResourcesManager;
 
     /** Directory separator. */
 	public final static String DS = "/";
@@ -105,7 +102,6 @@ final public class GameContext extends Application
         APP_ROOT = this.getApplicationInfo().dataDir;
         SDCARD_APP_ROOT = SDCARD_ROOT + DS + SDCARD_ANDROID_DIR + DS
                     + SDCARD_DATA_DIR + DS + this.getApplicationInfo().packageName;
-        mResourcesManager = new ResourcesManager(this);
 
         checkAndCreateDirs();
         releaseResToSdcard();
@@ -191,15 +187,6 @@ final public class GameContext extends Application
 	public final Game getGame() {
 		return mGame;
 	}
-
-
-    /**
-     * Get resources manager.
-     * @return ResourcesManager.
-     */
-    public final ResourcesManager getResourcesManager() {
-        return mResourcesManager;
-    }
 
 
     /**

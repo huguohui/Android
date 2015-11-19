@@ -1,4 +1,4 @@
-package com.tankwar.client;
+package com.tankwar.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
