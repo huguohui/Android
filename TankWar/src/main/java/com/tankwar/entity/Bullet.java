@@ -3,17 +3,10 @@ package com.tankwar.entity;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import com.tankwar.engine.entity.MovableEntity;
 import com.tankwar.game.GameMap;
-import com.tankwar.engine.BulletEventListener;
 import com.tankwar.engine.GameContext;
-import com.tankwar.entity.absentity.MovableEntity;
 import com.tankwar.utils.GameSound;
-import com.tankwar.engine.BulletEventListener.OnExplosionListener;
-import com.tankwar.engine.BulletEventListener.OnFiringListener;
-import com.tankwar.engine.BulletEventListener.OnFlyingListener;
-import com.tankwar.engine.BulletEventListener.OnHitBuildingListener;
-import com.tankwar.engine.BulletEventListener.OnHitTankListener;
-import com.tankwar.engine.BulletEventListener.State;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +25,11 @@ public abstract class Bullet extends MovableEntity {
     private Tank ownerTank;
     private Bitmap[] bulletBitmaps;
     private BulletEventListener.State state = null;
-    private List<OnExplosionListener> explosionListeners = new ArrayList<>();
-    private List<OnFiringListener> firingListeners = new ArrayList<>();
-    private List<OnFlyingListener> flyingListeners = new ArrayList<>();
-    private List<OnHitBuildingListener> hitBuildingListeners = new ArrayList<>();
-    private List<OnHitTankListener> hitTankListeners = new ArrayList<>();
+    private List<BulletEventListener.OnExplosionListener> explosionListeners = new ArrayList<>();
+    private List<BulletEventListener.OnFiringListener> firingListeners = new ArrayList<>();
+    private List<BulletEventListener.OnFlyingListener> flyingListeners = new ArrayList<>();
+    private List<BulletEventListener.OnHitBuildingListener> hitBuildingListeners = new ArrayList<>();
+    private List<BulletEventListener.OnHitTankListener> hitTankListeners = new ArrayList<>();
 
     public final int SPEED = 2;
     public final int WIDTH = 8;
@@ -81,7 +74,7 @@ public abstract class Bullet extends MovableEntity {
         switch (state) {
             case fired:
                 synchronized (firingListeners) {
-                    for (OnFiringListener observer : firingListeners) {
+                    for (BulletEventListener.OnFiringListener observer : firingListeners) {
                         if (observer != null)
                             observer.onFiring(this);
                     }
@@ -89,7 +82,7 @@ public abstract class Bullet extends MovableEntity {
                 break;
             case flying:
                 synchronized (flyingListeners) {
-                    for (OnFlyingListener observer : flyingListeners) {
+                    for (BulletEventListener.OnFlyingListener observer : flyingListeners) {
                         if (observer != null)
                             observer.onFlying(this);
                     }
@@ -97,7 +90,7 @@ public abstract class Bullet extends MovableEntity {
                 break;
             case exploded:
                 synchronized (explosionListeners) {
-                    for (OnExplosionListener observer : explosionListeners) {
+                    for (BulletEventListener.OnExplosionListener observer : explosionListeners) {
                         if (observer != null)
                             observer.onExploding(this);
                     }
@@ -105,7 +98,7 @@ public abstract class Bullet extends MovableEntity {
                 break;
             case hitBuild:
                 synchronized (hitBuildingListeners) {
-                    for (OnHitBuildingListener observer : hitBuildingListeners) {
+                    for (BulletEventListener.OnHitBuildingListener observer : hitBuildingListeners) {
                         if (observer != null)
                             observer.onHitBuilding(this);
                     }
@@ -113,7 +106,7 @@ public abstract class Bullet extends MovableEntity {
                 break;
             case hitTank:
                 synchronized (hitTankListeners) {
-                    for (OnHitTankListener observer : hitTankListeners) {
+                    for (BulletEventListener.OnHitTankListener observer : hitTankListeners) {
                         if (observer != null)
                             observer.onHitTank(this, this.ownerTank);
                     }
@@ -124,7 +117,7 @@ public abstract class Bullet extends MovableEntity {
 
 
     public void fire() {
-        state = State.fired;
+        state = BulletEventListener.State.fired;
     }
 
 
@@ -135,44 +128,44 @@ public abstract class Bullet extends MovableEntity {
     }
 
 
-    public synchronized void addOnFiringListener(OnFiringListener listener) {
+    public synchronized void addOnFiringListener(BulletEventListener.OnFiringListener listener) {
         firingListeners.add(listener);
     }
 
-    public synchronized void removeOnFiringListener(OnFiringListener listener) {
+    public synchronized void removeOnFiringListener(BulletEventListener.OnFiringListener listener) {
         firingListeners.remove(listener);
     }
 
-    public synchronized void addOnFlyingListener(OnFlyingListener listener) {
+    public synchronized void addOnFlyingListener(BulletEventListener.OnFlyingListener listener) {
         flyingListeners.add(listener);
     }
 
-    public synchronized void removeOnFlyingListener(OnFlyingListener listener) {
+    public synchronized void removeOnFlyingListener(BulletEventListener.OnFlyingListener listener) {
         firingListeners.remove(listener);
     }
 
-    public synchronized void addOnExplosionListener(OnExplosionListener listener) {
+    public synchronized void addOnExplosionListener(BulletEventListener.OnExplosionListener listener) {
         explosionListeners.add(listener);
     }
 
-    public synchronized void removeExplosionListener(OnExplosionListener listener) {
+    public synchronized void removeExplosionListener(BulletEventListener.OnExplosionListener listener) {
         explosionListeners.remove(listener);
     }
 
 
-    public synchronized void addHitBuildingListener(OnHitBuildingListener listener) {
+    public synchronized void addHitBuildingListener(BulletEventListener.OnHitBuildingListener listener) {
         hitBuildingListeners.add(listener);
     }
 
-    public synchronized void removeOnHitBuildingListener(OnHitBuildingListener listener) {
+    public synchronized void removeOnHitBuildingListener(BulletEventListener.OnHitBuildingListener listener) {
         hitBuildingListeners.remove(listener);
     }
 
-    public synchronized void addHitTankListener(OnHitTankListener listener) {
+    public synchronized void addHitTankListener(BulletEventListener.OnHitTankListener listener) {
         hitTankListeners.add(listener);
     }
 
-    public synchronized void removeOnHitTankListener(OnHitTankListener listener) {
+    public synchronized void removeOnHitTankListener(BulletEventListener.OnHitTankListener listener) {
         hitTankListeners.remove(listener);
     }
 
@@ -206,5 +199,99 @@ public abstract class Bullet extends MovableEntity {
 
     public void setOwnerTank(Tank ownerTank) {
         this.ownerTank = ownerTank;
+    }
+
+
+    /**
+     * To listening state change of bullet
+     * by implementing this interface.
+     *
+     * @author  by Hui
+     * @since 2015/10/30.
+     */
+    public static interface BulletEventListener {
+        /**
+         * The five states of bullet.
+         */
+        enum State {
+            fired,
+            flying,
+            hitBuild,
+            exploded,
+            hitTank
+        }
+
+
+        /**
+         * To listening bullet firing event by
+         * implementing this interface.
+         */
+        interface OnFiringListener{
+            /**
+            * When bullet was fired by someone tank,
+            * this method will be called.
+            * @param bullet A fired bullet.
+            */
+            void onFiring(Bullet bullet);
+        }
+
+
+        /**
+         * To listening bullet flying event
+         * by implementing this interface.
+         */
+        interface OnFlyingListener {
+            /**
+             * When bullet was flying,
+             * this method will be called.
+             * @param bullet A flying bullet.
+             */
+            void onFlying(Bullet bullet);
+        }
+
+
+        /**
+         * To listening bullet explosion event
+         * by implementing this interface.
+         */
+        interface OnExplosionListener {
+            /**
+             * When bullet was exploded,
+             * this method will be called.
+             * @param bullet A exploded bullet.
+             */
+            void onExploding(Bullet bullet);
+        }
+
+
+        /**
+         * To listening bullet hit building event
+         * by implementing this interface.
+         */
+        interface OnHitBuildingListener {
+            /**
+             * When bullet was hitting building,
+             * this method will be called.
+             *
+             * @param bullet A bullet that hitting a building.
+             */
+            void onHitBuilding(Bullet bullet);
+        }
+
+
+        /**
+         * To listening bullet hit tank event
+         * by implementing this interface.
+         */
+        interface OnHitTankListener {
+            /**
+             * When bullet was hitting tank,
+             * this method will be called.
+             *
+             * @param bullet The bullet.
+             * @param tank   The tank was hitting.
+             */
+            void onHitTank(Bullet bullet, Tank tank);
+        }
     }
 }

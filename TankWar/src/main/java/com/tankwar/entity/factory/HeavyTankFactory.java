@@ -2,8 +2,6 @@ package com.tankwar.entity.factory;
 
 import com.tankwar.engine.GameContext;
 import com.tankwar.entity.HeavyTank;
-import com.tankwar.entity.LightTank;
-import com.tankwar.entity.Tank;
 
 /**
  * A factory to product tank.

@@ -2,7 +2,7 @@ package com.tankwar.entity;
 
 
 import com.tankwar.engine.GameContext;
-import com.tankwar.entity.absentity.MovableEntity;
+import com.tankwar.engine.entity.MovableEntity;
 
 /**
  * Describe a living entity.

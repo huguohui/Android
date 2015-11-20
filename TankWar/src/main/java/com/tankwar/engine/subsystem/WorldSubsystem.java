@@ -8,8 +8,7 @@ import android.media.SoundPool;
 
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.GameContext;
-import com.tankwar.engine.Sprite;
-import com.tankwar.entity.absentity.Terrain;
+import com.tankwar.engine.entity.Terrain;
 import com.tankwar.utils.Log;
 
 import java.io.File;

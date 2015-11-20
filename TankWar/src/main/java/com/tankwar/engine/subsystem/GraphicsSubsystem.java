@@ -7,9 +7,7 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.tankwar.engine.Drawable;
 import com.tankwar.engine.Engine;
-import com.tankwar.engine.Layer;
 
 import java.util.ArrayList;
 import java.util.List;

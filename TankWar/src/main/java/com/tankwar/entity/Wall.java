@@ -3,8 +3,8 @@ package com.tankwar.entity;
 import android.graphics.Canvas;
 
 import com.tankwar.engine.GameContext;
-import com.tankwar.entity.absentity.Entity;
-import com.tankwar.entity.absentity.Obstacle;
+import com.tankwar.engine.entity.Entity;
+import com.tankwar.engine.entity.Obstacle;
 
 /**
  * A kind of obstacle, it can destroy.

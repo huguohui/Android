@@ -1,12 +1,13 @@
 package com.tankwar.engine;
 
+import com.tankwar.engine.subsystem.Tick;
 import com.tankwar.game.Game;
 import com.tankwar.engine.subsystem.ControlSubsystem;
 import com.tankwar.engine.subsystem.GraphicsSubsystem;
 import com.tankwar.engine.subsystem.PhysicalSubsystem;
 import com.tankwar.engine.subsystem.Subsystem;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.entity.absentity.Entity;
+import com.tankwar.engine.entity.Entity;
 import com.tankwar.utils.Log;
 
 import java.util.ArrayList;

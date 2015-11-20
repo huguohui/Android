@@ -1,9 +1,9 @@
 package com.tankwar.entity;
 
-import com.tankwar.engine.CollisionCheckable;
+import com.tankwar.engine.subsystem.CollisionCheckable;
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.entity.absentity.Entity;
+import com.tankwar.engine.entity.Entity;
 
 final public class Bonus extends Entity implements CollisionCheckable {
 

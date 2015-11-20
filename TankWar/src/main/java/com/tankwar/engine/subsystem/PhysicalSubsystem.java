@@ -1,9 +1,7 @@
 package com.tankwar.engine.subsystem;
 
-import com.tankwar.engine.CollisionCheckable;
-import com.tankwar.engine.CollisionListener;
 import com.tankwar.engine.Engine;
-import com.tankwar.entity.absentity.Entity;
+import com.tankwar.engine.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.tankwar.entity;
 
 import com.tankwar.engine.GameContext;
-import com.tankwar.engine.Sprite;
+import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * Tank base class.
