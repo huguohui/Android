@@ -16,30 +16,30 @@ public abstract class Http extends Socket {
 	 * A URL special host address and 
 	 * request path, parameter.
 	 */
-	protected URL url;
+	private URL url;
 
 	
 	/**
 	 * A special HTTP version.
 	 */
-	protected String version;
+	private String version;
 
 
 	/**
 	 * HTTP header.
 	 */
-	protected HttpHeader header;
+	private HttpHeader header;
 
 	
 	/**
 	 * HTTP body.
 	 */
-	protected HttpBody body;
+	private HttpBody body;
 
     /**
 	 * Is security HTTP?
 	 */
-	protected boolean isSecurity;
+	private boolean isSecurity;
 	
 	
 	/**

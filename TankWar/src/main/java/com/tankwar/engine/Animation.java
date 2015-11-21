@@ -81,7 +81,9 @@ public abstract class Animation implements Drawable {
     /**
      * To start playing the animation.
      */
-    public abstract void play();
+    public void play() {
+
+    }
 
 
     /**
