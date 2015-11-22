@@ -225,5 +225,12 @@ public class Game {
          * @param context Game context.
          */
         void onStop(GameContext context);
+
+
+        /**
+         * When engine exit.
+         * @pram engine engine engine.
+         */
+        void onExit(Engine engine);
     }
 }

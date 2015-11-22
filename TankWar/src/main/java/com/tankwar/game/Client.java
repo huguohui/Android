@@ -126,6 +126,7 @@ final public class Client extends Activity
         }
 
         if (mGame != null) mGame.stop();
+
         finish();
 	}
 

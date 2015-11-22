@@ -2,7 +2,7 @@ package com.tankwar.engine;
 
 /**
  * The game timer is a custom timer, this timer can be paused
- * and can be resumed too. The timer could not exact.
+ * and can be resumed too. The timer maybe could not exact.
  *
  * @since 2015/11/21
  */

@@ -1,9 +1,6 @@
 package com.tankwar.net.http;
 
-import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 
 /**
@@ -16,30 +13,30 @@ public abstract class Http extends Socket {
 	 * A URL special host address and 
 	 * request path, parameter.
 	 */
-	private URL url;
+	private URL mUrl;
 
 	
 	/**
 	 * A special HTTP version.
 	 */
-	private String version;
+	private String mVersion;
 
 
 	/**
 	 * HTTP header.
 	 */
-	private HttpHeader header;
+	private HttpHeader mHttpHeader;
 
 	
 	/**
 	 * HTTP body.
 	 */
-	private HttpBody body;
+	private HttpBody mHttpBody;
 
     /**
 	 * Is security HTTP?
 	 */
-	private boolean isSecurity;
+	private boolean mIsSecurity;
 	
 	
 	/**
@@ -47,55 +44,47 @@ public abstract class Http extends Socket {
 	 * @param url URL
 	 */
 	public Http(URL url) {
-		this.url = url;
+		mUrl = url;
 	}
 
 
 	public URL getUrl() {
-		return url;
+		return mUrl;
 	}
-
 
 	public void setUrl(URL url) {
-		this.url = url;
+		mUrl = url;
 	}
-
 
 	public String getVersion() {
-		return version;
+		return mVersion;
 	}
-
 
 	public void setVersion(String version) {
-		this.version = version;
+		mVersion = version;
 	}
 
-
-	public HttpHeader getHeader() {
-		return header;
+	public HttpHeader getHttpHeader() {
+		return mHttpHeader;
 	}
 
-
-	public void setHeader(HttpHeader header) {
-		this.header = header;
+	public void setHttpHeader(HttpHeader httpHeader) {
+		mHttpHeader = httpHeader;
 	}
 
-
-	public HttpBody getBody() {
-		return body;
+	public HttpBody getHttpBody() {
+		return mHttpBody;
 	}
 
-
-	public void setBody(HttpBody body) {
-		this.body = body;
+	public void setHttpBody(HttpBody httpBody) {
+		mHttpBody = httpBody;
 	}
 
+	public boolean isSecurity() {
+		return mIsSecurity;
+	}
 
-    public boolean isSecurity() {
-        return isSecurity;
-    }
-
-    public void setIsSecurity(boolean isSecurity) {
-        this.isSecurity = isSecurity;
-    }
+	public void setIsSecurity(boolean isSecurity) {
+		mIsSecurity = isSecurity;
+	}
 }

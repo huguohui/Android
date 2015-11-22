@@ -1,13 +1,14 @@
 package com.tankwar.engine;
 
-import com.tankwar.engine.subsystem.Tick;
-import com.tankwar.game.Game;
+import com.tankwar.engine.entity.Entity;
 import com.tankwar.engine.subsystem.ControlSubsystem;
 import com.tankwar.engine.subsystem.GraphicsSubsystem;
 import com.tankwar.engine.subsystem.PhysicalSubsystem;
 import com.tankwar.engine.subsystem.Subsystem;
+import com.tankwar.engine.subsystem.Tick;
+import com.tankwar.engine.subsystem.TimingSubsystem;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.engine.entity.Entity;
+import com.tankwar.game.Game;
 import com.tankwar.utils.Log;
 
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class Engine implements Runnable {
 
     /** Is stop? */
     private boolean mIsStop = false;
+
+    /** Is running? */
+    private boolean mIsRunning = false;
 
     /** Game context. */
     private GameContext mGameContext = GameContext.getGameContext();
@@ -70,6 +74,7 @@ public class Engine implements Runnable {
         this.addSubsystem(new GraphicsSubsystem(this));
         this.addSubsystem(new WorldSubsystem(this));
         this.addSubsystem(new ControlSubsystem(this));
+        this.addSubsystem(new TimingSubsystem(this));
     }
 
     /**
@@ -146,11 +151,14 @@ public class Engine implements Runnable {
      * Start Engine.
      */
     public void start() {
+        if (mIsRunning) return;
+
         initialize();
         for (StateListener listener : mStateListeners) {
             listener.onStart(this);
         }
         this.getPower().start();
+        this.mIsRunning = true;
     }
 
 
@@ -204,21 +212,21 @@ public class Engine implements Runnable {
      * Pause engine.
      */
     public synchronized void pause() {
-        this.setIsPause(true);
+        this.mIsPause = true;
     }
 
     /**
      * Resume engine.
      */
     public synchronized void resume() {
-        this.setIsPause(false);
+        this.mIsPause = false;
     }
 
     /**
      * Stop engine.
      */
     public synchronized void stop() {
-        this.setIsStop(true);
+        this.mIsStop = true;
     }
 
 
@@ -229,22 +237,6 @@ public class Engine implements Runnable {
         return new Engine();
     }
 
-    /**
-     * Set if stop.
-     * @param mIsStop  stop?
-     */
-    public void setIsStop(boolean mIsStop) {
-        this.mIsStop = mIsStop;
-    }
-
-
-    /**
-     * Set if pause.
-     * @param mIsPause pause?
-     */
-    public void setIsPause(boolean mIsPause) {
-        this.mIsPause = mIsPause;
-    }
 
     /**
      * Get pause state.
@@ -318,12 +310,5 @@ public class Engine implements Runnable {
          * @param engine engine engine.
          */
         void onStop(Engine engine);
-
-
-        /**
-         * When engine exit.
-         * @pram engine engine engine.
-         */
-        void onExit(Engine engine);
     }
 }

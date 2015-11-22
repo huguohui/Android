@@ -33,6 +33,8 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     /** The height scale value of the default device to current device. */
     private float mHeightScale;
 
+    int i = 0;
+
 
 	/**
 	 * Only constructor.
@@ -133,24 +135,29 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
         p.setColor(Color.WHITE);
         p.setTextSize(100);
 
-
         Canvas canvas = mCanvasView.getCanvas();
         if (canvas == null) return;
 
         canvas.drawColor(Color.BLACK);
-        canvas.drawText("------------------>", 0, 0, p);
+        canvas.drawText("------------------>", 0, i++, p);
+        canvas.drawText("Game time: " + ((TimingSubsystem)getEngine().getSubsystem(TimingSubsystem.class))
+                .getSystemTime(), 0, i+100, p);
+        canvas.drawText("Frame time: " + ((TimingSubsystem)getEngine().getSubsystem(TimingSubsystem.class))
+                .getFrameTime(), 0, i+200, p);
+        canvas.drawText("System time: " + System.currentTimeMillis(), 0, i + 300, p);
         try {
-            Thread.sleep(10);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        mCanvasView.updateFrame();
 
         for (Layer layer : mLayers) {
             for (Drawable drawable : layer.getObjects()) {
                 drawable.draw(canvas);
             }
         }
+
+        mCanvasView.updateFrame();
     }
 
 
@@ -162,8 +169,8 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     @Override
     public void onInitialize(Engine engine) {
         mCanvasView = new CanvasView(getEngine().getGameContext());
-        for (Layer layer : mLayers) {
-            this.addLayer(layer);
+        for (int i = 0; i < MAX_LAYERS; i++) {
+            this.addLayer(new Layer());
         }
     }
 
@@ -174,7 +181,6 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
      */
     @Override
     public void onStart(Engine engine) {
-
         mCanvasView.setOnTouchListener((ControlSubsystem) getEngine()
                 .getSubsystem(ControlSubsystem.class));
         getEngine().getGameContext().getClient().setContentView(mCanvasView);
@@ -210,17 +216,6 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
 
     }
 
-    /**
-     * When engine exit.
-     *
-     * @param engine
-     * @pram engine engine engine.
-     */
-    @Override
-    public void onExit(Engine engine) {
-
-    }
-
 
     /**
      * CanvasView object.
@@ -233,6 +228,9 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
 
         /** Surface holder. */
         private SurfaceHolder mHolder = null;
+
+        /** The surface if can be used. */
+        private boolean mIsCreated = false;
 
         /** canvas constructor.
          * @param context Game context.
@@ -249,7 +247,10 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
          * @return canvas object.
          */
         public final Canvas getCanvas() {
-            return mCanvas = mHolder.lockCanvas(null);
+            if (!mIsCreated) return null;
+
+            mCanvas = mHolder.lockCanvas();
+            return mCanvas;
         }
 
 
@@ -276,7 +277,9 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
         public final void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {}
 
         @Override
-        public final void surfaceCreated(SurfaceHolder arg0) {}
+        public final void surfaceCreated(SurfaceHolder arg0) {
+            mIsCreated = true;
+        }
 
         @Override
         public final void surfaceDestroyed(SurfaceHolder arg0) {}

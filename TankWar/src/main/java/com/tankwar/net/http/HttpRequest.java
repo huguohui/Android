@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
@@ -64,7 +62,7 @@ public class HttpRequest extends Http implements Request {
      */
 	@Override
 	public boolean connect() {
-		return connect(this.url, this.timeout);
+		return connect(getUrl(), this.timeout);
 	}
 
     /**
@@ -87,7 +85,7 @@ public class HttpRequest extends Http implements Request {
      */
     @Override
     public boolean connect(URL url) {
-        this.url = url;
+        setUrl(url);
         return connect();
     }
 
@@ -141,7 +139,7 @@ public class HttpRequest extends Http implements Request {
 
         try{
             os = this.getOutputStream();
-            os.write(this.getBody().getContent());
+            os.write(getHttpBody().getContent());
             os.flush();
             this.listener.onSended();
         }catch(IOException ex) {

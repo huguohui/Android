@@ -20,11 +20,20 @@ public abstract class Animation implements Drawable {
     /** The all frames of animation. */
     private List<FrameDescriptor> mFrameDescriptors = new ArrayList<>();
 
+    /** The all state listeners. */
+    private List<StateListener> mStateListeners = new ArrayList<>();
+
     /** The context of game. */
     private GameContext mGameContext;
 
     /** The current animation playing state. */
     private int mState = AS_NONE;
+
+    /** The animation total duration. */
+    private long mDuration;
+
+    /** The animation start time. */
+    private long mStartTime;
 
 
     /**
@@ -33,11 +42,12 @@ public abstract class Animation implements Drawable {
      * @param context The gameContext.
      * @param frames The frames.
      */
-    public Animation(GameContext context, List<FrameDescriptor> frames) {
+    public Animation(GameContext context, List<FrameDescriptor> frames, long duration) {
         this(context);
         if (mFrameDescriptors != null) {
             this.mFrameDescriptors = frames;
         }
+        this.mDuration = duration;
     }
 
     /**
@@ -104,6 +114,37 @@ public abstract class Animation implements Drawable {
     public abstract void stop();
 
 
+    public long getStartTime() {
+        return mStartTime;
+    }
+
+    public void setStartTime(long startTime) {
+        mStartTime = startTime;
+    }
+
+    public long getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(long duration) {
+        mDuration = duration;
+    }
+
+    public void setFrameDescriptors(List<FrameDescriptor> frameDescriptors) {
+        mFrameDescriptors = frameDescriptors;
+    }
+
+    public List<StateListener> getStateListeners() {
+        return mStateListeners;
+    }
+
+    public void addStateListener(StateListener listener) {
+        mStateListeners.add(listener);
+    }
+
+    public void removeStateListener(StateListener listener) {
+        mStateListeners.remove(listener);
+    }
 
     /**
      * Get all frame descriptors.
@@ -132,7 +173,7 @@ public abstract class Animation implements Drawable {
         private Sprite mSprites;
 
         /** The per frame draw duration. */
-        private int duration;
+        private int mDistance;
 
 
         public int getLayerIndex() {
@@ -151,12 +192,12 @@ public abstract class Animation implements Drawable {
             mSprites = sprites;
         }
 
-        public int getDuration() {
-            return duration;
+        public int getDistance() {
+            return mDistance;
         }
 
-        public void setDuration(int duration) {
-            this.duration = duration;
+        public void setDistance(int distance) {
+            this.mDistance = distance;
         }
     }
 

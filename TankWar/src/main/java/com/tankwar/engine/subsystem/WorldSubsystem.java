@@ -260,7 +260,7 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	 * Game loop tick.
 	 */
 	public void tick() {
-        mGraphicsSubsystem.getCanvasView().getCanvas();
+
 	}
 
 
@@ -311,17 +311,6 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	 */
 	@Override
 	public void onStop(Engine engine) {
-
-	}
-
-	/**
-	 * When engine exit.
-	 *
-	 * @param engine
-	 * @pram engine engine engine.
-	 */
-	@Override
-	public void onExit(Engine engine) {
 		this.unloadSounds();
 		this.unloadBitmaps();
 	}
