@@ -11,10 +11,10 @@ public abstract class Round implements Updatable {
     private int mRoundNumber = 0;
 
     /** The max round time. */
-    private int mMaxRoundTime = 0;
+    private int mRoundTime = 0;
 
     /** The max round retry times. */
-    private int mMaxRetryTimes = 0xff;
+    private int mRetryTimes = 0xff;
 
     /** The round is start? */
     private boolean mIsStart = false;
@@ -57,6 +57,12 @@ public abstract class Round implements Updatable {
 
 
     /**
+     * Retry game.
+     */
+    public abstract void retry();
+
+
+    /**
      * When round clear to do something.
      */
     public abstract void clear();
@@ -78,8 +84,10 @@ public abstract class Round implements Updatable {
 
         if (!isClear()) {
             if (isFailed()) {
-                failed();
-                return;
+                retry();
+                if (getRetryTimes() < 1) {
+                    failed();
+                }
             }
             progress();
         }
@@ -100,20 +108,20 @@ public abstract class Round implements Updatable {
         mRoundNumber = roundNumber;
     }
 
-    public int getMaxRoundTime() {
-        return mMaxRoundTime;
+    public int getRoundTime() {
+        return mRoundTime;
     }
 
-    public void setMaxRoundTime(int maxRoundTime) {
-        mMaxRoundTime = maxRoundTime;
+    public void setRoundTime(int maxRoundTime) {
+        mRoundTime = maxRoundTime;
     }
 
-    public int getMaxRetryTimes() {
-        return mMaxRetryTimes;
+    public int getRetryTimes() {
+        return mRetryTimes;
     }
 
-    public void setMaxRetryTimes(int maxRetryTimes) {
-        mMaxRetryTimes = maxRetryTimes;
+    public void setRetryTimes(int maxRetryTimes) {
+        mRetryTimes = maxRetryTimes;
     }
 
     public boolean isStart() {
