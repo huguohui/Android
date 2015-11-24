@@ -259,7 +259,7 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	/**
 	 * Game loop tick.
 	 */
-	public void tick() {
+	public void update() {
 
 	}
 

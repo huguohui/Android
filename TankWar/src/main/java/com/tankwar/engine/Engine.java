@@ -5,7 +5,7 @@ import com.tankwar.engine.subsystem.ControlSubsystem;
 import com.tankwar.engine.subsystem.GraphicsSubsystem;
 import com.tankwar.engine.subsystem.PhysicalSubsystem;
 import com.tankwar.engine.subsystem.Subsystem;
-import com.tankwar.engine.subsystem.Tick;
+import com.tankwar.engine.subsystem.Updatable;
 import com.tankwar.engine.subsystem.TimingSubsystem;
 import com.tankwar.engine.subsystem.WorldSubsystem;
 import com.tankwar.game.Game;
@@ -52,6 +52,9 @@ public class Engine implements Runnable {
 
     /** All state listeners. */
     private List<StateListener> mStateListeners = new ArrayList<>();
+
+    /** All updatable objects. */
+    private List<Updatable> mUpdatables = new ArrayList<>();
 
     /** Singleton instance. */
     private static Engine mEngine;
@@ -175,8 +178,8 @@ public class Engine implements Runnable {
                 }
 
                 for (Class<? extends Subsystem> key : this.getSubsystems()) {
-                    Tick tick = getSubsystem(key);
-                    tick.tick();
+                    Updatable tick = getSubsystem(key);
+                    tick.update();
                 }
             }
         }catch(InterruptedException ex) {

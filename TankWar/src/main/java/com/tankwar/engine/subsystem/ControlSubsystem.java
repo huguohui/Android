@@ -22,7 +22,7 @@ public class ControlSubsystem extends Subsystem implements View.OnTouchListener{
      * Per loop will call this method.
      */
     @Override
-    public void tick() {
+    public void update() {
 
     }
 

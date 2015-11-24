@@ -23,7 +23,7 @@ public class AISubsystem extends Subsystem {
      * Per loop will call this method.
      */
     @Override
-    public void tick() {
+    public void update() {
 
     }
 }

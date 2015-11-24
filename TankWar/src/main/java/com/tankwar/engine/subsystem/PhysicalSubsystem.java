@@ -70,7 +70,7 @@ public class PhysicalSubsystem extends Subsystem {
     /**
      * Game loop tick.
      */
-    public void tick() {
+    public void update() {
         Entity temp = null;
         for (Entity entity : mCollisionCheckables) {
             if (temp == null)

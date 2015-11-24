@@ -7,7 +7,7 @@ import com.tankwar.engine.GameContext;
  * A subsystem implements some functions.
  * @since 2015/11/06
  */
-public abstract class Subsystem implements Tick {
+public abstract class Subsystem implements Updatable {
 	/**
 	 * The context of module rely.
 	 */

@@ -130,7 +130,7 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     /**
      * Game loop tick.
      */
-    public void tick() {
+    public void update() {
         Paint p = new Paint();
         p.setColor(Color.WHITE);
         p.setTextSize(100);

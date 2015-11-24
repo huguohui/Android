@@ -50,7 +50,7 @@ public class TimingSubsystem extends Subsystem implements Engine.StateListener {
      * Per loop will call this method.
      */
     @Override
-    public void tick() {
+    public void update() {
         mFrameTime = (int)(System.currentTimeMillis() - mPrevTime);
         mSystemTime += mFrameTime;
         mPrevTime = System.currentTimeMillis();

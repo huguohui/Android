@@ -1,12 +1,12 @@
 package com.tankwar.engine;
 
-import com.tankwar.engine.subsystem.Tick;
+import com.tankwar.engine.subsystem.Updatable;
 
 /**
  * The round for game.
  * @since 2015/11/23
  */
-public abstract class Round implements Tick {
+public abstract class Round implements Updatable {
     /** The round number. */
     private int mRoundNumber = 0;
 
@@ -22,6 +22,21 @@ public abstract class Round implements Tick {
     /** The round is clear? */
     private boolean mIsClear = false;
 
+    /** The round is failed? */
+    private boolean mIsFailed = false;
+
+    /** The engine instance. */
+    private Engine mEngine;
+
+
+    /**
+     * Default constructor.
+     * @param engine A {@link Engine}.
+     */
+    public Round(Engine engine) {
+        mEngine = engine;
+    }
+
 
     /**
      * Start a round.
@@ -30,9 +45,21 @@ public abstract class Round implements Tick {
 
 
     /**
-     * Progress a round.
+     * Handler round progress.
      */
     public abstract void progress();
+
+
+    /**
+     * When round failed, to do something.
+     */
+    public abstract void failed();
+
+
+    /**
+     * When round clear to do something.
+     */
+    public abstract void clear();
 
 
     /**
@@ -40,13 +67,6 @@ public abstract class Round implements Tick {
      * @return a new {@link Round}.
      */
     public abstract Round getNext();
-
-
-    /**
-     * Get the round if is end round.
-     * @reutrn true is end, false not end.
-     */
-    public abstract boolean isEnd();
 
 
 
@@ -57,11 +77,14 @@ public abstract class Round implements Tick {
         if (!mIsStart) start();
 
         if (!isClear()) {
-            progress();
-            if (isEnd()) {
-
+            if (isFailed()) {
+                failed();
+                return;
             }
+            progress();
         }
+
+        getNext();
     }
 
 
@@ -105,8 +128,23 @@ public abstract class Round implements Tick {
         mIsClear = isClear;
     }
 
-
     public boolean isClear() {
         return mIsClear;
+    }
+
+    public boolean isFailed() {
+        return mIsFailed;
+    }
+
+    public void setIsFailed(boolean isFailed) {
+        mIsFailed = isFailed;
+    }
+
+    public Engine getEngine() {
+        return mEngine;
+    }
+
+    public void setEngine(Engine engine) {
+        mEngine = engine;
     }
 }

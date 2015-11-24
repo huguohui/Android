@@ -5,9 +5,9 @@ package com.tankwar.engine.subsystem;
  * @author hgh
  * @since 2015/11/09
  */
-public interface Tick {
+public interface Updatable {
     /**
      * Per loop will call this method.
      */
-    void tick();
+    void update();
 }
