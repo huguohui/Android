@@ -1,12 +1,20 @@
 package com.tankwar.engine.entity;
 
+import android.graphics.Rect;
+
 /**
- * Destroyable is a kind of object, that could be destory.
+ * Destroyable is a kind of object, that could be destroy.
  * @since 2015/11/10
  */
 public interface Destroyable {
 	/**
-	 * Method destory to implements destory a object.
+	 * Destroy a region of destroyable.
 	 */
-	void destory();
+	void destroy(Rect r);
+
+
+	/**
+	 * Destroy full region of destroyable.
+	 */
+	void destroy();
 }

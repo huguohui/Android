@@ -64,6 +64,14 @@ public class NormalBullet extends Bullet {
     }
 
     /**
+     * The layer index of draw.
+     */
+    @Override
+    public int getIndex() {
+        return 0;
+    }
+
+    /**
      * This method implemets move behavior.
      */
     @Override

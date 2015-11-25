@@ -107,7 +107,9 @@ public class Game {
      * Start a game.
      */
     public void start() {
-        this.mEngine.start();
+        GameRound round = new GameRound(mEngine);
+        mEngine.addUpdatable(round);
+        mEngine.start();
     }
 
 

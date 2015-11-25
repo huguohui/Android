@@ -1,6 +1,7 @@
 package com.tankwar.entity;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.Entity;
@@ -22,10 +23,20 @@ public class Wall extends Obstacle {
     }
 
     /**
-     * Method destory to implements destory a object.
+     * Destroy a region of destroyable.
+     *
+     * @param r
      */
     @Override
-    public void destory() {
+    public void destroy(Rect r) {
+
+    }
+
+    /**
+     * Method destroy to implements destroy a object.
+     */
+    @Override
+    public void destroy() {
 
     }
 
@@ -38,6 +49,14 @@ public class Wall extends Obstacle {
     @Override
     public void draw(Canvas canvas) {
 
+    }
+
+    /**
+     * The layer index of draw.
+     */
+    @Override
+    public int getIndex() {
+        return 0;
     }
 
 

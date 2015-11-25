@@ -14,4 +14,11 @@ public interface Drawable {
      * @param canvas The canvas.
 	 */
 	void draw(Canvas canvas);
+
+
+	/**
+	 * The layer index of draw.
+	 * @return A number that >= 0.
+	 */
+	int getIndex();
 }

@@ -68,6 +68,14 @@ public class ArmorPiercingBullet extends Bullet {
     }
 
     /**
+     * The layer index of draw.
+     */
+    @Override
+    public int getIndex() {
+        return 0;
+    }
+
+    /**
      * This method implements move behavior.
      */
     @Override

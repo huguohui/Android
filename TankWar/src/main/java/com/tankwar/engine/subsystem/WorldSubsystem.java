@@ -122,6 +122,13 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
      */
     public void setWorld(Terrain[][] terrain) {
         mWorld = terrain;
+		if (terrain == null) return;
+
+		for (Terrain[] terrains : terrain) {
+			for (Terrain t : terrains) {
+				getEngine().getGraphicsSubsystem().addDrawable(t, 0);
+			}
+		}
     }
 
 

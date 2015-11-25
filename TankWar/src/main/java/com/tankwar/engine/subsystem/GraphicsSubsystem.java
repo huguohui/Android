@@ -8,8 +8,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.tankwar.engine.Engine;
+import com.tankwar.utils.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -101,6 +103,16 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
 
 
     /**
+     * Add a drawable to layer.
+     * @param drawable A {@link Drawable}.
+     * @param index The layer index.
+     */
+    public void addDrawable(Drawable drawable) {
+        mLayers.get(0).addObject(drawable);
+    }
+
+
+    /**
      * Get a layer.
      * @return A {@link Layer}.
      */
@@ -140,9 +152,9 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
 
         canvas.drawColor(Color.BLACK);
         canvas.drawText("------------------>", 0, i++, p);
-        canvas.drawText("Game time: " + ((TimingSubsystem)getEngine().getSubsystem(TimingSubsystem.class))
-                .getSystemTime(), 0, i+100, p);
-        canvas.drawText("Frame time: " + ((TimingSubsystem)getEngine().getSubsystem(TimingSubsystem.class))
+        canvas.drawText("Game time: " + getEngine().getTimingSubsystem()
+                .getSystemTime(), 0, i + 100, p);
+        canvas.drawText("Frame time: " + getEngine().getTimingSubsystem()
                 .getFrameTime(), 0, i+200, p);
         canvas.drawText("System time: " + System.currentTimeMillis(), 0, i + 300, p);
         try {

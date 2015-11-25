@@ -79,7 +79,7 @@ public abstract class Round implements Updatable {
     /**
      * Check this round state on per tick.
      */
-    public void tick() {
+    public void update() {
         if (!mIsStart) start();
 
         if (!isClear()) {

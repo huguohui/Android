@@ -96,6 +96,14 @@ final public class LightTank extends Tank {
 
     }
 
+    /**
+     * The layer index of draw.
+     */
+    @Override
+    public int getIndex() {
+        return 0;
+    }
+
 
     /**
      * This method implemets move behavior.
