@@ -1,6 +1,5 @@
 package com.tankwar.net.http;
 
-import java.net.Socket;
 import java.net.URL;
 
 /**
@@ -8,35 +7,26 @@ import java.net.URL;
  * @author HGH
  * @since 2015/11/05
  */
-public abstract class Http extends Socket {
-	/**
-	 * A URL special host address and 
-	 * request path, parameter.
-	 */
+public abstract class Http {
+	/** A URL special host address and request path, parameter. */
 	private URL mUrl;
 
-	
-	/**
-	 * A special HTTP version.
-	 */
+	/** A special HTTP version.*/
 	private String mVersion;
 
-
-	/**
-	 * HTTP header.
-	 */
+	/** HTTP header. */
 	private HttpHeader mHttpHeader;
-
 	
-	/**
-	 * HTTP body.
-	 */
+	/** HTTP body. */
 	private HttpBody mHttpBody;
 
-    /**
-	 * Is security HTTP?
-	 */
+    /** Is security HTTP? */
 	private boolean mIsSecurity;
+
+	/** Cookie of http. */
+	private HttpCookie mHttpCookie;
+
+
 	
 	
 	/**
@@ -87,4 +77,6 @@ public abstract class Http extends Socket {
 	public void setIsSecurity(boolean isSecurity) {
 		mIsSecurity = isSecurity;
 	}
+
+
 }

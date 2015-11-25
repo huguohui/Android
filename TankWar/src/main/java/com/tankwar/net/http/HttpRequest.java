@@ -24,6 +24,7 @@ public class HttpRequest extends Http implements Request {
     public static enum Method {
         GET,  //GET method.
         POST, //POST mehtod.
+        HEAD,
     };
 
     /**

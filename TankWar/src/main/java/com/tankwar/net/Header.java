@@ -2,7 +2,6 @@ package com.tankwar.net;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Map;
  * @author HGH
  * @since 2015/11/05
  */
-public abstract class Header extends HashMap<String, String> {
+public abstract class Header {
 	public Header(InputStream header) {
 		
 	}
@@ -28,6 +27,6 @@ public abstract class Header extends HashMap<String, String> {
 
 
 	public Header(Map<String, String> header) {
-		super(header);
+
 	}
 }
