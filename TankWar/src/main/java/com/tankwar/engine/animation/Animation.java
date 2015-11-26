@@ -1,5 +1,8 @@
-package com.tankwar.engine;
+package com.tankwar.engine.animation;
 
+import android.graphics.Canvas;
+
+import com.tankwar.engine.GameContext;
 import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.engine.subsystem.Sprite;
 
@@ -18,7 +21,7 @@ public abstract class Animation implements Drawable {
     public final static int AS_FINISHED= 0x03;
 
     /** The all frames of animation. */
-    private List<FrameDescriptor> mFrameDescriptors = new ArrayList<>();
+    private Descriptor mDescriptor;
 
     /** The all state listeners. */
     private List<StateListener> mStateListeners = new ArrayList<>();
@@ -35,20 +38,38 @@ public abstract class Animation implements Drawable {
     /** The animation start time. */
     private long mStartTime;
 
+    /** The animation x coordinate to draw. */
+    private int mX;
+
+    /** The animation y coordinate to draw. */
+    private int mY;
+
 
     /**
      * To create a animation object by two parameters.
      *
      * @param context The gameContext.
-     * @param frames The frames.
+     * @param descriptor The frames.
      */
-    public Animation(GameContext context, List<FrameDescriptor> frames, long duration) {
+    public Animation(GameContext context, Descriptor descriptor) {
         this(context);
-        if (mFrameDescriptors != null) {
-            this.mFrameDescriptors = frames;
+        if (mDescriptor != null) {
+            this.mDescriptor = descriptor;
         }
-        this.mDuration = duration;
     }
+
+    /**
+     * The creating a animation object by a context.
+     * @param context The game context.
+     */
+    public Animation(GameContext context, int x, int y) {
+        if (context != null) {
+            this.mGameContext = context;
+        }
+        this.mX = x;
+        this.mY = y;
+    }
+
 
     /**
      * The creating a animation object by a context.
@@ -58,15 +79,6 @@ public abstract class Animation implements Drawable {
         if (context != null) {
             this.mGameContext = context;
         }
-    }
-
-
-    /**
-     * Add a frame descriptor.
-     * @param frame The {@link com.tankwar.engine.Animation.FrameDescriptor}.
-     */
-    public void addFrame(FrameDescriptor frame) {
-        this.mFrameDescriptors.add(frame);
     }
 
 
@@ -114,6 +126,7 @@ public abstract class Animation implements Drawable {
     public abstract void stop();
 
 
+    
     public long getStartTime() {
         return mStartTime;
     }
@@ -130,9 +143,10 @@ public abstract class Animation implements Drawable {
         mDuration = duration;
     }
 
-    public void setFrameDescriptors(List<FrameDescriptor> frameDescriptors) {
-        mFrameDescriptors = frameDescriptors;
+    public void setDescriptor(Descriptor Descriptor) {
+        mDescriptor = Descriptor;
     }
+
 
     public List<StateListener> getStateListeners() {
         return mStateListeners;
@@ -146,12 +160,9 @@ public abstract class Animation implements Drawable {
         mStateListeners.remove(listener);
     }
 
-    /**
-     * Get all frame descriptors.
-     * @return All {@link FrameDescriptor}.
-     */
-    public List<FrameDescriptor> getFrameDescriptors() {
-        return mFrameDescriptors;
+
+    public Descriptor getDescriptor() {
+        return mDescriptor;
     }
 
 
@@ -165,15 +176,22 @@ public abstract class Animation implements Drawable {
      * The description of per frame in animation.
      * @since 2015/11/20
      */
-    public static class FrameDescriptor {
+    public static abstract class Descriptor {
         /** The index of layer that to drawing. */
         private int mLayerIndex;
 
         /** Sprites of this animation. */
-        private Sprite mSprites;
+        private List<Sprite> mSprites;
 
-        /** The per frame draw duration. */
+        /** The per frame draw duration.*/
         private int mDistance;
+
+
+        /**
+         * Get next frame of animation.
+         * @return Next frame of animation.
+         */
+        public abstract void drawNext(Canvas canvas);
 
 
         public int getLayerIndex() {
@@ -184,11 +202,11 @@ public abstract class Animation implements Drawable {
             mLayerIndex = layerIndex;
         }
 
-        public Sprite getSprites() {
+        public List<Sprite> getSprites() {
             return mSprites;
         }
 
-        public void setSprites(Sprite sprites) {
+        public void setSprites(List<Sprite> sprites) {
             mSprites = sprites;
         }
 
