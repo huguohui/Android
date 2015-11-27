@@ -108,7 +108,10 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
      * @param index The layer index.
      */
     public void addDrawable(Drawable drawable) {
-        mLayers.get(0).addObject(drawable);
+        if (drawable.getIndex() > MAX_LAYERS)
+            throw new RuntimeException("The special layer index " + drawable.getIndex()
+                    + " > MAX_LAYERS " + MAX_LAYERS);
+        mLayers.get(drawable.getIndex()).addObject(drawable);
     }
 
 

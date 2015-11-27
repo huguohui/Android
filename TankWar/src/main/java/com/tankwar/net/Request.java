@@ -40,7 +40,7 @@ public interface Request {
      * @param timeout Request timeout.
      * @return If connect success, return true else false.
      */
-    public abstract boolean connect(InetAddress address, long timeout);
+    public abstract boolean connect(InetAddress address, int timeout);
 
 
     /**
@@ -49,7 +49,7 @@ public interface Request {
      * @param timeout Request timeout.
      * @return If connect success, return true else false.
      */
-    public abstract boolean connect(URL url, long timeout);
+    public abstract boolean connect(URL url, int timeout);
 
 
     /**

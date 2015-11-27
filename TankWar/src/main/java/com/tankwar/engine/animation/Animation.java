@@ -1,8 +1,7 @@
 package com.tankwar.engine.animation;
 
-import android.graphics.Canvas;
-
-import com.tankwar.engine.GameContext;
+import com.tankwar.engine.Engine;
+import com.tankwar.engine.Engine;
 import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.engine.subsystem.Sprite;
 
@@ -26,14 +25,11 @@ public abstract class Animation implements Drawable {
     /** The all state listeners. */
     private List<StateListener> mStateListeners = new ArrayList<>();
 
-    /** The context of game. */
-    private GameContext mGameContext;
+    /** The engine of game. */
+    private Engine mEngine;
 
     /** The current animation playing state. */
     private int mState = AS_NONE;
-
-    /** The animation total duration. */
-    private long mDuration;
 
     /** The animation start time. */
     private long mStartTime;
@@ -44,41 +40,64 @@ public abstract class Animation implements Drawable {
     /** The animation y coordinate to draw. */
     private int mY;
 
+    /** The frame counter. */
+    private int mFrameCounter = 0;
+
 
     /**
      * To create a animation object by two parameters.
      *
-     * @param context The gameContext.
+     * @param engine The engine.
      * @param descriptor The frames.
+     * @param x The x coordinate to draw.
+     * @param y The y coordinate to draw.
      */
-    public Animation(GameContext context, Descriptor descriptor) {
-        this(context);
-        if (mDescriptor != null) {
-            this.mDescriptor = descriptor;
-        }
+    public Animation(Engine engine, Descriptor descriptor, int x, int y)
+            throws NullPointerException, IllegalArgumentException {
+        this(engine, descriptor);
+        if (x < 0 || y < 0)
+            throw new IllegalArgumentException("The x or y can't less than 0!");
     }
 
+
     /**
-     * The creating a animation object by a context.
-     * @param context The game context.
+     * To create a animation object by two parameters.
+     *
+     * @param engine The engine.
+     * @param descriptor The frames.
      */
-    public Animation(GameContext context, int x, int y) {
-        if (context != null) {
-            this.mGameContext = context;
-        }
+    public Animation(Engine engine, Descriptor descriptor) throws NullPointerException {
+        this(engine);
+        if (mDescriptor == null || descriptor == null)
+            throw new NullPointerException("The Engine or Descriptor can't null!");
+
+        this.mDescriptor = descriptor;
+    }
+
+
+    /**
+     * The creating a animation object by a engine.
+     * @param engine The game engine.
+     */
+    public Animation(Engine engine, int x, int y) throws IllegalArgumentException {
+        this(engine);
+        if (x < 0 || y < 0)
+            throw new IllegalArgumentException("The x or y can't less than 0!");
+
         this.mX = x;
         this.mY = y;
     }
 
 
     /**
-     * The creating a animation object by a context.
-     * @param context The game context.
+     * The creating a animation object by a engine.
+     * @param engine The game engine.
      */
-    public Animation(GameContext context) {
-        if (context != null) {
-            this.mGameContext = context;
-        }
+    public Animation(Engine engine) {
+        if (engine == null)
+            throw new NullPointerException("Engine instance can't null!");
+
+        this.mEngine = engine;
     }
 
 
@@ -103,9 +122,7 @@ public abstract class Animation implements Drawable {
     /**
      * To start playing the animation.
      */
-    public void play() {
-
-    }
+    public abstract void play();
 
 
     /**
@@ -135,18 +152,14 @@ public abstract class Animation implements Drawable {
         mStartTime = startTime;
     }
 
-    public long getDuration() {
-        return mDuration;
-    }
+    public void setDescriptor(Descriptor Descriptor) throws IllegalArgumentException {
+        if (Descriptor == null)
+            throw new IllegalArgumentException("The descriptor is null!");
+        if (Descriptor.getSprites() == null || Descriptor.getSprites().size() == 0)
+            throw new IllegalArgumentException("The descriptor without some sprites!");
 
-    public void setDuration(long duration) {
-        mDuration = duration;
-    }
-
-    public void setDescriptor(Descriptor Descriptor) {
         mDescriptor = Descriptor;
     }
-
 
     public List<StateListener> getStateListeners() {
         return mStateListeners;
@@ -160,17 +173,38 @@ public abstract class Animation implements Drawable {
         mStateListeners.remove(listener);
     }
 
-
     public Descriptor getDescriptor() {
         return mDescriptor;
     }
 
 
-    public GameContext getGameContext() {
-        return mGameContext;
+    public Engine getEngine() {
+        return mEngine;
     }
 
+    public void setEngine(Engine engine) {
+        mEngine = engine;
+    }
 
+    public int getX() {
+        return mX;
+    }
+
+    public void setX(int x) {
+        mX = x;
+    }
+
+    public int getY() {
+        return mY;
+    }
+
+    public void setY(int y) {
+        mY = y;
+    }
+
+    public int getFrameCounter() {
+        return ++mFrameCounter;
+    }
 
     /**
      * The description of per frame in animation.
@@ -186,12 +220,25 @@ public abstract class Animation implements Drawable {
         /** The per frame draw duration.*/
         private int mDistance;
 
+        /** The game engine isntance. */
+        private Engine mEnine;
+
+        /** The animation total duration. */
+        private long mDuration;
+
+
+        /**
+         * Descriptor construction mehtod.
+         */
+        public Descriptor(Engine engine) {
+
+        }
+
 
         /**
          * Get next frame of animation.
          * @return Next frame of animation.
          */
-        public abstract void drawNext(Canvas canvas);
 
 
         public int getLayerIndex() {
@@ -216,6 +263,22 @@ public abstract class Animation implements Drawable {
 
         public void setDistance(int distance) {
             this.mDistance = distance;
+        }
+
+        public Engine getEnine() {
+            return mEnine;
+        }
+
+        public void setEnine(Engine enine) {
+            mEnine = enine;
+        }
+
+        public long getDuration() {
+            return mDuration;
+        }
+
+        public void setDuration(long duration) {
+            mDuration = duration;
         }
     }
 

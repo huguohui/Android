@@ -4,11 +4,13 @@ import com.tankwar.net.Body;
 import com.tankwar.net.Header;
 import com.tankwar.net.Request;
 import com.tankwar.net.RequestStateListener;
+import com.tankwar.utils.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
@@ -22,37 +24,34 @@ public class HttpRequest extends Http implements Request {
      * Enum of support request method.
      */
     public static enum Method {
-        GET,  //GET method.
-        POST, //POST mehtod.
-        HEAD,
+        GET,  //GET request.
+        POST, //POST request.
+        HEAD, //HEAD request.
     };
 
-    /**
-     * The method of requesting http.
-     */
+    /** The method of requesting http. */
     private Method method = Method.GET;
 
 
-    /**
-     * Connection timeout time.
-     * Default time is 3s.
-     */
-    private long timeout = 3000;
+    /** Connection timeout time. Default time is 3s. */
+    private int timeout = 3000;
 
 
-    /**
-     * Request state listeners.
-     */
+    /** Request state listeners. */
     private RequestStateListener listener;
+
+    /** The base socket object of request. */
+    private Socket mSocket;
 
 
     /**
      * Construct a http request object.
      * @param url Special URL.
      */
-	public HttpRequest(URL url, Method method) {
+	public HttpRequest(URL url, Method method) throws NullPointerException {
 		super(url);
-        this.method = method;
+        if (method != null) this.method = method;
+
         connect();
 	}
 
@@ -100,7 +99,7 @@ public class HttpRequest extends Http implements Request {
      * @return If connect success, return true else false.
      */
     @Override
-    public boolean connect(InetAddress address, long timeout) {
+    public boolean connect(InetAddress address, int timeout) {
         return false;
     }
 
@@ -112,21 +111,22 @@ public class HttpRequest extends Http implements Request {
      * @return If connect success, return true else false.
      */
     @Override
-    public boolean connect(URL url, long timeout) {
+    public boolean connect(URL url, int timeout) {
         try {
-            this.connect(new InetSocketAddress(url.getHost(), url.getPort()));
-            if (this.isConnected()) {
-                this.listener.onConnected();
+            InetSocketAddress isd = new InetSocketAddress(url.getHost(), url.getPort());
+            mSocket.connect(isd, timeout);
+            if (mSocket.isConnected()) {
+                listener.onConnected();
                 return true;
             } else {
-                this.listener.onConnectedFail();
+                listener.onConnectedFail();
             }
         }catch (SocketTimeoutException ex) {
-            this.listener.onTimeout();
-            this.close();
+            listener.onTimeout();
+            close();
         }catch (IOException ex) {
-            this.listener.onException();
-            this.close();
+            listener.onException();
+            close();
         }
         return false;
     }
@@ -139,7 +139,7 @@ public class HttpRequest extends Http implements Request {
         OutputStream os = null;
 
         try{
-            os = this.getOutputStream();
+            os = mSocket.getOutputStream();
             os.write(getHttpBody().getContent());
             os.flush();
             this.listener.onSended();
@@ -174,9 +174,9 @@ public class HttpRequest extends Http implements Request {
     @Override
     public void close() {
         try{
-            super.shutdownInput();
-            super.shutdownOutput();
-            super.close();
+            mSocket.shutdownInput();
+            mSocket.shutdownOutput();
+            mSocket.close();
         }catch(IOException ex) {
             this.listener.onException();
         }
