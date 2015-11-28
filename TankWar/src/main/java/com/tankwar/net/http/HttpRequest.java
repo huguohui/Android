@@ -50,8 +50,9 @@ public class HttpRequest extends Http implements Request {
      */
 	public HttpRequest(URL url, Method method) throws NullPointerException {
 		super(url);
-        if (method != null) this.method = method;
+        if (method == null) throw new NullPointerException("HTTP request can't null!");
 
+        this.method = method;
         connect();
 	}
 
@@ -113,14 +114,13 @@ public class HttpRequest extends Http implements Request {
     @Override
     public boolean connect(URL url, int timeout) {
         try {
-            InetSocketAddress isd = new InetSocketAddress(url.getHost(), url.getPort());
-            mSocket.connect(isd, timeout);
+            mSocket.connect(new InetSocketAddress(url.getHost(), url.getPort()),
+                    timeout);
             if (mSocket.isConnected()) {
                 listener.onConnected();
                 return true;
-            } else {
-                listener.onConnectedFail();
             }
+            listener.onConnectedFail();
         }catch (SocketTimeoutException ex) {
             listener.onTimeout();
             close();

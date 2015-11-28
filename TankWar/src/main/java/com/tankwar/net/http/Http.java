@@ -1,6 +1,8 @@
 package com.tankwar.net.http;
 
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Describe a Hypertext transfer protocol.
@@ -26,8 +28,6 @@ public abstract class Http {
 	/** Cookie of http. */
 	private HttpCookie mHttpCookie;
 
-
-	
 	
 	/**
 	 * Construct a HTTP object by pass a URL.
@@ -42,7 +42,8 @@ public abstract class Http {
 		return mUrl;
 	}
 
-	public void setUrl(URL url) {
+	public void setUrl(URL url) throws NullPointerException {
+		if (mUrl == null) throw new NullPointerException("Url can't null!");
 		mUrl = url;
 	}
 
@@ -50,7 +51,21 @@ public abstract class Http {
 		return mVersion;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(String version) throws IllegalArgumentException {
+		Matcher matcher = Pattern.compile("(\\d)\\.(\\d)").matcher(version);
+		boolean error = false;
+		if (matcher.find()) {
+			int ver = Integer.parseInt(matcher.group(1));
+			int subVer = Integer.parseInt(matcher.group(2));
+			if (ver > 2)
+				error = true;
+		}else{
+			error = true;
+		}
+
+		if (error)
+			throw new IllegalArgumentException("HTTP version is invalid!");
+
 		mVersion = version;
 	}
 
@@ -58,7 +73,10 @@ public abstract class Http {
 		return mHttpHeader;
 	}
 
-	public void setHttpHeader(HttpHeader httpHeader) {
+	public void setHttpHeader(HttpHeader httpHeader) throws NullPointerException{
+		if (httpHeader == null)
+			throw new NullPointerException("HTTP header can't null!");
+
 		mHttpHeader = httpHeader;
 	}
 
@@ -66,7 +84,10 @@ public abstract class Http {
 		return mHttpBody;
 	}
 
-	public void setHttpBody(HttpBody httpBody) {
+	public void setHttpBody(HttpBody httpBody) throws NullPointerException {
+		if (httpBody == null)
+			throw new NullPointerException("Http body can't null!");
+
 		mHttpBody = httpBody;
 	}
 
