@@ -11,6 +11,20 @@ import java.io.Reader;
  */
 public interface Receiver {
 	/**
+	 * Get length of data.
+	 * @return Length of data.
+	 */
+	long getLength();
+
+
+	/**
+	 * Get length of received data.
+	 * @return Length received data.
+	 */
+	long getReceivedLength();
+
+
+	/**
 	 * Receiving data.
 	 * @throws IOException When I/O exception.
 	 * @throws java.net.ConnectException When connection exception.

@@ -1,10 +1,10 @@
 package com.tankwar.net.http;
 
-import com.tankwar.net.RequestStateListener;
 import com.tankwar.net.Requester;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -21,11 +21,17 @@ public class HttpRequester implements Requester {
     /** Connection timeout time. Default time is 3s. */
     private int timeout = 3000;
 
-    /** Requester state //listeners. */
-    private RequestStateListener listener;
-
     /** The base socket object of request. */
     private Socket mSocket;
+
+	/** Requested url. */
+	private URL mUrl;
+
+	/** Http header. */
+	private HttpHeader mHttpHeader;
+
+	/** Http body. */
+	private HttpBody mHttpBody;
 
 	/** Accept field. */
 	private final String ACCEPT = "*/*";
@@ -48,11 +54,13 @@ public class HttpRequester implements Requester {
      * Construct a http request object.
      * @param url Special URL.
      */
-	public HttpRequester(URL url, Http.Method method) throws NullPointerException {
-        if (method == null)
-			throw new NullPointerException("HTTP request can't null!");
+	public HttpRequester(URL url, Http.Method method) throws NullPointerException, IOException {
+        if (url == null)
+			throw new NullPointerException("The URL can't null!");
 
-        this.method = method;
+        if (method != null)
+			this.method = method;
+		mUrl = url;
 		open();
 	}
 
@@ -78,12 +86,10 @@ public class HttpRequester implements Requester {
 		OutputStream os = mSocket.getOutputStream();
 		if (send(getHttpHeader().toString().getBytes(), os)) {
 			if (send(getHttpBody().getContent(), os)) {
-				listener.onSended();
 				return true;
 			}
 		}
 
-		listener.onSendFailed();
 		return false;
     }
 
@@ -104,12 +110,35 @@ public class HttpRequester implements Requester {
 
 
 	/**
+	 * Set requests address.
+	 *
+	 * @param address Requests address.
+	 */
+	@Override
+	public void setAddress(InetSocketAddress address) {
+
+	}
+
+
+	/**
+	 * Get requests address.
+	 *
+	 * @return Requests address.
+	 */
+	@Override
+	public InetSocketAddress getAddress() {
+		return null;
+	}
+
+
+	/**
 	 * Open a connection.
 	 */
 	@Override
-	public boolean open() {
-
-		return false;
+	public boolean open() throws IOException {
+		InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(
+				mUrl.getHost()), getUrl().getPort());
+		return open(socketAddress);
 	}
 
 
@@ -120,8 +149,8 @@ public class HttpRequester implements Requester {
 	 * @return If connect success, return true else false.
 	 */
 	@Override
-	public boolean open(InetSocketAddress address) {
-		return false;
+	public boolean open(InetSocketAddress address) throws IOException {
+		return open(address, timeout);
 	}
 
 
@@ -132,8 +161,9 @@ public class HttpRequester implements Requester {
 	 * @param timeout
 	 */
 	@Override
-	public boolean open(InetSocketAddress address, int timeout) {
-		return false;
+	public boolean open(InetSocketAddress address, int timeout) throws IOException {
+		mSocket.connect(address, timeout);
+		return true;
 	}
 
 
@@ -141,15 +171,11 @@ public class HttpRequester implements Requester {
      * Close http connection.
      */
     @Override
-    public void close() {
-        try{
-            mSocket.shutdownInput();
-            mSocket.shutdownOutput();
-            mSocket.close();
-        }catch(IOException ex) {
-
-        }
-    }
+    public void close() throws IOException {
+		mSocket.shutdownInput();
+		mSocket.shutdownOutput();
+		mSocket.close();
+	}
 
 
     public Http.Method getMethod() {
@@ -161,7 +187,52 @@ public class HttpRequester implements Requester {
     }
 
 
-    public void setListener(RequestStateListener listener) {
-		this.listener = listener;
-    }
+	public int getTimeout() {
+		return timeout;
+	}
+
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+
+	public Socket getSocket() {
+		return mSocket;
+	}
+
+
+	public void setSocket(Socket socket) {
+		mSocket = socket;
+	}
+
+
+	public URL getUrl() {
+		return mUrl;
+	}
+
+
+	public void setUrl(URL url) {
+		mUrl = url;
+	}
+
+
+	public HttpHeader getHttpHeader() {
+		return mHttpHeader;
+	}
+
+
+	public void setHttpHeader(HttpHeader httpHeader) {
+		mHttpHeader = httpHeader;
+	}
+
+
+	public HttpBody getHttpBody() {
+		return mHttpBody;
+	}
+
+
+	public void setHttpBody(HttpBody httpBody) {
+		mHttpBody = httpBody;
+	}
 }

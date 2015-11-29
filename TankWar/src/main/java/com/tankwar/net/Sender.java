@@ -2,6 +2,7 @@ package com.tankwar.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 
 /**
  * Sender can send something to somewhere.
@@ -23,4 +24,18 @@ public interface Sender {
 	 * @throws java.io.IOException If exception.
 	 */
 	boolean send(byte[] data, OutputStream to) throws IOException;
+
+
+	/**
+	 * Set requests address.
+	 * @param address Requests address.
+	 */
+	void setAddress(InetSocketAddress address);
+
+
+	/**
+	 * Get requests address.
+	 * @return Requests address.
+	 */
+	InetSocketAddress getAddress();
 }

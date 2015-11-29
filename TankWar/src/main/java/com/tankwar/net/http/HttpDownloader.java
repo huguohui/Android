@@ -1,11 +1,11 @@
 package com.tankwar.net.http;
 
 import com.tankwar.net.Downloader;
+import com.tankwar.net.Requester;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.net.ConnectException;
 import java.net.URL;
@@ -14,16 +14,23 @@ import java.net.URL;
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
-public class HttpDownloader extends Http implements Downloader{
+public class HttpDownloader implements Downloader {
 	/**
-	 * Construct a http request object.
-	 *
-	 * @param url    Special URL.
-	 * @param method
+	 * Construct a http downloader object.
+	 * @param url Special URL.
 	 */
-	public HttpDownloader(URL url, Method method) throws NullPointerException {
-		super(url);
+	public HttpDownloader(URL url) {
 	}
+
+
+	/**
+	 * Construct a http downloader object.
+	 * @param requester A {@link com.tankwar.net.Requester}.
+	 */
+	public HttpDownloader(Requester requester) {
+
+	}
+
 
 
 	/**
@@ -58,6 +65,28 @@ public class HttpDownloader extends Http implements Downloader{
 
 
 	/**
+	 * Get length of data.
+	 *
+	 * @return Length of data.
+	 */
+	@Override
+	public long getLength() {
+		return 0;
+	}
+
+
+	/**
+	 * Get length of received data.
+	 *
+	 * @return Length received data.
+	 */
+	@Override
+	public long getReceivedLength() {
+		return 0;
+	}
+
+
+	/**
 	 * Receiving data.
 	 *
 	 * @throws IOException      When I/O exception.
@@ -88,31 +117,5 @@ public class HttpDownloader extends Http implements Downloader{
 	@Override
 	public void receive(Reader source) throws IOException {
 
-	}
-
-
-	/**
-	 * Send data to somewhere.
-	 *
-	 * @return If sent return true, else false.
-	 * @throws IOException If exception.
-	 */
-	@Override
-	public boolean send() throws IOException {
-		return false;
-	}
-
-
-	/**
-	 * Send data to somewhere.
-	 *
-	 * @param data The data.
-	 * @param to   Send to somewhere.
-	 * @return If sent return true, else false.
-	 * @throws IOException If exception.
-	 */
-	@Override
-	public boolean send(byte[] data, OutputStream to) throws IOException {
-		return false;
 	}
 }

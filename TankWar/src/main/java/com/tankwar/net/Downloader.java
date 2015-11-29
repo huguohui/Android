@@ -7,7 +7,7 @@ import java.net.ConnectException;
 /**
  * Download some data form a place.
  */
-public interface Downloader extends Sender, Receiver {
+public interface Downloader extends Receiver {
 	/**
 	 * Start download data.
 	 */
