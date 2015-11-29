@@ -8,10 +8,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.tankwar.engine.Engine;
-import com.tankwar.utils.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,7 +95,7 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
      * @param drawable A {@link Drawable}.
      * @param index The layer index.
      */
-    public void addDrawable(Drawable drawable, int index) {
+    public void addDrawable(Drawable drawable, int index) throws IllegalArgumentException {
         mLayers.get(index).addObject(drawable);
     }
 
@@ -105,13 +103,20 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     /**
      * Add a drawable to layer.
      * @param drawable A {@link Drawable}.
-     * @param index The layer index.
      */
-    public void addDrawable(Drawable drawable) {
+    public void addDrawable(Drawable drawable) throws IllegalArgumentException {
         if (drawable.getIndex() > MAX_LAYERS)
-            throw new RuntimeException("The special layer index " + drawable.getIndex()
-                    + " > MAX_LAYERS " + MAX_LAYERS);
+            throw new IllegalArgumentException("The special layer index "
+                    + drawable.getIndex() + " > MAX_LAYERS " + MAX_LAYERS);
         mLayers.get(drawable.getIndex()).addObject(drawable);
+    }
+
+
+    /**
+     * Remove a drawable from graphics subsystem.
+     */
+    public void removeDrawable(Drawable drawable) throws NullPointerException {
+        mLayers.get(drawable.getIndex()).removeObject(drawable);
     }
 
 

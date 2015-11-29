@@ -1,7 +1,5 @@
 package com.tankwar.engine.subsystem;
 
-import com.tankwar.engine.subsystem.Drawable;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,15 @@ public class Layer {
      * Add a drawable object.
      * @param object Drawable object.
      */
-    public void addObject(Drawable object) {
+    public synchronized void addObject(Drawable object) {
         mObjects.add(object);
+    }
+
+
+    /**
+     * Remove a drawable object.
+     */
+    public synchronized void removeObject(Drawable drawable) {
+        mObjects.remove(drawable);
     }
 }

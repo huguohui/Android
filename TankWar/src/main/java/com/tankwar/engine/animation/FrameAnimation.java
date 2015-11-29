@@ -1,8 +1,11 @@
 package com.tankwar.engine.animation;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.tankwar.engine.Engine;
+import com.tankwar.engine.subsystem.TimingSubsystem;
 
 /**
  * A frame per animation is simply animation that draw one times per frame.
@@ -56,7 +59,7 @@ public class FrameAnimation extends Animation {
      */
     @Override
     public void play() {
-
+        getEngine().getGraphicsSubsystem().addDrawable(this);
     }
 
     /**
@@ -80,7 +83,7 @@ public class FrameAnimation extends Animation {
      */
     @Override
     public void stop() {
-
+        getEngine().getGraphicsSubsystem().removeDrawable(this);
     }
 
     /**
@@ -90,7 +93,38 @@ public class FrameAnimation extends Animation {
      */
     @Override
     public void draw(Canvas canvas) {
+        TimingSubsystem ts = getEngine().getTimingSubsystem();
+        long systemTime = ts.getSystemTime();
 
+        if (systemTime - getStartTime() >= getDescriptor().getDuration()) {
+            this.stop();
+            return;
+        }else{
+            if (getFrameStartTime() == 0)
+                setFrameStartTime(systemTime);
+
+            if (systemTime - getFrameStartTime() >= getDescriptor().getDistance()) {
+                setFrameStartTime(0);
+                nextFrameCount();
+            }
+
+            if (getFrameCount() >= getDescriptor().getTotalFrames()) {
+                if (getDescriptor().isLoop()) {
+                    setFrameCount(0);
+                    return;
+                }else{
+                    stop();
+                    return;
+                }
+            }
+        }
+
+        Paint paint = new Paint();
+        paint.setTextSize(50);
+        paint.setColor(Color.WHITE);
+        canvas.drawText("Frame count: " + getFrameCount(), 300, 1000, paint);
+        canvas.drawBitmap(getDescriptor().getNextFrame(getFrameCount()),
+                getX(), getY(), new Paint());
     }
 
     /**
@@ -100,6 +134,6 @@ public class FrameAnimation extends Animation {
      */
     @Override
     public int getIndex() {
-        return 0;
+        return getDescriptor().getLayerIndex();
     }
 }

@@ -1,19 +1,14 @@
 package com.tankwar.animation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 
 import com.tankwar.engine.Engine;
-import com.tankwar.engine.GameContext;
 import com.tankwar.engine.animation.Animation;
 import com.tankwar.engine.subsystem.Sprite;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.entity.Bullet;
-import com.tankwar.utils.GameRes;
-import com.tankwar.utils.GameSound;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,9 +25,25 @@ final public class Explosion extends Animation.Descriptor {
         WorldSubsystem ws = engine.getWorldSubsystem();
         list.add(new Sprite(ws.getBitmap("explode1.png")));
         list.add(new Sprite(ws.getBitmap("explode2.png")));
-        list.add(new Sprite(ws.getBitmap("explode3.png")));
-        list.add(new Sprite(ws.getBitmap("explode4.png")));
-        list.add(new Sprite(ws.getBitmap("explode5.png")));
+        list.add(new Sprite(ws.getBitmap("gameover.png")));
+
+        setLayerIndex(0);
         setSprites(list);
+        setDistance(200);
+        setDuration(400000);
+        setIsLoop(true);
+        setTotalFrames(2);
 	}
+
+    /**
+     * Get next frame of animation.
+     *
+     * @param index
+     * @return Next frame of animation.
+     * @index The frame index.
+     */
+    @Override
+    public Bitmap getNextFrame(int index) {
+        return getSprites().get(index).getBitmap(0);
+    }
 }

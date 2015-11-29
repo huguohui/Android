@@ -1,6 +1,7 @@
 package com.tankwar.engine.animation;
 
-import com.tankwar.engine.Engine;
+import android.graphics.Bitmap;
+
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.engine.subsystem.Sprite;
@@ -34,6 +35,8 @@ public abstract class Animation implements Drawable {
     /** The animation start time. */
     private long mStartTime;
 
+    private long mFrameStartTime;
+
     /** The animation x coordinate to draw. */
     private int mX;
 
@@ -41,7 +44,10 @@ public abstract class Animation implements Drawable {
     private int mY;
 
     /** The frame counter. */
-    private int mFrameCounter = 0;
+    private int mFrameCount = 0;
+
+    /** The animation play time count. */
+    private int mPlayTime = 0;
 
 
     /**
@@ -202,9 +208,31 @@ public abstract class Animation implements Drawable {
         mY = y;
     }
 
-    public int getFrameCounter() {
-        return ++mFrameCounter;
+    public int getFrameCount() {
+        return mFrameCount;
     }
+
+    public int nextFrameCount() {
+        return ++mFrameCount;
+    }
+
+    public void setFrameCount(int frameCount) {
+        mFrameCount = frameCount;
+    }
+
+    public long getFrameStartTime() {
+        return mFrameStartTime;
+    }
+
+    public void setFrameStartTime(long frameStartTime) {
+        mFrameStartTime = frameStartTime;
+    }
+
+
+
+
+
+
 
     /**
      * The description of per frame in animation.
@@ -221,25 +249,40 @@ public abstract class Animation implements Drawable {
         private int mDistance;
 
         /** The game engine isntance. */
-        private Engine mEnine;
+        private Engine mEngine;
 
         /** The animation total duration. */
         private long mDuration;
+
+        /** Animation is loop? */
+        private boolean mIsLoop = false;
+
+        /** How many frames contains in this animation? */
+        private int mTotalFrames;
 
 
         /**
          * Descriptor construction mehtod.
          */
         public Descriptor(Engine engine) {
-
+            mEngine = engine;
         }
 
 
         /**
          * Get next frame of animation.
+         * @index The frame index.
          * @return Next frame of animation.
          */
+        public abstract Bitmap getNextFrame(int index);
 
+        public int getTotalFrames() {
+            return mTotalFrames;
+        }
+
+        public void setTotalFrames(int totalFrames) {
+            mTotalFrames = totalFrames;
+        }
 
         public int getLayerIndex() {
             return mLayerIndex;
@@ -265,20 +308,28 @@ public abstract class Animation implements Drawable {
             this.mDistance = distance;
         }
 
-        public Engine getEnine() {
-            return mEnine;
-        }
-
-        public void setEnine(Engine enine) {
-            mEnine = enine;
-        }
-
         public long getDuration() {
             return mDuration;
         }
 
         public void setDuration(long duration) {
             mDuration = duration;
+        }
+
+        public boolean isLoop() {
+            return mIsLoop;
+        }
+
+        public void setIsLoop(boolean isLoop) {
+            mIsLoop = isLoop;
+        }
+
+        public Engine getEngine() {
+            return mEngine;
+        }
+
+        public void setEngine(Engine engine) {
+            mEngine = engine;
         }
     }
 

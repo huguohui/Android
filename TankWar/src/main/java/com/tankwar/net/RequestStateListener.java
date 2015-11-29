@@ -1,7 +1,7 @@
 package com.tankwar.net;
 
 /**
- * Request event listener.
+ * Requester event listener.
  */
 public interface RequestStateListener {
     /**
@@ -32,12 +32,6 @@ public interface RequestStateListener {
      * When sending failed, call this method.
      */
     void onSendFailed();
-
-
-    /**
-     * When appear exception, call this method.
-     */
-    void onException();
 
 
     /**

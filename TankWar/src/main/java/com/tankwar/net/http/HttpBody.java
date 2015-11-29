@@ -20,6 +20,36 @@ public class HttpBody extends Body {
 		super(body);
 	}
 
+    /**
+     * Fetch content from input stream.
+     *
+     * @param source Content source
+     */
+    @Override
+    public void setContent(InputStream source) {
+
+    }
+
+    /**
+     * Fetch content from reader.
+     *
+     * @param source Content source
+     */
+    @Override
+    public void setContent(Reader source) {
+
+    }
+
+    /**
+     * Fetch content from source.
+     *
+     * @param source Content source
+     */
+    @Override
+    public void setContent(String source) {
+
+    }
+
 
     /**
      * Construct a HTTP body from input stream.
@@ -30,32 +60,4 @@ public class HttpBody extends Body {
     }
 
 
-    /**
-     * Fetch content from input stream.
-     *
-     * @param source Content source
-     */
-    @Override
-    public void fetchData(InputStream source) {
-
-    }
-
-    /**
-     * Fetch content from reader.
-     *
-     * @param source Content source
-     */
-    @Override
-    public void fetchData(Reader source) {
-    }
-
-    /**
-     * Fetch content from source.
-     *
-     * @param source Content source
-     */
-    @Override
-    public void fetchData(String source) {
-        this.content = source.getBytes();
-    }
 }

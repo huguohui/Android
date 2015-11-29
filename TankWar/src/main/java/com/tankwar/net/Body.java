@@ -28,19 +28,19 @@ public abstract class Body {
 	/**
 	 * The content of body.
 	 */
-	protected byte[] content;
+	private byte[] content;
 
 	
 	/**
 	 * The encoding of body.
 	 */
-	protected String encoding;
+	private String encoding;
 
 
 	/**
 	 * The length of body.
 	 */
-	protected long length;
+	private long length;
 
 
 	/**
@@ -49,15 +49,15 @@ public abstract class Body {
 	 * 1 is text.
 	 * 2 is mixed.
 	 */
-	protected String type;
+	private String type;
 
 
-	/**
+	/** 
 	 * Construct a body from input stream.
 	 * @param body The content source.
 	 */
 	public Body(InputStream body) {
-        fetchData(body);
+        setContent(body);
 	}
 
 
@@ -66,7 +66,7 @@ public abstract class Body {
 	 * @param body The content source.
 	 */
 	public Body(Reader body) {
-		fetchData(body);
+		setContent(body);
 	}
 
 
@@ -75,7 +75,7 @@ public abstract class Body {
 	 * @param body The content.
 	 */
 	public Body(String body) {
-        fetchData(body);
+        setContent(body);
 	}
 
 
@@ -83,21 +83,21 @@ public abstract class Body {
      * Fetch content from input stream.
      * @param source Content source
      */
-    public abstract void fetchData(InputStream source);
+    public abstract void setContent(InputStream source);
 
 
     /**
      * Fetch content from reader.
      * @param source Content source
      */
-    public abstract void fetchData(Reader source);
+    public abstract void setContent(Reader source);
 
 
     /**
      * Fetch content from source.
      * @param source Content source
      */
-    public abstract void fetchData(String source);
+    public abstract void setContent(String source);
 
 
 	public byte[] getContent() {

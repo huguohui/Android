@@ -2,13 +2,16 @@ package com.tankwar.engine.subsystem;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Sprite graphics interface.
  * @since 2015/11/06
  */
 public class Sprite {
     /** The sprites. */
-    private Bitmap[] mSprites;
+    private List<Bitmap> mSprites = new ArrayList<>();
 
 
     /**
@@ -17,8 +20,12 @@ public class Sprite {
      * @param width The per sprite width.
      * @param height The per sprite height.
      */
-    public Sprite(Bitmap source, int width, int height) {
+    public Sprite(Bitmap source, int width, int height, int dir) {
+        for (int w = 0; w <= source.getWidth(); w += width) {
+            for (int h = 0; h <= source.getHeight(); h += height) {
 
+            }
+        }
     }
 
 
@@ -26,8 +33,11 @@ public class Sprite {
      * To constructing a sprite.
      * @param source The source.
      */
-    public Sprite(Bitmap source) {
-        mSprites = new Bitmap[]{source};
+    public Sprite(Bitmap source) throws NullPointerException {
+        if (source == null)
+            throw new NullPointerException("Bitmap can't null!");
+
+        mSprites.add(source);
     }
 
 
@@ -35,7 +45,7 @@ public class Sprite {
      * Get sprites.
      * @return All sprites.
      */
-    public Bitmap[] getAll() {
+    public List<Bitmap> getAll() {
         return mSprites;
     }
 
@@ -44,9 +54,9 @@ public class Sprite {
      * Get a sprite.
      * @return A sprite.
      */
-    public Bitmap get(int index) {
-        if (index < mSprites.length) {
-            return mSprites[index];
+    public Bitmap getBitmap(int index) {
+        if (index < mSprites.size() && index >= 0) {
+            return mSprites.get(index);
         }
         return null;
     }

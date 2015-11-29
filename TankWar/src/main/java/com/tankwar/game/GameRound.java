@@ -1,15 +1,10 @@
 package com.tankwar.game;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
+import com.tankwar.animation.Explosion;
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.Round;
-import com.tankwar.engine.subsystem.Drawable;
-import com.tankwar.engine.subsystem.Sprite;
+import com.tankwar.engine.animation.FrameAnimation;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.utils.Log;
 
 /**
  * The game round.
@@ -35,20 +30,11 @@ public class GameRound extends Round {
     public void start() {
         mWorldSubsystem = getEngine().getWorldSubsystem();
         mWorldSubsystem.setWorld(null);
-        getEngine().getGraphicsSubsystem().addDrawable(new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                canvas.drawBitmap(mWorldSubsystem.getBitmap("flag.png"), 0, 0, new Paint());
-                Paint p = new Paint();
-                p.setColor(Color.WHITE);
-                p.setTextSize(40);
-            }
 
-            @Override
-            public int getIndex() {
-                return 0;
-            }
-        }, 1);
+        Explosion exp = new Explosion(getEngine());
+        FrameAnimation fa = new FrameAnimation(getEngine());
+        fa.setDescriptor(exp);
+        fa.play();
         setIsStart(true);
     }
 
