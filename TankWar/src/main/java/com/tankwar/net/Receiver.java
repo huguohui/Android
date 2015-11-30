@@ -11,37 +11,24 @@ import java.io.Reader;
  */
 public interface Receiver {
 	/**
-	 * Get length of data.
-	 * @return Length of data.
-	 */
-	long getLength();
-
-
-	/**
-	 * Get length of received data.
-	 * @return Length received data.
-	 */
-	long getReceivedLength();
-
-
-	/**
 	 * Receiving data.
+	 * @return Received data by byte.
 	 * @throws IOException When I/O exception.
 	 * @throws java.net.ConnectException When connection exception.
 	 */
-	void receive();
+	byte receive() throws IOException;
 
 
 	/**
 	 * To receiving data from source, and save data to somewhere.
 	 * @param source Data source.
 	 */
-	void receive(InputStream source) throws IOException;
+	byte[] receive(InputStream source, int size) throws IOException;
 
 
 	/**
 	 * To receiving data from source.
 	 * @param source Data source.
 	 */
-	void receive(Reader source) throws IOException;
+	char[] receive(Reader source, int size) throws IOException;
 }

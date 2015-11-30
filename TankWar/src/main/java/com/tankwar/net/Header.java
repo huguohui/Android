@@ -78,6 +78,14 @@ public abstract class Header {
         mContent = data;
     }
 
+	/**
+	 * Get header data by key.
+	 * @param key The key.
+	 */
+	public String get(String key) {
+		return mContent.get(key);
+	}
+
 
 	/**
 	 * Append a line to http header.

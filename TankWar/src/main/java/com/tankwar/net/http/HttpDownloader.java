@@ -8,29 +8,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.ConnectException;
-import java.net.URL;
 
 /**
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
-public class HttpDownloader implements Downloader {
-	/**
-	 * Construct a http downloader object.
-	 * @param url Special URL.
-	 */
-	public HttpDownloader(URL url) {
-	}
-
+public class HttpDownloader extends Downloader {
+	/** The input stream. */
+	private InputStream mInputStream;
 
 	/**
 	 * Construct a http downloader object.
 	 * @param requester A {@link com.tankwar.net.Requester}.
 	 */
 	public HttpDownloader(Requester requester) {
-
+		super(requester);
+		setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
+		setDownloadedLength(0);
 	}
-
 
 
 	/**
@@ -65,57 +60,45 @@ public class HttpDownloader implements Downloader {
 
 
 	/**
-	 * Get length of data.
-	 *
-	 * @return Length of data.
-	 */
-	@Override
-	public long getLength() {
-		return 0;
-	}
-
-
-	/**
-	 * Get length of received data.
-	 *
-	 * @return Length received data.
-	 */
-	@Override
-	public long getReceivedLength() {
-		return 0;
-	}
-
-
-	/**
 	 * Receiving data.
 	 *
+	 * @return Received data by byte.
 	 * @throws IOException      When I/O exception.
 	 * @throws ConnectException When connection exception.
 	 */
 	@Override
-	public void receive() {
-
+	public byte receive() throws IOException {
+		return (byte) mInputStream.read();
 	}
-
 
 	/**
 	 * To receiving data from source, and save data to somewhere.
 	 *
 	 * @param source Data source.
+	 * @param size
 	 */
 	@Override
-	public void receive(InputStream source) throws IOException {
+	public byte[] receive(InputStream source, int size) throws IOException {
+		if (size <= 0)
+			throw new IllegalArgumentException("The size is illegal!");
 
+		byte[] buff = new byte[size];
+		source.read(buff);
+		return buff;
 	}
-
 
 	/**
 	 * To receiving data from source.
-	 *
-	 * @param source Data source.
-	 */
+	 *  @param source Data source.
+	 * @param size*/
 	@Override
-	public void receive(Reader source) throws IOException {
+	public char[] receive(Reader source, int size) throws IOException {
+		if (size <= 0 || getDownloadedLength() + size > getLength())
+			throw new IllegalArgumentException("The size is illegal!");
 
+		char[] buff = new char[size];
+		source.read(buff);
+		setDownloadedLength(getDownloadedLength() + size);
+		return buff;
 	}
 }

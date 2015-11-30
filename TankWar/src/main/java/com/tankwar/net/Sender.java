@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 public interface Sender {
 	/**
 	 * Send data to somewhere.
+	 *
 	 * @return If sent return true, else false.
 	 * @throws java.io.IOException If exception.
 	 */
@@ -18,24 +19,11 @@ public interface Sender {
 
 	/**
 	 * Send data to somewhere.
+	 *
 	 * @param data The data.
-	 * @param to Send to somewhere.
+	 * @param to   Send to somewhere.
 	 * @return If sent return true, else false.
 	 * @throws java.io.IOException If exception.
 	 */
 	boolean send(byte[] data, OutputStream to) throws IOException;
-
-
-	/**
-	 * Set requests address.
-	 * @param address Requests address.
-	 */
-	void setAddress(InetSocketAddress address);
-
-
-	/**
-	 * Get requests address.
-	 * @return Requests address.
-	 */
-	InetSocketAddress getAddress();
 }
