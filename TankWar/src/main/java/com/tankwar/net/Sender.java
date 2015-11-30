@@ -2,7 +2,6 @@ package com.tankwar.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 
 /**
  * Sender can send something to somewhere.

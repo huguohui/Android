@@ -3,6 +3,7 @@ package com.tankwar.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
  */
 public abstract class Header {
     /** The data of header. */
-    private Map<String, String> mContent;
+    private Map<String, String> mContent = new HashMap<>();
 
 
 	/**
@@ -84,6 +85,15 @@ public abstract class Header {
 	 */
 	public String get(String key) {
 		return mContent.get(key);
+	}
+	
+	
+	/**
+	 * Append all data to header.
+	 * @param data The data.
+	 */
+	public void appendAll(Map<String, String> data) {
+		mContent.putAll(data);
 	}
 
 

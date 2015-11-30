@@ -1,14 +1,10 @@
 package com.tankwar.net;
 
-import com.tankwar.net.http.HttpBody;
-import com.tankwar.net.http.HttpHeader;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
 
 /**
  * Describe a request.
@@ -79,7 +75,7 @@ public abstract class Requester implements Sender {
      * Open a connection with timeout then prepare to send request.
      */
     public boolean open(SocketAddress address, int timeout)
-            throws IOException, SocketTimeoutException {
+            throws IOException {
         mSocket = new Socket();
         mSocket.connect(address, timeout);
         return true;
@@ -104,8 +100,7 @@ public abstract class Requester implements Sender {
     }
 
     public void setSocketAddress(SocketAddress socketAddress) {
-
-        if (mSocketAddress == null)
+        if (socketAddress == null)
             throw new NullPointerException("The requesting address is null!");
         mSocketAddress = socketAddress;
     }

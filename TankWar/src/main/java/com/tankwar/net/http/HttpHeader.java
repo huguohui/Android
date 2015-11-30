@@ -138,15 +138,15 @@ public class HttpHeader extends Header {
 
 		StringBuilder sb = new StringBuilder();
 		if (mIsRequest) {
-			sb.append(mMethod.name()).append(" ").append(mUrl).append(" ")
-			  .append(Http.PROTOCOL).append("/").append(mVersion);
+			sb.append(mMethod.name()).append(Http.SPACE).append(mUrl).append(Http.SPACE)
+			  .append(Http.PROTOCOL).append("/").append(mVersion).append(Http.CRLF);
 		}else{
-			sb.append(Http.PROTOCOL).append("/").append(mVersion).append(" ")
-			  .append(mStatusCode).append(" ").append(mStatusMsg);
+			sb.append(Http.PROTOCOL).append("/").append(mVersion).append(Http.SPACE)
+			  .append(mStatusCode).append(Http.SPACE).append(mStatusMsg);
 		}
 
 		for (String key : getContent().keySet()) {
-			sb.append(key).append(":")
+			sb.append(key).append(":").append(Http.SPACE)
 			  .append(getContent().get(key)).append(Http.CRLF);
 		}
 
@@ -181,7 +181,7 @@ public class HttpHeader extends Header {
 
 
 	public void setUrl(String url) {
-		mUrl = url;
+		mUrl = url.length() == 0 ? "/" : url;
 	}
 
 

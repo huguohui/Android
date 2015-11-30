@@ -1,13 +1,15 @@
 package com.tankwar.net.http;
 
+
 import com.tankwar.net.Downloader;
 import com.tankwar.net.Requester;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
-import java.net.ConnectException;
 
 /**
  * Download data from URL, based HTTP protocol.
@@ -19,11 +21,11 @@ public class HttpDownloader extends Downloader {
 
 	/**
 	 * Construct a http downloader object.
-	 * @param requester A {@link com.tankwar.net.Requester}.
+	 * @param requester A {@link Requester}.
 	 */
 	public HttpDownloader(Requester requester) {
 		super(requester);
-		setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
+		//setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
 		setDownloadedLength(0);
 	}
 
@@ -32,7 +34,7 @@ public class HttpDownloader extends Downloader {
 	 * Start download data.
 	 */
 	@Override
-	public void download() throws IOException, ConnectException {
+	public void download() throws IOException {
 
 	}
 
@@ -43,7 +45,7 @@ public class HttpDownloader extends Downloader {
 	 * @param file Save to file.
 	 */
 	@Override
-	public void download(File file) throws IOException, ConnectException {
+	public void download(File file) throws IOException {
 
 	}
 
@@ -54,8 +56,18 @@ public class HttpDownloader extends Downloader {
 	 * @param file Save to file.
 	 */
 	@Override
-	public void download(String file) throws IOException, ConnectException {
-
+	public void download(String file) throws IOException {
+		if (file == null || file.equals(""))
+			throw new IllegalArgumentException("The file is null!");
+		
+		OutputStream os = new FileOutputStream(file);
+		InputStream is = getRequester().getSocket().getInputStream();
+		byte[] buff;
+		while(null != (buff = receive(is, Downloader.BUFFER_SIZE))) {
+			os.write(buff);
+		}
+		os.flush();
+		os.close();
 	}
 
 
@@ -83,7 +95,9 @@ public class HttpDownloader extends Downloader {
 			throw new IllegalArgumentException("The size is illegal!");
 
 		byte[] buff = new byte[size];
-		source.read(buff);
+		if (-1 == source.read(buff))
+			return null;
+		setDownloadedLength(getDownloadedLength() + size);
 		return buff;
 	}
 
@@ -97,7 +111,8 @@ public class HttpDownloader extends Downloader {
 			throw new IllegalArgumentException("The size is illegal!");
 
 		char[] buff = new char[size];
-		source.read(buff);
+		if (-1 == source.read(buff))
+			return null;
 		setDownloadedLength(getDownloadedLength() + size);
 		return buff;
 	}

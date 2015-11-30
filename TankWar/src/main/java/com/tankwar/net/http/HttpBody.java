@@ -1,10 +1,10 @@
 package com.tankwar.net.http;
 
+
 import com.tankwar.net.Body;
 
 import java.io.InputStream;
 import java.io.Reader;
-
 
 /**
  * Describe a HTTP content body.

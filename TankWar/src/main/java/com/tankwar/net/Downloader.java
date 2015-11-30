@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 
 /**
  * Download some data form a place.
@@ -38,21 +37,21 @@ public abstract class Downloader implements Receiver {
 	/**
 	 * Start download data.
 	 */
-	public abstract void download() throws IOException, ConnectException;
+	public abstract void download() throws IOException;
 
 
 	/**
 	 * Start download from stream and save data to file.
 	 * @param file Save to file.
 	 */
-	public abstract void download(File file) throws IOException, ConnectException;
+	public abstract void download(File file) throws IOException;
 
 
 	/**
 	 * Start download from stream and save data to file.
 	 * @param file Save to file.
 	 */
-	public void download(String file) throws IOException, ConnectException {
+	public void download(String file) throws IOException {
 		OutputStream os = new FileOutputStream(file);
 		InputStream is = getRequester().getSocket().getInputStream();
 		byte[] buff;

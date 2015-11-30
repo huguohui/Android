@@ -1,12 +1,13 @@
 package com.tankwar.net.http;
 
+
+import com.tankwar.net.Header;
 import com.tankwar.net.Requester;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URL;
 
 /**
@@ -15,7 +16,7 @@ import java.net.URL;
  * @since 2015/11/05
  */
 public class HttpRequester extends Requester {
-    /** The method of requesting http. */
+    /** The method of requesting  */
     private Http.Method method = Http.Method.GET;
 
 	/** Requested url. */
@@ -28,10 +29,10 @@ public class HttpRequester extends Requester {
 	private final String USER_AGENT = "T-Virus v1.0";
 
 	/** Accept-Encoding field. */
-	private final String ACCEPT_ENCODING = "";
+	private final String ACCEPT_ENCODING = "idenitiy";
 
 	/** Connection field. */
-	private final String CONNECTING = "close";
+	private final String CONNECTING = "Close";
 
 	/** The default http version. */
 	private final String HTTP_VERSION = "1.1";
@@ -43,14 +44,14 @@ public class HttpRequester extends Requester {
      * @param url Special URL.
      */
 	public HttpRequester(URL url, Http.Method method) throws IOException {
-		super();
+		super(new InetSocketAddress(InetAddress.getByName(url.getHost()).getHostAddress(),
+				url.getPort() == -1 ? 80 : url.getPort()));
 		if (url == null)
 			throw new NullPointerException("The URL can't null!");
 
         if (method != null)
 			this.method = method;
 		mUrl = url;
-		open();
 	}
 
 
@@ -63,13 +64,14 @@ public class HttpRequester extends Requester {
 	/**
 	 * Initialize some prepare work.
 	 */
-	private void initialize() {
+	private void buildDefaultHeader() {
 		HttpHeader header = new HttpHeader(true);
 		header.setMethod(method);
 		header.setVersion(HTTP_VERSION);
 		header.setUrl(getUrl().getPath());
 		header.append("Accept", ACCEPT).append("Accept-Encoding", ACCEPT_ENCODING)
-			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING);
+			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING)
+			  .append("Host", mUrl.getHost());
 		setHeader(header);
 	}
 
@@ -79,11 +81,15 @@ public class HttpRequester extends Requester {
      */
     @Override
     public boolean send() throws IOException {
+    	buildDefaultHeader();
 		OutputStream os = getSocket().getOutputStream();
 		if (send(getHeader().toString().getBytes(), os)) {
-			if (send(getBody().getContent(), os)) {
-				return true;
+			if (getBody() != null) {
+				if (send(getBody().getContent(), os)) {
+					return true;
+				}
 			}
+			return true;
 		}
 
 		return false;
@@ -102,6 +108,17 @@ public class HttpRequester extends Requester {
 	public boolean send(byte[] data, OutputStream to) throws IOException {
 		to.write(data);
 		return true;
+	}
+	
+	
+	/**
+	 * Set header.
+	 */
+	public void setHeader(Header header) {
+		if (getHeader() != null)
+			getHeader().appendAll(header.getContent());
+		else
+			super.setHeader(header);
 	}
 
 

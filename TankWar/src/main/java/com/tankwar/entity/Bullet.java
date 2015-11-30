@@ -209,7 +209,7 @@ public abstract class Bullet extends MovableEntity {
      * @author  by Hui
      * @since 2015/10/30.
      */
-    public static interface BulletEventListener {
+    public interface BulletEventListener {
         /**
          * The five states of bullet.
          */

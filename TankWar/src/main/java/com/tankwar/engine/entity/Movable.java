@@ -7,5 +7,5 @@ public interface Movable {
 	/**
 	 * This method implemets move behavior.
 	 */
-	public void move();
+	void move();
 }

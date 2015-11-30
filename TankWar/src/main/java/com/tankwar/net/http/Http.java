@@ -16,11 +16,11 @@ public abstract class Http {
 	public final static String SPACE = " ";
 
 	/** Enum of support request method. */
-	public static enum Method {
+	public enum Method {
 		GET,  //GET request.
 		POST, //POST request.
 		HEAD, //HEAD request.
-	};
+	}
 
 
 	/** HTTP headers. */
@@ -71,6 +71,6 @@ public abstract class Http {
 	 * MIME types.
 	 */
 	public interface MIME {
-		public final static String JPEG = "image/jpeg";
+		String JPEG = "image/jpeg";
 	}
 }
