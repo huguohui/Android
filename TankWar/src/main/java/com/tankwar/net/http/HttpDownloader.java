@@ -51,32 +51,10 @@ public class HttpDownloader extends Downloader {
 
 
 	/**
-	 * Start download from stream and save data to file.
-	 *
-	 * @param file Save to file.
-	 */
-	@Override
-	public void download(String file) throws IOException {
-		if (file == null || file.equals(""))
-			throw new IllegalArgumentException("The file is null!");
-		
-		OutputStream os = new FileOutputStream(file);
-		InputStream is = getRequester().getSocket().getInputStream();
-		byte[] buff;
-		while(null != (buff = receive(is, Downloader.BUFFER_SIZE))) {
-			os.write(buff);
-		}
-		os.flush();
-		os.close();
-	}
-
-
-	/**
 	 * Receiving data.
 	 *
 	 * @return Received data by byte.
 	 * @throws IOException      When I/O exception.
-	 * @throws ConnectException When connection exception.
 	 */
 	@Override
 	public byte receive() throws IOException {
@@ -93,6 +71,8 @@ public class HttpDownloader extends Downloader {
 	public byte[] receive(InputStream source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
+		if (size + getDownloadedLength() > getLength())
+			size = (int)(getLength() - getDownloadedLength());
 
 		byte[] buff = new byte[size];
 		if (-1 == source.read(buff))
@@ -107,8 +87,11 @@ public class HttpDownloader extends Downloader {
 	 * @param size*/
 	@Override
 	public char[] receive(Reader source, int size) throws IOException {
-		if (size <= 0 || getDownloadedLength() + size > getLength())
+
+		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
+		if (size + getDownloadedLength() > getLength())
+			size = (int)(getLength() - getDownloadedLength());
 
 		char[] buff = new char[size];
 		if (-1 == source.read(buff))

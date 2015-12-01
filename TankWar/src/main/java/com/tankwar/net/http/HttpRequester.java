@@ -49,8 +49,9 @@ public class HttpRequester extends Requester {
 		if (url == null)
 			throw new NullPointerException("The URL can't null!");
 
-        if (method != null)
+		if (method != null)
 			this.method = method;
+
 		mUrl = url;
 	}
 
@@ -58,13 +59,16 @@ public class HttpRequester extends Requester {
 	/**
 	 * Default constructor.
 	 */
-	public HttpRequester() {}
+	public HttpRequester() {
+		setHeader(new HttpHeader(true));
+	}
 
 
 	/**
-	 * Initialize some prepare work.
+	 * Build default http header.
+	 * @return Default header.
 	 */
-	private void buildDefaultHeader() {
+	private HttpHeader buildDefaultHeader() {
 		HttpHeader header = new HttpHeader(true);
 		header.setMethod(method);
 		header.setVersion(HTTP_VERSION);
@@ -72,7 +76,21 @@ public class HttpRequester extends Requester {
 		header.append("Accept", ACCEPT).append("Accept-Encoding", ACCEPT_ENCODING)
 			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING)
 			  .append("Host", mUrl.getHost());
-		setHeader(header);
+		return header;
+	}
+
+
+	/**
+	 * Build http header.
+	 */
+	private void buildHeader() {
+		if (getHeader() == null) {
+			setHeader(buildDefaultHeader());
+		}else{
+			Header header = buildDefaultHeader();
+			header.appendAll(getHeader().getContent());
+			setHeader(header);
+		}
 	}
 
 
@@ -81,18 +99,19 @@ public class HttpRequester extends Requester {
      */
     @Override
     public boolean send() throws IOException {
-    	buildDefaultHeader();
 		OutputStream os = getSocket().getOutputStream();
+		boolean isSent = false;
+		buildHeader();
 		if (send(getHeader().toString().getBytes(), os)) {
 			if (getBody() != null) {
 				if (send(getBody().getContent(), os)) {
-					return true;
+					isSent = true;
 				}
 			}
-			return true;
+			isSent = true;
 		}
 
-		return false;
+		return isSent;
     }
 
 
