@@ -1,14 +1,35 @@
 package com.tankwar.net;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+
 /**
  * Parser data from data.
  * @since 2015/12/01
  */
-public interface Parser<T, E> {
+public abstract class Parser {
 	/**
-	 * Parser data to a kind of format.
+	 * Parse data to a kind of format.
 	 * @param data Provided data.
 	 * @return Some data.
 	 */
-	T parse(E data);
+	public abstract Object parse(byte[] data);
+
+
+	/**
+	 * Parse data to a kind of format.
+	 * @param data Provided data.
+	 * @return Some data.
+	 */
+	public abstract Object parse(InputStream data) throws IOException;
+
+
+	/**
+	 * Parse data to a kind of format.
+	 * @param data Provided data.
+	 * @return Some data.
+	 */
+	public abstract Object parse(Reader data);
+
 }

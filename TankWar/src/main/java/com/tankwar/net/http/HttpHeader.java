@@ -36,22 +36,12 @@ public class HttpHeader extends Header {
 
 
 	/**
-	 * Construct a header by special type.
-	 * @param isRequest Header is request header?
-	 */
-	public HttpHeader(boolean isRequest) {
-		mIsRequest = isRequest;
-	}
-
-
-	/**
 	 * Construct a header by input stream.
 	 *
 	 * @param header A stream contains header data.
 	 */
-	public HttpHeader(InputStream header, boolean isRequest) throws IOException {
+	public HttpHeader(InputStream header) throws IOException {
 		super(header);
-		mIsRequest = isRequest;
 	}
 
 
@@ -142,7 +132,7 @@ public class HttpHeader extends Header {
 			  .append(Http.PROTOCOL).append("/").append(mVersion).append(Http.CRLF);
 		}else{
 			sb.append(Http.PROTOCOL).append("/").append(mVersion).append(Http.SPACE)
-			  .append(mStatusCode).append(Http.SPACE).append(mStatusMsg);
+			  .append(mStatusCode).append(Http.SPACE).append(mStatusMsg).append(Http.CRLF);
 		}
 
 		for (String key : getContent().keySet()) {
