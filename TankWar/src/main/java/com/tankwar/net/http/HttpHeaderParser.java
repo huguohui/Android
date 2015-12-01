@@ -5,8 +5,7 @@ import com.tankwar.net.Parser;
 /**
  *
  */
-public class HttpHeaderParser<T, C> implements Parser<T, C> {
-
+public class HttpHeaderParser<D> implements Parser<HttpHeader, D> {
 	/**
 	 * Parser data to a kind of format.
 	 *
@@ -14,7 +13,11 @@ public class HttpHeaderParser<T, C> implements Parser<T, C> {
 	 * @return Some data.
 	 */
 	@Override
-	public T parse(C data) {
+	public HttpHeader parse(D data) {
+
 		return null;
 	}
+
+
+
 }
