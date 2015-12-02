@@ -2,6 +2,7 @@ package com.tankwar.net.http;
 
 import com.tankwar.net.Parser;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
  *
  */
 public class HttpHeaderParser extends Parser {
+	/** Default buffer size. */
 	public final static int BUFF_SIZE = 1024 * 1024;
 
 
@@ -30,7 +32,7 @@ public class HttpHeaderParser extends Parser {
 		int len = data.length, offset = 0;
 		if (len == 0) return null;
 
-		HttpHeader header = new HttpHeader(false);
+		HttpHeader header = new HttpHeader();
 		byte[] buff = new byte[1024];
 		int lineOffset = 0;
 		while(offset < len) {
@@ -90,18 +92,27 @@ public class HttpHeaderParser extends Parser {
 		if (data == null)
 			throw new NullPointerException("The data can't null!");
 
-		int len = 0;
-		byte[] buff = new byte[BUFF_SIZE];
+		byte buff;
+		byte[] searchStr = new String("\r\n\r\n").getBytes();
+		byte searchedCount = 0;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-		while(-1 != (len = data.read(buff))) {
-			bos.write(buff, 0, len);
+		while(-1 != (buff = (byte)data.read())) {
+			if (buff == searchStr[searchedCount])
+				searchedCount++;
+			else
+				searchedCount = 0;
+
+
+			bos.write(buff);
+			if (searchedCount == searchStr.length - 1)
+				break;
 		}
 
-		buff = bos.toByteArray();
+		byte[] temp = bos.toByteArray();
 		bos.flush();
 		bos.close();
-		return parse(buff);
+		return parse(temp);
 	}
 
 
@@ -112,9 +123,21 @@ public class HttpHeaderParser extends Parser {
 	 * @return Some data.
 	 */
 	@Override
-	public HttpHeader parse(Reader data) {
-		return null;
+	public HttpHeader parse(Reader data) throws IOException {
+		if (data == null)
+			throw new NullPointerException("The data can't null!");
+
+		BufferedReader reader = new BufferedReader(data);
+		String line;
+		StringBuilder sb = new StringBuilder();
+
+		while(null != (line = reader.readLine())) {
+			if (line.length() == 0)
+				break;
+			sb.append(line);
+		}
+
+
+		return parse(sb.toString().getBytes());
 	}
-
-
 }

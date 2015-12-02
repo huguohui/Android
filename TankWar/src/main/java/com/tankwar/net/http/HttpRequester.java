@@ -60,7 +60,7 @@ public class HttpRequester extends Requester {
 	 * Default constructor.
 	 */
 	public HttpRequester() {
-		setHeader(new HttpHeader(true));
+		setHeader(new HttpHeader());
 	}
 
 
@@ -69,7 +69,7 @@ public class HttpRequester extends Requester {
 	 * @return Default header.
 	 */
 	private HttpHeader buildDefaultHeader() {
-		HttpHeader header = new HttpHeader(true);
+		HttpHeader header = new HttpHeader();
 		header.setMethod(method);
 		header.setVersion(HTTP_VERSION);
 		header.setUrl(getUrl().getPath());
@@ -109,6 +109,7 @@ public class HttpRequester extends Requester {
 				}
 			}
 			isSent = true;
+			getHeader().setContent(getSocket().getInputStream());
 		}
 
 		return isSent;

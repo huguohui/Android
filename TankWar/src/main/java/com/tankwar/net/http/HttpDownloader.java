@@ -25,7 +25,7 @@ public class HttpDownloader extends Downloader {
 	 */
 	public HttpDownloader(Requester requester) {
 		super(requester);
-		//setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
+		setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
 		setDownloadedLength(0);
 	}
 
@@ -35,7 +35,6 @@ public class HttpDownloader extends Downloader {
 	 */
 	@Override
 	public void download() throws IOException {
-
 	}
 
 

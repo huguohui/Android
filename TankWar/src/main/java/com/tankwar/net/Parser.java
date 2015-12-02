@@ -30,6 +30,6 @@ public abstract class Parser {
 	 * @param data Provided data.
 	 * @return Some data.
 	 */
-	public abstract Object parse(Reader data);
+	public abstract Object parse(Reader data) throws IOException;
 
 }

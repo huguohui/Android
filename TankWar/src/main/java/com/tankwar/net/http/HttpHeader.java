@@ -2,6 +2,7 @@ package com.tankwar.net.http;
 
 
 import com.tankwar.net.Header;
+import com.tankwar.net.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,26 +35,14 @@ public class HttpHeader extends Header {
 	/** The header is request? */
 	private boolean mIsRequest = true;
 
-
-	/**
-	 * Construct a header by input stream.
-	 *
-	 * @param header A stream contains header data.
-	 */
-	public HttpHeader(InputStream header) throws IOException {
-		super(header);
-	}
+	/** The parser of http header. */
+	private HttpHeaderParser mParser = new HttpHeaderParser();
 
 
 	/**
-	 * Construct a header by reader.
-	 *
-	 * @param header A reader contains header data.
+	 * Default constructor.
 	 */
-	public HttpHeader(Reader header, boolean isRequest) throws IOException {
-		super(header);
-		mIsRequest = isRequest;
-	}
+	public HttpHeader() {}
 
 
 	/**
@@ -61,9 +50,8 @@ public class HttpHeader extends Header {
 	 *
 	 * @param header A string contains header data.
 	 */
-	public HttpHeader(String header, boolean isRequest) {
+	public HttpHeader(String header) {
 		super(header);
-		mIsRequest = isRequest;
 	}
 
 
@@ -72,9 +60,29 @@ public class HttpHeader extends Header {
 	 *
 	 * @param header A string contains header data.
 	 */
-	public HttpHeader(Map<String, String> header, boolean isRequest) {
+	public HttpHeader(Map<String, String> header) {
 		super(header);
-		mIsRequest = isRequest;
+	}
+
+
+	/**
+	 * Construct a header by hash map.
+	 *
+	 * @param header A string contains header data.
+	 */
+	public HttpHeader(InputStream header) throws IOException {
+		super(header);
+	}
+
+
+
+	/**
+	 * Construct a header by hash map.
+	 *
+	 * @param header A string contains header data.
+	 */
+	public HttpHeader(Reader header) throws IOException {
+		super(header);
 	}
 
 
@@ -86,7 +94,7 @@ public class HttpHeader extends Header {
 	 */
 	@Override
 	public void setContent(String data) throws NullPointerException {
-
+		setContent(mParser.parse(data.getBytes()).getContent());
 	}
 
 
@@ -99,7 +107,7 @@ public class HttpHeader extends Header {
 	 */
 	@Override
 	public void setContent(Reader data) throws NullPointerException, IOException {
-
+		setContent(mParser.parse(data).getContent());
 	}
 
 
@@ -112,7 +120,7 @@ public class HttpHeader extends Header {
 	 */
 	@Override
 	public void setContent(InputStream data) throws IOException, NullPointerException {
-
+		setContent(mParser.parse(data).getContent());
 	}
 
 
