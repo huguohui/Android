@@ -2,7 +2,6 @@ package com.tankwar.net.http;
 
 
 import com.tankwar.net.Header;
-import com.tankwar.net.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +30,6 @@ public class HttpHeader extends Header {
 
 	/** The response status message. */
 	private String mStatusMsg;
-
-	/** The header is request? */
-	private boolean mIsRequest = true;
 
 	/** The parser of http header. */
 	private HttpHeaderParser mParser = new HttpHeaderParser();
@@ -115,11 +111,12 @@ public class HttpHeader extends Header {
 	 * Set header content by input stream.
 	 *
 	 * @param data Header content.
-	 * @throws IOException          If content is null.
-	 * @throws NullPointerException If can't read content.
+	 * @throws IOException          If can't read content.
+	 * @throws NullPointerException If content is null.
 	 */
 	@Override
 	public void setContent(InputStream data) throws IOException, NullPointerException {
+		if (mParser == null) mParser = new HttpHeaderParser();
 		setContent(mParser.parse(data).getContent());
 	}
 
@@ -135,7 +132,7 @@ public class HttpHeader extends Header {
 			throw new NullPointerException("Header content is null!");
 
 		StringBuilder sb = new StringBuilder();
-		if (mIsRequest) {
+		if (getMethod() != null && getUrl() != null && getVersion() != null) {
 			sb.append(mMethod.name()).append(Http.SPACE).append(mUrl).append(Http.SPACE)
 			  .append(Http.PROTOCOL).append("/").append(mVersion).append(Http.CRLF);
 		}else{
@@ -144,6 +141,10 @@ public class HttpHeader extends Header {
 		}
 
 		for (String key : getContent().keySet()) {
+			if (key.length() == 0) {
+				sb.append(getContent().get(key));
+				continue;
+			}
 			sb.append(key).append(":").append(Http.SPACE)
 			  .append(getContent().get(key)).append(Http.CRLF);
 		}
@@ -179,7 +180,9 @@ public class HttpHeader extends Header {
 
 
 	public void setUrl(String url) {
-		mUrl = url.length() == 0 ? "/" : url;
+		if (url == null)
+			throw new NullPointerException("The specical URL can't null!");
+		mUrl = url;
 	}
 
 
@@ -200,15 +203,5 @@ public class HttpHeader extends Header {
 
 	public void setStatusMsg(String statusMsg) {
 		mStatusMsg = statusMsg;
-	}
-
-
-	public boolean isRequest() {
-		return mIsRequest;
-	}
-
-
-	public void setIsRequest(boolean isRequest) {
-		mIsRequest = isRequest;
 	}
 }

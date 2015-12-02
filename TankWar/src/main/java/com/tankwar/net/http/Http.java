@@ -14,6 +14,9 @@ public abstract class Http {
 
 	/** The header content space. */
 	public final static String SPACE = " ";
+	
+	/** The default port of http. */
+	public final static int DEFAULT_PORT = 80;
 
 	/** Enum of support request method. */
 	public enum Method {

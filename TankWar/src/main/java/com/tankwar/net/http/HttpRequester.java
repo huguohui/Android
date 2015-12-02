@@ -1,7 +1,6 @@
 package com.tankwar.net.http;
 
 
-import com.tankwar.net.Header;
 import com.tankwar.net.Requester;
 
 import java.io.IOException;
@@ -38,7 +37,6 @@ public class HttpRequester extends Requester {
 	private final String HTTP_VERSION = "1.1";
 
 
-
 	/**
      * Construct a http request object.
      * @param url Special URL.
@@ -53,6 +51,7 @@ public class HttpRequester extends Requester {
 			this.method = method;
 
 		mUrl = url;
+		setHeader(getDefaultHeader());
 	}
 
 
@@ -60,7 +59,7 @@ public class HttpRequester extends Requester {
 	 * Default constructor.
 	 */
 	public HttpRequester() {
-		setHeader(new HttpHeader());
+		setHeader(getDefaultHeader());
 	}
 
 
@@ -68,29 +67,35 @@ public class HttpRequester extends Requester {
 	 * Build default http header.
 	 * @return Default header.
 	 */
-	private HttpHeader buildDefaultHeader() {
+	private HttpHeader getDefaultHeader() {
 		HttpHeader header = new HttpHeader();
 		header.setMethod(method);
 		header.setVersion(HTTP_VERSION);
-		header.setUrl(getUrl().getPath());
 		header.append("Accept", ACCEPT).append("Accept-Encoding", ACCEPT_ENCODING)
-			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING)
-			  .append("Host", mUrl.getHost());
+			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING);
+		if (mUrl != null) {
+			header.setUrl(getUrlFullPath(mUrl));
+			header.append("Host", getDomainWithPort(mUrl));
+		}
 		return header;
 	}
-
-
+	
 	/**
-	 * Build http header.
+	 * Get URL path and query string.
 	 */
-	private void buildHeader() {
-		if (getHeader() == null) {
-			setHeader(buildDefaultHeader());
-		}else{
-			Header header = buildDefaultHeader();
-			header.appendAll(getHeader().getContent());
-			setHeader(header);
-		}
+	public static String getUrlFullPath(URL url) {
+		if (url == null) return null;
+		return "/" + url.getPath() + (url.getQuery() == null ? "" : "?" + url.getQuery())
+				+ (url.getRef() == null ? "" : "#" +url.getRef());
+	}
+	
+	
+	/**
+	 * Get domain with port.
+	 */
+	public static String getDomainWithPort(URL url) {
+		if (url == null) return null;
+		return url.getHost() + ":" + (url.getPort() != -1 ? url.getPort() : Http.DEFAULT_PORT);
 	}
 
 
@@ -101,7 +106,7 @@ public class HttpRequester extends Requester {
     public boolean send() throws IOException {
 		OutputStream os = getSocket().getOutputStream();
 		boolean isSent = false;
-		buildHeader();
+
 		if (send(getHeader().toString().getBytes(), os)) {
 			if (getBody() != null) {
 				if (send(getBody().getContent(), os)) {
@@ -109,7 +114,7 @@ public class HttpRequester extends Requester {
 				}
 			}
 			isSent = true;
-			getHeader().setContent(getSocket().getInputStream());
+			setHeader(new HttpHeader(getSocket().getInputStream()));
 		}
 
 		return isSent;
@@ -129,17 +134,6 @@ public class HttpRequester extends Requester {
 		to.write(data);
 		return true;
 	}
-	
-	
-	/**
-	 * Set header.
-	 */
-	public void setHeader(Header header) {
-		if (getHeader() != null)
-			getHeader().appendAll(header.getContent());
-		else
-			super.setHeader(header);
-	}
 
 
     public Http.Method getMethod() {
@@ -157,6 +151,11 @@ public class HttpRequester extends Requester {
 
 
 	public void setUrl(URL url) {
+		if (mUrl != null)
+			throw new NullPointerException("The special URL can't null!");
+
 		mUrl = url;
+		((HttpHeader)getHeader()).setUrl(getUrlFullPath(mUrl));
+		getHeader().append("Host", getDomainWithPort(mUrl));
 	}
 }
