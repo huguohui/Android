@@ -63,7 +63,7 @@ public class HttpDownloader extends Downloader {
 			int len;
 			if (getRequester().getHeader().get(Http.CONTENT_LENGTH) != null) {
 				len = Integer.parseInt(getRequester().getHeader().get(Http.CONTENT_LENGTH));
-				fos.write(getDataByLength(getRequester().getSocket().getInputStream(), len));
+				fos.write(receive(getRequester().getSocket().getInputStream(), len));
 			}else{
 				InputStream is = getRequester().getSocket().getInputStream();
 				byte[] buff = new byte[BUFFER_SIZE];
@@ -88,11 +88,16 @@ public class HttpDownloader extends Downloader {
 		HttpChunkedParser chunkedParser = new HttpChunkedParser();
 		byte[] buff;
 		while((buff = chunkedParser.parse(
-				getRequester().getSocket().getInputStream())) != null) {		
-			if (buff.equals(new byte[]{0, 0xd, 0xa}))
+				getRequester().getSocket().getInputStream())) != null) {
+			if (buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
+				getRequester().getSocket().shutdownInput();
+				getRequester().getSocket().shutdownOutput();
+				getRequester().getSocket().close();
+				System.out.println("[**] Download finished!");
 				break;
-	
-			setLength(getLength() + buff.length);
+			}
+
+			System.out.println("[--] Downloaded: " + getDownloadedLength());
 			setDownloadedLength(getDownloadedLength() + buff.length);
 			fos.write(buff);
 		}
@@ -101,32 +106,6 @@ public class HttpDownloader extends Downloader {
 		fos.close();
 	}
 	
-	
-	
-	/**
-	 * Download by length.
-	 * @param len The special length.
-	 * @return Data with special length.
-	 * @throws IOException 
-	 */
-	public byte[] getDataByLength(InputStream data, int len) throws IOException {
-		int count = 0, read = 0;
-		byte[] chunk = new byte[len];
-		byte[] buff = new byte[BUFFER_SIZE];
-		
-		while(count < len) {
-			if (-1 == (read = data.read(buff))) break;
-
-			if (count + read > len) read = len - count;
-				System.arraycopy(buff, 0, chunk, count, read);
-				
-			count += read;
-			System.out.println("received: " + count);
-		}
-		return chunk;
-	}
-
-
 
 	/**
 	 * Receiving data.
@@ -149,14 +128,22 @@ public class HttpDownloader extends Downloader {
 	public byte[] receive(InputStream source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
-		if (size + getDownloadedLength() > getLength())
+		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
 
-		byte[] buff = new byte[size];
-		if (-1 == source.read(buff))
-			return null;
+		byte[] buff = new byte[BUFFER_SIZE];
+		byte[] chunk = new byte[size];
+		int count = 0, read = 0;
+		while(count < size) {
+			if (source.available() >= BUFFER_SIZE || source.available() >= size - count) {
+				read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE);
+				System.arraycopy(buff, 0, chunk, count, read);
+				count += read;
+			}
+		}
+		
 		setDownloadedLength(getDownloadedLength() + size);
-		return buff;
+		return chunk;
 	}
 
 	/**
@@ -167,18 +154,31 @@ public class HttpDownloader extends Downloader {
 	public char[] receive(Reader source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
-		if (size + getDownloadedLength() > getLength())
+		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
 
-		char[] buff = new char[size];
-		if (-1 == source.read(buff))
-			return null;
+		char[] buff = new char[BUFFER_SIZE];
+		char[] chunk = new char[size];
+		int count = 0, read = 0;
+		while(count < size) {
+			read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE);
+			System.arraycopy(buff, 0, chunk, count, read);
+			count += read;
+			System.out.println("Received: " + count);
+		}
+		
 		setDownloadedLength(getDownloadedLength() + size);
-		return buff;
+		return chunk;
 	}
 
 
+	/**
+	 * The Chunked content parser.
+	 * @since 2015/12/2
+	 */
 	public class HttpChunkedParser implements Parser {
+		/** Chunked end flag. */
+		public final static byte CHUNKED_END_FLAG = 0x0;
 
 		/**
 		 * Parse data to a kind of format.
@@ -213,15 +213,13 @@ public class HttpDownloader extends Downloader {
 
 				if (matchCount == crlf.length) {
 					if (lineCount > 0) {
-						for (int i = 0; i < lineCount; i++) System.out.print((char)buff[i]);
 						if (isHex(new String(buff, 0, lineCount))) {
 							int len = Integer.parseInt(new String(buff, 0, lineCount), 16);
-							System.out.println("is" + len);
 							if (len > 0) {
-								return getDataByLength(data, len);
+								buff = receive(data, len);
+								return buff;
 							}else{
-								System.out.println("ssssssssss");
-								return new byte[]{0, 0xd, 0xa};
+								return new byte[]{CHUNKED_END_FLAG};
 							}
 						}
 					}
