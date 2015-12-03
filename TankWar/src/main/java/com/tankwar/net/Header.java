@@ -23,6 +23,17 @@ public abstract class Header {
 	 */
 	public Header() {
 	}
+	
+	
+	/**
+	 * Construct a header from another header.
+	 * @param header Another header.
+	 * @throws IOException 
+	 * @throws NullPointerException 
+	 */
+	public Header(Header header) throws NullPointerException, IOException {
+		setContent(header);
+	}
 
 
     /**
@@ -46,8 +57,10 @@ public abstract class Header {
     /**
      * Construct a header by string.
      * @param header A string contains header data.
+     * @throws IOException 
+     * @throws NullPointerException 
      */
-	public Header(String header) {
+	public Header(String header) throws NullPointerException, IOException {
         setContent(header);
 	}
 
@@ -122,8 +135,9 @@ public abstract class Header {
 	 * Set header content by string.
 	 * @param data Header content.
 	 * @throws NullPointerException If content is null.
+	 * @throws IOException 
 	 */
-    public abstract void setContent(String data) throws NullPointerException;
+    public abstract void setContent(String data) throws NullPointerException, IOException;
 
 
 	/**
@@ -142,6 +156,15 @@ public abstract class Header {
 	 * @throws NullPointerException If can't read content.
 	 */
     public abstract void setContent(InputStream data) throws IOException, NullPointerException;
+    
+    
+	/**
+	 * Copy content from another header.
+	 * @param data Header content.
+	 * @throws IOException If content is null.
+	 * @throws NullPointerException If can't read content.
+	 */
+    public abstract void setContent(Header header) throws IOException, NullPointerException;
 
 
 	/**

@@ -22,7 +22,7 @@ public abstract class Downloader implements Receiver {
 	/** The file name of saving download. */
 	private String mSaveTo;
 
-	public final static int BUFFER_SIZE = 1024 * 1024;
+	public final static int BUFFER_SIZE = 1024 << 3;
 
 
 	/**
@@ -44,7 +44,9 @@ public abstract class Downloader implements Receiver {
 	 * Start download from stream and save data to file.
 	 * @param file Save to file.
 	 */
-	public abstract void download(File file) throws IOException;
+	public void download(File file) throws IOException {
+		download(file.getAbsolutePath());
+	}
 
 
 	/**

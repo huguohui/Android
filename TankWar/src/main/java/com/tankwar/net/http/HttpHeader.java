@@ -32,7 +32,7 @@ public class HttpHeader extends Header {
 	private String mStatusMsg;
 
 	/** The parser of http header. */
-	private HttpHeaderParser mParser = new HttpHeaderParser();
+	private HttpHeaderParser mParser;
 
 
 	/**
@@ -45,8 +45,10 @@ public class HttpHeader extends Header {
 	 * Construct a header by string.
 	 *
 	 * @param header A string contains header data.
+	 * @throws IOException 
+	 * @throws NullPointerException 
 	 */
-	public HttpHeader(String header) {
+	public HttpHeader(String header) throws NullPointerException, IOException {
 		super(header);
 	}
 
@@ -69,6 +71,17 @@ public class HttpHeader extends Header {
 	public HttpHeader(InputStream header) throws IOException {
 		super(header);
 	}
+	
+	
+	/**
+	 * Copy a header content from header.
+	 * @param header Another header.
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
+	public HttpHeader(HttpHeader header) throws NullPointerException, IOException {
+		super(header);
+	}
 
 
 
@@ -80,6 +93,15 @@ public class HttpHeader extends Header {
 	public HttpHeader(Reader header) throws IOException {
 		super(header);
 	}
+	
+	
+	/**
+	 * Set the parser.
+	 */
+	private void initParser() {
+		if (mParser == null)
+			mParser = new HttpHeaderParser();
+	}
 
 
 	/**
@@ -87,10 +109,12 @@ public class HttpHeader extends Header {
 	 *
 	 * @param data Header content.
 	 * @throws NullPointerException If content is null.
+	 * @throws IOException 
 	 */
 	@Override
-	public void setContent(String data) throws NullPointerException {
-		setContent(mParser.parse(data.getBytes()).getContent());
+	public void setContent(String data) throws NullPointerException, IOException {
+		initParser();
+		setContent(mParser.parse(data.getBytes()));
 	}
 
 
@@ -103,7 +127,8 @@ public class HttpHeader extends Header {
 	 */
 	@Override
 	public void setContent(Reader data) throws NullPointerException, IOException {
-		setContent(mParser.parse(data).getContent());
+		initParser();
+		setContent(mParser.parse(data));
 	}
 
 
@@ -116,8 +141,27 @@ public class HttpHeader extends Header {
 	 */
 	@Override
 	public void setContent(InputStream data) throws IOException, NullPointerException {
-		if (mParser == null) mParser = new HttpHeaderParser();
-		setContent(mParser.parse(data).getContent());
+		initParser();
+		setContent(mParser.parse(data));
+	}
+	
+	
+	/**
+	 * Copy content from another header.
+	 */
+	@Override
+	public void setContent(Header header) throws IOException, NullPointerException {
+		if (header == null)
+			throw new NullPointerException("The input header is null!");
+		
+		
+		HttpHeader hr = (HttpHeader) header;
+		setVersion(hr.getVersion());
+		setMethod(hr.getMethod());
+		setUrl(hr.getUrl());
+		setStatusCode(hr.getStatusCode());
+		setStatusMsg(hr.getStatusMsg());
+		setContent(header.getContent());
 	}
 
 
@@ -180,8 +224,6 @@ public class HttpHeader extends Header {
 
 
 	public void setUrl(String url) {
-		if (url == null)
-			throw new NullPointerException("The specical URL can't null!");
 		mUrl = url;
 	}
 

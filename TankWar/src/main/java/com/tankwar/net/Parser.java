@@ -8,7 +8,7 @@ import java.io.Reader;
  * Parser data from data.
  * @since 2015/12/01
  */
-public abstract class Parser {
+public interface Parser {
 	/**
 	 * Parse data to a kind of format.
 	 * @param data Provided data.

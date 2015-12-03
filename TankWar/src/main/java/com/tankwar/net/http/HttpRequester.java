@@ -85,7 +85,8 @@ public class HttpRequester extends Requester {
 	 */
 	public static String getUrlFullPath(URL url) {
 		if (url == null) return null;
-		return "/" + url.getPath() + (url.getQuery() == null ? "" : "?" + url.getQuery())
+		return (url.getPath() == null || url.getPath().equals("") ? "/" + url.getPath() : url.getPath()) 
+				+ (url.getQuery() == null ? "" : "?" + url.getQuery())
 				+ (url.getRef() == null ? "" : "#" +url.getRef());
 	}
 	
@@ -114,7 +115,7 @@ public class HttpRequester extends Requester {
 				}
 			}
 			isSent = true;
-			setHeader(new HttpHeader(getSocket().getInputStream()));
+			getHeader().setContent(getSocket().getInputStream());;
 		}
 
 		return isSent;

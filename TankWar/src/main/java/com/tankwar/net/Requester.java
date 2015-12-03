@@ -26,13 +26,22 @@ public abstract class Requester implements Sender {
     /**
      * The connection timeout. (ms)
      */
-    private int mTimeout = 3000;
+    private int mTimeout = 20000;
 
     /** Http header. */
     private Header mHeader;
 
     /** Http body. */
     private Body mBody;
+
+    /** The state of requester. */
+    private State mState = State.ready;
+
+    /** Request states. */
+    public enum State {
+        ready, sent
+    };
+
 
 
     /**
@@ -136,5 +145,13 @@ public abstract class Requester implements Sender {
 
     public void setBody(Body body) {
         mBody = body;
+    }
+
+    public State getState() {
+        return mState;
+    }
+
+    public void setState(State state) {
+        mState = state;
     }
 }
