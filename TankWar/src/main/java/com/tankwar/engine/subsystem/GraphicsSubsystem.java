@@ -153,24 +153,13 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     public void update() {
         Paint p = new Paint();
         p.setColor(Color.WHITE);
-        p.setTextSize(100);
+        p.setTextSize(25);
 
         Canvas canvas = mCanvasView.getCanvas();
         if (canvas == null) return;
 
-        canvas.drawColor(Color.BLACK);
-        canvas.drawText("------------------>", 0, i++, p);
-        canvas.drawText("Game time: " + getEngine().getTimingSubsystem()
-                .getSystemTime(), 0, i + 100, p);
-        canvas.drawText("Frame time: " + getEngine().getTimingSubsystem()
-                .getFrameTime(), 0, i+200, p);
-        canvas.drawText("System time: " + System.currentTimeMillis(), 0, i + 300, p);
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+		canvas.drawColor(Color.BLACK);
+        canvas.drawText("Frame time: " + getEngine().getTimingSubsystem().getFrameTime(), 0, 25, p);
         for (Layer layer : mLayers) {
             for (Drawable drawable : layer.getObjects()) {
                 drawable.draw(canvas);

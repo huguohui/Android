@@ -59,6 +59,7 @@ public abstract class Downloader implements Receiver {
 		byte[] buff;
 		while((buff = receive(is, BUFFER_SIZE)) != null) {
 			os.write(buff);
+			mDownloadedLength += buff.length;
 		}
 		os.flush();
 		os.close();
@@ -73,19 +74,19 @@ public abstract class Downloader implements Receiver {
 		mRequester = requester;
 	}
 
-	public long getLength() {
+	public synchronized long getLength() {
 		return mLength;
 	}
 
-	public void setLength(long length) {
+	public synchronized void setLength(long length) {
 		mLength = length;
 	}
 
-	public long getDownloadedLength() {
+	public synchronized long getDownloadedLength() {
 		return mDownloadedLength;
 	}
 
-	public void setDownloadedLength(long downloadedLength) {
+	public synchronized void setDownloadedLength(long downloadedLength) {
 		mDownloadedLength = downloadedLength;
 	}
 

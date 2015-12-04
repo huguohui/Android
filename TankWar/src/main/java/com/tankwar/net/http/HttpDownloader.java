@@ -1,7 +1,10 @@
 package com.tankwar.net.http;
 
 
-import java.io.ByteArrayOutputStream;
+import com.tankwar.net.Downloader;
+import com.tankwar.net.Parser;
+import com.tankwar.net.Requester;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,10 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Arrays;
-
-import com.tankwar.net.Downloader;
-import com.tankwar.net.Parser;
-import com.tankwar.net.Requester;
 
 /**
  * Download data from URL, based HTTP protocol.
@@ -42,7 +41,7 @@ public class HttpDownloader extends Downloader {
 	 * Start download data.
 	 */
 	@Override
-	public void download() throws IOException {
+	public synchronized void download() throws IOException {
 		if (getSaveTo() == null)
 			throw new FileNotFoundException("Not special file to save data!");
 
@@ -53,30 +52,12 @@ public class HttpDownloader extends Downloader {
 	/**
 	 * Download data form stream.
 	 */
-	public void download(String file) throws IOException {
+	public synchronized void download(String file) throws IOException {
 		String transferEncoding = getRequester().getHeader().get(Http.TRANSFER_ENCODING);
-		OutputStream fos = new FileOutputStream(file);
-
 		if (transferEncoding != null && transferEncoding.equals("chunked")) {
-			downloadChunked(fos);
+			downloadChunked(file);
 		}else{
-			int len;
-			if (getRequester().getHeader().get(Http.CONTENT_LENGTH) != null) {
-				len = Integer.parseInt(getRequester().getHeader().get(Http.CONTENT_LENGTH));
-				fos.write(receive(getRequester().getSocket().getInputStream(), len));
-			}else{
-				InputStream is = getRequester().getSocket().getInputStream();
-				byte[] buff = new byte[BUFFER_SIZE];
-				int l = 0;
-				while(-1 != (l = is.read(buff))) {
-					fos.write(buff, 0, l);
-				}
-			}
-			
-			if (fos != null) {
-				fos.flush();
-				fos.close();
-			}
+			super.download(file);
 		}
 	}
 
@@ -84,15 +65,15 @@ public class HttpDownloader extends Downloader {
 	/**
 	 * Download data as chunk.
 	 */
-	private void downloadChunked(OutputStream fos) throws IOException {
+	private void downloadChunked(String file) throws IOException {
 		HttpChunkedParser chunkedParser = new HttpChunkedParser();
+		OutputStream fos = new FileOutputStream(file);
 		byte[] buff;
+
 		while((buff = chunkedParser.parse(
 				getRequester().getSocket().getInputStream())) != null) {
-			if (buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
-				getRequester().getSocket().shutdownInput();
-				getRequester().getSocket().shutdownOutput();
-				getRequester().getSocket().close();
+			if (buff.length == 1 && buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
+				getRequester().close();
 				System.out.println("[**] Download finished!");
 				break;
 			}
@@ -125,24 +106,26 @@ public class HttpDownloader extends Downloader {
 	 * @param size
 	 */
 	@Override
-	public byte[] receive(InputStream source, int size) throws IOException {
+	public synchronized byte[] receive(InputStream source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
 
+		if (size < 0) return null;
+
 		byte[] buff = new byte[BUFFER_SIZE];
 		byte[] chunk = new byte[size];
 		int count = 0, read = 0;
 		while(count < size) {
-			if (source.available() >= BUFFER_SIZE || source.available() >= size - count) {
+			int available = source.available();
+			if (available >= BUFFER_SIZE || available >= size - count) {
 				read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE);
 				System.arraycopy(buff, 0, chunk, count, read);
 				count += read;
 			}
 		}
-		
-		setDownloadedLength(getDownloadedLength() + size);
+
 		return chunk;
 	}
 
@@ -151,7 +134,7 @@ public class HttpDownloader extends Downloader {
 	 *  @param source Data source.
 	 * @param size*/
 	@Override
-	public char[] receive(Reader source, int size) throws IOException {
+	public synchronized char[] receive(Reader source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())

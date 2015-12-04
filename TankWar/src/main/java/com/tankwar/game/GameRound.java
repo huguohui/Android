@@ -4,17 +4,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.tankwar.animation.Explosion;
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.Round;
-import com.tankwar.engine.animation.FrameAnimation;
 import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.engine.subsystem.WorldSubsystem;
 import com.tankwar.net.Downloader;
-import com.tankwar.net.http.Http;
 import com.tankwar.net.http.HttpDownloader;
 import com.tankwar.net.http.HttpRequester;
+import com.tankwar.utils.Log;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -41,40 +40,77 @@ public class GameRound extends Round {
     public void start() {
         mWorldSubsystem = getEngine().getWorldSubsystem();
         mWorldSubsystem.setWorld(null);
-
-        Explosion exp = new Explosion(getEngine());
-        FrameAnimation fa = new FrameAnimation(getEngine());
-        fa.setDescriptor(exp);
-        fa.play();
+//
+//        Explosion exp = new Explosion(getEngine());
+//        FrameAnimation fa = new FrameAnimation(getEngine());
+//        fa.setDescriptor(exp);
+//        fa.play();
         setIsStart(true);
+
 
         String str = "";
         try {
-            HttpRequester r = new HttpRequester(new URL("http://www.baidu.com"), null);
-            r.send();
-            Downloader d = new HttpDownloader(r);
-           str += d.getLength();
+			getEngine().getGameContext().set("key", "->>>>");
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					HttpRequester r = null;
+					try {
+						getEngine().getGameContext().set("a", "AAAA");
+						r = new HttpRequester(
+								new URL("http://dx3.xiazaiba.com/Soft/S/sysdiag_3.0.0.39_XiaZaiBa.zip"), null);
+						r.send();
+						getEngine().getGameContext().set("b", "SEEEE");
+					Log.s(getEngine().getGameContext().getMap().toString());
+					Downloader d = new HttpDownloader(r);
+						getEngine().getGameContext().set("d", d);
+						d.download(getEngine().getGameContext().SDCARD_ROOT + "/a.zip");
+
+						Log.s(getEngine().getGameContext().getMap().toString());
+					} catch (IOException e) {
+						Log.e(e);
+					}
+				}
+			}).start();
         }catch(Exception e) {
-            str += e.getMessage();
+			Log.e(e);
         }
 
-        getEngine().getGameContext().set("str", str);
         getEngine().getGraphicsSubsystem().addDrawable(new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                Paint p = new Paint();
-                p.setTextSize(50);
-                p.setColor(Color.WHITE);
-                canvas.drawText(GameRound.this.getEngine().getGameContext().get("str").toString(),
-                        1000, 500, p);
-            }
+			@Override
+			public void draw(Canvas canvas) {
+				Paint p = new Paint();
+				p.setTextSize(50);
+				p.setColor(Color.WHITE);
+				try {
+					Log.s(getEngine().getGameContext().getMap().toString());
+					Thread.sleep(500);
+				} catch (Exception e) {
 
-            @Override
-            public int getIndex() {
-                return 1;
-            }
-        });
+				}
+				if (getEngine().getGameContext().get("d") != null) {
+					canvas.drawText("" + ((HttpDownloader) (GameRound.this.getEngine().getGameContext().get("d")))
+									.getDownloadedLength(),
+							500, 500, p);
+				} else {
+					canvas.drawText("IS null?" + getEngine().getGameContext().get("a") + getEngine().getGameContext().get("b"),
+							(float) (500 * Math.random()), 500, p);
+				}
+
+			}
+
+
+			@Override
+			public int getIndex() {
+				return 1;
+			}
+		});
     }
+
+	public synchronized Engine getEngine() {
+		return super.getEngine();
+	}
+
 
     /**
      * Handler round progress.

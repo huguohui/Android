@@ -26,7 +26,7 @@ public abstract class Requester implements Sender {
     /**
      * The connection timeout. (ms)
      */
-    private int mTimeout = 20000;
+    private int mTimeout = 10000;
 
     /** Http header. */
     private Header mHeader;
@@ -37,11 +37,14 @@ public abstract class Requester implements Sender {
     /** The state of requester. */
     private State mState = State.ready;
 
+	/** The requester start time. */
+	private long mStartTime = 0;
+
+
     /** Request states. */
     public enum State {
-        ready, sent
+        ready, connected, sent, closed
     };
-
 
 
     /**
@@ -52,6 +55,7 @@ public abstract class Requester implements Sender {
     public Requester(SocketAddress socketAddress) throws IOException {
         setSocketAddress(socketAddress);
         open(socketAddress, mTimeout);
+		mState = State.connected;
     }
 
 
@@ -85,17 +89,22 @@ public abstract class Requester implements Sender {
      */
     public boolean open(SocketAddress address, int timeout)
             throws IOException {
-        mSocket = new Socket();
-        mSocket.connect(address, timeout);
-        return true;
+		if (mState.equals(State.closed) || mState.equals(State.ready)) {
+			mStartTime = System.currentTimeMillis();
+			mSocket = new Socket();
+			mSocket.connect(address, timeout);
+			return true;
+		}
+		throw new ConnectException("Only open connection after requester " +
+											"closed or requester don't connected!");
     }
 
 
     /**
-     * Close http connection.
+     * Close connection.
      */
     public void close() throws IOException {
-        if (mSocket.isClosed() || mSocket.isConnected())
+        if (mSocket.isClosed() || !mSocket.isConnected())
             throw new ConnectException("The socket don't connected!");
 
         mSocket.shutdownInput();
@@ -154,4 +163,13 @@ public abstract class Requester implements Sender {
     public void setState(State state) {
         mState = state;
     }
+
+	public long getStartTime() {
+		return mStartTime;
+	}
+
+
+	public void setStartTime(long startTime) {
+		mStartTime = startTime;
+	}
 }

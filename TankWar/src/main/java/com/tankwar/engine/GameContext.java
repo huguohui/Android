@@ -26,6 +26,7 @@ import com.tankwar.utils.FileOperator;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -221,8 +222,14 @@ final public class GameContext extends Application
 	 * @param key Variable key of value.
 	 * @param obj Variable value.
 	 */
-	public final void set(String key, Object obj) {
-		data.put(key, obj);
+	public synchronized final void set(String key, Object obj) {
+		synchronized (data) {
+			data.put(key, obj);
+		}
+	}
+
+	public Map getMap(){
+		return data;
 	}
 
 
@@ -230,8 +237,10 @@ final public class GameContext extends Application
 	 * Get a global shared variable by a key.
 	 * @param key Variable key.
 	 */
-	public final Object get(String key) {
-		return data.get(key);
+	public synchronized final Object get(String key) {
+		synchronized (data) {
+			return data.get(key);
+		}
 	}
 
 
@@ -242,7 +251,7 @@ final public class GameContext extends Application
 	 * @param message The toast messsage.
 	 * @param isLongShow The message if long time exists.
 	 */
-	public final void toast(String message, boolean isLongShow) {
+	public synchronized final void toast(String message, boolean isLongShow) {
 		Toast.makeText(mInstance, message, isLongShow ? Toast.LENGTH_SHORT
                 : Toast.LENGTH_LONG).show();
 	}

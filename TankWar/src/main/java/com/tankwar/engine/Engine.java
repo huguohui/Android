@@ -107,7 +107,7 @@ public class Engine implements Runnable {
     /**
      * Add a subsystem.
      */
-    public void addSubsystem(Subsystem subsystem) {
+    public synchronized void addSubsystem(Subsystem subsystem) {
         mSubsystems.put(subsystem.getClass(), subsystem);
     }
 
@@ -115,7 +115,7 @@ public class Engine implements Runnable {
     /**
      * Get a subsystem.
      */
-    public Subsystem getSubsystem(Class<? extends Subsystem> subsystem) {
+    public synchronized Subsystem getSubsystem(Class<? extends Subsystem> subsystem) {
         return mSubsystems.get(subsystem);
     }
 
@@ -131,7 +131,7 @@ public class Engine implements Runnable {
     /**
      * Get game context.
      */
-    public final GameContext getGameContext() {
+    public synchronized final GameContext getGameContext() {
         return mGameContext;
     }
 

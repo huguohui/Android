@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  * HTTP request class implement.
@@ -42,8 +43,7 @@ public class HttpRequester extends Requester {
      * @param url Special URL.
      */
 	public HttpRequester(URL url, Http.Method method) throws IOException {
-		super(new InetSocketAddress(InetAddress.getByName(url.getHost()).getHostAddress(),
-				url.getPort() == -1 ? 80 : url.getPort()));
+		super(getSocketAddressByUrl(url));
 		if (url == null)
 			throw new NullPointerException("The URL can't null!");
 
@@ -79,13 +79,50 @@ public class HttpRequester extends Requester {
 		}
 		return header;
 	}
+
+
+	/**
+	 * Get the top domain of url.
+	 */
+	public static String getTopDomian(URL url) {
+		if (url == null)
+			return null;
+
+		String host = url.getHost();
+		return "www." + host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
+	}
+
+
+	/**
+	 * Get IP address by top domain.
+	 * @param domain Top domain.
+	 * @return IP address of domain.
+	 * @throws UnknownHostException Can't parse domain.
+	 */
+	public static InetAddress getInetAddressByDomain(String domain) throws UnknownHostException {
+		return InetAddress.getByName(domain);
+	}
+
+
+	/**
+	 * Get socket address by URL.
+	 * @param url The URL.
+	 * @return Socket address.
+	 * @throws UnknownHostException
+	 */
+	public static InetSocketAddress getSocketAddressByUrl(URL url) throws UnknownHostException {
+		return new InetSocketAddress(getInetAddressByDomain(url.getHost()),
+				url.getPort() == -1 ? 80 : url.getPort());
+	}
+
 	
 	/**
 	 * Get URL path and query string.
 	 */
 	public static String getUrlFullPath(URL url) {
 		if (url == null) return null;
-		return (url.getPath() == null || url.getPath().equals("") ? "/" + url.getPath() : url.getPath()) 
+		return (url.getPath() == null || url.getPath().equals("") ?
+				"/" + url.getPath() : url.getPath())
 				+ (url.getQuery() == null ? "" : "?" + url.getQuery())
 				+ (url.getRef() == null ? "" : "#" +url.getRef());
 	}
@@ -104,7 +141,7 @@ public class HttpRequester extends Requester {
      * Sends http request.
      */
     @Override
-    public boolean send() throws IOException {
+    public synchronized boolean send() throws IOException {
 		OutputStream os = getSocket().getOutputStream();
 		boolean isSent = false;
 
@@ -131,7 +168,7 @@ public class HttpRequester extends Requester {
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public boolean send(byte[] data, OutputStream to) throws IOException {
+	public synchronized boolean send(byte[] data, OutputStream to) throws IOException {
 		to.write(data);
 		return true;
 	}
