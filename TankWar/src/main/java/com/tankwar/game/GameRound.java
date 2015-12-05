@@ -61,12 +61,10 @@ public class GameRound extends Round {
 								new URL("http://dx3.xiazaiba.com/Soft/S/sysdiag_3.0.0.39_XiaZaiBa.zip"), null);
 						r.send();
 						getEngine().getGameContext().set("b", "SEEEE");
-					Log.s(getEngine().getGameContext().getMap().toString());
-					Downloader d = new HttpDownloader(r);
+
+						Downloader d = new HttpDownloader(r);
 						getEngine().getGameContext().set("d", d);
 						d.download(getEngine().getGameContext().SDCARD_ROOT + "/a.zip");
-
-						Log.s(getEngine().getGameContext().getMap().toString());
 					} catch (IOException e) {
 						Log.e(e);
 					}
@@ -83,15 +81,13 @@ public class GameRound extends Round {
 				p.setTextSize(50);
 				p.setColor(Color.WHITE);
 				try {
-					Log.s(getEngine().getGameContext().getMap().toString());
 					Thread.sleep(500);
 				} catch (Exception e) {
 
 				}
 				if (getEngine().getGameContext().get("d") != null) {
-					canvas.drawText("" + ((HttpDownloader) (GameRound.this.getEngine().getGameContext().get("d")))
-									.getDownloadedLength(),
-							500, 500, p);
+					Downloader d = ((HttpDownloader) (GameRound.this.getEngine().getGameContext().get("d")));
+					canvas.drawText("[**] Downloaded: " + d.getDownloadedLength() + "Bytes, " + ((float)d.getDownloadedLength() / d.getLength()) * 100  + "%" , 500, 500, p);
 				} else {
 					canvas.drawText("IS null?" + getEngine().getGameContext().get("a") + getEngine().getGameContext().get("b"),
 							(float) (500 * Math.random()), 500, p);

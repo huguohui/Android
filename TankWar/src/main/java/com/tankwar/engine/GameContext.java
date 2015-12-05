@@ -228,16 +228,12 @@ final public class GameContext extends Application
 		}
 	}
 
-	public Map getMap(){
-		return data;
-	}
-
 
 	/**
 	 * Get a global shared variable by a key.
 	 * @param key Variable key.
 	 */
-	public synchronized final Object get(String key) {
+	public final Object get(String key) {
 		synchronized (data) {
 			return data.get(key);
 		}

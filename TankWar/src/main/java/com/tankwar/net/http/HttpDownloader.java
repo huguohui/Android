@@ -74,6 +74,8 @@ public class HttpDownloader extends Downloader {
 				getRequester().getSocket().getInputStream())) != null) {
 			if (buff.length == 1 && buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
 				getRequester().close();
+				setState(State.finished);
+				setIsFinished(true);
 				System.out.println("[**] Download finished!");
 				break;
 			}
@@ -112,7 +114,7 @@ public class HttpDownloader extends Downloader {
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
 
-		if (size < 0) return null;
+		if (size <= 0) return null;
 
 		byte[] buff = new byte[BUFFER_SIZE];
 		byte[] chunk = new byte[size];
@@ -120,7 +122,9 @@ public class HttpDownloader extends Downloader {
 		while(count < size) {
 			int available = source.available();
 			if (available >= BUFFER_SIZE || available >= size - count) {
-				read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE);
+				if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
+					return null;
+				
 				System.arraycopy(buff, 0, chunk, count, read);
 				count += read;
 			}
@@ -139,15 +143,17 @@ public class HttpDownloader extends Downloader {
 			throw new IllegalArgumentException("The size is illegal!");
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
+		
+		if (size <= 0) return null;
 
 		char[] buff = new char[BUFFER_SIZE];
 		char[] chunk = new char[size];
 		int count = 0, read = 0;
 		while(count < size) {
-			read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE);
+			if (-1 == (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
+				return null;
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
-			System.out.println("Received: " + count);
 		}
 		
 		setDownloadedLength(getDownloadedLength() + size);

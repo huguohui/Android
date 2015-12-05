@@ -11,7 +11,7 @@ public interface Sender {
 	 * Send data to somewhere.
 	 *
 	 * @return If sent return true, else false.
-	 * @throws java.io.IOException If exception.
+	 * @throws IOException If exception.
 	 */
 	boolean send() throws IOException;
 
@@ -22,7 +22,7 @@ public interface Sender {
 	 * @param data The data.
 	 * @param to   Send to somewhere.
 	 * @return If sent return true, else false.
-	 * @throws java.io.IOException If exception.
+	 * @throws IOException If exception.
 	 */
 	boolean send(byte[] data, OutputStream to) throws IOException;
 }
