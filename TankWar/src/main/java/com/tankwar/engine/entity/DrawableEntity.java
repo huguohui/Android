@@ -1,7 +1,8 @@
 package com.tankwar.engine.entity;
 
-import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.engine.GameContext;
+import com.tankwar.engine.subsystem.Drawable;
+import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * Describe a drawable entity in game world.
@@ -9,6 +10,10 @@ import com.tankwar.engine.GameContext;
  */
 public abstract class DrawableEntity extends Entity
         implements Drawable {
+	/** The sprite of drawable entity. */
+	private Sprite mSprite;
+
+
     /**
      * The constructor of entity.
      *
@@ -18,6 +23,7 @@ public abstract class DrawableEntity extends Entity
      */
     public DrawableEntity(GameContext gameContext, int x, int y) {
         super(gameContext, x, y);
+		gameContext.getEngine().getGraphicsSubsystem().addDrawable(this);
     }
 
 
@@ -27,5 +33,16 @@ public abstract class DrawableEntity extends Entity
      */
     public DrawableEntity(GameContext gameContext) {
         super(gameContext);
+		gameContext.getEngine().getGraphicsSubsystem().addDrawable(this);
     }
+
+
+	public Sprite getSprite() {
+		return mSprite;
+	}
+
+
+	public void setSprite(Sprite sprite) {
+		mSprite = sprite;
+	}
 }

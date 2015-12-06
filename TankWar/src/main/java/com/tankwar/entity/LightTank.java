@@ -1,9 +1,11 @@
 package com.tankwar.entity;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.Entity;
+import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * A light tank.
@@ -19,8 +21,23 @@ final public class LightTank extends Tank {
         RED, WHITE, YELLOW, GREEN
     }
 
+	/** The speed of tank. */
+	private int mSpeed = 1;
 
-    /**
+
+	@Override
+	public int getSpeed() {
+		return mSpeed;
+	}
+
+
+	@Override
+	public void setSpeed(int speed) {
+		mSpeed = speed;
+	}
+
+
+	/**
      * The constructor of entity.
      *
      * @param gameContext The game context.
@@ -62,7 +79,6 @@ final public class LightTank extends Tank {
     }
 
 
-
     /**
      * Checks this object if collided some entity.
      *
@@ -70,7 +86,12 @@ final public class LightTank extends Tank {
      */
     @Override
     public boolean isCollision(Entity entity) {
-        return false;
+		if (Math.abs(entity.getX() - getX()) > getWidth())
+			return false;
+		else if (Math.abs(entity.getY() - getY()) > getHeight())
+			return false;
+		else
+			return true;
     }
 
     /**
@@ -81,7 +102,6 @@ final public class LightTank extends Tank {
      */
     @Override
     public void onCollision(Entity object) {
-
     }
 
 
@@ -93,7 +113,11 @@ final public class LightTank extends Tank {
      */
     @Override
     public void draw(Canvas canvas) {
+		if (getSprite() == null)
+			setSprite(new Sprite(getGameContext().getEngine().
+					getWorldSubsystem().getBitmap("enemy.png"), 0, 0, getWidth(), getHeight()));
 
+		canvas.drawBitmap(getSprite().getBitmap(0), getX(), getY(), new Paint());
     }
 
     /**
@@ -109,7 +133,40 @@ final public class LightTank extends Tank {
      * This method implemets move behavior.
      */
     @Override
-    public void move() {
-
+    public synchronized void move() {
+		switch(getDirection()) {
+			case UP:
+				setY(getY() - getSpeed());
+				break;
+			case DOWN:
+				setY(getY() + getSpeed());
+				break;
+			case LEFT:
+				setX(getX() - getSpeed());
+				break;
+			case RIGHT:
+				setX(getX() + getSpeed());
+		}
     }
+
+
+	/**
+	 * Move a distance by special direction.
+	 *
+	 * @param direction
+	 */
+	@Override
+	public void move(Direction direction) {
+		setDirection(direction);
+		move();
+	}
+
+
+	/**
+	 * Stopping!
+	 */
+	@Override
+	public void stop() {
+
+	}
 }

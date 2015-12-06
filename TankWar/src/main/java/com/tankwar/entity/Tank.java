@@ -1,13 +1,15 @@
 package com.tankwar.entity;
 
 import com.tankwar.engine.GameContext;
+import com.tankwar.engine.entity.LivingEntity;
+import com.tankwar.engine.subsystem.AISubsystem;
 import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * Tank base class.
  * @since 2015/11/04
  */
-public abstract class Tank extends LivingEntity {
+public abstract class Tank extends LivingEntity implements AISubsystem.AIControllable {
     /** The model of tank. */
     private Enum<?> mModel;
 
@@ -16,6 +18,12 @@ public abstract class Tank extends LivingEntity {
 
     /** The sprite of tank. */
     private Sprite mSprite;
+
+	/** The tank width. */
+	public int mWidth = 28;
+
+	/** The tank height. */
+	public int mHeight = 28;
 
 
     /**
@@ -35,7 +43,7 @@ public abstract class Tank extends LivingEntity {
      * @param gameContext The game context.
      */
     public Tank(GameContext gameContext) {
-        super(gameContext);
+		super(gameContext);
     }
 
 
@@ -115,5 +123,29 @@ public abstract class Tank extends LivingEntity {
     public Sprite getSprite() {
         return mSprite;
     }
+
+
+	@Override
+	public int getWidth() {
+		return mWidth;
+	}
+
+
+	@Override
+	public void setWidth(int width) {
+		mWidth = width;
+	}
+
+
+	@Override
+	public int getHeight() {
+		return mHeight;
+	}
+
+
+	@Override
+	public void setHeight(int height) {
+		mHeight = height;
+	}
 }
 

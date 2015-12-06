@@ -26,7 +26,7 @@ public abstract class Requester implements Sender {
     /**
      * The connection timeout. (ms)
      */
-    private int mTimeout = 10000;
+    private int mTimeout = 100000;
 
     /** Http header. */
     private Header mHeader;

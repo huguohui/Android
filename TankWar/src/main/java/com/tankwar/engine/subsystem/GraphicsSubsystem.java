@@ -33,8 +33,6 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     /** The height scale value of the default device to current device. */
     private float mHeightScale;
 
-    int i = 0;
-
 
 	/**
 	 * Only constructor.

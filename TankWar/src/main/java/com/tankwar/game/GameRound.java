@@ -1,20 +1,12 @@
 package com.tankwar.game;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
 import com.tankwar.engine.Engine;
+import com.tankwar.engine.GameContext;
 import com.tankwar.engine.Round;
-import com.tankwar.engine.subsystem.Drawable;
+import com.tankwar.engine.entity.Terrain;
 import com.tankwar.engine.subsystem.WorldSubsystem;
-import com.tankwar.net.Downloader;
-import com.tankwar.net.http.HttpDownloader;
-import com.tankwar.net.http.HttpRequester;
-import com.tankwar.utils.Log;
-
-import java.io.IOException;
-import java.net.URL;
+import com.tankwar.entity.LightTank;
+import com.tankwar.entity.Wall;
 
 /**
  * The game round.
@@ -39,71 +31,89 @@ public class GameRound extends Round {
     @Override
     public void start() {
         mWorldSubsystem = getEngine().getWorldSubsystem();
-        mWorldSubsystem.setWorld(null);
+        mWorldSubsystem.setWorld(new Terrain[][]{
+				{new Wall(getEngine().getGameContext(), 0, 0)}
+		});
+
+
 //
 //        Explosion exp = new Explosion(getEngine());
 //        FrameAnimation fa = new FrameAnimation(getEngine());
 //        fa.setDescriptor(exp);
 //        fa.play();
         setIsStart(true);
+		getEngine().getAISubsystem().addAIControllable(new LightTank(GameContext.getGameContext()));
 
-
-        String str = "";
-        try {
-			getEngine().getGameContext().set("key", "->>>>");
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					HttpRequester r = null;
-					try {
-						getEngine().getGameContext().set("a", "AAAA");
-						r = new HttpRequester(
-								new URL("http://dx3.xiazaiba.com/Soft/S/sysdiag_3.0.0.39_XiaZaiBa.zip"), null);
-						r.send();
-						getEngine().getGameContext().set("b", "SEEEE");
-
-						Downloader d = new HttpDownloader(r);
-						getEngine().getGameContext().set("d", d);
-						d.download(getEngine().getGameContext().SDCARD_ROOT + "/a.zip");
-					} catch (IOException e) {
-						Log.e(e);
-					}
-				}
-			}).start();
-        }catch(Exception e) {
-			Log.e(e);
-        }
-
-        getEngine().getGraphicsSubsystem().addDrawable(new Drawable() {
-			@Override
-			public void draw(Canvas canvas) {
-				Paint p = new Paint();
-				p.setTextSize(50);
-				p.setColor(Color.WHITE);
-				try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-
-				}
-				if (getEngine().getGameContext().get("d") != null) {
-					Downloader d = ((HttpDownloader) (GameRound.this.getEngine().getGameContext().get("d")));
-					canvas.drawText("[**] Downloaded: " + d.getDownloadedLength() + "Bytes, " + ((float)d.getDownloadedLength() / d.getLength()) * 100  + "%" , 500, 500, p);
-				} else {
-					canvas.drawText("IS null?" + getEngine().getGameContext().get("a") + getEngine().getGameContext().get("b"),
-							(float) (500 * Math.random()), 500, p);
-				}
-
-			}
-
-
-			@Override
-			public int getIndex() {
-				return 1;
-			}
-		});
+//
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				HttpRequester r = null;
+//				try {
+//					//dlsw.baidu.com/sw-search-sp/soft/bf/35013/Baidu_Setup_1745_2.1.0.1252_10000009.1446617488.exe
+//					r = new HttpRequester(
+//							new URL("http://0.baidu.com"), null);
+//					r.send();
+//
+//					Downloader d = new HttpDownloader(r);
+//					getEngine().getGameContext().set("d", d);
+//					d.download(getEngine().getGameContext().SDCARD_ROOT + "/a.zip");
+//				} catch (IOException e) {
+//					Log.e(e);
+//				}
+//			}
+//		}).start();
+//
+//        getEngine().getGraphicsSubsystem().addDrawable(new Drawable() {
+//			@Override
+//			public void draw(Canvas canvas) {
+//				Paint p = new Paint();
+//				p.setTextSize(50);
+//				p.setColor(Color.WHITE);
+//				GameContext c = getEngine().getGameContext();
+//
+//				try {
+//					Thread.sleep(20);
+//				} catch (Exception e) {
+//
+//				}
+//
+//				Downloader d = ((HttpDownloader) (c.get("d")));
+//
+//				if (d != null) {
+//					long len = d.getLength(),
+//						 downLen = d.getDownloadedLength();
+//					float downPercent = Float.parseFloat(new DecimalFormat("00.0")
+//							.format(((float) d.getDownloadedLength() / d.getLength()) * 100));
+//
+//					int width = getEngine().getGameContext().getScreenWidth(),
+//						height = getEngine().getGameContext().getScreenHeight(),
+//						pHeight = 50;
+//					float widthPercentOne = (float) width / 100;
+//
+//					p.setColor(Color.GREEN);
+//					p.setTextAlign(Paint.Align.CENTER);
+//					canvas.drawText("Downloaded: " + downPercent + "%", width >> 1,
+//							(height - pHeight - 8) >> 1, p);
+//					canvas.drawRect(0, (height - pHeight - 8) >> 1, width,
+//							(height - pHeight + 8 >> 1) + pHeight, p);
+//					p.setColor(Color.BLUE);
+//					canvas.drawRect(0, height - pHeight >> 1, widthPercentOne * downPercent,
+//							(height - pHeight >> 1) + pHeight, p);
+//				} else {
+//					canvas.drawText("等待中...", 900, 500, p);
+//				}
+//			}
+//
+//
+//			@Override
+//			public int getIndex() {
+//				return 1;
+//			}
+//		});
     }
 
-	public synchronized Engine getEngine() {
+	public Engine getEngine() {
 		return super.getEngine();
 	}
 

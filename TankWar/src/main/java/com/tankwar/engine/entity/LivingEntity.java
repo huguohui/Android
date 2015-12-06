@@ -1,8 +1,7 @@
-package com.tankwar.entity;
+package com.tankwar.engine.entity;
 
 
 import com.tankwar.engine.GameContext;
-import com.tankwar.engine.entity.MovableEntity;
 
 /**
  * Describe a living entity.

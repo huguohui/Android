@@ -131,7 +131,7 @@ public class Engine implements Runnable {
     /**
      * Get game context.
      */
-    public synchronized final GameContext getGameContext() {
+    public final GameContext getGameContext() {
         return mGameContext;
     }
 

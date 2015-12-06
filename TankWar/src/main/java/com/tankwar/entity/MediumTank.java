@@ -111,4 +111,24 @@ final public class MediumTank extends Tank {
     public void move() {
 
     }
+
+
+	/**
+	 * Move a distance by special direction.
+	 *
+	 * @param direction
+	 */
+	@Override
+	public void move(Direction direction) {
+
+	}
+
+
+	/**
+	 * Stopping!
+	 */
+	@Override
+	public void stop() {
+
+	}
 }

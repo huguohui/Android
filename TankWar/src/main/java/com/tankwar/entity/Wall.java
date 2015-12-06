@@ -1,16 +1,25 @@
 package com.tankwar.entity;
 
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.Entity;
 import com.tankwar.engine.entity.Obstacle;
+import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * A kind of obstacle, it can destroy.
  */
 public class Wall extends Obstacle {
+	/** The wall width. */
+	private int mWidth = 32;
+
+	/** The wall height. */
+	private int mHeight = 32;
+
+
     /**
      * The constructor of entity.
      *
@@ -19,7 +28,9 @@ public class Wall extends Obstacle {
      * @param y The default y coordinate.
      */
     public Wall(GameContext gameContext, int x, int y) {
-        super(gameContext, x, y);
+		super(gameContext, x, y);
+		setSprite(new Sprite(getGameContext().getEngine().
+				getWorldSubsystem().getBitmap("tile.png"), 0, 0, getWidth(), getHeight()));
     }
 
     /**
@@ -48,7 +59,7 @@ public class Wall extends Obstacle {
      */
     @Override
     public void draw(Canvas canvas) {
-
+		canvas.drawBitmap(getSprite().getBitmap(0), getX(), getY(), new Paint());
     }
 
     /**
@@ -68,7 +79,12 @@ public class Wall extends Obstacle {
      */
     @Override
     public boolean isCollision(Entity entity) {
-        return false;
+		if (Math.abs(entity.getX() - getX()) > getWidth())
+			return false;
+		else if (Math.abs(entity.getY() - getY()) > getHeight())
+			return false;
+		else
+			return true;
     }
 
     /**
@@ -81,4 +97,28 @@ public class Wall extends Obstacle {
     public void onCollision(Entity object) {
 
     }
+
+
+	@Override
+	public int getHeight() {
+		return mHeight;
+	}
+
+
+	@Override
+	public void setHeight(int height) {
+		mHeight = height;
+	}
+
+
+	@Override
+	public int getWidth() {
+		return mWidth;
+	}
+
+
+	@Override
+	public void setWidth(int width) {
+		mWidth = width;
+	}
 }

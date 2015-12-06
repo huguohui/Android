@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.tankwar.net.Requester.State;
-
 /**
  * Download some data form a place.
  */

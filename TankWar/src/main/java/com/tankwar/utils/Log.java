@@ -1,10 +1,10 @@
 package com.tankwar.utils;
 
-import android.os.Environment;
-
 import com.tankwar.engine.GameContext;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 
 
@@ -69,6 +69,17 @@ final public class Log
 		} catch (IOException err) {
             android.util.Log.e("error", err.getMessage());
 		}
+	}
+
+
+	public final synchronized static void debug(String key, String val) {
+		android.util.Log.d(key, val);
+	}
+
+
+
+	public final synchronized static void error(String key, String val) {
+		android.util.Log.e(key, val);
 	}
 }
 

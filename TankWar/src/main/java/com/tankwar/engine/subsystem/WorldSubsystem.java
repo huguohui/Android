@@ -126,7 +126,7 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 
 		for (Terrain[] terrains : terrain) {
 			for (Terrain t : terrains) {
-				getEngine().getGraphicsSubsystem().addDrawable(t, 0);
+				getEngine().getGraphicsSubsystem().addDrawable(t);
 			}
 		}
     }
@@ -162,7 +162,8 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 			String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.BITMAP_DIR
 					+ GameContext.DS;
 			for (String assetName : new File(path).list()) {
-				mBitmaps.put(assetName, BitmapFactory.decodeFile(path + GameContext.DS + assetName));
+				if (assetName.equals(".exists")) continue;
+				mBitmaps.put(assetName, BitmapFactory.decodeFile(path + assetName));
 			}
 		} catch (Exception e) {
 			Log.e(e);
@@ -178,8 +179,9 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 			String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.SOUND_DIR
 					+ GameContext.DS;
 			for (String assetName : new File(path).list()) {
+				if (assetName.equals(".exists")) continue;
 				SoundPool sp = new SoundPool(1, 1, 10);
-				sp.load(path + GameContext.DS + assetName, 1);
+				sp.load(path + assetName, 1);
 				mSounds.put(assetName, sp);
 			}
 		} catch (Exception e) {
@@ -215,16 +217,6 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 			}
 		}
 		mSounds = null;
-	}
-
-
-	/**
-	 * Get a sprite.
-	 * @param name Bitmap name.
-	 * @return A sprite.
-	 */
-	public Sprite getSprite(String name) {
-		return new Sprite(getBitmap(name));
 	}
 
 
@@ -288,7 +280,7 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	 */
 	@Override
 	public void onStart(Engine engine) {
-		mGraphicsSubsystem = (GraphicsSubsystem)getEngine().getSubsystem(GraphicsSubsystem.class);
+		mGraphicsSubsystem = engine.getGraphicsSubsystem();
 	}
 
 	/**

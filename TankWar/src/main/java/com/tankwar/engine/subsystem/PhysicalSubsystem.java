@@ -27,7 +27,7 @@ public class PhysicalSubsystem extends Subsystem {
      */
     public PhysicalSubsystem(Engine engine) {
         super(engine);
-        mWorldSubsystem = (WorldSubsystem)getEngine().getSubsystem(WorldSubsystem.class);
+        mWorldSubsystem = getEngine().getWorldSubsystem();
     }
 
 
@@ -62,7 +62,7 @@ public class PhysicalSubsystem extends Subsystem {
      * Get all entitys.
      * @return All {@link Entity}s.
      */
-    public List<Entity> getEntitys() {
+    public List<Entity> getEntities() {
         return this.mCollisionCheckables;
     }
 
@@ -72,19 +72,26 @@ public class PhysicalSubsystem extends Subsystem {
      */
     public void update() {
         Entity temp = null;
-        for (Entity entity : mCollisionCheckables) {
-            if (temp == null)
-                temp = entity;
+		List<Entity> entities = getEngine().getEntities();
+		int pos = 1, size = entities.size();
 
-            if (temp != null && entity != null && !temp.equals(entity)) {
-                if (temp instanceof CollisionCheckable && temp instanceof CollisionListener
-                        && entity instanceof CollisionCheckable) {
-                    if (((CollisionCheckable) temp).isCollision(entity)) {
-                        ((CollisionListener) entity).onCollision(temp);
-                    }
-                }
-            }
-        }
+		for (int j = 0; j < size; j++) {
+			temp = entities.get(j);
+			for (int i = j + 1; i < size; i++) {
+				Entity entity = entities.get(i);
+				if (temp != null && entity != null && !temp.equals(entity)) {
+					if (temp instanceof CollisionCheckable && temp instanceof CollisionListener
+							&& entity instanceof CollisionCheckable) {
+						if (((CollisionCheckable) temp).isCollision(entity)) {
+							((CollisionListener) entity).onCollision(temp);
+							((CollisionListener) temp).onCollision(entity);
+						} else {
+
+						}
+					}
+				}
+			}
+		}
 
     }
 }

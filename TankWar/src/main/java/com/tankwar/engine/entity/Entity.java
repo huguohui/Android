@@ -40,6 +40,7 @@ public abstract class Entity {
         this.mGameContext = gameContext;
         this.mX = x;
         this.mY = y;
+		gameContext.getEngine().addEntity(this);
     }
 
 
@@ -48,6 +49,7 @@ public abstract class Entity {
      */
     public Entity(GameContext gameContext) {
         this.mGameContext = gameContext;
+		gameContext.getEngine().addEntity(this);
     }
 
 

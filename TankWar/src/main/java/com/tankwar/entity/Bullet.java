@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import com.tankwar.engine.entity.MovableEntity;
+import com.tankwar.engine.subsystem.Updatable;
 import com.tankwar.game.GameMap;
 import com.tankwar.engine.GameContext;
 import com.tankwar.utils.GameSound;
@@ -18,7 +19,7 @@ import java.util.List;
  * @version 1.0
  * @since 2015/10/29
  */
-public abstract class Bullet extends MovableEntity {
+public abstract class Bullet extends MovableEntity implements Updatable {
     private boolean isExplosion;
     private boolean canDestroyIron = false;
 

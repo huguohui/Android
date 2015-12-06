@@ -81,9 +81,11 @@ final public class Client extends Activity
      * The game controller, to start a game.
      */
     protected void startGame() {
+		Engine engine = Engine.getEngine();
+		GameContext.getGameContext().setEngine(engine);
         mGame = GameFactory.createGame(mOption);
         mGame.setGameContext(GameContext.getGameContext());
-        mGame.setEngine(Engine.getEngine());
+        mGame.setEngine(engine);
         mGame.start();
     }
 

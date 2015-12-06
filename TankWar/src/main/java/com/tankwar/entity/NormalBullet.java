@@ -78,4 +78,13 @@ public class NormalBullet extends Bullet {
     public void move() {
 
     }
+
+
+	/**
+	 * Per loop will call this method.
+	 */
+	@Override
+	public void update() {
+
+	}
 }

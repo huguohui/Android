@@ -118,16 +118,24 @@ public class HttpDownloader extends Downloader {
 
 		byte[] buff = new byte[BUFFER_SIZE];
 		byte[] chunk = new byte[size];
-		int count = 0, read = 0;
+		int count = 0, read = 0, wait = 0;
+		boolean dataAvailable = false;
+
 		while(count < size) {
 			int available = source.available();
-			if (available >= BUFFER_SIZE || available >= size - count) {
+
+			if (available >= BUFFER_SIZE || available >= size - count || dataAvailable) {
 				if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
 					return null;
-				
+
 				System.arraycopy(buff, 0, chunk, count, read);
 				count += read;
+				dataAvailable = false;
+				continue;
 			}
+
+			if (wait++ > 5 && available > 0)
+				dataAvailable = true;
 		}
 
 		return chunk;
@@ -149,14 +157,14 @@ public class HttpDownloader extends Downloader {
 		char[] buff = new char[BUFFER_SIZE];
 		char[] chunk = new char[size];
 		int count = 0, read = 0;
+
 		while(count < size) {
-			if (-1 == (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
+			if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
 				return null;
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
 		}
-		
-		setDownloadedLength(getDownloadedLength() + size);
+
 		return chunk;
 	}
 
