@@ -1,6 +1,7 @@
 package com.tankwar.engine.subsystem;
 
 
+import com.tankwar.engine.Controllable;
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.entity.MovableEntity;
 
@@ -15,9 +16,10 @@ import java.util.List;
  */
 public class AISubsystem extends Subsystem implements Engine.StateListener {
 	/** The all controllable entity. */
-	private List<AIControllable> mAIControllables = new ArrayList<>();
+	private List<Controllable> mControllables = new ArrayList<>();
 
 	int count = 0;
+	int dir = 0;
 
     /**
      * Construct a module object by gameContext.
@@ -36,28 +38,31 @@ public class AISubsystem extends Subsystem implements Engine.StateListener {
     @Override
     public void update() {
 		if (count > 10) {
-			for (AIControllable controllable : mAIControllables) {
-				controllable.move(MovableEntity.Direction.values()[(int)(Math.random() * 32) % 4]);
+			if (count > 100) {
+				dir = (int)(Math.random() * 32) % 4;
+				count = 0;
 			}
-			count = 0;
+			for (Controllable controllable : mControllables) {
+				controllable.move(MovableEntity.Direction.values()[dir]);
+			}
 		}
 		count++;
     }
 
 
-	public List<AIControllable> getAIControllables() {
-		return mAIControllables;
+	public List<Controllable> getControllables() {
+		return mControllables;
 	}
 
 
-	public synchronized void addAIControllable(AIControllable AIControllable) {
-		mAIControllables.add(AIControllable);
+	public synchronized void addControllable(Controllable Controllable) {
+		mControllables.add(Controllable);
 	}
 
 
 
-	public synchronized void removeAIControllable(AIControllable AIControllable) {
-		mAIControllables.remove(AIControllable);
+	public synchronized void removeControllable(Controllable Controllable) {
+		mControllables.remove(Controllable);
 	}
 
 
@@ -113,29 +118,5 @@ public class AISubsystem extends Subsystem implements Engine.StateListener {
 	@Override
 	public void onStop(Engine engine) {
 
-	}
-
-
-	/**
-	 * A entity that can be controlled by AI subsystem.
-	 * @since 2015/12/05
-	 */
-	public interface AIControllable {
-		/**
-		 * Move a distance on current direction.
-		 */
-		void move();
-
-
-		/**
-		 * Move a distance by special direction.
-		 */
-		void move(MovableEntity.Direction direction);
-
-
-		/**
-		 * Stopping!
-		 */
-		void stop();
 	}
 }

@@ -131,4 +131,24 @@ final public class HeavyTank extends Tank {
 	public void stop() {
 
 	}
+
+
+	/**
+	 * Attacks on current direction.
+	 */
+	@Override
+	public void attack() {
+
+	}
+
+
+	/**
+	 * Attacks to some target.
+	 *
+	 * @param entity
+	 */
+	@Override
+	public void attack(Entity entity) {
+
+	}
 }

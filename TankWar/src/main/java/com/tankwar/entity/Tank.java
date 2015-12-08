@@ -1,15 +1,15 @@
 package com.tankwar.entity;
 
+import com.tankwar.engine.Controllable;
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.LivingEntity;
-import com.tankwar.engine.subsystem.AISubsystem;
 import com.tankwar.engine.subsystem.Sprite;
 
 /**
  * Tank base class.
  * @since 2015/11/04
  */
-public abstract class Tank extends LivingEntity implements AISubsystem.AIControllable {
+public abstract class Tank extends LivingEntity implements Controllable {
     /** The model of tank. */
     private Enum<?> mModel;
 

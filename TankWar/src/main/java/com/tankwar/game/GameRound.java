@@ -35,6 +35,12 @@ public class GameRound extends Round {
 				{new Wall(getEngine().getGameContext(), 0, 0)}
 		});
 
+		int width = getEngine().getGameContext().getScreenWidth(),
+			height = getEngine().getGameContext().getScreenHeight();
+
+		getEngine().getGraphicsSubsystem().setXScale(width / Game.SCREEN_WIDTH);
+		getEngine().getGraphicsSubsystem().setYScale(height / Game.SCREEN_HEIGHT);
+
 
 //
 //        Explosion exp = new Explosion(getEngine());
@@ -42,7 +48,10 @@ public class GameRound extends Round {
 //        fa.setDescriptor(exp);
 //        fa.play();
         setIsStart(true);
-		getEngine().getAISubsystem().addAIControllable(new LightTank(GameContext.getGameContext()));
+		getEngine().getAISubsystem().addControllable(new LightTank(GameContext.getGameContext(), 1000, 500));
+
+
+		getEngine().getControlSubsystem();
 
 //
 //		new Thread(new Runnable() {

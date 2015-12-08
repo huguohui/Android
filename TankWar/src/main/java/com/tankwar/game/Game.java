@@ -35,6 +35,14 @@ public class Game {
     private Option mOption;
 
 
+	/** The game default screen width. */
+	public final static int SCREEN_WIDTH = 480;
+
+
+	/** The game default scrren height. */
+	public final static int SCREEN_HEIGHT = 320;
+
+
     /**
      * Private constructor.
      */

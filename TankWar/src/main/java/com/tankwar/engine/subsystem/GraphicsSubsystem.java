@@ -28,10 +28,10 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
     private CanvasView mCanvasView;
 
     /** The width scale value of the default device to current device. */
-    private float mWidthScale;
+    private float mXScale;
 
     /** The height scale value of the default device to current device. */
-    private float mHeightScale;
+    private float mYScale;
 
 
 	/**
@@ -65,8 +65,8 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
      * Get the width scale.
      * @return The width scale.
      */
-    public float getWidthScale() {
-        return mWidthScale;
+    public float getXScale() {
+        return mXScale;
     }
 
 
@@ -74,12 +74,22 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
      * Get the height scale.
      * @return The height scale.
      */
-    public float getHeightScale() {
-        return mHeightScale;
+    public float getYScale() {
+        return mYScale;
     }
 
 
-    /**
+	public void setXScale(float XScale) {
+		mXScale = XScale;
+	}
+
+
+	public void setYScale(float YScale) {
+		mYScale = YScale;
+	}
+
+
+	/**
      * Get all layers.
      * @return All layers.
      */
@@ -155,6 +165,10 @@ public class GraphicsSubsystem extends Subsystem implements Engine.StateListener
 
         Canvas canvas = mCanvasView.getCanvas();
         if (canvas == null) return;
+
+		if (mXScale != 0f && mYScale != 0f)
+			canvas.scale(mXScale, mYScale);
+
 
 		canvas.drawColor(Color.BLACK);
         canvas.drawText("Frame time: " + getEngine().getTimingSubsystem().getFrameTime(), 0, 25, p);
