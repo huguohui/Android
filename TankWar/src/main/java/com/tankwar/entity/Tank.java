@@ -1,6 +1,6 @@
 package com.tankwar.entity;
 
-import com.tankwar.engine.Controllable;
+import com.tankwar.engine.subsystem.Controllable;
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.LivingEntity;
 import com.tankwar.engine.subsystem.Sprite;

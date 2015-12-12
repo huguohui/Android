@@ -1,4 +1,4 @@
-package com.tankwar.engine;
+package com.tankwar.engine.subsystem;
 
 import com.tankwar.engine.entity.Entity;
 import com.tankwar.engine.entity.MovableEntity;

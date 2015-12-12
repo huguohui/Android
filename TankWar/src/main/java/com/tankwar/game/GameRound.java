@@ -6,7 +6,9 @@ import com.tankwar.engine.Round;
 import com.tankwar.engine.entity.Terrain;
 import com.tankwar.engine.subsystem.WorldSubsystem;
 import com.tankwar.entity.LightTank;
+import com.tankwar.entity.Tank;
 import com.tankwar.entity.Wall;
+import com.tankwar.ui.VirtualPad;
 
 /**
  * The game round.
@@ -48,10 +50,13 @@ public class GameRound extends Round {
 //        fa.setDescriptor(exp);
 //        fa.play();
         setIsStart(true);
-		getEngine().getAISubsystem().addControllable(new LightTank(GameContext.getGameContext(), 1000, 500));
+		//getEngine().getAISubsystem().addControllable(
+				Tank t = new LightTank(GameContext.getGameContext(), 0, 0);//);
+		VirtualPad vp = new VirtualPad();
+		vp.setControllable(t);
+		getEngine().getControlSubsystem().addTouchEventListener(vp);
 
-
-		getEngine().getControlSubsystem();
+		getEngine().getGraphicsSubsystem().addDrawable(vp);
 
 //
 //		new Thread(new Runnable() {

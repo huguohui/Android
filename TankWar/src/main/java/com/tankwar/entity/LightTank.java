@@ -189,4 +189,7 @@ final public class LightTank extends Tank {
 	public void attack(Entity entity) {
 
 	}
+
+
+
 }

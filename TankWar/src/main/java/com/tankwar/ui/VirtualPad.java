@@ -6,18 +6,22 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.tankwar.entity.LightTank;
-import com.tankwar.game.GameMap;
+import com.tankwar.engine.GameContext;
+import com.tankwar.engine.entity.MovableEntity;
+import com.tankwar.engine.subsystem.ControlSubsystem;
+import com.tankwar.engine.subsystem.Controllable;
+import com.tankwar.engine.subsystem.Drawable;
+import com.tankwar.game.Game;
 import com.tankwar.utils.GameSound;
 
-final public class VirtualPad {
+final public class VirtualPad implements ControlSubsystem.TouchEventListener, Drawable {
 	public int D_Pad_W = 50;
 	public int D_Pad_H = 50;
 	public int A_Pad_W = 50;
 	public int A_Pad_H = 50;
 	public int keyDistance 	= 50;
 	public int bottomMargin = 20;
-	public int topMargin	= GameMap.ORIGINAL_HEIGHT - (bottomMargin + (D_Pad_H << 1) + keyDistance);
+	public int topMargin	= Game.SCREEN_HEIGHT- (bottomMargin + (D_Pad_H << 1) + keyDistance);
 	public int leftMargin 	= 20;
 	public int rightMargin 	= 20;
 
@@ -32,7 +36,7 @@ final public class VirtualPad {
 	public RectF rkRealRect = new RectF();
 	public RectF akRealRect = new RectF();
 
-	private LightTank myPlayer = null;
+	private Controllable mControllable;
 
 	public final int KEY_UP		= 1;
 	public final int KEY_RIGHT	= 2;
@@ -44,21 +48,23 @@ final public class VirtualPad {
 
 	public VirtualPad() {
 		Matrix mtx = new Matrix();
-		mtx.setScale(0, 0);
+		GameContext g = GameContext.getGameContext();
+		mtx.setScale(g.getEngine().getGraphicsSubsystem().getXScale(),
+				g.getEngine().getGraphicsSubsystem().getYScale());
 
-		upKeyRect  = new Rect(leftMargin + D_Pad_W + ((keyDistance - D_Pad_W) / 2),
-			topMargin, rightMargin + D_Pad_W + ((keyDistance - D_Pad_W) / 2) + D_Pad_W,
-			topMargin + D_Pad_H);
+		upKeyRect = new Rect(leftMargin + D_Pad_W + ((keyDistance - D_Pad_W) / 2),
+				topMargin, rightMargin + D_Pad_W + ((keyDistance - D_Pad_W) / 2) + D_Pad_W,
+				topMargin + D_Pad_H);
 		downKeyRect = new Rect(upKeyRect.left, upKeyRect.top + keyDistance + D_Pad_H,
-			upKeyRect.right, upKeyRect.top + keyDistance + D_Pad_H + D_Pad_H);
-		leftKeyRect = new Rect(leftMargin, topMargin + D_Pad_H +((keyDistance -
-			D_Pad_W) / 2), leftMargin + D_Pad_W, topMargin + D_Pad_H + ((keyDistance - D_Pad_W) / 2)
-			+ D_Pad_W);
+				upKeyRect.right, upKeyRect.top + keyDistance + D_Pad_H + D_Pad_H);
+		leftKeyRect = new Rect(leftMargin, topMargin + D_Pad_H + ((keyDistance -
+				D_Pad_W) / 2), leftMargin + D_Pad_W, topMargin + D_Pad_H + ((keyDistance - D_Pad_W) / 2)
+				+ D_Pad_W);
 		rightKeyRect = new Rect(leftKeyRect.left + keyDistance + D_Pad_W, leftKeyRect.top,
-			leftKeyRect.left + keyDistance + D_Pad_W*2, leftKeyRect.bottom);
-		atkKeyRect	 = new Rect(GameMap.ORIGINAL_WIDTH - rightMargin - A_Pad_W, GameMap.ORIGINAL_HEIGHT -
-			bottomMargin - A_Pad_H, GameMap.ORIGINAL_WIDTH - rightMargin, GameMap.ORIGINAL_HEIGHT -
-			bottomMargin);
+				leftKeyRect.left + keyDistance + D_Pad_W * 2, leftKeyRect.bottom);
+		atkKeyRect = new Rect(Game.SCREEN_WIDTH - rightMargin - A_Pad_W, Game.SCREEN_HEIGHT -
+				bottomMargin - A_Pad_H, Game.SCREEN_WIDTH - rightMargin, Game.SCREEN_HEIGHT -
+				bottomMargin);
 
 		mtx.mapRect(ukRealRect, new RectF(upKeyRect));
 		mtx.mapRect(dkRealRect, new RectF(downKeyRect));
@@ -68,58 +74,72 @@ final public class VirtualPad {
 	}
 
 
-	public final void draw(Canvas c, Paint p) {
-		p.setARGB(100, 255, 255, 255);
-		c.drawRect(upKeyRect, p);
-		c.drawRect(downKeyRect, p);
-		c.drawRect(leftKeyRect, p);
-		c.drawRect(rightKeyRect, p);
-		c.drawRect(atkKeyRect, p);
-	}
-
-
 	public void onLoosen(int x, int y) {
 		switch(getKey(x, y)) {
 			case KEY_UP:
-				onKeyUp(true);
+				loosenUp();
 				break;
 			case KEY_DOWN:
-				onKeyDown(true);
+				loosenDown();
 				break;
 			case KEY_RIGHT:
-				onKeyRight(true);
+				loosenRight();
 				break;
 			case KEY_LEFT:
-				onKeyLeft(true);
+				loosenLeft();
 				break;
 			case KEY_ATTACK:
-				onKeyAttack(true);
+				loosenA();
 				break;
 		}
 	}
 
 
-	private void onKeyAttack(boolean isLoosen) {
+	private void pressA() {
+		mControllable.attack();
+	}
+
+
+	private void pressUp() {
+		mControllable.move(MovableEntity.Direction.UP);
+	}
+
+
+	private void pressRight() {
+		mControllable.move(MovableEntity.Direction.RIGHT);
+	}
+
+
+	private void pressDown() {
+		mControllable.move(MovableEntity.Direction.DOWN);
+	}
+
+
+	private void pressLeft() {
+		mControllable.move(MovableEntity.Direction.LEFT);
+	}
+
+
+	private void loosenA() {
+	}
+
+
+	private void loosenUp() {
 
 	}
 
 
-	private void onKeyLeft(boolean isLoosen) {
+	private void loosenRight() {
 
 	}
 
 
-	private void onKeyRight(boolean isLoosen) {
+	private void loosenDown() {
 
 	}
 
 
-	private void onKeyDown(boolean isLoosen) {
-
-	}
-
-
-	private void onKeyUp(boolean isLoosen) {
+	private void loosenLeft() {
 
 	}
 
@@ -141,44 +161,62 @@ final public class VirtualPad {
 	}
 
 
-	public void onPressed(int x, int y) {
+	public void onPress(int x, int y) {
 		switch(getKey(x, y)) {
 			case KEY_UP:
-				onKeyUp(false);
+				pressUp();
 				break;
 			case KEY_DOWN:
-				onKeyDown(false);
+				pressDown();
 				break;
 			case KEY_RIGHT:
-				onKeyRight(false);
+				pressRight();
 				break;
 			case KEY_LEFT:
-				onKeyLeft(false);
+				pressLeft();
 				break;
 			case KEY_ATTACK:
-				onKeyAttack(false);
+				pressA();
 				break;
 		}
 	}
 
 
-	public void onLongPress(int x, int y) {
-		switch(getKey(x, y)) {
-			case KEY_UP:
-				onKeyUp(false);
-				break;
-			case KEY_DOWN:
-				onKeyDown(false);
-				break;
-			case KEY_RIGHT:
-				onKeyRight(false);
-				break;
-			case KEY_LEFT:
-				onKeyLeft(false);
-				break;
-			case KEY_ATTACK:
-				onKeyAttack(false);
-				break;
-		}
+	/**
+	 * To draw itself.
+	 *
+	 * @param c The canvas.
+	 */
+	@Override
+	public void draw(Canvas c) {
+		Paint p = new Paint();
+		p.setARGB(100, 255, 255, 255);
+		c.drawRect(upKeyRect, p);
+		c.drawRect(downKeyRect, p);
+		c.drawRect(leftKeyRect, p);
+		c.drawRect(rightKeyRect, p);
+		c.drawRect(atkKeyRect, p);
+	}
+
+
+	/**
+	 * The layer index of draw.
+	 *
+	 * @return A number that >= 0.
+	 */
+	@Override
+	public int getIndex() {
+		return 4;
+	}
+
+
+	public void setControllable(Controllable controllable) {
+		if (controllable == null) return;
+		this.mControllable = controllable;
+	}
+
+
+	public Controllable getControllable() {
+		return mControllable;
 	}
 }
