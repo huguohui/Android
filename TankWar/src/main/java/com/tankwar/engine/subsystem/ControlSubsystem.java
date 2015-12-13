@@ -21,6 +21,8 @@ public class ControlSubsystem extends Subsystem
 	/** Key event listeners. */
 	private List<KeyEventListener> mKeyEventListeners = new ArrayList<>();
 
+	/** The **/
+
 
 	/**
 	 * Constructor.
@@ -35,7 +37,7 @@ public class ControlSubsystem extends Subsystem
      * Per loop will call this method.
      */
     @Override
-    public void update() {
+    public final void update() {
 
     }
 
@@ -53,17 +55,14 @@ public class ControlSubsystem extends Subsystem
 		int pointerCount = event.getPointerCount();
 		if (pointerCount > 1) {
 			for (int i = 0; i < pointerCount; i++) {
-				int index = event.getActionIndex(),
-					x, y;
-				boolean isUp = true;
+				int index = i, x, y;
+				boolean isUp = false;
 				switch (event.getAction() & MotionEvent.ACTION_MASK) {
 					case MotionEvent.ACTION_POINTER_DOWN:
-						isUp = false;
 						break;
 					case MotionEvent.ACTION_POINTER_UP:
+						isUp = true;
 						break;
-//					case M:
-//						break;
 				}
 				x = (int)event.getX(index);
 				y = (int)event.getY(index);
@@ -76,15 +75,16 @@ public class ControlSubsystem extends Subsystem
 				}
 			}
 		}else{
-			boolean isUp = true;
+			boolean isUp = false;
 			int x = (int) event.getX(), y = (int) event.getY();
 			switch (event.getAction() & event.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
-					isUp = false;
 					break;
 				case MotionEvent.ACTION_UP:
+					isUp = true;
 					break;
 			}
+
 			for (TouchEventListener tl : mTouchEventListeners) {
 				if (isUp) {
 					tl.onLoosen(x, y);

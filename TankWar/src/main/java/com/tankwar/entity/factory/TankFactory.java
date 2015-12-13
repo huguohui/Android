@@ -8,13 +8,6 @@ import com.tankwar.entity.Tank;
  */
 public interface TankFactory extends Factory {
     /**
-     * Creates a tank with model.
-     * @param model Tank model.
-     */
-    Tank create(Enum<?> model);
-
-
-    /**
      * Creates a tank with model and color.
      * @param model Tank model.
      * @param color Tank color.

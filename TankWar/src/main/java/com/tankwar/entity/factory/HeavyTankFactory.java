@@ -37,16 +37,6 @@ public class HeavyTankFactory implements TankFactory {
 
 
     /**
-     * Creates a tank with model.
-     *
-     * @param model Tank model.
-     */
-    @Override
-    public HeavyTank create(Enum<?> model) {
-        return new HeavyTank(GameContext.getGameContext(), model);
-    }
-
-    /**
      * Creates a tank with model and color.
      *
      * @param model Tank model.

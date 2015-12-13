@@ -48,17 +48,6 @@ public abstract class Tank extends LivingEntity implements Controllable {
 
 
     /**
-     * Constructing a tank with model.
-     * @param gameContext The game context.
-     * @param model Tank model.
-     */
-    public Tank(GameContext gameContext, Enum<?> model) {
-        super(gameContext);
-        mModel = model;
-    }
-
-
-    /**
      * Constructing a tank with model and color.
      * @param gameContext The game context.
      * @param model Tank model.

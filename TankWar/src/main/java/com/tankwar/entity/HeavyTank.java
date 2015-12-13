@@ -42,16 +42,6 @@ final public class HeavyTank extends Tank {
 
 
     /**
-     * Constructing a tank with model.
-     * @param gameContext The game context.
-     * @param model Tank model.
-     */
-    public HeavyTank(GameContext gameContext, Enum<?> model) {
-        super(gameContext, model);
-    }
-
-
-    /**
      * Constructing a tank with model and color.
      * @param gameContext The game context.
      * @param model Tank model.

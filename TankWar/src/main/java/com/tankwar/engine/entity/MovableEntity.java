@@ -16,9 +16,9 @@ public abstract class MovableEntity extends DrawableEntity
      */
     public enum Direction {
         UP,
+        RIGHT,
         DOWN,
-        LEFT,
-        RIGHT
+        LEFT
     }
 
 

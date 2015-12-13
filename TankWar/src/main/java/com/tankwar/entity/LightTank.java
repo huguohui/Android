@@ -59,16 +59,6 @@ final public class LightTank extends Tank {
 
 
     /**
-     * Constructing a tank with model.
-     * @param gameContext The game context.
-     * @param model Tank model.
-     */
-    public LightTank(GameContext gameContext, Enum<?> model) {
-        super(gameContext, model);
-    }
-
-
-    /**
      * Constructing a tank with model and color.
      * @param gameContext The game context.
      * @param model Tank model.
@@ -76,7 +66,19 @@ final public class LightTank extends Tank {
      */
     public LightTank(GameContext gameContext, Enum<?> model, Enum<?> color) {
         super(gameContext, model, color);
+
     }
+
+
+	/** Initialize sprite of tank. */
+	private void initSprite() {
+		int x = 0, y = 0;
+		switch((Model)getModel()) {
+			case E1:
+				break;
+
+		}
+	}
 
 
     /**
@@ -189,7 +191,4 @@ final public class LightTank extends Tank {
 	public void attack(Entity entity) {
 
 	}
-
-
-
 }

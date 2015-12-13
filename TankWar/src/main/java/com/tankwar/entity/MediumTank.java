@@ -37,17 +37,7 @@ final public class MediumTank extends Tank {
      * @param gameContext The game context.
      */
     public MediumTank(GameContext gameContext) {
-        super(gameContext);
-    }
-
-
-    /**
-     * Constructing a tank with model.
-     * @param gameContext The game context.
-     * @param model Tank model.
-     */
-    public MediumTank(GameContext gameContext, Enum<?> model) {
-        super(gameContext, model);
+        this(gameContext, 0, 0);
     }
 
 
@@ -59,6 +49,7 @@ final public class MediumTank extends Tank {
      */
     public MediumTank(GameContext gameContext, Enum<?> model, Enum<?> color) {
         super(gameContext, model, color);
+		setModel(model);
     }
 
 

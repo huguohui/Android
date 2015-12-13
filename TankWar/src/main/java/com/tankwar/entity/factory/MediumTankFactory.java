@@ -1,6 +1,7 @@
 package com.tankwar.entity.factory;
 
 import com.tankwar.engine.GameContext;
+import com.tankwar.engine.subsystem.Sprite;
 import com.tankwar.entity.MediumTank;
 
 /**
@@ -37,16 +38,6 @@ public class MediumTankFactory implements TankFactory {
 
 
     /**
-     * Creates a tank with model.
-     *
-     * @param model Tank model.
-     */
-    @Override
-    public MediumTank create(Enum<?> model) {
-        return new MediumTank(GameContext.getGameContext(), model);
-    }
-
-    /**
      * Creates a tank with model and color.
      *
      * @param model Tank model.
@@ -54,6 +45,9 @@ public class MediumTankFactory implements TankFactory {
      */
     @Override
     public MediumTank create(Enum<?> model, Enum<?> color) {
-        return new MediumTank(GameContext.getGameContext(), model, color);
+		GameContext c = GameContext.getGameContext();
+        MediumTank mt = new MediumTank(GameContext.getGameContext(), model, color);
+		Sprite sprite = new Sprite();
+		return mt;
     }
 }

@@ -37,16 +37,6 @@ public class LightTankFactory implements TankFactory {
 
 
     /**
-     * Creates a tank with model.
-     *
-     * @param model Tank model.
-     */
-    @Override
-    public LightTank create(Enum<?> model) {
-        return new LightTank(GameContext.getGameContext(),model);
-    }
-
-    /**
      * Creates a tank with model and color.
      *
      * @param model Tank model.
