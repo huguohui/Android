@@ -47,7 +47,7 @@ public class MediumTankFactory implements TankFactory {
     public MediumTank create(Enum<?> model, Enum<?> color) {
 		GameContext c = GameContext.getGameContext();
         MediumTank mt = new MediumTank(GameContext.getGameContext(), model, color);
-		Sprite sprite = new Sprite();
+		//Sprite sprite = new Sprite();
 		return mt;
     }
 }
