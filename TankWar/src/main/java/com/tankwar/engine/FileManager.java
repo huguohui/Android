@@ -20,6 +20,7 @@ public class FileManager extends AbstractManager<String> {
 		return null;
 	}
 
+
 	/**
 	 * Get a list that contains all managed objects.
 	 *
@@ -29,6 +30,7 @@ public class FileManager extends AbstractManager<String> {
 	public List<String> getList() {
 		return null;
 	}
+
 
 	/**
 	 * Delete a object.
@@ -41,6 +43,7 @@ public class FileManager extends AbstractManager<String> {
 		return false;
 	}
 
+
 	/**
 	 * Add a object to management list.
 	 *
@@ -50,6 +53,7 @@ public class FileManager extends AbstractManager<String> {
 	public void add(String obj) {
 
 	}
+
 
 	/**
 	 * Get a details of object.
@@ -62,6 +66,7 @@ public class FileManager extends AbstractManager<String> {
 		return null;
 	}
 
+
 	/**
 	 * Add all object to managed list.
 	 *
@@ -69,6 +74,6 @@ public class FileManager extends AbstractManager<String> {
 	 */
 	@Override
 	public void addAll(List<String> list) {
-
+		
 	}
 }
