@@ -1,18 +1,14 @@
 package com.tankwar.engine;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * The game resource manager.
- * @since 2015/12/14
+ * File manager is a kind of manager that to manage file on disk.
+ * The manager can move, cut, copy and delete file.
+ * @since 2015/12/15
  */
-public class ResourceManager<T> extends AbstractManager<T> {
-	/** The all object of managed. */
-	private Map<String, String> mResources = new HashMap<>();
-
-
+public class FileManager extends AbstractManager<String> {
 	/**
 	 * Search a object.
 	 *
@@ -20,7 +16,7 @@ public class ResourceManager<T> extends AbstractManager<T> {
 	 * @return If searched had result list else null.
 	 */
 	@Override
-	public List search(String schstr) {
+	public List<String> search(String schstr) {
 		return null;
 	}
 
@@ -30,7 +26,7 @@ public class ResourceManager<T> extends AbstractManager<T> {
 	 * @return A list that contains all managed objects.
 	 */
 	@Override
-	public List getList() {
+	public List<String> getList() {
 		return null;
 	}
 
@@ -41,7 +37,7 @@ public class ResourceManager<T> extends AbstractManager<T> {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(Object obj) {
+	public boolean delete(String obj) {
 		return false;
 	}
 
@@ -51,7 +47,7 @@ public class ResourceManager<T> extends AbstractManager<T> {
 	 * @param obj The object will add to list.
 	 */
 	@Override
-	public void add(Object obj) {
+	public void add(String obj) {
 
 	}
 
@@ -72,7 +68,7 @@ public class ResourceManager<T> extends AbstractManager<T> {
 	 * @param list Object of needing to management.
 	 */
 	@Override
-	public void addAll(List list) {
+	public void addAll(List<String> list) {
 
 	}
 }

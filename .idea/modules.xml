@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AStartTest/AStarTest.iml" filepath="$PROJECT_DIR$/AStartTest/AStarTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AStartTest/AStartTest.iml" filepath="$PROJECT_DIR$/AStartTest/AStartTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/TankWar/TankWar.iml" filepath="$PROJECT_DIR$/TankWar/TankWar.iml" />
     </modules>
