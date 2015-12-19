@@ -1,5 +1,6 @@
 package com.tankwar.engine;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ import java.util.Map;
  * List, delete, add, modify etc.
  * @since 2015/12/14
  */
-public interface Manager<T> {
+public interface Manager<T> extends Iterator<T> {
 	/**
 	 * Search a object.
 	 * @param schstr A search condition of object will be searched.
@@ -43,7 +44,7 @@ public interface Manager<T> {
 	 * Get a details of object.
 	 * @return A details of object.
 	 */
-	Map getDetails(Object obj);
+	T getByName(String name);
 
 
 	/**
