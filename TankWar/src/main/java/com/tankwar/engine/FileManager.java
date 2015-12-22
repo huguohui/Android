@@ -143,7 +143,7 @@ public class FileManager extends AbstractManager<File> {
 				if ((!obj.isFile() && !obj.isDirectory()) || !obj.exists())
 					continue;
 
-				if (delete(obj)) return false;
+				if (!delete(obj)) return false;
 			}
 		}
 
