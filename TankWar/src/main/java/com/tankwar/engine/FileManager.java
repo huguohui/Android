@@ -3,17 +3,15 @@ package com.tankwar.engine;
 import com.tankwar.utils.Log;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * File manager is manager based directory, managed files is under special directory.
- * To use file manager by pass a special
+ * To use file manager by pass a special directory path or pass nothing to instancing it.
  * @since 2015/12/15
  */
 public class FileManager extends AbstractManager<File> {
@@ -64,7 +62,7 @@ public class FileManager extends AbstractManager<File> {
 			if (!dir.isDirectory())
 				throw new RuntimeException("These is a file that name same as the directory!");
 		}else if (!dir.isDirectory()) {
-			if (!dir.mkdir())
+			if (!dir.mkdirs())
 				throw new RuntimeException("Can't create the directory " + dir.getAbsolutePath() + "!");
 		}
 
@@ -99,12 +97,12 @@ public class FileManager extends AbstractManager<File> {
 		if (schstr.equals("")) return mFiles;
 
 		List<File> searched = new ArrayList<>();
+		Pattern pattern = Pattern.compile(schstr);
+		Matcher matcher = null;
 		try{
-			Pattern pattern = Pattern.compile(schstr);
-			Matcher matcher = null;
 			for (File file : mFiles) {
 				matcher = pattern.matcher(file.getName());
-				if (matcher.matches()) {
+				if (matcher != null && matcher.matches()) {
 					searched.add(file);
 				}
 			}
@@ -132,15 +130,18 @@ public class FileManager extends AbstractManager<File> {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(File obj) {
+	public boolean delete(File obj) throws IOException {
 		if (obj == null) return false;
-		if ((!obj.isFile() && !obj.isDirectory()) || !obj.exists())
+		if (!obj.isFile() && !obj.isDirectory() && !obj.exists())
 			return true;
 
 		if (obj.isDirectory()) {
+			if (!obj.canWrite())
+				throw new IOException("Can't delete this directory cause the directory is read-only!");
+
 			File[] deletedFiles = obj.listFiles();
 			for (File file : deletedFiles) {
-				if ((!obj.isFile() && !obj.isDirectory()) || !obj.exists())
+				if (!obj.isFile() && !obj.isDirectory() && !obj.exists())
 					continue;
 
 				if (!delete(obj)) return false;
@@ -152,13 +153,32 @@ public class FileManager extends AbstractManager<File> {
 
 
 	/**
+	 * Make dir(s) by passed parameter.
+	 * @param path The directory's path.
+	 */
+	public boolean makeDir(String path) {
+		if (path == null || path.length() == 0)
+			return false;
+
+		return new File(path).mkdirs();
+	}
+
+
+	/**
 	 * Add a object to management list.
 	 *
 	 * @param obj The object will add to list.
 	 */
 	@Override
-	public void add(File obj) {
-		mFiles.add(obj);
+	public boolean add(File obj) throws IOException {
+		if (!obj.isFile() && !obj.isDirectory() && !obj.exists()) {
+			if ((obj.isFile() && obj.createNewFile()) || (obj.isDirectory()) && (obj.mkdirs()))
+				return mFiles.add(obj);
+
+			return false;
+		}
+
+		return mFiles.add(obj);
 	}
 
 	/**

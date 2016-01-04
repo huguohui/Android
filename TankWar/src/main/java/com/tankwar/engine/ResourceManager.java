@@ -1,5 +1,6 @@
 package com.tankwar.engine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -27,5 +28,9 @@ public class ResourceManager extends FileManager {
 	 * Constructor a file manager instance by default directory setting.
 	 */
 	public ResourceManager() throws IOException {
+		super();
 	}
+
+
+
 }

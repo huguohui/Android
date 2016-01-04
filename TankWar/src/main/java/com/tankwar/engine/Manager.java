@@ -1,5 +1,6 @@
 package com.tankwar.engine;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +31,14 @@ public interface Manager<T> extends Iterator<T> {
 	 * @param obj The object to deleting.
 	 * @return If deleted true else false.
 	 */
-	boolean delete(T obj);
+	boolean delete(T obj) throws IOException;
 
 
 	/**
 	 * Add a object to management list.
 	 * @param obj The object will add to list.
 	 */
-	void add(T obj);
+	boolean add(T obj) throws IOException;
 
 
 	/**
