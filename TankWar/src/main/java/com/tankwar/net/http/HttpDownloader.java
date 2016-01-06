@@ -143,15 +143,17 @@ public class HttpDownloader extends Downloader {
 
 	/**
 	 * To receiving data from source.
-	 *  @param source Data source.
-	 * @param size*/
+	 * @param source Data source.
+	 * @param size Size of will receiving.
+	 */
 	@Override
 	public synchronized char[] receive(Reader source, int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
+
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
 			size = (int)(getLength() - getDownloadedLength());
-		
+
 		if (size <= 0) return null;
 
 		char[] buff = new char[BUFFER_SIZE];
@@ -175,7 +177,7 @@ public class HttpDownloader extends Downloader {
 	 */
 	public class HttpChunkedParser implements Parser {
 		/** Chunked end flag. */
-		public final static byte CHUNKED_END_FLAG = 0x0;
+		public final static byte CHUNKED_END_FLAG = 0x7f;
 
 		/**
 		 * Parse data to a kind of format.
@@ -229,33 +231,11 @@ public class HttpDownloader extends Downloader {
 				if (matchCount == 0) {
 					buff[lineCount] = aByte;
 					if (++lineCount >= buff.length){
-						throw new RuntimeException("The algorithm is has worng!");
+						throw new RuntimeException("The algorithm is has wrong!");
 					}
 				}
 			}
 			return null;
-		}
-
-
-		public byte[] trimContent(byte[] data) {
-			int offStart = 0;
-			int offEnd = 0;
-			byte[] crlf = {0xa, 0xd};
-			int matchCount = 0;
-
-			for (int i = 0; i < data.length; i++) {
-				if (data[i] == crlf[matchCount])
-					matchCount++;
-				else
-					matchCount = 0;
-
-				if (matchCount == crlf.length) {
-					offStart = i + 1;
-					break;
-				}
-			}
-
-			return Arrays.copyOfRange(data, offStart, data.length);
 		}
 
 
@@ -264,8 +244,9 @@ public class HttpDownloader extends Downloader {
 
 			byte[] chars = hex.getBytes();
 			for (int i = 0; i < chars.length; i++) {
-				if (!((chars[i] >= 48 && chars[i] <= 57) || (chars[i] >= 65 && chars[i] <= 90)
-					|| (chars[i] >= 97 && chars[i] <= 122)))
+				if (!((chars[i] >= 48 && chars[i] <= 57)
+						|| (chars[i] >= 65 && chars[i] <= 90)
+						|| (chars[i] >= 97 && chars[i] <= 122)))
 					return false;
 			}
 			return true;
