@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The game resource manager.
+ * The resource manager.
  * @since 2015/12/14
  */
 public class ResourceManager extends FileManager {
-
 	/**
 	 * Constructor a file manager instance by a special directory,
 	 * if the directory is not exists, file manager will be create
@@ -30,7 +29,4 @@ public class ResourceManager extends FileManager {
 	public ResourceManager() throws IOException {
 		super();
 	}
-
-
-
 }
