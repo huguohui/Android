@@ -1,7 +1,17 @@
 package com.tankwar.engine;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.media.SoundPool;
+import android.util.Log;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +21,10 @@ import java.util.Map;
  * @since 2015/12/14
  */
 public class ResourceManager extends FileManager {
+	/** The sound pool object. */
+	private SoundPool mSoundPool = new SoundPool(0, 0, 0);
+
+
 	/**
 	 * Constructor a file manager instance by a special directory,
 	 * if the directory is not exists, file manager will be create
@@ -23,10 +37,65 @@ public class ResourceManager extends FileManager {
 		super(directory);
 	}
 
+
 	/**
 	 * Constructor a file manager instance by default directory setting.
 	 */
 	public ResourceManager() throws IOException {
 		super();
 	}
+
+
+	public InputStream getStream(String name) {
+		File file = null;
+		InputStream fis = null;
+
+		try {
+			if ((file = getByName(name)) != null) {
+				fis = new FileInputStream(file);
+			}
+		}catch(IOException e) {
+			com.tankwar.utils.Log.e(e);
+		}
+
+		return fis;
+	}
+
+
+	/**
+	 * Get a bitmap object by a special resource name.
+	 * @param name The resource name.
+	 * @return The bitmap object.
+	 */
+	public Bitmap getBitmap(String name) {
+		Bitmap bitmap = null;
+		File file = null;
+		if (null == (file = getByName(name)))
+			return null;
+
+		return BitmapFactory.decodeFile(file.getAbsolutePath());
+	}
+
+
+	/**
+	 * Get a sound resource form sound pool by a special name.
+	 * @param name The sound resource name.
+	 * @return The id of sound resource in sound pool.
+	 */
+	public int getSound(String name) {
+		File file = null;
+		if (null == (file = getByName(name)))
+			return -1;
+
+		return mSoundPool.load(file.getAbsolutePath(), 0);
+	}
+
+
+	/**
+	 * Get a drawable object by a special name.
+	 * @param name The drawable resource name.
+	 * @return The drawable resource.
+	 */
+//	public Drawable getDrawable(String name) {
+//	}
 }
