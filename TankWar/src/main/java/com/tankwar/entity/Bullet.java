@@ -133,6 +133,7 @@ public abstract class Bullet extends MovableEntity implements Updatable {
         firingListeners.add(listener);
     }
 
+
     public synchronized void removeOnFiringListener(BulletEventListener.OnFiringListener listener) {
         firingListeners.remove(listener);
     }
