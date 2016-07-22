@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * File operator uitl class.
+ * File operator util class.
  * @since 2015/11/14
  */
 public class FileOperator {

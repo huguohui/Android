@@ -40,10 +40,12 @@ public abstract class Requester implements Sender {
 	/** The requester start time. */
 	private long mStartTime = 0;
 
-
     /** Request states. */
     public enum State {
-        ready, connected, sent, closed
+        ready,      // Ready to requesting.
+        connected,  // Connected to target host.
+        sent,       // Requesting was sent.
+        closed      // Connecting was closed.
     };
 
 

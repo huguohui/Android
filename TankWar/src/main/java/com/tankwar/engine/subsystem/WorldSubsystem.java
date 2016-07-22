@@ -107,7 +107,6 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	 * Initialize world system.
 	 */
 	private void initializeSystem() {
-		loadAll();
 		for (int i = 0; i < WORLD_VER_GRID_NUM; i++) {
 			for (int j = 0; j < WORLD_HOR_GRID_NUM; j++) {
 				mWorld[i][j] = null;
@@ -130,113 +129,6 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 			}
 		}
     }
-
-
-	/**
-	 * Load all resources.
-	 */
-	public final void loadAll() {
-		if (!mIsLoaded) {
-			loadBitmaps();
-			loadSounds();
-		}
-	}
-
-
-	/**
-	 * Release all resources.
-	 */
-	public final void releaseAll() {
-		if (mIsLoaded) {
-			unloadBitmaps();
-			unloadSounds();
-		}
-	}
-
-
-	/**
-	 * Load all resource on start.
-	 */
-	public void loadBitmaps() {
-		try {
-			String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.BITMAP_DIR
-					+ GameContext.DS;
-			for (String assetName : new File(path).list()) {
-				if (assetName.equals(".exists")) continue;
-				mBitmaps.put(assetName, BitmapFactory.decodeFile(path + assetName));
-			}
-		} catch (Exception e) {
-			Log.e(e);
-		}
-	}
-
-
-	/**
-	 * Load all sound on start.
-	 */
-	public void loadSounds() {
-		try {
-			String path = GameContext.SDCARD_APP_ROOT + GameContext.DS + GameContext.SOUND_DIR
-					+ GameContext.DS;
-			for (String assetName : new File(path).list()) {
-				if (assetName.equals(".exists")) continue;
-				SoundPool sp = new SoundPool(1, 1, 10);
-				sp.load(path + assetName, 1);
-				mSounds.put(assetName, sp);
-			}
-		} catch (Exception e) {
-			Log.e(e);
-		}
-	}
-
-
-	/**
-	 * Unload all bitmaps.
-	 */
-	public final void unloadBitmaps() {
-		for (String name : mBitmaps.keySet()) {
-			Bitmap bitmap = mBitmaps.get(name);
-			if (bitmap != null && !bitmap.isRecycled()) {
-				bitmap.recycle();
-				bitmap = null;
-			}
-		}
-		mBitmaps = null;
-	}
-
-
-	/**
-	 * Unload all sounds.
-	 */
-	public final void unloadSounds() {
-		for (String name : mSounds.keySet()) {
-			SoundPool sp = mSounds.get(name);
-			if (sp != null) {
-				sp.release();
-				sp = null;
-			}
-		}
-		mSounds = null;
-	}
-
-
-	/**
-	 * Get bitmap by name.
-	 * @param name Bitmap name.
-	 */
-	public final Bitmap getBitmap(String name) {
-		return mBitmaps.get(name);
-	}
-
-
-	/**
-	 * Get sound by name.
-	 * @param name Sound name.
-	 */
-	public final SoundPool getSound(String name) {
-		return mSounds.get(name);
-	}
-
 
 	/**
 	 * Enable a module.
@@ -310,7 +202,5 @@ public class WorldSubsystem extends Subsystem implements Engine.StateListener {
 	 */
 	@Override
 	public void onStop(Engine engine) {
-		this.unloadSounds();
-		this.unloadBitmaps();
 	}
 }

@@ -29,8 +29,8 @@ public class Wall extends Obstacle {
      */
     public Wall(GameContext gameContext, int x, int y) {
 		super(gameContext, x, y);
-		setSprite(new Sprite(getGameContext().getEngine().
-				getWorldSubsystem().getBitmap("tile.png"), 0, 0, getWidth(), getHeight()));
+//		setSprite(new Sprite(getGameContext().getEngine().
+//				getWorldSubsystem().getBitmap("tile.png"), 0, 0, getWidth(), getHeight()));
     }
 
     /**

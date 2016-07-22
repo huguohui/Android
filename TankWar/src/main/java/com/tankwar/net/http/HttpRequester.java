@@ -29,7 +29,7 @@ public class HttpRequester extends Requester {
 	private final String USER_AGENT = "T-Virus v1.0";
 
 	/** Accept-Encoding field. */
-	private final String ACCEPT_ENCODING = "idenitiy";
+	private final String ACCEPT_ENCODING = "identity";
 
 	/** Connection field. */
 	private final String CONNECTING = "Close";
@@ -84,7 +84,7 @@ public class HttpRequester extends Requester {
 	/**
 	 * Get the top domain of url.
 	 */
-	public static String getTopDomian(URL url) {
+	public static String getTopDomain(URL url) {
 		if (url == null)
 			return null;
 
@@ -146,13 +146,12 @@ public class HttpRequester extends Requester {
 		boolean isSent = false;
 
 		if (send(getHeader().toString().getBytes(), os)) {
-			if (getBody() != null) {
-				if (send(getBody().getContent(), os)) {
-					isSent = true;
-				}
-			}
+			if (getBody() != null)
+				send(getBody().getContent(), os);
+
 			isSent = true;
-			getHeader().setContent(getSocket().getInputStream());;
+			setState(State.sent);
+			getHeader().setContent(getSocket().getInputStream());
 		}
 
 		return isSent;
@@ -169,6 +168,9 @@ public class HttpRequester extends Requester {
 	 */
 	@Override
 	public synchronized boolean send(byte[] data, OutputStream to) throws IOException {
+		if (to == null || data == null)
+			throw new RuntimeException("The OutputStream or data is null!");
+
 		to.write(data);
 		return true;
 	}
@@ -188,8 +190,12 @@ public class HttpRequester extends Requester {
 	}
 
 
+    /**
+     * Sets the url of requesting.
+     * @param url
+     */
 	public void setUrl(URL url) {
-		if (mUrl != null)
+		if (mUrl == null)
 			throw new NullPointerException("The special URL can't null!");
 
 		mUrl = url;
