@@ -1,10 +1,18 @@
 [
     {
-        "merged": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/build/intermediates/res/merged/debug/drawable-hdpi-v4/splash.png",
-        "source": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/src/main/res/drawable-hdpi/splash.png"
+        "merged": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\splash.png",
+        "source": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
     },
     {
-        "merged": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/build/intermediates/res/merged/debug/drawable-hdpi-v4/ico.png",
-        "source": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/src/main/res/drawable-hdpi/ico.png"
+        "merged": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\splash.png",
+        "source": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
+    },
+    {
+        "merged": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\ico.png",
+        "source": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
+    },
+    {
+        "merged": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\ico.png",
+        "source": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
     }
 ]

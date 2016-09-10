@@ -1,2 +1,1 @@
-include ':TankWar'
-include ':AStartTest'
+include ':TankWar', ':downloader'

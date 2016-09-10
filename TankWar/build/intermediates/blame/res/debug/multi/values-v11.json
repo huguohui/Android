@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/build/intermediates/res/merged/debug/values-v11/values-v11.xml",
+        "outputFile": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\values-v11\\values-v11.xml",
         "map": [
             {
                 "to": {
@@ -12,7 +12,33 @@
                     "endOffset": 187
                 },
                 "from": {
-                    "file": "/home/hui/Workspaces/AndroidStudio/Android/TankWar/src/main/res/values-v11/styles.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values-v11\\styles.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 183,
+                        "endLine": 8,
+                        "endColumn": 12,
+                        "endOffset": 317
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "outputFile": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\values-v11\\values-v11.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endLine": 4,
+                    "endColumn": 12,
+                    "endOffset": 187
+                },
+                "from": {
+                    "file": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\src\\main\\res\\values-v11\\styles.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
