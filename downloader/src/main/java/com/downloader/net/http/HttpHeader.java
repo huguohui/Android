@@ -1,7 +1,7 @@
 package com.downloader.net.http;
 
 
-import com.tankwar.net.Header;
+import com.downloader.net.Header;
 
 import java.io.IOException;
 import java.io.InputStream;

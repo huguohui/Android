@@ -1,7 +1,7 @@
 package com.downloader.net.http;
 
 
-import com.tankwar.net.Body;
+import com.downloader.net.Body;
 
 import java.io.InputStream;
 import java.io.Reader;

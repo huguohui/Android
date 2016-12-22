@@ -1,6 +1,6 @@
 package com.downloader.net.http;
 
-import com.tankwar.net.Parser;
+import com.downloader.net.Parser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

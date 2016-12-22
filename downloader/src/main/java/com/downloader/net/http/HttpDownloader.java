@@ -1,9 +1,9 @@
 package com.downloader.net.http;
 
 
-import com.tankwar.net.Downloader;
-import com.tankwar.net.Parser;
-import com.tankwar.net.Requester;
+import com.downloader.net.Downloader;
+import com.downloader.net.Parser;
+import com.downloader.net.Requester;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
