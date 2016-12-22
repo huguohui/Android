@@ -23,9 +23,9 @@ final public class Explosion extends Animation.Descriptor {
         super(engine);
         List list = new ArrayList();
         WorldSubsystem ws = engine.getWorldSubsystem();
-        list.add(new Sprite(ws.getBitmap("explode1.png")));
-        list.add(new Sprite(ws.getBitmap("explode2.png")));
-        list.add(new Sprite(ws.getBitmap("gameover.png")));
+//        list.add(new Sprite(ws.getBitmap("explode1.png")));
+//        list.add(new Sprite(ws.getBitmap("explode2.png")));
+//        list.add(new Sprite(ws.getBitmap("gameover.png")));
 
         setLayerIndex(0);
         setSprites(list);

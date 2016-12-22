@@ -117,8 +117,8 @@ final public class LightTank extends Tank {
     @Override
     public void draw(Canvas canvas) {
 		if (getSprite() == null)
-			setSprite(new Sprite(getGameContext().getEngine().
-					getWorldSubsystem().getBitmap("enemy.png"), 0, 0, getWidth(), getHeight()));
+			//setSprite(new Sprite(getGameContext().getEngine().
+			//		getWorldSubsystem().getBitmap("enemy.png"), 0, 0, getWidth(), getHeight()));
 
 		canvas.drawBitmap(getSprite().getBitmap(0), getX(), getY(), new Paint());
     }
