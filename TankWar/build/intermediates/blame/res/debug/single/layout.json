@@ -2,13 +2,5 @@
     {
         "merged": "D:\\android\\TankWar\\build\\intermediates\\res\\merged\\debug\\layout\\game_launcher.xml",
         "source": "D:\\android\\TankWar\\src\\main\\res\\layout\\game_launcher.xml"
-    },
-    {
-        "merged": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\layout\\game_launcher.xml",
-        "source": "E:\\home\\hui\\Workspaces\\AndroidStudio\\Android\\TankWar\\src\\main\\res\\layout\\game_launcher.xml"
-    },
-    {
-        "merged": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\layout\\game_launcher.xml",
-        "source": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\layout\\game_launcher.xml"
     }
 ]
