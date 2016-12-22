@@ -1,1 +1,1 @@
-include ':TankWar'
+include ':TankWar', ':downloader'

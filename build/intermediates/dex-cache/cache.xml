@@ -1,3 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="D:\android\downloader\build\intermediates\exploded-aar\com.android.support\support-v4\24.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6d7d803871e3203465f71a163e7af104f807b446">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\com.android.support-support-v4-24.1.1_1145282418c320688e5cdb088e05c6dc72c7c349.jar" />
+    </item>
+    <item
+        jar="D:\android\downloader\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\24.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c936c1bd42f0c018c18920c7bec619ef056b24f8">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-24.1.1_f419458b53dbb4ed84787150174d42161bd66d41.jar" />
+    </item>
+    <item
+        jar="D:\android\downloader\build\intermediates\exploded-aar\com.android.support\support-v4\24.1.1\jars\libs\internal_impl-24.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="f78c2f395cb096f9dc1dc07e729922b8fcd3c4f5">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\internal_impl-24.1.1_408ecef1d73d17ebc0f2fb60625391f1413cd80c.jar" />
+    </item>
+    <item
+        jar="D:\android\downloader\build\intermediates\exploded-aar\com.android.support\appcompat-v7\24.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1256c10604bb098490eab070d76754ac5ceab35c">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-24.1.1_7bc994802f3385e76e14b93abe0fce973e523c35.jar" />
+    </item>
+    <item
+        jar="C:\Users\admin\.gradle\caches\modules-2\files-2.1\com.android.support\support-annotations\24.1.1\3af19f153122737b372622fa6c81dd11a1c6b999\support-annotations-24.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="3af19f153122737b372622fa6c81dd11a1c6b999">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\support-annotations-24.1.1_284e96fb7ea8fcf13e96a82782242cc25d793b45.jar" />
+    </item>
+    <item
+        jar="D:\android\downloader\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\24.1.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="f62e763609f65e47dc6c498760a4accf02776788">
+        <dex dex="D:\android\downloader\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-24.1.1_1ed4176c5d9c52a45dac3c1b93fbc017cb2551ed.jar" />
+    </item>
+
+</items>
