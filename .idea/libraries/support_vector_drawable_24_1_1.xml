@@ -5,6 +5,8 @@
       <root url="file://$PROJECT_DIR$/downloader/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.1.1/res" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/android/sdk/extras/android/m2repository/com/android/support/support-vector-drawable/24.1.1/support-vector-drawable-24.1.1-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

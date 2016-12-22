@@ -3,4 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_new_task" android:title="@string/action_new_task"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_start_all" android:title="@string/action_start_all"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_pause_all" android:title="@string/action_pause_all"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
