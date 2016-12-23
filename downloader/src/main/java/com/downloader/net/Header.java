@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public abstract class Header {
     /** The data of header. */
-    private Map<String, String> mContent = new HashMap<>();
+    private Map<String, String> mContent = new HashMap<String, String>();
 
 
 	/**
@@ -105,7 +105,7 @@ public abstract class Header {
 	 * Append all data to header.
 	 * @param data The data.
 	 */
-	public void appendAll(Map<String, String> data) {
+	public void addAll(Map<String, String> data) {
 		mContent.putAll(data);
 	}
 
@@ -115,7 +115,7 @@ public abstract class Header {
 	 * @param headerKey The key of new line.
 	 * @param headerValue The value of new line.
 	 */
-	public Header append(String headerKey, String headerValue) {
+	public Header add(String headerKey, String headerValue) {
 		mContent.put(headerKey, headerValue);
 		return this;
 	}

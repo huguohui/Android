@@ -43,11 +43,11 @@ public class HttpHeaderParser implements Parser {
 
 				while(pos <= lineOffset && buff[pos] != ':') pos++;
 				if (pos <= lineOffset - 1) {
-					header.append(new String(buff, 0, pos), new String(buff, pos + 1,
+					header.add(new String(buff, 0, pos), new String(buff, pos + 1,
 							lineOffset - pos - 1).trim());
 				}else{
 					if (pos == lineOffset - 1) {
-						header.append(new String(buff, 0, pos - 1), "");
+						header.add(new String(buff, 0, pos - 1), "");
 					}else{
 						Pattern response = Pattern.compile("^HTTP\\/(\\d\\.\\d)\\s(\\d+)\\s(.+)");
 						Pattern request = Pattern.compile(

@@ -71,19 +71,15 @@ public class HttpDownloader extends Downloader {
 
 		while((buff = chunkedParser.parse(
 				getRequester().getSocket().getInputStream())) != null) {
-			if (buff.length == 1 && buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
-				getRequester().close();
-				setState(State.finished);
-				setIsFinished(true);
-				System.out.println("[**] Download finished!");
-				break;
-			}
-
-			System.out.println("[--] Downloaded: " + getDownloadedLength());
 			setDownloadedLength(getDownloadedLength() + buff.length);
+			System.out.println("[--] Downloaded: " + getDownloadedLength());
 			fos.write(buff);
 		}
 
+		getRequester().close();
+		setState(State.finished);
+		setIsFinished(true);
+		System.out.println("[**] Download finished!");
 		fos.flush();
 		fos.close();
 	}
@@ -130,11 +126,15 @@ public class HttpDownloader extends Downloader {
 				System.arraycopy(buff, 0, chunk, count, read);
 				count += read;
 				dataAvailable = false;
-				continue;
+			}else{
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				dataAvailable = available != 0;
 			}
-
-			if (wait++ > 5 && available > 0)
-				dataAvailable = true;
 		}
 
 		return chunk;
@@ -162,6 +162,7 @@ public class HttpDownloader extends Downloader {
 		while(count < size) {
 			if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
 				return null;
+
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
 		}
@@ -175,9 +176,6 @@ public class HttpDownloader extends Downloader {
 	 * @since 2015/12/2
 	 */
 	public class HttpChunkedParser implements Parser {
-		/** Chunked end flag. */
-		public final static byte CHUNKED_END_FLAG = 0x7f;
-
 		/**
 		 * Parse data to a kind of format.
 		 *
@@ -197,46 +195,49 @@ public class HttpDownloader extends Downloader {
 		 */
 		@Override
 		public byte[] parse(InputStream data) throws IOException {
-			byte[] buff = new byte[BUFFER_SIZE];
-			byte[] crlf = {0xd, 0xa};
-			int matchCount = 0;
-			int lineCount = 0;
-			
-			byte aByte;
-			while(-1 != (aByte = (byte)data.read())) {
-				if (aByte == crlf[matchCount])
-					matchCount++;
-				else
-					matchCount = 0;
+			int chunkSize = 0;
 
-				if (matchCount == crlf.length) {
-					if (lineCount > 0) {
-						if (isHex(new String(buff, 0, lineCount))) {
-							int len = Integer.parseInt(new String(buff, 0, lineCount), 16);
-							if (len > 0) {
-								buff = receive(data, len);
-								return buff;
-							}else{
-								return new byte[]{CHUNKED_END_FLAG};
-							}
-						}
-					}
-
-					lineCount = 0;
-					matchCount = 0;
-					continue;
-				}
-
-				if (matchCount == 0) {
-					buff[lineCount] = aByte;
-					if (++lineCount >= buff.length){
-						throw new RuntimeException("The algorithm is has wrong!");
-					}
+			while((chunkSize = getChunkSize(data)) != 0) {
+				if (chunkSize > 0) {
+					return receive(data, chunkSize);
 				}
 			}
+
 			return null;
 		}
+		
+		
+		/**
+		 * Gets chunk size from special InputStream.
+		 * @param is Special InputStream.
+		 * @return Chunk size.
+		 * @throws IOException
+		 */
+		private int getChunkSize(InputStream is) throws IOException {
+			byte aByte;
+			int matchCount = 0, byteCount = 0, emptyLine = 0;
+			byte[] buff = new byte[BUFFER_SIZE << 1], crlf = {0x0D, 0x0A};
 
+			while(END_OF_STREAM != (aByte = (byte)is.read())) {
+				if (aByte == crlf[matchCount]) {
+					if (++matchCount == 2) {
+						if (byteCount != 0)
+							return Integer.parseInt(new String(buff, 0, byteCount), 16);
+						else
+							emptyLine++;
+
+						byteCount = 0;
+						matchCount = 0;
+					}
+				}else{
+					matchCount = 0;
+					buff[byteCount++] = aByte;
+				}
+			}
+
+			return emptyLine > 1 ? 0 : -1;
+		}
+		
 
 		public boolean isHex(String hex) {
 			if (hex == null || hex.length() == 0) return false;

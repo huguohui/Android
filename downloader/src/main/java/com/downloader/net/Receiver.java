@@ -10,6 +10,9 @@ import java.io.Reader;
  * @since 2015/11/29
  */
 public interface Receiver {
+	final public static int END_OF_STREAM = -1;
+	
+	
 	/**
 	 * Receiving data.
 	 * @return Received data by byte.

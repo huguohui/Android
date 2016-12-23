@@ -71,11 +71,11 @@ public class HttpRequester extends Requester {
 		HttpHeader header = new HttpHeader();
 		header.setMethod(method);
 		header.setVersion(HTTP_VERSION);
-		header.append("Accept", ACCEPT).append("Accept-Encoding", ACCEPT_ENCODING)
-			  .append("User-Agent", USER_AGENT).append("Connecting", CONNECTING);
+		header.add("Accept", ACCEPT).add("Accept-Encoding", ACCEPT_ENCODING)
+			  .add("User-Agent", USER_AGENT).add("Connecting", CONNECTING);
 		if (mUrl != null) {
 			header.setUrl(getUrlFullPath(mUrl));
-			header.append("Host", getDomainWithPort(mUrl));
+			header.add("Host", getDomainWithPort(mUrl));
 		}
 		return header;
 	}
@@ -200,6 +200,6 @@ public class HttpRequester extends Requester {
 
 		mUrl = url;
 		((HttpHeader)getHeader()).setUrl(getUrlFullPath(mUrl));
-		getHeader().append("Host", getDomainWithPort(mUrl));
+		getHeader().add("Host", getDomainWithPort(mUrl));
 	}
 }

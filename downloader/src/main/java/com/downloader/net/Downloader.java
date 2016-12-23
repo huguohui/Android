@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Download some data form a place.
@@ -39,7 +42,13 @@ public abstract class Downloader implements Receiver {
 		ready, downloading, paused, finished
 	}
 
+	/** The default download buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
+
+	/** The listener of downloading. */
+	public Listener mListener = null;
+
+
 
 
 	/**
@@ -48,6 +57,19 @@ public abstract class Downloader implements Receiver {
 	 */
 	public Downloader(Requester requester) {
 		mRequester = requester;
+		mStartTime = System.currentTimeMillis();
+	}
+
+
+	/**
+	 * Sets the listener of Downloader.
+	 * @param listener Download listener.
+	 */
+	public void setDownloadListener(Listener listener) {
+		if (listener == null)
+			throw new RuntimeException("The listener can't be null!");
+
+		mListener = listener;
 	}
 
 
@@ -74,16 +96,24 @@ public abstract class Downloader implements Receiver {
 		OutputStream os = new FileOutputStream(file);
 		InputStream is = getRequester().getSocket().getInputStream();
 		byte[] buff;
+		long lastTime = System.currentTimeMillis();
+		
 		while((buff = receive(is, BUFFER_SIZE)) != null) {
 			os.write(buff);
 			mDownloadedLength += buff.length;
+			if (mListener != null)
+				mListener.onReceive(this);
 		}
 
-		setState(State.finished);
-		setIsFinished(true);
 		os.flush();
 		os.close();
+
 		mRequester.close();
+		mFinishedTime = System.currentTimeMillis();
+		setState(State.finished);
+		setIsFinished(true);
+		if (mListener != null)
+			mListener.onFinish(this);
 	}
 
 
@@ -157,5 +187,29 @@ public abstract class Downloader implements Receiver {
 
 	public synchronized void setIsFinished(boolean mIsFinshed) {
 		this.mIsFinished = mIsFinshed;
+	}
+
+
+	/**
+	 * The listener of downloading.
+	 */
+	public interface Listener {
+		/**
+		 * Invokes on downloader start download.
+		 * @param downloader The listenered downloader.
+		 */
+		void onStart(Downloader downloader);
+
+
+		void onReceive(Downloader downloader);
+
+
+		void onPause(Downloader downloader);
+
+
+		void onResume(Downloader downloader);
+
+
+		void onFinish(Downloader downloader);
 	}
 }
