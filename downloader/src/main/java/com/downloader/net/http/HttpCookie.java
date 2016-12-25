@@ -23,5 +23,5 @@ public class HttpCookie {
     /** A cookie map a domain. */
     private String mDomain;
 
-
+    
 }

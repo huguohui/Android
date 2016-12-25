@@ -3,16 +3,19 @@ package com.downloader.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 
 /**
  * Download some data form a place.
  */
-public abstract class Downloader implements Receiver {
+public abstract class Downloader implements Receiver, Controlable {
 	/** The requester object. */
-	private Requester mRequester;
+	private Request mRequest;
 
 	/** The length of data. */
-	private long mLength;
+	private long mLength = -1;
 
 	/** The length of downloaded data. */
 	private long mDownloadedLength;
@@ -24,7 +27,7 @@ public abstract class Downloader implements Receiver {
 	private long mStartTime;
 	
 	/** The download state. */
-	private State mState = State.ready;
+	private State mState = State.unstart;
 	
 	/** The download finished time. */
 	private long mFinishedTime;
@@ -35,9 +38,12 @@ public abstract class Downloader implements Receiver {
 	/** Datasource of downloading. */
 	private InputStream mDataSource = null;
 	
+	/** Listener of downloading state. */
+	private Listener mDownloadListener = null;
+	
 	/** The download states. */
 	public enum State {
-		ready, downloading, paused, stoped, finished
+		unstart, downloading, paused, stoped, finished, exceptional
 	}
 
 	public final static int BUFFER_SIZE = 1024 << 3;
@@ -45,57 +51,87 @@ public abstract class Downloader implements Receiver {
 
 	/**
 	 * Construct a downloader by requester.
-	 * @param requester A {@link Requester}.
+	 * @param requester A {@link Request}.
 	 */
-	public Downloader(Requester requester) {
-		mRequester = requester;
+	public Downloader(Request requester) {
+		mRequest = requester;
 		mStartTime = System.currentTimeMillis();
+		invokeListener("onStart");
 	}
 	
 	
 	/**
 	 * Starts to downloading.
 	 */
-	public abstract void start();
+	public synchronized void start() {
+		mState = State.downloading;
+		invokeListener("onStart");
+	}
 	
 	
 	/**
 	 * Pauses task of downloading.
 	 */
-	public abstract void pause();
+	public synchronized void pause() {
+		mState = State.paused;
+		invokeListener("onPause");
+	}
 	
 	
 	/**
 	 * Resumes task of downloading.
 	 */
-	public abstract void resume();
+	public synchronized void resume() {
+		mState = State.downloading;
+		invokeListener("onPause");
+	}
 	
 	
 	/**
 	 * Stops task of downloading.
 	 */
-	public abstract void stop();
+	public synchronized void stop() {
+		mState = State.stoped;
+		invokeListener("onStop");
+	}
 	
-
+	
 	/**
-	 * To downloading data.
+	 * Invokes the special method of listener.
+	 * @param name The name of listener method.
 	 */
-	public abstract void download() throws IOException;
+	protected synchronized void invokeListener(String name) {
+		if (mDownloadListener == null)
+			throw new RuntimeException("The listener is null!");
 
-
+		try {
+			Method method = mDownloadListener.getClass().getMethod(name, Downloader.class);
+			method.invoke(mDownloadListener, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
-	 * Download data form stream to special position.
-	 * @param to Where to save data.
+	 * Download data to special OutputStream.
+	 * @param to OutputStream where data will write to.
 	 */
-	public abstract void download(OutputStream to) throws IOException;
+	public abstract void download(OutputStream os);
+	
+	
+	/**
+	 * Download data to special OutputStream.
+	 */
+	public abstract void download();
 
 
-	public Requester getRequester() {
-		return mRequester;
+	public Request getRequest() {
+		return mRequest;
 	}
 
-	public void setRequester(Requester requester) {
-		mRequester = requester;
+	public void setRequester(Request requester) {
+		mRequest = requester;
 	}
 
 	public long getLength() {
@@ -173,6 +209,19 @@ public abstract class Downloader implements Receiver {
 			throw new IOException("The special data souce can't null!");
 
 		mDataSource = dataSource;
+	}
+
+
+	public Listener getDownloadListener() {
+		return mDownloadListener;
+	}
+
+
+	public void setDownloadListener(Listener downloadListener) {
+		if (downloadListener == null)
+			return;
+
+		mDownloadListener = downloadListener;
 	}
 
 
