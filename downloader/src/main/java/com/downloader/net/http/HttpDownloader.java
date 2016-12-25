@@ -1,24 +1,20 @@
 package com.downloader.net.http;
 
 
-import com.downloader.net.Downloader;
-import com.downloader.net.Parser;
-import com.downloader.net.Requester;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+
+import com.downloader.net.Downloader;
+import com.downloader.net.Parser;
+import com.downloader.net.Requester;
 
 /**
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
 public class HttpDownloader extends Downloader {
-	/** The input stream. */
-	private InputStream mInputStream;
 
 
 	/**
@@ -32,45 +28,63 @@ public class HttpDownloader extends Downloader {
 			setLength(Long.parseLong(getRequester().getHeader().get(Http.CONTENT_LENGTH)));
 
 		setDownloadedLength(0);
-		mInputStream = requester.getSocket().getInputStream();
+		setDataSource(requester.getSocket().getInputStream());
 	}
 
 
 	/**
-	 * Start download data.
+	 * To downloading data.
 	 */
 	@Override
 	public synchronized void download() throws IOException {
 		if (getSaveTo() == null)
-			throw new FileNotFoundException("Not special file to save data!");
-
-		download(getSaveTo());
+			throw new IOException("");
+		
+		InputStream is = getRequester().getSocket().getInputStream();
+		byte[] buff;
+		long lastTime = System.currentTimeMillis();
+		
+//		while((buff = receive(is, BUFFER_SIZE * 100)) != null) {
+//			os.write(buff);
+//			mDownloadedLength += buff.length;
+//			long usedTime = System.currentTimeMillis() - mStartTime;
+//			if (System.currentTimeMillis() - lastTime > 1000) {
+//				lastTime = System.currentTimeMillis();
+//				System.out.print("[**] Downloaded: " + mDownloadedLength);
+//				System.out.println(" " + mDownloadedLength / (usedTime / 1000) / 1024 + "KB/s");
+//			}
+//		}
+//
+//		System.out.println("[**] Total used time: " + (System.currentTimeMillis() - mStartTime) / 1000);
+//		setState(State.finished);
+//		setIsFinished(true);
+//		os.flush();
+//		os.close();
+//		mRequester.close();
 	}
 
 
 	/**
-	 * Download data form stream.
+	 * Download data form stream to special position.
 	 */
-	public synchronized void download(String file) throws IOException {
+	public synchronized void download(OutputStream to) throws IOException {
 		String transferEncoding = getRequester().getHeader().get(Http.TRANSFER_ENCODING);
-		if (transferEncoding != null && transferEncoding.equals("chunked")) {
-			downloadChunked(file);
-		}else{
-			super.download(file);
-		}
+		if (to == null)
+			throw new IOException("The OuputStream of scribing is null!");
+
+		
 	}
 
 
 	/**
 	 * Download data as chunk.
 	 */
-	private void downloadChunked(String file) throws IOException {
+	private void downloadChunked(OutputStream to) throws IOException {
 		HttpChunkedParser chunkedParser = new HttpChunkedParser();
-		OutputStream fos = new FileOutputStream(file);
+		OutputStream fos = to;
 		byte[] buff;
 
-		while((buff = chunkedParser.parse(
-				getRequester().getSocket().getInputStream())) != null) {
+		while((buff = chunkedParser.parse(getDataSource())) != null) {
 			setDownloadedLength(getDownloadedLength() + buff.length);
 			System.out.println("[--] Downloaded: " + getDownloadedLength());
 			fos.write(buff);
@@ -93,7 +107,7 @@ public class HttpDownloader extends Downloader {
 	 */
 	@Override
 	public byte receive() throws IOException {
-		return (byte) mInputStream.read();
+		return (byte) getDataSource().read();
 	}
 
 	/**
@@ -263,5 +277,29 @@ public class HttpDownloader extends Downloader {
 		public Object parse(Reader data) throws IOException {
 			return null;
 		}
+	}
+
+
+	@Override
+	public void start() {
+		
+	}
+
+
+	@Override
+	public void pause() {
+		
+	}
+
+
+	@Override
+	public void resume() {
+		
+	}
+
+
+	@Override
+	public void stop() {
+		
 	}
 }

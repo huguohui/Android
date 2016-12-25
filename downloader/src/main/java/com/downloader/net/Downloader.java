@@ -1,13 +1,8 @@
 package com.downloader.net;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Download some data form a place.
@@ -23,7 +18,7 @@ public abstract class Downloader implements Receiver {
 	private long mDownloadedLength;
 
 	/** The file name of saving download. */
-	private String mSaveTo;
+	private OutputStream mSaveTo;
 	
 	/** The download start time. */
 	private long mStartTime;
@@ -37,18 +32,15 @@ public abstract class Downloader implements Receiver {
 	/** Download is finished? */
 	private boolean mIsFinished = false;
 	
+	/** Datasource of downloading. */
+	private InputStream mDataSource = null;
+	
 	/** The download states. */
 	public enum State {
-		ready, downloading, paused, finished
+		ready, downloading, paused, stoped, finished
 	}
 
-	/** The default download buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
-
-	/** The listener of downloading. */
-	public Listener mListener = null;
-
-
 
 
 	/**
@@ -59,62 +51,43 @@ public abstract class Downloader implements Receiver {
 		mRequester = requester;
 		mStartTime = System.currentTimeMillis();
 	}
-
-
+	
+	
 	/**
-	 * Sets the listener of Downloader.
-	 * @param listener Download listener.
+	 * Starts to downloading.
 	 */
-	public void setDownloadListener(Listener listener) {
-		if (listener == null)
-			throw new RuntimeException("The listener can't be null!");
-
-		mListener = listener;
-	}
-
+	public abstract void start();
+	
+	
+	/**
+	 * Pauses task of downloading.
+	 */
+	public abstract void pause();
+	
+	
+	/**
+	 * Resumes task of downloading.
+	 */
+	public abstract void resume();
+	
+	
+	/**
+	 * Stops task of downloading.
+	 */
+	public abstract void stop();
+	
 
 	/**
-	 * Start download data.
+	 * To downloading data.
 	 */
 	public abstract void download() throws IOException;
 
 
 	/**
-	 * Start download from stream and save data to file.
-	 * @param file Save to file.
+	 * Download data form stream to special position.
+	 * @param to Where to save data.
 	 */
-	public void download(File file) throws IOException {
-		download(file.getAbsolutePath());
-	}
-
-
-	/**
-	 * Start download from stream and save data to file.
-	 * @param file Save to file.
-	 */
-	public void download(String file) throws IOException {
-		OutputStream os = new FileOutputStream(file);
-		InputStream is = getRequester().getSocket().getInputStream();
-		byte[] buff;
-		long lastTime = System.currentTimeMillis();
-		
-		while((buff = receive(is, BUFFER_SIZE)) != null) {
-			os.write(buff);
-			mDownloadedLength += buff.length;
-			if (mListener != null)
-				mListener.onReceive(this);
-		}
-
-		os.flush();
-		os.close();
-
-		mRequester.close();
-		mFinishedTime = System.currentTimeMillis();
-		setState(State.finished);
-		setIsFinished(true);
-		if (mListener != null)
-			mListener.onFinish(this);
-	}
+	public abstract void download(OutputStream to) throws IOException;
 
 
 	public Requester getRequester() {
@@ -141,11 +114,11 @@ public abstract class Downloader implements Receiver {
 		mDownloadedLength = downloadedLength;
 	}
 
-	public String getSaveTo() {
+	public OutputStream getSaveTo() {
 		return mSaveTo;
 	}
 
-	public void setSaveTo(String saveTo) {
+	public synchronized void setSaveTo(OutputStream saveTo) {
 		mSaveTo = saveTo;
 	}
 
@@ -188,6 +161,19 @@ public abstract class Downloader implements Receiver {
 	public synchronized void setIsFinished(boolean mIsFinshed) {
 		this.mIsFinished = mIsFinshed;
 	}
+	
+	
+	public InputStream getDataSource() {
+		return mDataSource;
+	}
+
+
+	public void setDataSource(InputStream dataSource) throws IOException {
+		if (dataSource == null) 
+			throw new IOException("The special data souce can't null!");
+
+		mDataSource = dataSource;
+	}
 
 
 	/**
@@ -200,16 +186,28 @@ public abstract class Downloader implements Receiver {
 		 */
 		void onStart(Downloader downloader);
 
-
+		/**
+		 * Invokes on downloader per receive.
+		 * @param downloader The listenered downloader.
+		 */
 		void onReceive(Downloader downloader);
 
-
+		/**
+		 * Invokes on downloader pause download.
+		 * @param downloader The listenered downloader.
+		 */
 		void onPause(Downloader downloader);
 
-
+		/**
+		 * Invokes on downloader resume download.
+		 * @param downloader The listenered downloader.
+		 */
 		void onResume(Downloader downloader);
 
-
+		/**
+		 * Invokes on downloader finish download.
+		 * @param downloader The listenered downloader.
+		 */
 		void onFinish(Downloader downloader);
 	}
 }
