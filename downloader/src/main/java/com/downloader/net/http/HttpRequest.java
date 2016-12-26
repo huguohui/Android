@@ -143,20 +143,17 @@ public class HttpRequest extends Request {
      * Sends http request.
      */
     @Override
-    public synchronized boolean send() throws IOException {
+    public synchronized void send() throws IOException {
 		OutputStream os = getSocket().getOutputStream();
 		boolean isSent = false;
 
-		if (send(getHeader().toString().getBytes(), os)) {
-			if (getBody() != null)
-				send(getBody().getContent(), os);
+		send(getHeader().toString().getBytes(), os);
+		if (getBody() != null)
+			send(getBody().getContent(), os);
 
-			isSent = true;
-			setState(State.sent);
-			getHeader().setContent(getSocket().getInputStream());
-		}
-
-		return isSent;
+		isSent = true;
+		setState(State.sent);
+		getHeader().setContent(getSocket().getInputStream());
     }
 
 
@@ -169,12 +166,11 @@ public class HttpRequest extends Request {
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public synchronized boolean send(byte[] data, OutputStream to) throws IOException {
+	public synchronized void send(byte[] data, OutputStream to) throws IOException {
 		if (to == null || data == null)
 			throw new RuntimeException("The OutputStream or data is null!");
 
 		to.write(data);
-		return true;
 	}
 
 
@@ -209,15 +205,10 @@ public class HttpRequest extends Request {
 	 /**
      * Get a downloader of this request.
      * return A downloader of this request.
+	 * @throws IOException 
      */
 	@Override
-	public Downloader getDownloader() {
-		try {
-			return new HttpDownloader(this);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	public Downloader getDownloader() throws IOException {
+		return new HttpDownloader(this);
 	}
 }

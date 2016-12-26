@@ -3,7 +3,6 @@ package com.downloader.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
@@ -114,10 +113,18 @@ public abstract class Downloader implements Receiver, Controlable {
 	
 	
 	/**
-	 * Download data to special OutputStream.
+	 * Download all data to special OutputStream.
 	 * @param to OutputStream where data will write to.
 	 */
-	public abstract void download(OutputStream os);
+	public abstract void download(OutputStream to);
+	
+	
+	/**
+	 * Download partial data for describing size.
+	 * @param range Will to downloading data size.
+	 * @param to Where data will be save.
+	 */
+	public abstract void download(Range r, OutputStream to);
 	
 	
 	/**
@@ -258,5 +265,22 @@ public abstract class Downloader implements Receiver, Controlable {
 		 * @param downloader The listenered downloader.
 		 */
 		void onFinish(Downloader downloader);
+	}
+	
+	
+	/**
+	 * A range of data.
+	 */
+	public static class Range {
+		/** Start offset. */
+		public int start;
+		
+		/** End offset. */
+		public int end;
+	
+		public Range(int start, int end) {
+			this.start = start;
+			this.end = end;
+		}
 	}
 }

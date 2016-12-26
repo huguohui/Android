@@ -43,7 +43,9 @@ public abstract class Request implements Sender {
     /** Request states. */
     public enum State {
         ready,      // Ready to requesting.
+        connecting, // Connecting...
         connected,  // Connected to target host.
+        sending, 	// Sending data...
         sent,       // Requesting was sent.
         closed      // Connecting was closed.
     };
@@ -68,16 +70,16 @@ public abstract class Request implements Sender {
     
     /**
      * Get a downloader of this request.
-     * return A downloader of this request.
+     * return A {@link Downloader} of this request.
      */
-    public abstract Downloader getDownloader();
+    public abstract Downloader getDownloader() throws IOException;
 
 
     /**
      * Open a connection.
      */
-    public boolean open() throws IOException {
-        return open(mSocketAddress);
+    public void open() throws IOException {
+        open(mSocketAddress);
     }
 
 
@@ -86,8 +88,8 @@ public abstract class Request implements Sender {
      *
      * @return If connect success, return true else false.
      */
-    public boolean open(SocketAddress address) throws IOException {
-        return open(address, mTimeout);
+    public void open(SocketAddress address) throws IOException {
+        open(address, mTimeout);
     }
 
 
@@ -96,14 +98,14 @@ public abstract class Request implements Sender {
      * @param address The {@link SocketAddress} to describing a address.
      * @param timeout The timeout time of connection.
      */
-    public boolean open(SocketAddress address, int timeout)
+    public void open(SocketAddress address, int timeout)
             throws IOException {
 		if (mState.equals(State.closed) || mState.equals(State.ready)) {
 			mStartTime = System.currentTimeMillis();
 			mSocket = new Socket();
+			mState = State.connecting;
 			mSocket.connect(address, timeout);
             mState = State.connected;
-			return true;
 		}
 
 		throw new ConnectException("Only open connection after requester " +
@@ -115,6 +117,7 @@ public abstract class Request implements Sender {
      * Close connection.
      */
     public void close() throws IOException {
+    	mState = State.closed;
         if (mSocket.isClosed() || !mSocket.isConnected())
             throw new ConnectException("The socket don't connected!");
 
@@ -122,6 +125,18 @@ public abstract class Request implements Sender {
         mSocket.shutdownOutput();
         mSocket.close();
     }
+    
+    
+    /**
+     * Reopen the request with last data.
+     */
+    public void repoen() throws IOException {
+    	if (!mState.equals(State.closed))
+    		close();
+    	
+    	open();
+    }
+    
 
 
     public SocketAddress getSocketAddress() {
@@ -182,5 +197,12 @@ public abstract class Request implements Sender {
 
 	public void setStartTime(long startTime) {
 		mStartTime = startTime;
+	}
+	
+	
+	/**
+	 * Request state listener.
+	 */
+	public interface Listener {
 	}
 }

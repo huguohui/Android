@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 
 import com.downloader.net.Downloader;
-import com.downloader.net.Parser;
 import com.downloader.net.Request;
 
 /**
@@ -23,7 +22,7 @@ public class HttpDownloader extends Downloader {
 
 	/**
 	 * Construct a http downloader object.
-	 * @param request A {@link Request}.
+	 *  @param request A {@link Request}.
 	 * @throws IOException 
 	 */
 	public HttpDownloader(Request request) throws IOException {
@@ -57,8 +56,6 @@ public class HttpDownloader extends Downloader {
 		return mChunkedParser.parse(is);
 	}
 	
-	
-
 	
 	/**
 	 * Receives data by size.
@@ -168,7 +165,7 @@ public class HttpDownloader extends Downloader {
 		try {
 			while(getState().equals(State.downloading) && (buff = receive(is, BUFFER_SIZE * 100)) != null) {
 				setDownloadedLength(getDownloadedLength() + buff.length);
-				os.write(buff);
+				os.write(buff);	
 			}
 		} catch(Exception e) {
 			setState(State.exceptional);
@@ -215,5 +212,11 @@ public class HttpDownloader extends Downloader {
 	@Override
 	public synchronized void pause() {
 		super.pause();
+	}
+
+
+	@Override
+	public void download(Range r, OutputStream to) {
+		
 	}
 }

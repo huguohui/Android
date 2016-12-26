@@ -13,7 +13,7 @@ public interface Sender {
 	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
-	boolean send() throws IOException;
+	void send() throws IOException;
 
 
 	/**
@@ -24,5 +24,5 @@ public interface Sender {
 	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
-	boolean send(byte[] data, OutputStream to) throws IOException;
+	void send(byte[] data, OutputStream to) throws IOException;
 }
