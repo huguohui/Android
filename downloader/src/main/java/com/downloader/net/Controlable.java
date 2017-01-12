@@ -8,23 +8,23 @@ public interface Controlable {
 	/**
 	 * Controls the task start.
 	 */
-	void start();
+	void start() throws Exception;
 	
 	
 	/**
 	 * Controls the task pause.
 	 */
-	void pause();
+	void pause() throws Exception;
 	
 	
 	/**
 	 * Controls the task resume.
 	 */
-	void resume();
+	void resume() throws Exception;
 	
 	
 	/**
 	 * Controls the task stop.
 	 */
-	void stop();
+	void stop() throws Exception;
 }
