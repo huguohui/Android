@@ -1,7 +1,5 @@
 package com.downloader.net.http;
 
-import com.downloader.net.Parser;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,6 +7,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.downloader.net.AbsReceiver;
+import com.downloader.net.Parser;
 
 /**
  *
@@ -93,7 +94,7 @@ public class HttpHeaderParser implements Parser {
 			throw new NullPointerException("The data can't null!");
 
 		byte buff;
-		byte[] searchStr = new String("\r\n\r\n").getBytes();
+		byte[] searchStr = {'\r', '\n', '\r', '\n'};
 		byte searchedCount = 0;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

@@ -3,7 +3,7 @@ package com.downloader.client;
 import java.io.IOException;
 
 import com.downloader.net.Controlable;
-import com.downloader.net.Downloader;
+import com.downloader.net.AbsReceiver;
 
 /**
  * A task for downloading.
@@ -16,7 +16,7 @@ public class DownloadTask implements Controlable {
 	 * Constructor for creating task.
 	 * @param d The downloader.
 	 */
-	public DownloadTask(Downloader d) {
+	public DownloadTask(AbsReceiver d) {
 		if (d == null)
 			return;
 		

@@ -12,7 +12,7 @@ import java.net.SocketAddress;
  * @author HGH
  * @since 2015/11/04
  */
-public abstract class Request implements Sender {
+public abstract class Request implements Send {
     /**
      * The requests address.
      */
@@ -70,9 +70,9 @@ public abstract class Request implements Sender {
     
     /**
      * Get a downloader of this request.
-     * return A {@link Downloader} of this request.
+     * return A {@link AbsReceiver} of this request.
      */
-    public abstract Downloader getDownloader() throws IOException;
+    public abstract AbsReceiver getDownloader() throws IOException;
 
 
     /**
@@ -100,16 +100,16 @@ public abstract class Request implements Sender {
      */
     public void open(SocketAddress address, int timeout)
             throws IOException {
-		if (mState.equals(State.closed) || mState.equals(State.ready)) {
-			mStartTime = System.currentTimeMillis();
-			mSocket = new Socket();
-			mState = State.connecting;
-			mSocket.connect(address, timeout);
-            mState = State.connected;
+		if (!mState.equals(State.closed) && !mState.equals(State.ready)) {
+			throw new ConnectException("Only open connection after request " +
+					"closed or requester don't connected!");
 		}
 
-		throw new ConnectException("Only open connection after requester " +
-											"closed or requester don't connected!");
+		mStartTime = System.currentTimeMillis();
+		mSocket = new Socket();
+		mState = State.connecting;
+		mSocket.connect(address, timeout);
+		mState = State.connected;
     }
 
 

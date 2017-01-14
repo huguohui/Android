@@ -1,9 +1,10 @@
 package com.downloader.net.http;
 
 
-import com.downloader.net.Downloader;
-import com.downloader.net.Receiver;
+import com.downloader.net.AbsReceiver;
+import com.downloader.net.Receive;
 import com.downloader.net.Request;
+import com.downloader.net.http.Http.Method;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,7 +20,7 @@ import java.net.UnknownHostException;
  */
 public class HttpRequest extends Request {
     /** The method of requesting  */
-    private Http.Method method = Http.Method.GET;
+    private Http.Method mMethod = Http.Method.GET;
 
 	/** Requested url. */
 	private URL mUrl;
@@ -50,7 +51,7 @@ public class HttpRequest extends Request {
 			throw new NullPointerException("The URL can't null!");
 
 		if (method != null)
-			this.method = method;
+			this.mMethod = method;
 
 		mUrl = url;
 		setHeader(getDefaultHeader());
@@ -71,7 +72,7 @@ public class HttpRequest extends Request {
 	 */
 	private HttpHeader getDefaultHeader() {
 		HttpHeader header = new HttpHeader();
-		header.setMethod(method);
+		header.setMethod(mMethod);
 		header.setVersion(HTTP_VERSION);
 		header.add("Accept", ACCEPT).add("Accept-Encoding", ACCEPT_ENCODING)
 			  .add("User-Agent", USER_AGENT).add("Connecting", CONNECTING);
@@ -172,14 +173,34 @@ public class HttpRequest extends Request {
 
 		to.write(data);
 	}
+	
+	
+	/**
+	 * Open a url address.
+	 * @throws IOException If exception.
+	 */
+	public void open(URL url, Http.Method method) throws IOException {
+		setUrl(url);
+		setMethod(method == null ? Method.GET : method);
+		open(getSocketAddressByUrl(url));
+	}
+	
+	
+	/**
+	 * Open a url address.
+	 * @throws IOException If exception.
+	 */
+	public void open(URL url) throws IOException {
+		open(url, null);
+	}
 
 
     public Http.Method getMethod() {
-        return method;
+        return mMethod;
     }
 
     public void setMethod(Http.Method method) {
-        this.method = method;
+        this.mMethod = method;
     }
 
 
@@ -193,7 +214,7 @@ public class HttpRequest extends Request {
      * @param url
      */
 	public void setUrl(URL url) {
-		if (mUrl == null)
+		if (url == null)
 			throw new NullPointerException("The special URL can't null!");
 
 		mUrl = url;
@@ -208,7 +229,7 @@ public class HttpRequest extends Request {
 	 * @throws IOException 
      */
 	@Override
-	public Downloader getDownloader() throws IOException {
-		return new HttpDownloader(this);
+	public AbsReceiver getDownloader() throws IOException {
+		return new HttpReceiver(this);
 	}
 }
