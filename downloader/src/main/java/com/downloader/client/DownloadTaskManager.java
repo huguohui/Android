@@ -13,6 +13,18 @@ public class DownloadTaskManager {
 	/** Download queue. */
 	private List<DownloadTask> mQueue = new LinkedList<DownloadTask>();
 	
+	/** Instance of manager. */
+	private static DownloadTaskManager mInstance = null;
+	
+	
+	/**
+	 * Private constructor for singleton pattern.
+	 */
+	private DownloadTaskManager() {
+		
+	}
+	
+	
 	public void addTask(DownloadTask task) {
 		if (task == null)
 			throw new RuntimeException("The task is null!");
@@ -28,4 +40,17 @@ public class DownloadTaskManager {
 		
 		dt.start();
 	}
+	
+	
+	/**
+	 * Gets instance of manager.
+	 * @return Instance of manager.
+	 */
+	public final synchronized static DownloadTaskManager getInstance() {
+		if (mInstance == null)
+			mInstance = new DownloadTaskManager();
+		
+		return mInstance;
+	}
+	
 }

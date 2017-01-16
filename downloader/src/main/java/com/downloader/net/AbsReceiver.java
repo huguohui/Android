@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
+import com.downloader.client.Controlable;
+import com.downloader.util.ReflectUtil;
+import com.downloader.util.StringUtil;
+
 
 /**
  * Download some data form a place.
@@ -17,7 +21,7 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	private long mLength = -1;
 
 	/** The length of downloaded data. */
-	private long mDownloadedLength;
+	private long mReceivedLength;
 
 	/** The file name of saving download. */
 	private OutputStream mSaveTo;
@@ -43,9 +47,14 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	/** The thread of receiver. */
 	private Thread mThread = null;
 	
+	/** Methods of listener. */
+	private final String mListenerMethods[] = {
+		"onStart", "onPause", "onResume", "onStop", "onFinish", "onReceive"
+	};
+	
 	/** The download states. */
 	public enum State {
-		unstart, receiving, paused, stoped, finished, exceptional
+		unstart, receiving, paused, stoped, finished, exceptional, waiting
 	}
 
 	/** Default buffer size. */
@@ -58,15 +67,14 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	 */
 	public AbsReceiver(Request requester) {
 		mRequest = requester;
-		mStartTime = System.currentTimeMillis();
-		invokeListener("onStart");
 	}
 	
 	
 	/**
 	 * Starts to downloading.
+	 * @throws IOException 
 	 */
-	public synchronized void start() {
+	public synchronized void start() throws IOException {
 		mState = State.receiving;
 		invokeListener("onStart");
 	}
@@ -75,25 +83,25 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	/**
 	 * Pauses task of downloading.
 	 */
-	public synchronized void pause() {
+	public synchronized void pause() throws IOException {
 		mState = State.paused;
-		invokeListener("onPause");
+		invokeListener("onPauses");
 	}
 	
 	
 	/**
 	 * Resumes task of downloading.
 	 */
-	public synchronized void resume() {
+	public synchronized void resume() throws IOException {
 		mState = State.receiving;
-		invokeListener("onPause");
+		invokeListener("onResume");
 	}
 	
 	
 	/**
-	 * Stops task of downloading.
+	 * Stops to downloading.
 	 */
-	public synchronized void stop() {
+	public synchronized void stop() throws IOException {
 		mState = State.stoped;
 		invokeListener("onStop");
 	}
@@ -106,14 +114,18 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	protected synchronized void invokeListener(String name) {
 		if (mListener == null)
 			return;
-
-		try {
-			Method method = mListener.getClass().getMethod(name, AbsReceiver.class);
-			method.invoke(mListener, this);
-		} catch (Exception e) {
-			e.printStackTrace();
+		
+		switch(StringUtil.contains(mListenerMethods, name)) {
+			case 0:		mListener.onStart(this); 	break;
+			case 1:		mListener.onPause(this);	break;
+			case 2:		mListener.onResume(this);	break;
+			case 3:		mListener.onStop(this);		break;
+			case 4:		mListener.onFinish(this);	break;
+			case 5:		mListener.onReceive(this);	break;
+			default: 	// Do nothing...
 		}
 	}
+
 
 	public Request getRequest() {
 		return mRequest;
@@ -131,12 +143,12 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 		mLength = length;
 	}
 
-	public long getDownloadedLength() {
-		return mDownloadedLength;
+	public long getReceivedLength() {
+		return mReceivedLength;
 	}
 
-	public synchronized void setDownloadedLength(long downloadedLength) {
-		mDownloadedLength = downloadedLength;
+	public synchronized void setReceivedLength(long downloadedLength) {
+		mReceivedLength = downloadedLength;
 	}
 
 	public OutputStream getSaveTo() {
@@ -201,16 +213,16 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	}
 
 
-	public Listener getDownloadListener() {
+	public Listener getReceiverListener() {
 		return mListener;
 	}
 
 
-	public void setDownloadListener(Listener downloadListener) {
-		if (downloadListener == null)
+	public void setReceiverListener(Listener Listener) {
+		if (Listener == null)
 			return;
 
-		mListener = downloadListener;
+		mListener = Listener;
 	}
 
 
@@ -233,6 +245,12 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 		 * @param downloader The listenered downloader.
 		 */
 		void onStart(AbsReceiver downloader);
+
+		/**
+		 * Invokes on downloader stop download.
+		 * @param downloader The listenered downloader.
+		 */
+		void onStop(AbsReceiver absReceiver);
 
 		/**
 		 * Invokes on downloader per receive.

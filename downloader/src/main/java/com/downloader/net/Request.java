@@ -13,19 +13,13 @@ import java.net.SocketAddress;
  * @since 2015/11/04
  */
 public abstract class Request implements Send {
-    /**
-     * The requests address.
-     */
+    /** The requests address. */
     private SocketAddress mSocketAddress;
 
-    /**
-     * The socket of requester.
-     */
+    /** The socket of requester. */
     private Socket mSocket;
 
-    /**
-     * The connection timeout. (ms)
-     */
+    /** The connection timeout. (ms) */
     private int mTimeout = 100000;
 
     /** Http header. */
@@ -39,6 +33,15 @@ public abstract class Request implements Send {
 
 	/** The requester start time. */
 	private long mStartTime = 0;
+	
+	/** State of connection by boolean. */
+	private boolean isConnect = false;
+	
+	/** Flag for reqeust send. */
+	private boolean isSend = false;
+	
+	/** Address of reqeust. */
+	private String mAddress = "";
 
     /** Request states. */
     public enum State {
@@ -72,8 +75,7 @@ public abstract class Request implements Send {
      * Get a downloader of this request.
      * return A {@link AbsReceiver} of this request.
      */
-    public abstract AbsReceiver getDownloader() throws IOException;
-
+    public abstract AbsReceiver getReceiver() throws IOException;
 
     /**
      * Open a connection.
@@ -110,6 +112,15 @@ public abstract class Request implements Send {
 		mState = State.connecting;
 		mSocket.connect(address, timeout);
 		mState = State.connected;
+		isConnect = true;
+    }
+    
+    
+    /**
+     * Send request.
+     */
+    public void send() throws IOException {
+    	isSend = true;
     }
 
 
@@ -124,24 +135,26 @@ public abstract class Request implements Send {
         mSocket.shutdownInput();
         mSocket.shutdownOutput();
         mSocket.close();
+        isConnect = false;
     }
     
     
     /**
      * Reopen the request with last data.
      */
-    public void repoen() throws IOException {
+    public void reopen() throws IOException {
     	if (!mState.equals(State.closed))
     		close();
     	
     	open();
+    	isSend = false;
     }
     
-
 
     public SocketAddress getSocketAddress() {
         return mSocketAddress;
     }
+    
 
     public void setSocketAddress(SocketAddress socketAddress) {
         if (socketAddress == null)
@@ -200,6 +213,36 @@ public abstract class Request implements Send {
 	}
 	
 	
+	public boolean isConnect() {
+		return isConnect;
+	}
+
+
+	public void setConnect(boolean isConnetion) {
+		this.isConnect = isConnetion;
+	}
+
+
+	public String getAddress() {
+		return mAddress;
+	}
+
+
+	public void setAddress(String address) {
+		mAddress = address;
+	}
+
+
+	public boolean isSend() {
+		return isSend;
+	}
+
+
+	public void setSend(boolean isSend) {
+		this.isSend = isSend;
+	}
+
+
 	/**
 	 * Request state listener.
 	 */

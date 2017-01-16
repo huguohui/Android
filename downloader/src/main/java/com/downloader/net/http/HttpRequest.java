@@ -1,17 +1,15 @@
 package com.downloader.net.http;
 
 
-import com.downloader.net.AbsReceiver;
-import com.downloader.net.Receive;
-import com.downloader.net.Request;
-import com.downloader.net.http.Http.Method;
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
+
+import com.downloader.net.AbsReceiver;
+import com.downloader.net.Request;
+import com.downloader.net.http.Http.Method;
+import com.downloader.util.UrlUtil;
 
 /**
  * HTTP request class implement.
@@ -44,9 +42,10 @@ public class HttpRequest extends Request {
 	/**
      * Construct a http request object.
      * @param url Special URL.
+     * @param method Special method of requesting.
      */
 	public HttpRequest(URL url, Http.Method method) throws IOException {
-		super(getSocketAddressByUrl(url));
+		super(UrlUtil.getSocketAddressByUrl(url));
 		if (url == null)
 			throw new NullPointerException("The URL can't null!");
 
@@ -55,6 +54,15 @@ public class HttpRequest extends Request {
 
 		mUrl = url;
 		setHeader(getDefaultHeader());
+	}
+	
+	
+	/**
+     * Construct a http request object.
+     * @param url Special URL.
+     */
+	public HttpRequest(URL url) throws IOException {
+		this(url, null);
 	}
 
 
@@ -77,66 +85,10 @@ public class HttpRequest extends Request {
 		header.add("Accept", ACCEPT).add("Accept-Encoding", ACCEPT_ENCODING)
 			  .add("User-Agent", USER_AGENT).add("Connecting", CONNECTING);
 		if (mUrl != null) {
-			header.setUrl(getUrlFullPath(mUrl));
-			header.add("Host", getDomainWithPort(mUrl));
+			header.setUrl(UrlUtil.getUrlFullPath(mUrl));
+			header.add("Host", UrlUtil.getDomainWithPort(mUrl));
 		}
 		return header;
-	}
-
-
-	/**
-	 * Get the top domain of url.
-	 */
-	public static String getTopDomain(URL url) {
-		if (url == null)
-			return null;
-
-		String host = url.getHost();
-		return "www." + host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
-	}
-
-
-	/**
-	 * Get IP address by top domain.
-	 * @param domain Top domain.
-	 * @return IP address of domain.
-	 * @throws UnknownHostException Can't parse domain.
-	 */
-	public static InetAddress getInetAddressByDomain(String domain) throws UnknownHostException {
-		return InetAddress.getByName(domain);
-	}
-
-
-	/**
-	 * Get socket address by URL.
-	 * @param url The URL.
-	 * @return Socket address.
-	 * @throws UnknownHostException
-	 */
-	public static InetSocketAddress getSocketAddressByUrl(URL url) throws UnknownHostException {
-		return new InetSocketAddress(getInetAddressByDomain(url.getHost()),
-				url.getPort() == -1 ? 80 : url.getPort());
-	}
-
-	
-	/**
-	 * Get URL path and query string.
-	 */
-	public static String getUrlFullPath(URL url) {
-		if (url == null) return null;
-		return (url.getPath() == null || url.getPath().equals("") ?
-				"/" + url.getPath() : url.getPath())
-				+ (url.getQuery() == null ? "" : "?" + url.getQuery())
-				+ (url.getRef() == null ? "" : "#" +url.getRef());
-	}
-	
-	
-	/**
-	 * Get domain with port.
-	 */
-	public static String getDomainWithPort(URL url) {
-		if (url == null) return null;
-		return url.getHost() + ":" + (url.getPort() != -1 ? url.getPort() : Http.DEFAULT_PORT);
 	}
 
 
@@ -146,15 +98,11 @@ public class HttpRequest extends Request {
     @Override
     public synchronized void send() throws IOException {
 		OutputStream os = getSocket().getOutputStream();
-		boolean isSent = false;
-
 		send(getHeader().toString().getBytes(), os);
 		if (getBody() != null)
 			send(getBody().getContent(), os);
 
-		isSent = true;
 		setState(State.sent);
-		getHeader().setContent(getSocket().getInputStream());
     }
 
 
@@ -168,6 +116,7 @@ public class HttpRequest extends Request {
 	 */
 	@Override
 	public synchronized void send(byte[] data, OutputStream to) throws IOException {
+    	super.send();
 		if (to == null || data == null)
 			throw new RuntimeException("The OutputStream or data is null!");
 
@@ -182,7 +131,7 @@ public class HttpRequest extends Request {
 	public void open(URL url, Http.Method method) throws IOException {
 		setUrl(url);
 		setMethod(method == null ? Method.GET : method);
-		open(getSocketAddressByUrl(url));
+		open(UrlUtil.getSocketAddressByUrl(url));
 	}
 	
 	
@@ -192,6 +141,26 @@ public class HttpRequest extends Request {
 	 */
 	public void open(URL url) throws IOException {
 		open(url, null);
+	}
+	
+
+	/**
+     * Get a downloader of this request.
+     * return A downloader of this request.
+	 * @throws IOException 
+     */
+	@Override
+	public AbsReceiver getReceiver() throws IOException {
+		return new HttpReceiver(this);
+	}
+
+
+	/**
+	 * Reopen a connection.
+	 */
+	public void reopen(URL url) throws IOException {
+		setUrl(url);
+		reopen();
 	}
 
 
@@ -207,29 +176,14 @@ public class HttpRequest extends Request {
 	public URL getUrl() {
 		return mUrl;
 	}
-
-
-    /**
-     * Sets the url of requesting.
-     * @param url
-     */
+	
+	
 	public void setUrl(URL url) {
 		if (url == null)
 			throw new NullPointerException("The special URL can't null!");
 
 		mUrl = url;
-		((HttpHeader)getHeader()).setUrl(getUrlFullPath(mUrl));
-		getHeader().add("Host", getDomainWithPort(mUrl));
-	}
-
-
-	 /**
-     * Get a downloader of this request.
-     * return A downloader of this request.
-	 * @throws IOException 
-     */
-	@Override
-	public AbsReceiver getDownloader() throws IOException {
-		return new HttpReceiver(this);
+		((HttpHeader)getHeader()).setUrl(UrlUtil.getUrlFullPath(mUrl));
+		getHeader().add("Host", UrlUtil.getDomainWithPort(mUrl));
 	}
 }

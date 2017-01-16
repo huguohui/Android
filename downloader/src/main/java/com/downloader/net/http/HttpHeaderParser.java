@@ -8,7 +8,6 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.downloader.net.AbsReceiver;
 import com.downloader.net.Parser;
 
 /**
