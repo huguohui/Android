@@ -9,8 +9,8 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
 
-import com.AbsReceiver;
-import com.Request;
+import com.downloader.AbsReceiver;
+import com.downloader.Request;
 import com.downloader.util.UrlUtil;
 
 /**

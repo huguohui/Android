@@ -1,4 +1,4 @@
-package com;
+package com.downloader;
 
 import java.io.InputStream;
 import java.io.Reader;

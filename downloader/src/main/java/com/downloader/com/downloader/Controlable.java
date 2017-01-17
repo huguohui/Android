@@ -1,4 +1,4 @@
-package com;
+package com.downloader;
 
 /**
  * Defines some method for describing object is controlable.

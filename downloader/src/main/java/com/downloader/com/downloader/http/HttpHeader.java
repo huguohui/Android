@@ -1,7 +1,7 @@
 package com.downloader.http;
 
 
-import com.Header;
+import com.downloader.Header;
 
 import java.io.IOException;
 import java.io.InputStream;

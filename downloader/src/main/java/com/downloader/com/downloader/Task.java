@@ -1,4 +1,4 @@
-package com;
+package com.downloader;
 
 /**
  * Interface of task.

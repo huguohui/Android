@@ -2,7 +2,7 @@ package com.downloader.http;
 import java.io.IOException;
 import java.net.URL;
 
-import com.DownloadTask;
+import com.downloader.DownloadTask;
 import com.downloader.http.Http.Method;
 
 /**

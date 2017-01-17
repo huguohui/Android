@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.DownloadTask;
-import com.Protocol;
+import com.downloader.DownloadTask;
+import com.downloader.Protocol;
 import com.downloader.http.HttpReceiver;
 import com.downloader.http.HttpRequest;
 import com.downloader.util.StringUtil;
