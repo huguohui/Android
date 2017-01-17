@@ -1,9 +1,11 @@
 import java.net.URL;
+import java.util.Arrays;
 
-import com.downloader.client.DownloadTask;
+import com.AbsReceiver;
+import com.DownloadTask;
 import com.downloader.client.DownloadTaskManager;
-import com.downloader.net.AbsReceiver;
-import com.downloader.net.http.HttpRequest;
+import com.downloader.http.HttpDownloadTask;
+import com.downloader.http.HttpRequest;
 public class Test implements AbsReceiver.Listener {
 	
 	@Override
@@ -18,7 +20,7 @@ public class Test implements AbsReceiver.Listener {
 	
 	@Override
 	public void onReceive(AbsReceiver downloader) {
-		
+		System.out.println(downloader.getReceivedLength());
 	}
 	
 	@Override
@@ -36,24 +38,21 @@ public class Test implements AbsReceiver.Listener {
 		
 		System.out.println(downloader.getRequest().getHeader());
 		System.out.println("Finished!.............");
+		
+		
+		System.out.println(1000 / 3 + "," + 1000 % 3);
 	}
 	
 	
 	public static void main(String[] args) throws Exception {
-		HttpRequest r = new HttpRequest();
 		URL url = new URL("http://w.x.baidu.com/alading/anquan_soft_down_all/35013");
-//		r.open(url);
-//		r.getHeader().add(Http.RANGE, "bytes=0-102400");
-//		r.send();
-//		AbsReceiver rcv = r.getReceiver();
-//		rcv.setSaveTo(new FileOutputStream("c:\\users\\admin\\appData\\local\\temp\\0.txt"));
-//		rcv.setReceiverListener(new Test());
-//		rcv.start();
-//		rcv.getThread().join();
 		DownloadTaskManager m = DownloadTaskManager.getInstance();
-		m.addTask(new DownloadTask(url));
-		m.startTask(0);
-		
+		//m.addTask(new DownloadTask(url));
+	//	new HttpDownloadTask(url);
+		System.out.println(1000 / 3 + "," + 1000 % 3);
+		for (int i = 1; i <= 3; i++) {
+			System.out.println(i + ":" + (1000 / 3 + (i == 3 ? 1000 % 3 : 0)));
+		}
 	}
 
 	@Override
