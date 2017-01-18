@@ -1,8 +1,8 @@
 import java.net.URL;
 import java.util.Arrays;
 
-import com.AbsReceiver;
-import com.DownloadTask;
+import com.downloader.AbsReceiver;
+import com.downloader.DownloadTask;
 import com.downloader.client.DownloadTaskManager;
 import com.downloader.http.HttpDownloadTask;
 import com.downloader.http.HttpRequest;

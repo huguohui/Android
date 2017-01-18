@@ -44,6 +44,9 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	/** The thread of receiver. */
 	private Thread mThread = null;
 	
+	/** Range of data will to receiving. */
+	private Range mRange = null;
+	
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {
 		"onStart", "onPause", "onResume", "onStop", "onFinish", "onReceive"
@@ -63,7 +66,18 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	 * @param requester A {@link Request}.
 	 */
 	public AbsReceiver(Request requester) {
+		this(requester, null);
+	}
+	
+	
+	/**
+	 * Construct a downloader by requester.
+	 * @param requester A {@link Request}.
+	 * @param r Range of data will to receiving.
+	 */
+	public AbsReceiver(Request requester, Range r) {
 		mRequest = requester;
+		mRange = r;
 	}
 	
 	
@@ -233,6 +247,16 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	}
 
 
+	public Range getRange() {
+		return mRange;
+	}
+
+
+	public void setRange(Range range) {
+		mRange = range;
+	}
+
+
 	/**
 	 * The listener of downloading.
 	 */
@@ -280,14 +304,22 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	 */
 	public static class Range {
 		/** Start offset. */
-		public int start;
+		public long start;
 		
 		/** End offset. */
-		public int end;
+		public long end;
 	
-		public Range(int start, int end) {
-			this.start = start;
-			this.end = end;
+		public Range(long s, long e) {
+			if (s < 0 || e < 0 || s > e)
+				throw new IllegalArgumentException("The start and end can't < 0 and end must >= start!");
+
+			this.start = s;
+			this.end = e;
+		}
+		
+		
+		public String toString() {
+			return String.format("%l-%l", start, end);
 		}
 	}
 }

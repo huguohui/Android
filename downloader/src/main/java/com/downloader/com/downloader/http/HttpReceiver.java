@@ -33,9 +33,24 @@ public class HttpReceiver extends AbsReceiver {
 	/** Http response header. */
 	private HttpHeader mHeader = new HttpHeader();
 	
+	/** Http status code. */
+	private int mStatusCode = 0;
+
+	
 	/** Chunked parser. */
 	private HttpChunkedParser mChunkedParser = new HttpChunkedParser();
 
+	
+	/**
+	 * Construct a http downloader object.
+	 *  @param request A {@link Request}.
+	 * @throws IOException If exception.
+	 */
+	public HttpReceiver(HttpRequest request, Range r) throws IOException {
+		super(request, r);
+		readResponse();
+	}
+	
 
 	/**
 	 * Construct a http downloader object.
@@ -43,8 +58,7 @@ public class HttpReceiver extends AbsReceiver {
 	 * @throws IOException If exception.
 	 */
 	public HttpReceiver(HttpRequest request) throws IOException {
-		super(request);
-		readResponse();
+		this(request, null);
 	}
 	
 	
@@ -92,6 +106,9 @@ public class HttpReceiver extends AbsReceiver {
 		if (getRequest().isSend())
 			throw new IOException("Can't send request becuase reqeust was sent!");
 		
+		if (getRange() != null)
+			getRequest().getHeader().add(Http.RANGE, "bytes=" + getRange());
+
 		getRequest().send();
 		readResponse();
 	}
@@ -336,5 +353,15 @@ public class HttpReceiver extends AbsReceiver {
 
 	public void setHeader(HttpHeader header) {
 		mHeader = header;
+	}
+
+
+	public int getStatusCode() {
+		return mStatusCode;
+	}
+
+
+	public void setStatusCode(int statusCode) {
+		mStatusCode = statusCode;
 	}
 }
