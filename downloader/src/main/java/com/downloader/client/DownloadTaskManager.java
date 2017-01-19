@@ -3,12 +3,11 @@ package com.downloader.client;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.downloader.DownloadTask;
 import com.downloader.Protocol;
-import com.downloader.http.HttpReceiver;
-import com.downloader.http.HttpRequest;
-import com.downloader.util.StringUtil;
 
 
 /**
@@ -50,12 +49,26 @@ public class DownloadTaskManager {
 	}
 	
 	
-	public void startTask(int id) throws IOException {
+	public void startTask(int id) throws Exception {
 		DownloadTask dt = mQueue.get(id);
 		if (dt == null)
 			throw new RuntimeException("The specail task not exists!");
 		
-		//dt.start();
+		dt.start();
+	}
+	
+	/**
+	 * To monitoring download task.
+	 */
+	public void monitoring() {
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				for (DownloadTask dt : mQueue) {
+					System.out.println(dt.progress());
+				}
+			}
+		}, 0, 1000);
 	}
 	
 	

@@ -47,12 +47,9 @@ public class Test implements AbsReceiver.Listener {
 	public static void main(String[] args) throws Exception {
 		URL url = new URL("http://w.x.baidu.com/alading/anquan_soft_down_all/35013");
 		DownloadTaskManager m = DownloadTaskManager.getInstance();
-		//m.addTask(new DownloadTask(url));
-	//	new HttpDownloadTask(url);
-		System.out.println(1000 / 3 + "," + 1000 % 3);
-		for (int i = 1; i <= 3; i++) {
-			System.out.println(i + ":" + (1000 / 3 + (i == 3 ? 1000 % 3 : 0)));
-		}
+		m.addTask(new HttpDownloadTask(url));
+		m.startTask(0);
+		m.monitoring();
 	}
 
 	@Override

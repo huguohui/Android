@@ -33,8 +33,14 @@ public class HttpReceiver extends AbsReceiver {
 	/** Http response header. */
 	private HttpHeader mHeader = new HttpHeader();
 	
+	/** Is receives portal data? */
+	private boolean isPortal = false;
+	
 	/** Http status code. */
 	private int mStatusCode = 0;
+	
+	/** File name of download. */
+	private String mFileName = "";
 
 	
 	/** Chunked parser. */
@@ -48,6 +54,7 @@ public class HttpReceiver extends AbsReceiver {
 	 */
 	public HttpReceiver(HttpRequest request, Range r) throws IOException {
 		super(request, r);
+		setPortal(r != null);
 		readResponse();
 	}
 	
@@ -74,24 +81,27 @@ public class HttpReceiver extends AbsReceiver {
 		getHeader().setContent(request.getSocket().getInputStream());
 		isChunked = CHUNKED.equals(getHeader().get(Http.TRANSFER_ENCODING));
 		isGzip = "Gzip".equals(getHeader().get(Http.CONTENT_ENCODING));
+		String fileName = UrlUtil.getFilename(request.getUrl()), disp = "";
+		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.length() != 0) {
+			int off = 0;
+			if ((off = disp.indexOf("filename")) != -1)
+				fileName = disp.substring(off + 1);
+		}
+		
+		setFileName(fileName);
 		if (getHeader().get(Http.LOCATION) != null) {
 			request.reopen(UrlUtil.getFullUrl(request.getUrl(), getHeader().get(Http.LOCATION)));
 			sendRequest();
 		}
 		
-		if (getSaveTo() == null) {
-			String fileName = UrlUtil.getFilename(request.getUrl()), disp = "";
-			if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.length() != 0) {
-				int off = 0;
-				if ((off = disp.indexOf("filename")) != -1)
-					fileName = disp.substring(off + 1);
-			}
-
+		if (getSaveTo() == null)
 			setSaveTo(new FileOutputStream("D:\\" + fileName));
-		}
 
 		if (getHeader().get(Http.CONTENT_LENGTH) != null)
 			setLength(Long.parseLong(getHeader().get(Http.CONTENT_LENGTH)));
+		else if (getHeader().get(Http.CONTENT_RANGE) != null) {
+			setLength(Long.parseLong(getHeader().get(Http.CONTENT_RANGE).split("/")[1]));
+		}
 
 		setReceivedLength(0);
 		setDataSource(request.getSocket().getInputStream());
@@ -256,13 +266,27 @@ public class HttpReceiver extends AbsReceiver {
 	 */
 	private void receiveAndSave() {
 		byte[] buff;
-		
+		int remianLen = (int) (getLength() - getReceivedLength()),
+			receiveLen = BUFFER_SIZE;
+
 		try {
-			buff = receive(getDataSource(), BUFFER_SIZE);
-			if (buff != null)
-				getSaveTo().write(buff);
-			else
-				finishReceive();
+			if (isPortal || !isChunked) {
+				if (remianLen < 0) {
+					setState(State.finished);
+					return;
+				}
+				receiveLen = Math.min(BUFFER_SIZE, remianLen);
+			}
+
+			System.out.println(getLength());
+			buff = receive(getDataSource(), receiveLen);
+			if (buff == null) {
+				setState(State.finished);
+				return;
+			}
+			
+			setReceivedLength(getReceivedLength() + buff.length);
+			getSaveTo().write(buff);
 		} catch(IOException e) {
 			setState(State.exceptional);
 			e.printStackTrace();
@@ -274,14 +298,16 @@ public class HttpReceiver extends AbsReceiver {
 	 * Finish to receiving data.
 	 */
 	private void finishReceive() {
-		OutputStream os = getSaveTo();
-		invokeListener("onFinish");
-		setState(State.finished);
-		setIsFinished(true);
-
 		try {
+			ensureOpen();
+			OutputStream os = getSaveTo();
 			os.flush();
 			os.close();
+			
+			isStop = true;
+			invokeListener("onFinish");
+			setState(State.finished);
+			setIsFinished(true);
 		} catch (IOException e) {
 			setState(State.exceptional);
 			e.printStackTrace();
@@ -299,17 +325,21 @@ public class HttpReceiver extends AbsReceiver {
 				case receiving:
 					receiveAndSave();
 					break;
-				case stoped:
 				case finished:
-				case exceptional:
-					isStop = true;
+					finishReceive();
 					break;
 				case paused:
 				case waiting:
+				case stoped:
+				case exceptional:
 					try { wait(); } catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 					break;
+			}
+			
+			try { Thread.sleep(1); } catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -363,5 +393,25 @@ public class HttpReceiver extends AbsReceiver {
 
 	public void setStatusCode(int statusCode) {
 		mStatusCode = statusCode;
+	}
+	
+
+	public boolean isPortal() {
+		return isPortal;
+	}
+
+
+	public void setPortal(boolean isPortal) {
+		this.isPortal = isPortal;
+	}
+
+
+	public String getFileName() {
+		return mFileName;
+	}
+
+
+	public void setFileName(String fileName) {
+		mFileName = fileName;
 	}
 }

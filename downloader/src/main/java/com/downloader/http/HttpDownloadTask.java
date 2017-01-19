@@ -1,4 +1,5 @@
 package com.downloader.http;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -13,6 +14,9 @@ import com.downloader.http.Http.Method;
 public class HttpDownloadTask extends DownloadTask {
 	/** Thread number for downlaoding task. */
 	public final static int DOWNLOAD_THREADS = 3;
+	
+	/** File name of download. */
+	private String mFileName = "";
 	
 	/** HttpReceivers for downloading task. */
 	private HttpReceiver[] mReceivers = new HttpReceiver[DOWNLOAD_THREADS];
@@ -29,7 +33,8 @@ public class HttpDownloadTask extends DownloadTask {
 		System.out.println("是否支持断点续传？" + isBreakPointResume());
 		System.out.println("任务大小：" + getLength());
 		System.out.println("内容类型" + getContentType());
-		//setReceiver(new HttpReceiver(new HttpRequest(url)));
+		System.out.println("文件名：" + getFileName());
+		prepare();
 	}
 	
 	
@@ -48,6 +53,7 @@ public class HttpDownloadTask extends DownloadTask {
 		setBreakPointResume(header != null ? "206".equals(header.getStatusCode()) : false);
 		setLength(isBreakPointResume() ? Long.parseLong(header.get(Http.CONTENT_RANGE).split("/")[1]) : 0);
 		setContentType(header.get(Http.CONTENT_TYPE));
+		setFileName(hr.getFileName());
 	}
 	
 	
@@ -55,18 +61,30 @@ public class HttpDownloadTask extends DownloadTask {
 	 * Computes how to doing download task. 
 	 * @throws IOException 
 	 */
-	private void init() throws IOException {
-		long len = getLength(), avgLen = len / DOWNLOAD_THREADS,
-			 start = 0;
+	private void prepare() throws IOException {
+		long len = getLength(), avgLen = len / DOWNLOAD_THREADS;
 		int remain = (int) len % DOWNLOAD_THREADS;
 		boolean breakPoint = isBreakPointResume();
 
 		if (breakPoint) {
 			for (int i = 0; i < DOWNLOAD_THREADS; i++) {
-				Range r = new Range(len * i, len * i + 1);
+				Range r = new Range(avgLen * i, avgLen * i + 1 + (i + 1 == DOWNLOAD_THREADS ? remain : 0));
 				mReceivers[i] = new HttpReceiver(new HttpRequest(getUrl()), r);
+				mReceivers[i].setSaveTo(new FileOutputStream(String.format("D:\\%s.td%d", getFileName(), i)));
 			}
+		}else{
+			mReceivers[0] = new HttpReceiver(new HttpRequest(getUrl()));
+			mReceivers[0].setSaveTo(new FileOutputStream(String.format("D:\\%s", getFileName())));
 		}
+	}
+	
+	
+	/**
+	 * To changing task state.
+	 * @param state State will change to.
+	 */
+	public void changeState() {
+		
 	}
 
 	
@@ -75,32 +93,75 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void doWork() {
-		
+		for (HttpReceiver hr : mReceivers) {
+			if (hr != null) {
+				try { hr.start(); } catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
+
 
 	@Override
 	public void start() throws Exception {
-		
+		doWork();
 	}
 
 	@Override
 	public void pause() throws Exception {
-		
+		for (HttpReceiver hr : mReceivers) {
+			if (hr != null) {
+				try { hr.pause(); } catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
 	public void resume() throws Exception {
-		
+		for (HttpReceiver hr : mReceivers) {
+			if (hr != null) {
+				try { hr.resume(); } catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
 	public void stop() throws Exception {
-		
+		for (HttpReceiver hr : mReceivers) {
+			if (hr != null) {
+				try { hr.stop(); } catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 
 	@Override
 	public int progress() {
-		return 0;
+		long dlLen = 0;
+		for (HttpReceiver hr : mReceivers) {
+			if (hr != null) {
+				dlLen += hr.getReceivedLength();
+				System.out.println(hr.getFileName() + "," + hr.getLength());
+			}
+		}
+		
+		return (int) ((double) (dlLen / getLength()) * 100); 
+	}
+
+
+	public String getFileName() {
+		return mFileName;
+	}
+
+
+	public void setFileName(String fileName) {
+		mFileName = fileName;
 	}
 }

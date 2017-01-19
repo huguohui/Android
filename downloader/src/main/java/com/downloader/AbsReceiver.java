@@ -319,7 +319,7 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 		
 		
 		public String toString() {
-			return String.format("%l-%l", start, end);
+			return String.format("%d-%d", start, end);
 		}
 	}
 }
