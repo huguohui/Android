@@ -6,6 +6,7 @@ import java.net.URL;
 import com.downloader.AbsReceiver.Range;
 import com.downloader.DownloadTask;
 import com.downloader.http.Http.Method;
+import com.downloader.util.StringUtil;
 
 /**
  * Task for http download.
@@ -14,9 +15,6 @@ import com.downloader.http.Http.Method;
 public class HttpDownloadTask extends DownloadTask {
 	/** Thread number for downlaoding task. */
 	public final static int DOWNLOAD_THREADS = 3;
-	
-	/** File name of download. */
-	private String mFileName = "";
 	
 	/** HttpReceivers for downloading task. */
 	private HttpReceiver[] mReceivers = new HttpReceiver[DOWNLOAD_THREADS];
@@ -33,7 +31,7 @@ public class HttpDownloadTask extends DownloadTask {
 		System.out.println("是否支持断点续传？" + isBreakPointResume());
 		System.out.println("任务大小：" + getLength());
 		System.out.println("内容类型" + getContentType());
-		System.out.println("文件名：" + getFileName());
+		System.out.println("文件名：" + getName());
 		prepare();
 	}
 	
@@ -50,10 +48,14 @@ public class HttpDownloadTask extends DownloadTask {
 		r.send();
 		HttpReceiver hr = r.getReceiver();
 		HttpHeader header = hr.getHeader();
+
 		setBreakPointResume(header != null ? "206".equals(header.getStatusCode()) : false);
-		setLength(isBreakPointResume() ? Long.parseLong(header.get(Http.CONTENT_RANGE).split("/")[1]) : 0);
 		setContentType(header.get(Http.CONTENT_TYPE));
-		setFileName(hr.getFileName());
+		setName(hr.getFileName());
+		if (isBreakPointResume())
+			setLength(StringUtil.str2Long(header.get(Http.CONTENT_RANGE).split("/")[1], 0L));
+		else if (header.get(Http.CONTENT_LENGTH) != null)
+			setLength(StringUtil.str2Long(header.get(Http.CONTENT_LENGTH), 0L));
 	}
 	
 	
@@ -68,13 +70,13 @@ public class HttpDownloadTask extends DownloadTask {
 
 		if (breakPoint) {
 			for (int i = 0; i < DOWNLOAD_THREADS; i++) {
-				Range r = new Range(avgLen * i, avgLen * i + 1 + (i + 1 == DOWNLOAD_THREADS ? remain : 0));
+				Range r = new Range(avgLen * i, avgLen * (i + 1) + (i + 1 == DOWNLOAD_THREADS ? remain : 0));
 				mReceivers[i] = new HttpReceiver(new HttpRequest(getUrl()), r);
-				mReceivers[i].setSaveTo(new FileOutputStream(String.format("D:\\%s.td%d", getFileName(), i)));
+				mReceivers[i].setSaveTo(new FileOutputStream(String.format("D:\\%s.td%d", getName(), i)));
 			}
 		}else{
 			mReceivers[0] = new HttpReceiver(new HttpRequest(getUrl()));
-			mReceivers[0].setSaveTo(new FileOutputStream(String.format("D:\\%s", getFileName())));
+			mReceivers[0].setSaveTo(new FileOutputStream(String.format("D:\\%s", getName())));
 		}
 	}
 	
@@ -144,24 +146,12 @@ public class HttpDownloadTask extends DownloadTask {
 
 	@Override
 	public int progress() {
-		long dlLen = 0;
+		long recvLen = 0;
 		for (HttpReceiver hr : mReceivers) {
-			if (hr != null) {
-				dlLen += hr.getReceivedLength();
-				System.out.println(hr.getFileName() + "," + hr.getLength());
-			}
+			if (hr != null)
+				recvLen += hr.getReceivedLength();
 		}
 		
-		return (int) ((double) (dlLen / getLength()) * 100); 
-	}
-
-
-	public String getFileName() {
-		return mFileName;
-	}
-
-
-	public void setFileName(String fileName) {
-		mFileName = fileName;
+		return (int) (((float)recvLen / getLength()) * 100);
 	}
 }

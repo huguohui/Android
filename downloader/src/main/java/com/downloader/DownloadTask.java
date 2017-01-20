@@ -65,15 +65,15 @@ public abstract class DownloadTask extends AbsTask {
 		return isBreakPointResume;
 	}
 
-	public void setBreakPointResume(boolean isBreakPointResume) {
+	public synchronized void setBreakPointResume(boolean isBreakPointResume) {
 		this.isBreakPointResume = isBreakPointResume;
 	}
 
-	public long getLength() {
+	public synchronized long getLength() {
 		return mLength;
 	}
 
-	public void setLength(long length) {
+	public synchronized void setLength(long length) {
 		mLength = length;
 	}
 
@@ -81,7 +81,7 @@ public abstract class DownloadTask extends AbsTask {
 		return mContentType;
 	}
 
-	public void setContentType(String contentType) {
+	public synchronized void setContentType(String contentType) {
 		mContentType = contentType;
 	}
 }

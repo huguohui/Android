@@ -13,6 +13,31 @@ public abstract class AbsTask implements Task {
 	
 	/** Name of task. */
 	private String mName = "";
+
+
+	public long getStartTime() {
+		return mStartTime;
+	}
+
+	public void setStartTime(long startTime) {
+		mStartTime = startTime;
+	}
+
+	public long getFinishTime() {
+		return mFinishTime;
+	}
+
+	public void setFinishTime(long finishTime) {
+		mFinishTime = finishTime;
+	}
+
+	public String getName() {
+		return mName;
+	}
+
+	public void setName(String name) {
+		mName = name;
+	}
 	
 	
 }

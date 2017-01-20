@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.net.URL;
 import java.util.Arrays;
 
 import com.downloader.AbsReceiver;
 import com.downloader.Request;
+import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
 
 /**
@@ -94,7 +94,7 @@ public class HttpReceiver extends AbsReceiver {
 			sendRequest();
 		}
 		
-		if (getSaveTo() == null)
+		if (!request.getMethod().equals(Method.HEAD) && getSaveTo() == null)
 			setSaveTo(new FileOutputStream("D:\\" + fileName));
 
 		if (getHeader().get(Http.CONTENT_LENGTH) != null)
@@ -270,15 +270,14 @@ public class HttpReceiver extends AbsReceiver {
 			receiveLen = BUFFER_SIZE;
 
 		try {
-			if (isPortal || !isChunked) {
-				if (remianLen < 0) {
+			if (!isChunked) {
+				if (remianLen <= 0) {
 					setState(State.finished);
 					return;
 				}
 				receiveLen = Math.min(BUFFER_SIZE, remianLen);
 			}
 
-			System.out.println(getLength());
 			buff = receive(getDataSource(), receiveLen);
 			if (buff == null) {
 				setState(State.finished);

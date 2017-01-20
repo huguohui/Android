@@ -61,11 +61,15 @@ public class DownloadTaskManager {
 	 * To monitoring download task.
 	 */
 	public void monitoring() {
-		new Timer().schedule(new TimerTask() {
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				for (DownloadTask dt : mQueue) {
-					System.out.println(dt.progress());
+					int pg = dt.progress();
+					System.out.println(pg + "%");
+					if (pg == 100)
+						timer.cancel();
 				}
 			}
 		}, 0, 1000);
