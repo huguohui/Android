@@ -1,5 +1,6 @@
 package com.downloader;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,31 +8,42 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.downloader.net.Downloader;
-import com.downloader.net.Requester;
-import com.downloader.net.http.Http;
-import com.downloader.net.http.HttpDownloader;
-import com.downloader.net.http.HttpRequester;
+import com.downloader.client.DownloadTaskManager;
+import com.downloader.http.HttpDownloadTask;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends ActionBarActivity {
     ListView listView;
-    Downloader.Listener listener;
     Looper looper = Looper.getMainLooper();
     Handler handler ;
+    String savePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,36 +51,63 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView) findViewById(R.id.listView2);
-        List<String> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
-            list.add(Integer.toString(i));
+            Map<String, Object> map = new HashMap<>();
+            map.put("progress", i);
+            list.add(map);
         }
 
-        listView.setAdapter(new ArrayAdapter<String>(this,
-                android.R.layout.simple_expandable_list_item_1, list));
+        final MyAdspter ma = new MyAdspter(this, list);
+        listView.setAdapter(ma);
+
+
+
+        final Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                int last = i;
+                i += new Random().nextInt(30);
+                int num = 0, diff = i - last;
+                if (i >= 100) {
+                    timer.cancel();
+                }
+
+
+
+                while(num++ < diff) {
+                    Message m = new Message();
+                    m.what = 0;
+                    m.arg1 = last + num;
+                    ((Map<String, Object>) ma.getItem(0)).put("progress", last + num);
+                    Log.e("progress", String.valueOf(last + num));
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                    }
+                    handler.sendMessage(m);
+                }
+            }
+        }, 0, 1000);
 
 
         handler = new Handler() {
+            public int last = 0;
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
 
                 switch(msg.what) {
                     case  0:
-                        _do(msg.arg1);
+                        ma.notifyDataSetChanged();
                         break;
                 }
             }
         };
-        listener = new D(handler);
     }
 
-
-    public void _do(int len) {
-        ArrayAdapter<String> ad = ((ArrayAdapter<String>)listView.getAdapter());
-        ad.remove(ad.getItem(0));
-        ad.add(len + "Bytes");
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,16 +133,7 @@ public class MainActivity extends ActionBarActivity {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try {
-                                            Requester r = new HttpRequester(new URL(url), Http.Method.GET);
-                                            r.send();
-                                            System.out.println(r.getHeader());
-                                            Downloader d = new HttpDownloader(r);
-                                            d.setDownloadListener(listener);
-                                            d.download(android.os.Environment.getExternalStorageDirectory() + "/a.txt");
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+
                                     }
                                 }).start();
                             }
@@ -125,37 +155,41 @@ public class MainActivity extends ActionBarActivity {
 }
 
 
-class D implements HttpDownloader.Listener {
-    Handler handler;
-    D(Handler handler) {
-        this.handler = handler;
+class MyAdspter extends BaseAdapter {
+    private List<Map<String, Object>> data;
+    private LayoutInflater layoutInflater;
+    private Context context;
+    public MyAdspter(Context context,List<Map<String, Object>> data){
+        this.context=context;
+        this.data=data;
+        this.layoutInflater= LayoutInflater.from(context);
     }
 
     @Override
-    public void onStart(Downloader downloader) {
-
+    public int getCount() {
+        return data.size();
+    }
+    /**
+     * 获得某一位置的数据
+     */
+    @Override
+    public Object getItem(int position) {
+        return data.get(position);
+    }
+    /**
+     * 获得唯一标识
+     */
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
-    @Override
-    public void onReceive(Downloader downloader) {
-        Message msg = new Message();
-        msg.arg1 = (int) downloader.getDownloadedLength();
-        handler.sendMessage(msg);
-
-    }
 
     @Override
-    public void onPause(Downloader downloader) {
-
-    }
-
-    @Override
-    public void onResume(Downloader downloader) {
-
-    }
-
-    @Override
-    public void onFinish(Downloader downloader) {
-
+    public View getView(int position, View cv, ViewGroup parent) {
+        cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
+        ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
+        pb.setProgress((Integer) data.get(0).get("progress"));
+        return cv;
     }
 }
