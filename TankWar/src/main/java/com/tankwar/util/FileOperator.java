@@ -1,4 +1,4 @@
-package com.tankwar.utils;
+package com.tankwar.util;
 
 import java.io.File;
 import java.io.FileInputStream;

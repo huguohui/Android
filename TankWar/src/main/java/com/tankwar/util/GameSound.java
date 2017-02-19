@@ -1,10 +1,8 @@
-package com.tankwar.utils;
+package com.tankwar.util;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
-
-import com.tankwar.R;
 
 public class GameSound extends SoundPool{
 	public static final int[] soundIds   = {

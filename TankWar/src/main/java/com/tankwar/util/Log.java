@@ -1,4 +1,4 @@
-package com.tankwar.utils;
+package com.tankwar.util;
 
 import com.tankwar.engine.GameContext;
 
