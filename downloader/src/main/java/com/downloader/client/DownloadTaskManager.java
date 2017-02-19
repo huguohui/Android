@@ -15,7 +15,7 @@ import com.downloader.base.Protocol;
  */
 public class DownloadTaskManager {
 	/** Download queue. */
-	private List<DownloadTask> mQueue = new LinkedList<DownloadTask>();
+	private List<DownloadTask> mQueue = new LinkedList<>();
 	
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = null;
