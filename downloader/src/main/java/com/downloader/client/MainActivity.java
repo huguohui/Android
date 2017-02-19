@@ -1,4 +1,4 @@
-package com.downloader;
+package com.downloader.client;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,21 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.downloader.client.DownloadTaskManager;
-import com.downloader.http.HttpDownloadTask;
+import com.downloader.R;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
