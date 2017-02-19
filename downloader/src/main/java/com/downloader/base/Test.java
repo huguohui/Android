@@ -2,7 +2,7 @@ package com.downloader.base;
 
 import java.net.URL;
 
-import com.downloader.client.DownloadTaskManager;
+import com.downloader.manager.DownloadTaskManager;
 import com.downloader.http.HttpDownloadTask;
 
 public class Test implements AbsReceiver.Listener {

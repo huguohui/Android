@@ -1,5 +1,6 @@
-package com.downloader.client;
+package com.downloader.manager;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
@@ -7,13 +8,14 @@ import java.util.TimerTask;
 
 import com.downloader.base.DownloadTask;
 import com.downloader.base.Protocol;
+import com.downloader.base.Task;
 
 
 /**
  * Tool for management download task.
  * @since 2016/12/26 15:45
  */
-public class DownloadTaskManager {
+public class DownloadTaskManager extends AbstractManager<Task> {
 	/** Download queue. */
 	private List<DownloadTask> mQueue = new LinkedList<>();
 	
@@ -85,5 +87,91 @@ public class DownloadTaskManager {
 		
 		return mInstance;
 	}
-	
+
+
+	/**
+	 * Search a object.
+	 *
+	 * @param schstr A search condition of object will be searched.
+	 * @return If searched had result list else null.
+	 */
+	@Override
+	public List<Task> search(String schstr) {
+		return null;
+	}
+
+
+	/**
+	 * Get a list that contains all managed objects.
+	 *
+	 * @return A list that contains all managed objects.
+	 */
+	@Override
+	public List<Task> getList() {
+		return null;
+	}
+
+
+	/**
+	 * Delete a object.
+	 *
+	 * @param obj The object to deleting.
+	 * @return If deleted true else false.
+	 */
+	@Override
+	public boolean delete(Task obj) throws IOException {
+		return false;
+	}
+
+
+	/**
+	 * Add a object to management list.
+	 *
+	 * @param obj The object will add to list.
+	 */
+	@Override
+	public boolean add(Task obj) throws IOException {
+		return false;
+	}
+
+
+	/**
+	 * Get a details of object.
+	 *
+	 * @param name
+	 * @return A details of object.
+	 */
+	@Override
+	public Task getByName(String name) {
+		return null;
+	}
+
+
+	/**
+	 * Add all object to managed list.
+	 *
+	 * @param list Object of needing to management.
+	 */
+	@Override
+	public void addAll(List<Task> list) {
+
+	}
+
+
+	@Override
+	public boolean hasNext() {
+		return false;
+	}
+
+
+	@Override
+	public Task next() {
+		return null;
+	}
+
+
+	@Override
+	public void remove() {
+
+	}
 }
