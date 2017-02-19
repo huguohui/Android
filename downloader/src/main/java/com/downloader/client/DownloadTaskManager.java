@@ -1,13 +1,12 @@
 package com.downloader.client;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.downloader.DownloadTask;
-import com.downloader.Protocol;
+import com.downloader.base.DownloadTask;
+import com.downloader.base.Protocol;
 
 
 /**

@@ -1,7 +1,7 @@
 package com.downloader.http;
 
 
-import com.downloader.Body;
+import com.downloader.base.Body;
 
 import java.io.InputStream;
 import java.io.Reader;

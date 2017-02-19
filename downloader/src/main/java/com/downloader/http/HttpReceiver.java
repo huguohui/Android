@@ -8,8 +8,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Arrays;
 
-import com.downloader.AbsReceiver;
-import com.downloader.Request;
+import com.downloader.base.AbsReceiver;
+import com.downloader.base.Request;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
 

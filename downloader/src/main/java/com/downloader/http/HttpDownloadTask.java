@@ -3,8 +3,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import com.downloader.AbsReceiver.Range;
-import com.downloader.DownloadTask;
+import com.downloader.base.AbsReceiver.Range;
+import com.downloader.base.DownloadTask;
 import com.downloader.http.Http.Method;
 import com.downloader.util.StringUtil;
 

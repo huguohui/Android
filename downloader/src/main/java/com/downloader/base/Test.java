@@ -1,11 +1,10 @@
-import java.net.URL;
-import java.util.Arrays;
+package com.downloader.base;
 
-import com.downloader.AbsReceiver;
-import com.downloader.DownloadTask;
+import java.net.URL;
+
 import com.downloader.client.DownloadTaskManager;
 import com.downloader.http.HttpDownloadTask;
-import com.downloader.http.HttpRequest;
+
 public class Test implements AbsReceiver.Listener {
 	
 	@Override

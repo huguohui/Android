@@ -1,4 +1,4 @@
-package com.downloader;
+package com.downloader.base;
 
 
 /**

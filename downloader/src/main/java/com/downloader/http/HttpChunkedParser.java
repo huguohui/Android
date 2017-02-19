@@ -5,9 +5,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
 
-import com.downloader.AbsReceiver;
-import com.downloader.Parser;
-import com.downloader.Receive;
+import com.downloader.base.AbsReceiver;
+import com.downloader.base.Parser;
+import com.downloader.base.Receive;
 
 /**
  * The Chunked content parser.
