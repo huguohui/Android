@@ -269,7 +269,7 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 
 		/**
 		 * Invokes on downloader stop download.
-		 * @param downloader The listenered downloader.
+		 * @param absReceiver The listenered downloader.
 		 */
 		void onStop(AbsReceiver absReceiver);
 
