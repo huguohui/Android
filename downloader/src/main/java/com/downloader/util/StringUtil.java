@@ -9,17 +9,17 @@ import java.util.regex.Pattern;
  * @since 2017/01/15 15:29
  */
 final public class StringUtil {
-	/** ÓÃÓÚÆ¥ÅäÕûÊıµÄÕıÔò¡£*/
+	/** ç”¨äºåŒ¹é…æ•´æ•°çš„æ­£åˆ™ã€‚*/
 	public final static Pattern mIntPattern = Pattern.compile("^-?\\d+$");
 	
 	/** 
-	 * ÈÕÆÚ¸ñÊ½¡£
+	 * æ—¥æœŸæ ¼å¼ã€‚
 	 */
 	public static interface DateFormat {
-		/** ÆÕÍ¨¸ñÊ½£¨YYYY-MM-DD HH:mm:ss£©¡£*/
+		/** æ™®é€šæ ¼å¼ï¼ˆYYYY-MM-DD HH:mm:ssï¼‰ã€‚*/
 		public final static String NORMAL = "YYYY-MM-dd HH:mm:ss";
 		
-		/** GMT¸ñÊ½ £¨Web, 06 Jan 2016£©¡£*/ 
+		/** GMTæ ¼å¼ ï¼ˆWeb, 06 Jan 2016ï¼‰ã€‚*/ 
 		public final static String GMT = "EEE, dd MMM yyyy HH:mm:ss z";
 	};
 
@@ -35,12 +35,12 @@ final public class StringUtil {
 	
 	
 	/**
-	 * Check a string if contains by string array and return it's index in this array.
+	 * Check a string if inArray by string array and return it's index in this array.
 	 * @param arr String array.
 	 * @param str String will to checking.
-	 * @return >= 0 for contains, -1 for not contains.
+	 * @return >= 0 for inArray, -1 for not inArray.
 	 */
-	public final static int contains(String[] arr, String str) {
+	public final static int inArray(String[] arr, String str) {
 		if (arr == null || arr.length == 0)
 			return -1;
 		
@@ -51,24 +51,37 @@ final public class StringUtil {
 		
 		return -1;
 	}
-	
-	
+
+
 	/**
-	 * Check a string if contains by string array and return it's index in this array.
+	 * Check a string if inArray by string array and return it's index in this array.
 	 * @param arr String array.
 	 * @param str String will to checking.
-	 * @return >= 0 for contains, -1 for not contains.
+	 * @return true for inArray, false for not inArray.
 	 */
-	public final static int contains(String s, String str) {
-		
-		return -1;
+	public final static boolean contains(String[] arr, String str) {
+		return inArray(arr, str) != -1;
 	}
 	
 	
 	/**
-	 * ×Ö·û´®×ª»»³ÉÕûÊı¡£
-	 * @param str ×Ö·û´®¡£
-	 * @return ×ª»»ºóµÄÊı×Ö£¬»ò×ª»»Ê§°Ü·µ»Ønull¡£
+	 * Check a string if inArray by string array and return it's index in this array.
+	 * @param str String array.
+	 * @param sch String will to searching.
+	 * @return >= 0 for inArray, -1 for not inArray.
+	 */
+	public final static boolean contains(String str, String sch) {
+		if (str == null || sch == null || sch.length() > str.length())
+			return false;
+
+		return str.indexOf(sch) !=-1;
+	}
+	
+	
+	/**
+	 * å­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°ã€‚
+	 * @param str å­—ç¬¦ä¸²ã€‚
+	 * @return è½¬æ¢åçš„æ•°å­—ï¼Œæˆ–è½¬æ¢å¤±è´¥è¿”å›nullã€‚
 	 */
 	public final static Integer str2Int(String str) {
 		return str2Int(str, null);
@@ -76,10 +89,10 @@ final public class StringUtil {
 	
 	
 	/**
-	 * ×Ö·û´®×ª»»³ÉÕûÊı£¬µ±×ª»»Ê§°ÜÊ±·µ»ØÄ¬ÈÏÖµ¡£
-	 * @param str ×Ö·û´®¡£
-	 * @param def ×ª»»Ê§°Üºó·µ»ØµÄÊı×Ö¡£
-	 * @return ×ª»»ºóµÄÊı×Ö£¬»ò×ª»»Ê§°Ü·µ»Ødef¡£
+	 * å­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°ï¼Œå½“è½¬æ¢å¤±è´¥æ—¶è¿”å›é»˜è®¤å€¼ã€‚
+	 * @param str å­—ç¬¦ä¸²ã€‚
+	 * @param def è½¬æ¢å¤±è´¥åè¿”å›çš„æ•°å­—ã€‚
+	 * @return è½¬æ¢åçš„æ•°å­—ï¼Œæˆ–è½¬æ¢å¤±è´¥è¿”å›defã€‚
 	 */
 	public final static Integer str2Int(String str, Integer def) {
 		if (str == null || str.trim().length() == 0 || !isNum(str.trim()))
@@ -97,9 +110,9 @@ final public class StringUtil {
 	
 	
 	/**
-	 * ×Ö·û´®×ª»»³ÉÕûÊı¡£
-	 * @param str ×Ö·û´®¡£
-	 * @return ×ª»»ºóµÄÊı×Ö£¬»ò×ª»»Ê§°Ü·µ»Ønull¡£
+	 * å­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°ã€‚
+	 * @param str å­—ç¬¦ä¸²ã€‚
+	 * @return è½¬æ¢åçš„æ•°å­—ï¼Œæˆ–è½¬æ¢å¤±è´¥è¿”å›nullã€‚
 	 */
 	public final static Long str2Long(String str) {
 		return str2Long(str, null);
@@ -107,10 +120,10 @@ final public class StringUtil {
 	
 	
 	/**
-	 * ×Ö·û´®×ª»»³ÉÕûÊı£¬µ±×ª»»Ê§°ÜÊ±·µ»ØÄ¬ÈÏÖµ¡£
-	 * @param str ×Ö·û´®¡£
-	 * @param def ×ª»»Ê§°Üºó·µ»ØµÄÊı×Ö¡£
-	 * @return ×ª»»ºóµÄÊı×Ö£¬»ò×ª»»Ê§°Ü·µ»Ødef¡£
+	 * å­—ç¬¦ä¸²è½¬æ¢æˆæ•´æ•°ï¼Œå½“è½¬æ¢å¤±è´¥æ—¶è¿”å›é»˜è®¤å€¼ã€‚
+	 * @param str å­—ç¬¦ä¸²ã€‚
+	 * @param def è½¬æ¢å¤±è´¥åè¿”å›çš„æ•°å­—ã€‚
+	 * @return è½¬æ¢åçš„æ•°å­—ï¼Œæˆ–è½¬æ¢å¤±è´¥è¿”å›defã€‚
 	 */
 	public final static Long str2Long(String str, Long def) {
 		if (str == null || str.trim().length() == 0 || !isNum(str.trim()))
@@ -128,9 +141,9 @@ final public class StringUtil {
 
 	
 	/**
-	 * ¼ì²é¸ø¶¨µÄ×Ö·û´®ÊÇ·ñÎªÕûÊıÊı×Ö¡£
-	 * @param str ¸ø¶¨µÄ×Ö·û´®¡£
-	 * @return ×Ö·û´®ÎªÕûÊı·µ»Øtrue,·ñÔòfalse¡£
+	 * æ£€æŸ¥ç»™å®šçš„å­—ç¬¦ä¸²æ˜¯å¦ä¸ºæ•´æ•°æ•°å­—ã€‚
+	 * @param str ç»™å®šçš„å­—ç¬¦ä¸²ã€‚
+	 * @return å­—ç¬¦ä¸²ä¸ºæ•´æ•°è¿”å›true,å¦åˆ™falseã€‚
 	 */
 	public final static boolean isNum(String str) {
 		return mIntPattern.matcher(str).matches();
@@ -138,9 +151,9 @@ final public class StringUtil {
 	
 	
 	/**
-	 * ½«Ò»¸öÈÕÆÚ×Ö·û´®×ª»»ÎªjavaÈÕÆÚ¶ÔÏó¡£
-	 * @param str ÈÕÆÚ×Ö·û´®¡£
-	 * @return javaÈÕÆÚ¶ÔÏó¡£
+	 * å°†ä¸€ä¸ªæ—¥æœŸå­—ç¬¦ä¸²è½¬æ¢ä¸ºjavaæ—¥æœŸå¯¹è±¡ã€‚
+	 * @param str æ—¥æœŸå­—ç¬¦ä¸²ã€‚
+	 * @return javaæ—¥æœŸå¯¹è±¡ã€‚
 	 */
 	public final static Date str2Date(String str, String format) {
 		if (!isValid(str))

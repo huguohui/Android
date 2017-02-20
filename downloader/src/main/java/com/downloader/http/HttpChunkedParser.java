@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
 
-import com.downloader.base.AbsReceiver;
+import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Parser;
 import com.downloader.base.Receive;
 
@@ -56,7 +56,7 @@ public class HttpChunkedParser implements Parser {
 
 		while(count < size) {
 			int available = source.available();
-			byte[] buff = new byte[AbsReceiver.BUFFER_SIZE];
+			byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE];
 			
 			if (available == 0 && freeLoop++ < 100) {
 				try { Thread.sleep(1); } catch( Exception ex ) {
@@ -65,8 +65,8 @@ public class HttpChunkedParser implements Parser {
 				continue;
 			}
 
-			if (AbsReceiver.END_OF_STREAM == (read = source.read(buff, 0,
-					count + AbsReceiver.BUFFER_SIZE > size ? size - count : AbsReceiver.BUFFER_SIZE))) {
+			if (AbstractReceiver.END_OF_STREAM == (read = source.read(buff, 0,
+					count + AbstractReceiver.BUFFER_SIZE > size ? size - count : AbstractReceiver.BUFFER_SIZE))) {
 				if (count != 0 && count != size)
 					return Arrays.copyOfRange(buff, 0, count);
 				
@@ -91,7 +91,7 @@ public class HttpChunkedParser implements Parser {
 	private int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
-		byte[] buff = new byte[AbsReceiver.BUFFER_SIZE << 1], crlf = {0x0D, 0x0A};
+		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE << 1], crlf = {0x0D, 0x0A};
 
 		while(Receive.END_OF_STREAM != (aByte = (byte)is.read())) {
 			if (aByte == crlf[matchCount]) {

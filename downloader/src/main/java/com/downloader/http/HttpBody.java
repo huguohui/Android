@@ -53,7 +53,7 @@ public class HttpBody extends Body {
 
     /**
      * Construct a HTTP body from input stream.
-     * @param body The input stream of contains content.
+     * @param body The input stream of inArray content.
      */
     public HttpBody(InputStream body) {
         super(body);

@@ -1,14 +1,15 @@
 package com.downloader.manager;
 
+import com.downloader.base.DownloadTask;
+import com.downloader.base.Protocol;
+import com.downloader.base.Task;
+
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.downloader.base.DownloadTask;
-import com.downloader.base.Protocol;
-import com.downloader.base.Task;
 
 
 /**
@@ -34,7 +35,7 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 * Private constructor for singleton pattern.
 	 */
 	private DownloadTaskManager() {
-//		switch(StringUtil.contains(protocols, mUrl.getProtocol())) {
+//		switch(StringUtil.inArray(protocols, mUrl.getProtocol())) {
 //			case 0:
 //				new HttpReceiver(new HttpRequest(mUrl));
 //				break;
@@ -92,19 +93,18 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	/**
 	 * Search a object.
 	 *
-	 * @param schstr A search condition of object will be searched.
+	 * @param sf A search condition of object will be searched.
 	 * @return If searched had result list else null.
 	 */
 	@Override
-	public List<Task> search(String schstr) {
+	public List<Task> search(SearchFilter sf) {
 		return null;
 	}
 
-
 	/**
-	 * Get a list that contains all managed objects.
+	 * Get a list that inArray all managed objects.
 	 *
-	 * @return A list that contains all managed objects.
+	 * @return A list that inArray all managed objects.
 	 */
 	@Override
 	public List<Task> getList() {
@@ -123,55 +123,41 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 		return false;
 	}
 
-
 	/**
-	 * Add a object to management list.
+	 * Delete a object.
 	 *
-	 * @param obj The object will add to list.
+	 * @param idx The index of object will to deleting.
+	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean add(Task obj) throws IOException {
+	public boolean delete(int idx) throws Throwable {
 		return false;
 	}
 
-
 	/**
-	 * Get a details of object.
+	 * Delete a object.
 	 *
-	 * @param name
-	 * @return A details of object.
+	 * @return If deleted true else false.
 	 */
 	@Override
-	public Task getByName(String name) {
-		return null;
-	}
+	public void deleteAll() throws Throwable {
 
+	}
 
 	/**
-	 * Add all object to managed list.
+	 * To create something for managing.
 	 *
-	 * @param list Object of needing to management.
+	 * @param data Data for creating.
+	 * @return true for success, false for fail.
 	 */
 	@Override
-	public void addAll(List<Task> list) {
-
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return false;
-	}
-
-
-	@Override
-	public Task next() {
+	public Task create(String data) throws Throwable {
 		return null;
 	}
 
 
 	@Override
-	public void remove() {
-
+	public Iterator<Task> iterator() {
+		return null;
 	}
 }

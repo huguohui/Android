@@ -3,7 +3,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import com.downloader.base.AbsReceiver.Range;
+import com.downloader.base.AbstractReceiver.Range;
 import com.downloader.base.DownloadTask;
 import com.downloader.http.Http.Method;
 import com.downloader.util.StringUtil;
@@ -28,10 +28,10 @@ public class HttpDownloadTask extends DownloadTask {
 	public HttpDownloadTask(URL url) throws IOException {
 		super(url);
 		fetchTaskInfo();
-		System.out.println("ÊÇ·ñÖ§³Ö¶ÏµãÐø´«£¿" + isBreakPointResume());
-		System.out.println("ÈÎÎñ´óÐ¡£º" + getLength());
-		System.out.println("ÄÚÈÝÀàÐÍ" + getContentType());
-		System.out.println("ÎÄ¼þÃû£º" + getName());
+		System.out.println("ï¿½Ç·ï¿½Ö§ï¿½Ö¶Ïµï¿½ï¿½ï¿½" + isBreakPointResume());
+		System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½" + getLength());
+		System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" + getContentType());
+		System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½" + getName());
 		prepare();
 	}
 	

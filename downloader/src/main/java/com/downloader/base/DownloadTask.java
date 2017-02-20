@@ -6,9 +6,9 @@ import java.net.URL;
  * A task for downloading.
  * @since 2016/12/26 15:46
  */
-public abstract class DownloadTask extends AbsTask {
+public abstract class DownloadTask extends AbstractTask {
 	/** Receiver instance. */
-	private AbsReceiver mReceiver = null;
+	private AbstractReceiver mReceiver = null;
 
 	/** Url for download task. */
 	private URL mUrl = null;
@@ -34,12 +34,12 @@ public abstract class DownloadTask extends AbsTask {
 		mUrl = url;
 	}
 	
-	public AbsReceiver getReceiver() {
+	public AbstractReceiver getReceiver() {
 		return mReceiver;
 	}
 
 
-	public void setReceiver(AbsReceiver receiver) {
+	public void setReceiver(AbstractReceiver receiver) {
 		mReceiver = receiver;
 	}
 

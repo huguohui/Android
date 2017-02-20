@@ -4,7 +4,7 @@ package com.downloader.base;
 /**
  * Defines task's behavior.
  */
-public abstract class AbsTask implements Task {
+public abstract class AbstractTask implements Task {
 	/** Time of task start. */
 	private long mStartTime = 0;
 	

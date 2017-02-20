@@ -44,7 +44,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Construct a header by string.
 	 *
-	 * @param header A string contains header data.
+	 * @param header A string inArray header data.
 	 * @throws IOException 
 	 * @throws NullPointerException 
 	 */
@@ -56,7 +56,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Construct a header by hash map.
 	 *
-	 * @param header A string contains header data.
+	 * @param header A string inArray header data.
 	 */
 	public HttpHeader(Map<String, String> header) {
 		super(header);
@@ -66,7 +66,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Construct a header by hash map.
 	 *
-	 * @param header A string contains header data.
+	 * @param header A string inArray header data.
 	 */
 	public HttpHeader(InputStream header) throws IOException {
 		super(header);
@@ -88,7 +88,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Construct a header by hash map.
 	 *
-	 * @param header A string contains header data.
+	 * @param header A string inArray header data.
 	 */
 	public HttpHeader(Reader header) throws IOException {
 		super(header);

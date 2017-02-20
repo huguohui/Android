@@ -1,12 +1,15 @@
 package com.downloader.manager;
 
-import com.downloader.util.Log;
+import com.downloader.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -31,7 +34,7 @@ public class FileManager extends AbstractManager<File> {
 	/**
 	 * Constructor a file manager instance by a special directory,
 	 * if the directory is not exists, file manager will be create
-	 * it. If directory contains some files, file manager will be
+	 * it. If directory inArray some files, file manager will be
 	 * load them to a list so that it can manage files.
 	 *
 	 * @param directory The special directory to managing.
@@ -55,20 +58,19 @@ public class FileManager extends AbstractManager<File> {
 
 	/**
 	 * Check the directory whatever is valid.
+	 * @return The directory whatever is valid.
 	 */
 	public void checkDirectory(String directory) throws IOException {
 		File dir = new File(directory);
-		if (dir.exists()) {
-			if (!dir.isDirectory())
-				throw new RuntimeException("These is a file that name same as the directory!");
-		}else if (!dir.isDirectory()) {
-			if (!dir.mkdirs())
-				throw new RuntimeException("Can't create the directory " + dir.getAbsolutePath() + "!");
+		String msg = "";
+
+		if (!dir.isDirectory()) {
+			msg = String.format("No such a directory %s!", dir.getAbsoluteFile());
+		}else if (!dir.canRead()) {
+			msg = String.format("The directory %s can't be read!", dir.getAbsoluteFile());
 		}
 
-		if (!dir.canRead())
-			throw new IOException("Can't list files of directory " + dir.getAbsolutePath()
-					+ ",Because the directory can't read!");
+		throw new IOException(msg);
 	}
 
 
@@ -86,36 +88,28 @@ public class FileManager extends AbstractManager<File> {
 	/**
 	 * Search a file.
 	 *
-	* @param schstr A search condition of object will be searched.
+	* @param sf A search condition of object will be searched.
 	* @return If searched had result list else null.
 			*/
 	@Override
-	public List<File> search(String schstr) {
-		if (schstr == null)
-			throw new NullPointerException("The search string can't null!");
-
-		if (schstr.equals("")) return mFiles;
+	public synchronized List<File> search(SearchFilter sf) {
+		if (sf == null) return mFiles;
 
 		List<File> searched = new ArrayList<>();
-		Pattern pattern = Pattern.compile(schstr);
-		Matcher matcher = null;
-		try{
-			for (File file : mFiles) {
-				matcher = pattern.matcher(file.getName());
-				if (matcher != null && matcher.matches()) {
-					searched.add(file);
-				}
+		for (File file : mFiles) {
+			if (mFiles != null && sf.doFilter(file.getName())) {
+				searched.add(file);
 			}
-		}catch(Exception ex) {
-			Log.e(ex);
 		}
+
 		return searched;
 	}
 
+
 	/**
-	 * Get a list that contains all managed objects.
+	 * Get a list that contians all managed objects.
 	 *
-	 * @return A list that contains all managed objects.
+	 * @return A list that contians all managed objects.
 	 */
 	@Override
 	public List<File> getList() {
@@ -130,10 +124,9 @@ public class FileManager extends AbstractManager<File> {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(File obj) throws IOException {
-		if (obj == null) return false;
-		if (!obj.isFile() && !obj.isDirectory() && !obj.exists())
-			return true;
+	public synchronized boolean delete(File obj) throws IOException {
+		if (obj == null || !obj.isFile() && !obj.isDirectory())
+			return false;
 
 		if (obj.isDirectory()) {
 			if (!obj.canWrite())
@@ -141,14 +134,42 @@ public class FileManager extends AbstractManager<File> {
 
 			File[] deletedFiles = obj.listFiles();
 			for (File file : deletedFiles) {
-				if (!obj.isFile() && !obj.isDirectory() && !obj.exists())
+				if (!obj.isFile() && !obj.isDirectory())
 					continue;
 
 				if (!delete(obj)) return false;
 			}
 		}
 
-		return obj.delete();
+		return !obj.exists() || obj.delete();
+	}
+
+	@Override
+	public synchronized boolean delete(int idx) throws IOException {
+		return false;
+	}
+
+
+	/**
+	 * Delete a object.
+	 *
+	 * @return If deleted true else false.
+	 */
+	@Override
+	public void deleteAll() throws Throwable {
+
+	}
+
+
+	/**
+	 *
+	 * @param data Data for creating.
+	 * @return new {@File} object.
+	 * @throws Throwable
+	 */
+	@Override
+	public synchronized File create(String data) throws IOException {
+		return new File(data);
 	}
 
 
@@ -165,29 +186,11 @@ public class FileManager extends AbstractManager<File> {
 
 
 	/**
-	 * Add a object to management list.
-	 *
-	 * @param obj The object will add to list.
-	 */
-	@Override
-	public boolean add(File obj) throws IOException {
-		if (!obj.isFile() && !obj.isDirectory() && !obj.exists()) {
-			if ((obj.isFile() && obj.createNewFile()) || (obj.isDirectory()) && (obj.mkdirs()))
-				return mFiles.add(obj);
-
-			return false;
-		}
-
-		return mFiles.add(obj);
-	}
-
-	/**
 	 * Get a details of object.
 	 *
 	 * @param name The file name.
 	 * @return A details of object.
 	 */
-	@Override
 	public File getByName(String name) {
 		if (name == null) return null;
 
@@ -201,29 +204,11 @@ public class FileManager extends AbstractManager<File> {
 
 
 	/**
-	 * Add all object to managed list.
-	 *
-	 * @param list Object of needing to management.
+	 * Get a instance of iterator.
+	 * @return Instance of iterator.
 	 */
 	@Override
-	public void addAll(List<File> list) {
-		mFiles.addAll(list);
-	}
-
-
-	@Override
-	public boolean hasNext() {
-		return mCurrentIndex < mFiles.size();
-	}
-
-
-	@Override
-	public synchronized File next() {
-		return mFiles.get(mCurrentIndex++);
-	}
-
-	@Override
-	public synchronized void remove() {
-		mFiles.remove(mCurrentIndex);
+	public Iterator<File> iterator() {
+		return mFiles.iterator();
 	}
 }

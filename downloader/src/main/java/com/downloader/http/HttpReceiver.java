@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Arrays;
 
-import com.downloader.base.AbsReceiver;
+import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Request;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
@@ -17,7 +17,7 @@ import com.downloader.util.UrlUtil;
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
-public class HttpReceiver extends AbsReceiver {
+public class HttpReceiver extends AbstractReceiver {
 	/** Chunked of key value for http header Transfer-Encoding. */
 	public final static String CHUNKED = "chunked";
 	

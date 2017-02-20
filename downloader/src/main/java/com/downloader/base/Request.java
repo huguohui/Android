@@ -73,9 +73,9 @@ public abstract class Request implements Send {
     
     /**
      * Get a downloader of this request.
-     * return A {@link AbsReceiver} of this request.
+     * return A {@link AbstractReceiver} of this request.
      */
-    public abstract AbsReceiver getReceiver() throws IOException;
+    public abstract AbstractReceiver getReceiver() throws IOException;
 
     /**
      * Open a connection.

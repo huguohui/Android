@@ -10,7 +10,7 @@ import com.downloader.util.StringUtil;
 /**
  * Download some data form a place.
  */
-public abstract class AbsReceiver implements Receive, Controlable, Runnable {
+public abstract class AbstractReceiver implements Receive, Controlable, Runnable {
 	/** The requester object. */
 	private Request mRequest;
 
@@ -65,7 +65,7 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	 * Construct a downloader by requester.
 	 * @param requester A {@link Request}.
 	 */
-	public AbsReceiver(Request requester) {
+	public AbstractReceiver(Request requester) {
 		this(requester, null);
 	}
 	
@@ -75,7 +75,7 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 	 * @param requester A {@link Request}.
 	 * @param r Range of data will to receiving.
 	 */
-	public AbsReceiver(Request requester, Range r) {
+	public AbstractReceiver(Request requester, Range r) {
 		mRequest = requester;
 		mRange = r;
 	}
@@ -265,37 +265,37 @@ public abstract class AbsReceiver implements Receive, Controlable, Runnable {
 		 * Invokes on downloader start download.
 		 * @param downloader The listenered downloader.
 		 */
-		void onStart(AbsReceiver downloader);
+		void onStart(AbstractReceiver downloader);
 
 		/**
 		 * Invokes on downloader stop download.
 		 * @param absReceiver The listenered downloader.
 		 */
-		void onStop(AbsReceiver absReceiver);
+		void onStop(AbstractReceiver absReceiver);
 
 		/**
 		 * Invokes on downloader per receive.
 		 * @param downloader The listenered downloader.
 		 */
-		void onReceive(AbsReceiver downloader);
+		void onReceive(AbstractReceiver downloader);
 
 		/**
 		 * Invokes on downloader pause download.
 		 * @param downloader The listenered downloader.
 		 */
-		void onPause(AbsReceiver downloader);
+		void onPause(AbstractReceiver downloader);
 
 		/**
 		 * Invokes on downloader resume download.
 		 * @param downloader The listenered downloader.
 		 */
-		void onResume(AbsReceiver downloader);
+		void onResume(AbstractReceiver downloader);
 
 		/**
 		 * Invokes on downloader finish download.
 		 * @param downloader The listenered downloader.
 		 */
-		void onFinish(AbsReceiver downloader);
+		void onFinish(AbstractReceiver downloader);
 	}
 	
 	

@@ -38,7 +38,7 @@ public abstract class Header {
 
     /**
      * Construct a header by input stream.
-     * @param header A stream contains header data.
+     * @param header A stream inArray header data.
      */
 	public Header(InputStream header) throws IOException {
 		setContent(header);
@@ -47,7 +47,7 @@ public abstract class Header {
 
     /**
      * Construct a header by reader.
-     * @param header A reader contains header data.
+     * @param header A reader inArray header data.
      */
 	public Header(Reader header) throws IOException {
 		setContent(header);
@@ -56,7 +56,7 @@ public abstract class Header {
 
     /**
      * Construct a header by string.
-     * @param header A string contains header data.
+     * @param header A string inArray header data.
      * @throws IOException 
      * @throws NullPointerException 
      */
@@ -67,7 +67,7 @@ public abstract class Header {
 
     /**
      * Construct a header by hash map.
-     * @param header A string contains header data.
+     * @param header A string inArray header data.
      */
 	public Header(Map<String, String> header) {
         setContent(header);

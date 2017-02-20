@@ -5,30 +5,30 @@ import java.net.URL;
 import com.downloader.manager.DownloadTaskManager;
 import com.downloader.http.HttpDownloadTask;
 
-public class Test implements AbsReceiver.Listener {
+public class Test implements AbstractReceiver.Listener {
 	
 	@Override
-	public void onStart(AbsReceiver downloader) {
+	public void onStart(AbstractReceiver downloader) {
 		System.out.println("Start download.");
 	}
 	
 	@Override
-	public void onResume(AbsReceiver downloader) {
+	public void onResume(AbstractReceiver downloader) {
 		
 	}
 	
 	@Override
-	public void onReceive(AbsReceiver downloader) {
+	public void onReceive(AbstractReceiver downloader) {
 		System.out.println(downloader.getReceivedLength());
 	}
 	
 	@Override
-	public void onPause(AbsReceiver downloader) {
+	public void onPause(AbstractReceiver downloader) {
 		
 	}
 	
 	@Override
-	public void onFinish(AbsReceiver downloader) {
+	public void onFinish(AbstractReceiver downloader) {
 		/*try {
 			//Runtime.getRuntime().exec("notepad c:\\users\\admin\\appData\\local\\temp\\0.txt");
 		} catch (IOException e) {
@@ -52,7 +52,7 @@ public class Test implements AbsReceiver.Listener {
 	}
 
 	@Override
-	public void onStop(AbsReceiver absReceiver) {
+	public void onStop(AbstractReceiver absReceiver) {
 		
 	}
 

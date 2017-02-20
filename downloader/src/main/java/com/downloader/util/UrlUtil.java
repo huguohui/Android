@@ -118,10 +118,10 @@ final public class UrlUtil {
 	
 	
 	/**
-	 * ÒÔÒ»¸ö»ù±¾µÄURLÎª»ù´¡£¬¸ù¾İ¸ø³öµÄ²¿·ÖURL×é½¨Ò»¸öÍêÕûµÄURL£¬Èç¹û¸ø³öµÄ²¿·ÖURLÎªÍêÕûµÄURL£¬ÔòÔ­Ñù·µ»Ø¡£
-	 * @param baseUrl »ù±¾µÄURL¡£
-	 * @param url ²¿·ÖURL¡£
-	 * @return Ò»¸öÍêÕûµÄURL¡£
+	 * ä»¥ä¸€ä¸ªåŸºæœ¬çš„URLä¸ºåŸºç¡€ï¼Œæ ¹æ®ç»™å‡ºçš„éƒ¨åˆ†URLç»„å»ºä¸€ä¸ªå®Œæ•´çš„URLï¼Œå¦‚æœç»™å‡ºçš„éƒ¨åˆ†URLä¸ºå®Œæ•´çš„URLï¼Œåˆ™åŸæ ·è¿”å›ã€‚
+	 * @param baseUrl åŸºæœ¬çš„URLã€‚
+	 * @param url éƒ¨åˆ†URLã€‚
+	 * @return ä¸€ä¸ªå®Œæ•´çš„URLã€‚
 	 * @throws MalformedURLException 
 	 */
 	public static URL getFullUrl(URL baseUrl, String url) throws MalformedURLException {
