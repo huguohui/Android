@@ -126,7 +126,7 @@ public abstract class AbstractReceiver implements Receive, Controlable, Runnable
 		if (mListener == null)
 			return;
 		
-		switch(StringUtil.contains(mListenerMethods, name)) {
+		switch(StringUtil.inArray(mListenerMethods, name)) {
 			case 0:		mListener.onStart(this); 	break;
 			case 1:		mListener.onPause(this);	break;
 			case 2:		mListener.onResume(this);	break;
