@@ -6,11 +6,11 @@ import com.tankwar.engine.subsystem.ControlSubsystem;
 import com.tankwar.engine.subsystem.GraphicsSubsystem;
 import com.tankwar.engine.subsystem.PhysicalSubsystem;
 import com.tankwar.engine.subsystem.Subsystem;
-import com.tankwar.engine.subsystem.Updatable;
 import com.tankwar.engine.subsystem.TimingSubsystem;
+import com.tankwar.engine.subsystem.Updatable;
 import com.tankwar.engine.subsystem.WorldSubsystem;
 import com.tankwar.game.Game;
-import com.tankwar.utils.Log;
+import com.tankwar.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
