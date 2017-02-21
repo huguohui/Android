@@ -53,7 +53,7 @@ final public class StringUtil {
 	}
 
 
-	/**
+	 /**
 	 * Check a string if inArray by string array and return it's index in this array.
 	 * @param arr String array.
 	 * @param str String will to checking.

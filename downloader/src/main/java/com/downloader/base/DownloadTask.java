@@ -28,7 +28,7 @@ public abstract class DownloadTask extends AbstractTask {
 	
 	/**
 	 * Constructor for creating task.
-	 * @param d The downloader.
+	 * @param url The downloader.
 	 */
 	public DownloadTask(URL url) {
 		mUrl = url;

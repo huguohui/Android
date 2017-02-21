@@ -28,10 +28,6 @@ public class HttpDownloadTask extends DownloadTask {
 	public HttpDownloadTask(URL url) throws IOException {
 		super(url);
 		fetchTaskInfo();
-		System.out.println("�Ƿ�֧�ֶϵ���" + isBreakPointResume());
-		System.out.println("�����С��" + getLength());
-		System.out.println("��������" + getContentType());
-		System.out.println("�ļ���" + getName());
 		prepare();
 	}
 	
