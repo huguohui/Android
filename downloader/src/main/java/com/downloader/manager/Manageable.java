@@ -53,10 +53,10 @@ public interface Manageable<T> extends Iterable<T> {
 
 	/**
 	 * To create something for managing.
-	 * @param data Data for creating.
+	 * @param descriptor Data for creating.
 	 * @return true for success, false for fail.
 	 */
-	T create(String data) throws Throwable;
+	T create(AbstractDescriptor descriptor) throws Throwable;
 
 
 	/**
@@ -68,6 +68,6 @@ public interface Manageable<T> extends Iterable<T> {
 		 * @param data Given data.
 		 * @return true on filte pass, false on fail.
 		 */
-		boolean doFilter(String data);
+		boolean filter(String data);
 	}
 }

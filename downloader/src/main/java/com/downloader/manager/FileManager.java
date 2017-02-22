@@ -1,16 +1,12 @@
 package com.downloader.manager;
 
-import com.downloader.util.StringUtil;
+import com.downloader.base.AbstractInfo;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * File manager is manager based directory, managed files is under special directory.
@@ -97,7 +93,7 @@ public class FileManager extends AbstractManager<File> {
 
 		List<File> searched = new ArrayList<>();
 		for (File file : mFiles) {
-			if (mFiles != null && sf.doFilter(file.getName())) {
+			if (mFiles != null && sf.filter(file.getName())) {
 				searched.add(file);
 			}
 		}
@@ -168,8 +164,8 @@ public class FileManager extends AbstractManager<File> {
 	 * @throws Throwable
 	 */
 	@Override
-	public synchronized File create(String data) throws IOException {
-		return new File(data);
+	public synchronized File create(AbstractInfo data) throws IOException {
+		return null;
 	}
 
 

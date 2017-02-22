@@ -2,9 +2,9 @@ package com.downloader.manager;
 
 import com.downloader.base.DownloadTask;
 import com.downloader.base.Protocol;
-import com.downloader.base.Task;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * Tool for management download task.
  * @since 2016/12/26 15:45
  */
-public class DownloadTaskManager extends AbstractManager<Task> {
+public class DownloadTaskManager extends AbstractManager<DownloadTask> {
 	/** Download queue. */
 	private List<DownloadTask> mQueue = new LinkedList<>();
 	
@@ -24,7 +24,7 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	private static DownloadTaskManager mInstance = null;
 	
 
-	/** Supports protocols. */
+	/** Supported protocols. */
 	private final String[] protocols = {
 		Protocol.HTTP,
 		Protocol.HTTPS
@@ -35,11 +35,7 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 * Private constructor for singleton pattern.
 	 */
 	private DownloadTaskManager() {
-//		switch(StringUtil.inArray(protocols, mUrl.getProtocol())) {
-//			case 0:
-//				new HttpReceiver(new HttpRequest(mUrl));
-//				break;
-//		}
+
 	}
 	
 	
@@ -97,7 +93,7 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 * @return If searched had result list else null.
 	 */
 	@Override
-	public List<Task> search(SearchFilter sf) {
+	public List<DownloadTask> search(SearchFilter sf) {
 		return null;
 	}
 
@@ -107,8 +103,8 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 * @return A list that inArray all managed objects.
 	 */
 	@Override
-	public List<Task> getList() {
-		return null;
+	public List<DownloadTask> getList() {
+		return mQueue;
 	}
 
 
@@ -119,7 +115,7 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(Task obj) throws IOException {
+	public boolean delete(DownloadTask obj) throws IOException {
 		return false;
 	}
 
@@ -141,23 +137,26 @@ public class DownloadTaskManager extends AbstractManager<Task> {
 	 */
 	@Override
 	public void deleteAll() throws Throwable {
-
+		mQueue.clear();
 	}
+
 
 	/**
 	 * To create something for managing.
 	 *
-	 * @param data Data for creating.
+	 * @param descriptor Data for creating.
 	 * @return true for success, false for fail.
 	 */
 	@Override
-	public Task create(String data) throws Throwable {
+	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
+		DownloadTaskDescriptor dtd = (DownloadTaskDescriptor) descriptor;
+
 		return null;
 	}
 
 
 	@Override
-	public Iterator<Task> iterator() {
-		return null;
+	public Iterator<DownloadTask> iterator() {
+		return mQueue.iterator();
 	}
 }
