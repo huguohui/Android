@@ -1,5 +1,7 @@
 package com.downloader.manager;
 
+import com.downloader.base.Controlable;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -14,41 +16,41 @@ import java.util.regex.Pattern;
  */
 public interface Manageable<T> extends Iterable<T> {
 	/**
+	 * Get a managed object by index.
+	 * @param idx Index of object.
+	 * @return Managed object.
+	 */
+	T get(int idx);
+
+
+	/**
+	 * Add a object for management.
+	 * @param obj Object what will to managing.
+	 */
+	boolean add(T obj);
+
+
+	/**
+	 * Remove a managed object by index.
+	 * @param idx Index of managed object.
+	 * @return Removed object or null on remove failed.
+	 */
+	T remove(int idx);
+
+
+	/**
 	 * Search a object.
 	 * @param sf A search condition of object will be searched.
 	 * @return If searched had result list else null.
 	 */
-	public abstract List<T> search(SearchFilter sf);
+	List<T> search(SearchFilter sf);
 
 
 	/**
 	 * Get a list that inArray all managed objects.
 	 * @return A list that inArray all managed objects.
 	 */
-	public abstract List<T> getList();
-
-
-	/**
-	 * Delete a object.
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
-	boolean delete(T obj) throws Throwable;
-
-
-	/**
-	 * Delete a object.
-	 * @param idx The index of object will to deleting.
-	 * @return If deleted true else false.
-	 */
-	boolean delete(int idx) throws Throwable;
-
-
-	/**
-	 * Delete a object.
-	 * @return If deleted true else false.
-	 */
-	void deleteAll() throws Throwable;
+	List<T> getList();
 
 
 	/**

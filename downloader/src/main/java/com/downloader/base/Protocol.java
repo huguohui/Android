@@ -3,16 +3,16 @@ package com.downloader.base;
 /**
  * Common protocol. 
  */
-public final class Protocol {
+public enum Protocol {
 	/** HyperText Transfer Protocol. */
-	public final static String HTTP = "http";
-	
+	HTTP,
+
 	/** Hyper Text Transfer Protocol over Secure Socket Layer. */
-	public final static String HTTPS = "https";
+	HTTPS,
 	
 	/** File Transfer Protocol. */
-	public final static String FTP = "ftp";
-	
+	FTP,
+
 	/** File Protocol. */
-	public final static String FILE = "file";
+	FILE
 }

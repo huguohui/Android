@@ -3,7 +3,7 @@ package com.downloader.base;
 import java.net.URL;
 
 import com.downloader.manager.DownloadTaskManager;
-import com.downloader.http.HttpDownloadTask;
+import com.downloader.http.HttpDownloader;
 
 public class Test implements AbstractReceiver.Listener {
 	
@@ -46,7 +46,7 @@ public class Test implements AbstractReceiver.Listener {
 	public static void main(String[] args) throws Exception {
 		URL url = new URL("http://w.x.baidu.com/alading/anquan_soft_down_all/35013");
 		DownloadTaskManager m = DownloadTaskManager.getInstance();
-		m.addTask(new HttpDownloadTask(url));
+		m.addTask(new HttpDownloader(url));
 		m.startTask(0);
 		m.monitoring();
 	}

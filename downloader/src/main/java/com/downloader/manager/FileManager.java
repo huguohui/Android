@@ -1,6 +1,7 @@
 package com.downloader.manager;
 
 import com.downloader.base.AbstractInfo;
+import com.downloader.base.DownloadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.List;
  * To use file manager by pass a special directory path or pass nothing to instancing it.
  * @since 2015/12/15
  */
-public class FileManager extends AbstractManager<File> {
+public class FileManager extends AbstractFileManager {
 	/** The collection of all file. */
 	private List<File> mFiles = new ArrayList<>();
 
@@ -82,6 +83,38 @@ public class FileManager extends AbstractManager<File> {
 
 
 	/**
+	 * Get a managed object by index.
+	 *
+	 * @param idx Index of object.
+	 * @return Managed object.
+	 */
+	@Override
+	public File get(int idx) {
+		return null;
+	}
+
+	/**
+	 * Add a object for management.
+	 *
+	 * @param obj Object what will to managing.
+	 */
+	@Override
+	public boolean add(File obj) {
+		return false;
+	}
+
+	/**
+	 * Remove a managed object by index.
+	 *
+	 * @param idx Index of managed object.
+	 * @return Removed object or null on remove failed.
+	 */
+	@Override
+	public File remove(int idx) {
+		return null;
+	}
+
+	/**
 	 * Search a file.
 	 *
 	* @param sf A search condition of object will be searched.
@@ -112,6 +145,40 @@ public class FileManager extends AbstractManager<File> {
 		return mFiles;
 	}
 
+	/**
+	 * To create something for managing.
+	 *
+	 * @param descriptor Data for creating.
+	 * @return true for success, false for fail.
+	 */
+	@Override
+	public File create(AbstractDescriptor descriptor) throws Throwable {
+		return null;
+	}
+
+
+	/**
+	 * Create a download task by task descriptor.
+	 *
+	 * @param desc Task descriptor.
+	 * @return Download task instance.
+	 * @throws Throwable When exception occured.
+	 */
+	@Override
+	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+		return null;
+	}
+
+	/**
+	 * Delete a object.
+	 *
+	 * @param obj The object to deleting.
+	 * @return If deleted true else false.
+	 */
+	@Override
+	public boolean delete(DownloadTask obj) throws IOException {
+		return false;
+	}
 
 	/**
 	 * Delete a file or directory.
@@ -154,18 +221,6 @@ public class FileManager extends AbstractManager<File> {
 	@Override
 	public void deleteAll() throws Throwable {
 
-	}
-
-
-	/**
-	 *
-	 * @param data Data for creating.
-	 * @return new {@File} object.
-	 * @throws Throwable
-	 */
-	@Override
-	public synchronized File create(AbstractInfo data) throws IOException {
-		return null;
 	}
 
 

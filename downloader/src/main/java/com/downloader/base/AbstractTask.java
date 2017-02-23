@@ -1,43 +1,25 @@
 package com.downloader.base;
 
-
 /**
- * Defines task's behavior.
+ * Interface of task.
  */
-public abstract class AbstractTask implements Task {
-	/** Time of task start. */
-	private long mStartTime = 0;
-	
-	/** Time of task finish. */
-	private long mFinishTime = 0;
-	
-	/** Name of task. */
-	private String mName = "";
+public abstract class AbstractTask implements Controlable {
+	/** Information of this task. */
+	private TaskInfo mInfo;
 
 
-	public long getStartTime() {
-		return mStartTime;
+	/**
+	 * Get the progress of task. value: 0 ~ 100
+	 * @return Progress of task.
+	 */
+	public abstract int progress();
+
+
+	public TaskInfo getInfo() {
+		return mInfo;
 	}
 
-	public void setStartTime(long startTime) {
-		mStartTime = startTime;
+	public void setInfo(TaskInfo mInfo) {
+		this.mInfo = mInfo;
 	}
-
-	public long getFinishTime() {
-		return mFinishTime;
-	}
-
-	public void setFinishTime(long finishTime) {
-		mFinishTime = finishTime;
-	}
-
-	public String getName() {
-		return mName;
-	}
-
-	public void setName(String name) {
-		mName = name;
-	}
-	
-	
 }

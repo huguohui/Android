@@ -16,19 +16,12 @@ import java.util.TimerTask;
  * Tool for management download task.
  * @since 2016/12/26 15:45
  */
-public class DownloadTaskManager extends AbstractManager<DownloadTask> {
+public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	/** Download queue. */
 	private List<DownloadTask> mQueue = new LinkedList<>();
 	
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = null;
-	
-
-	/** Supported protocols. */
-	private final String[] protocols = {
-		Protocol.HTTP,
-		Protocol.HTTPS
-	};
 	
 	
 	/**
@@ -87,6 +80,38 @@ public class DownloadTaskManager extends AbstractManager<DownloadTask> {
 
 
 	/**
+	 * Get a managed object by index.
+	 *
+	 * @param idx Index of object.
+	 * @return Managed object.
+	 */
+	@Override
+	public DownloadTask get(int idx) {
+		return null;
+	}
+
+	/**
+	 * Add a object for management.
+	 *
+	 * @param obj Object what will to managing.
+	 */
+	@Override
+	public boolean add(DownloadTask obj) {
+		return false;
+	}
+
+	/**
+	 * Remove a managed object by index.
+	 *
+	 * @param idx Index of managed object.
+	 * @return Removed object or null on remove failed.
+	 */
+	@Override
+	public DownloadTask remove(int idx) {
+		return null;
+	}
+
+	/**
 	 * Search a object.
 	 *
 	 * @param sf A search condition of object will be searched.
@@ -97,6 +122,7 @@ public class DownloadTaskManager extends AbstractManager<DownloadTask> {
 		return null;
 	}
 
+
 	/**
 	 * Get a list that inArray all managed objects.
 	 *
@@ -105,39 +131,6 @@ public class DownloadTaskManager extends AbstractManager<DownloadTask> {
 	@Override
 	public List<DownloadTask> getList() {
 		return mQueue;
-	}
-
-
-	/**
-	 * Delete a object.
-	 *
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
-	@Override
-	public boolean delete(DownloadTask obj) throws IOException {
-		return false;
-	}
-
-	/**
-	 * Delete a object.
-	 *
-	 * @param idx The index of object will to deleting.
-	 * @return If deleted true else false.
-	 */
-	@Override
-	public boolean delete(int idx) throws Throwable {
-		return false;
-	}
-
-	/**
-	 * Delete a object.
-	 *
-	 * @return If deleted true else false.
-	 */
-	@Override
-	public void deleteAll() throws Throwable {
-		mQueue.clear();
 	}
 
 
@@ -158,5 +151,55 @@ public class DownloadTaskManager extends AbstractManager<DownloadTask> {
 	@Override
 	public Iterator<DownloadTask> iterator() {
 		return mQueue.iterator();
+	}
+
+
+	/**
+	 * Controls the task start.
+	 */
+	@Override
+	public void start() throws Exception {
+
+	}
+
+
+	/**
+	 * Controls the task pause.
+	 */
+	@Override
+	public void pause() throws Exception {
+
+	}
+
+
+	/**
+	 * Controls the task resume.
+	 */
+	@Override
+	public void resume() throws Exception {
+
+	}
+
+
+	/**
+	 * Controls the task stop.
+	 */
+	@Override
+	public void stop() throws Exception {
+
+	}
+
+
+	/**
+	 * Create a download task by task descriptor.
+	 *
+	 * @param desc Task descriptor.
+	 * @return Download task instance.
+	 * @throws Throwable When exception occured.
+	 */
+	@Override
+	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+
+		return null;
 	}
 }
