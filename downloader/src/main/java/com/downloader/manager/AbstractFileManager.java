@@ -1,7 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.base.Controlable;
-import com.downloader.base.DownloadTask;
+import com.downloader.base.AbstractDownloadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,7 @@ public abstract class AbstractFileManager extends AbstractManager<File>{
 	 * @return Download task instance.
 	 * @throws Throwable When exception occured.
 	 */
-	public abstract DownloadTask create(DownloadTaskDescriptor desc) throws Throwable;
+	public abstract AbstractDownloadTask create(DownloadTaskDescriptor desc) throws Throwable;
 
 
 	/**
@@ -25,7 +24,7 @@ public abstract class AbstractFileManager extends AbstractManager<File>{
 	 * @param obj The object to deleting.
 	 * @return If deleted true else false.
 	 */
-	public abstract boolean delete(DownloadTask obj) throws IOException;
+	public abstract boolean delete(AbstractDownloadTask obj) throws IOException;
 
 
 	/**

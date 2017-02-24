@@ -1,7 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.base.AbstractInfo;
-import com.downloader.base.DownloadTask;
+import com.downloader.base.AbstractDownloadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,7 +164,7 @@ public class FileManager extends AbstractFileManager {
 	 * @throws Throwable When exception occured.
 	 */
 	@Override
-	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+	public AbstractDownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
 		return null;
 	}
 
@@ -176,7 +175,7 @@ public class FileManager extends AbstractFileManager {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(DownloadTask obj) throws IOException {
+	public boolean delete(AbstractDownloadTask obj) throws IOException {
 		return false;
 	}
 

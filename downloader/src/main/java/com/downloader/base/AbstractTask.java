@@ -4,8 +4,17 @@ package com.downloader.base;
  * Interface of task.
  */
 public abstract class AbstractTask implements Controlable {
-	/** Information of this task. */
-	private TaskInfo mInfo;
+	/** Name of task. */
+	protected String name;
+
+
+	/**
+	 * Create a task with name.
+	 * @param name Task name.
+	 */
+	public AbstractTask(String name) {
+		this.name = name;
+	}
 
 
 	/**
@@ -15,11 +24,9 @@ public abstract class AbstractTask implements Controlable {
 	public abstract int progress();
 
 
-	public TaskInfo getInfo() {
-		return mInfo;
-	}
-
-	public void setInfo(TaskInfo mInfo) {
-		this.mInfo = mInfo;
-	}
+	/**
+	 * Get information of current task.
+	 * @return Information of current task.
+	 */
+	public abstract TaskInfo info();
 }

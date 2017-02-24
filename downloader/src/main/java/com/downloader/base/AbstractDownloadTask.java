@@ -6,7 +6,7 @@ import java.net.URL;
  * A task for downloading.
  * @since 2016/12/26 15:46
  */
-public abstract class DownloadTask extends Task {
+public abstract class AbstractDownloadTask extends AbstractTask {
 	/** Receiver instance. */
 	private AbstractReceiver mReceiver = null;
 
@@ -24,16 +24,17 @@ public abstract class DownloadTask extends Task {
 	
 	/** Content type of task. */
 	private String mContentType = "";
-	
-	
+
+
 	/**
-	 * Constructor for creating task.
-	 * @param url The downloader.
+	 * Create a task with name.
+	 *
+	 * @param name Task name.
 	 */
-	public DownloadTask(URL url) {
-		mUrl = url;
+	public AbstractDownloadTask(String name) {
+		super(name);
 	}
-	
+
 	public AbstractReceiver getReceiver() {
 		return mReceiver;
 	}

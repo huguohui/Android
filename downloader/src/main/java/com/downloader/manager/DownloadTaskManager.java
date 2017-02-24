@@ -1,9 +1,9 @@
 package com.downloader.manager;
 
-import com.downloader.base.DownloadTask;
+import com.downloader.base.AbstractDownloadTask;
 import com.downloader.base.Protocol;
+import com.downloader.http.HttpDownloadTask;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,7 +18,7 @@ import java.util.TimerTask;
  */
 public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	/** Download queue. */
-	private List<DownloadTask> mQueue = new LinkedList<>();
+	private List<AbstractDownloadTask> mQueue = new LinkedList<>();
 	
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = null;
@@ -32,7 +32,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	}
 	
 	
-	public void addTask(DownloadTask task) {
+	public void addTask(AbstractDownloadTask task) {
 		if (task == null)
 			throw new RuntimeException("The task is null!");
 		
@@ -41,7 +41,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	
 	
 	public void startTask(int id) throws Exception {
-		DownloadTask dt = mQueue.get(id);
+		AbstractDownloadTask dt = mQueue.get(id);
 		if (dt == null)
 			throw new RuntimeException("The specail task not exists!");
 		
@@ -56,7 +56,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				for (DownloadTask dt : mQueue) {
+				for (AbstractDownloadTask dt : mQueue) {
 					int pg = dt.progress();
 					System.out.println(pg + "%");
 					if (pg == 100)
@@ -86,7 +86,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return Managed object.
 	 */
 	@Override
-	public DownloadTask get(int idx) {
+	public AbstractDownloadTask get(int idx) {
 		return null;
 	}
 
@@ -96,7 +96,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @param obj Object what will to managing.
 	 */
 	@Override
-	public boolean add(DownloadTask obj) {
+	public boolean add(AbstractDownloadTask obj) {
 		return false;
 	}
 
@@ -107,7 +107,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return Removed object or null on remove failed.
 	 */
 	@Override
-	public DownloadTask remove(int idx) {
+	public AbstractDownloadTask remove(int idx) {
 		return null;
 	}
 
@@ -118,7 +118,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return If searched had result list else null.
 	 */
 	@Override
-	public List<DownloadTask> search(SearchFilter sf) {
+	public List<AbstractDownloadTask> search(SearchFilter sf) {
 		return null;
 	}
 
@@ -129,7 +129,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return A list that inArray all managed objects.
 	 */
 	@Override
-	public List<DownloadTask> getList() {
+	public List<AbstractDownloadTask> getList() {
 		return mQueue;
 	}
 
@@ -141,15 +141,13 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return true for success, false for fail.
 	 */
 	@Override
-	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
-		DownloadTaskDescriptor dtd = (DownloadTaskDescriptor) descriptor;
-
-		return null;
+	public AbstractDownloadTask create(AbstractDescriptor descriptor) throws Throwable {
+		return create((DownloadTaskDescriptor) descriptor);
 	}
 
 
 	@Override
-	public Iterator<DownloadTask> iterator() {
+	public Iterator<AbstractDownloadTask> iterator() {
 		return mQueue.iterator();
 	}
 
@@ -198,8 +196,18 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @throws Throwable When exception occured.
 	 */
 	@Override
-	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+	public AbstractDownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+		URL url = desc.getUrl();
+		String protocol = url.getProtocol();
+		AbstractDownloadTask adt = null;
 
-		return null;
+		switch(Protocol.valueOf(protocol)) {
+			case HTTP:
+				adt = new HttpDownloadTask(url.getFile());
+				adt.setUrl(url);
+				break;
+		}
+
+		return adt;
 	}
 }
