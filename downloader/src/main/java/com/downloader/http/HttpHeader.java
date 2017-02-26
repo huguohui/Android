@@ -1,7 +1,7 @@
 package com.downloader.http;
 
 
-import com.downloader.base.Header;
+import com.downloader.base.AbstractHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpHeader extends Header {
+public class HttpHeader extends AbstractHeader {
 	/** Http method of requesting. */
 	private Http.Method mMethod;
 
@@ -107,7 +107,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Set header content by string.
 	 *
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException 
 	 */
@@ -121,7 +121,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Set header content by reader.
 	 *
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException          If can't read content.
 	 */
@@ -135,7 +135,7 @@ public class HttpHeader extends Header {
 	/**
 	 * Set header content by input stream.
 	 *
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws IOException          If can't read content.
 	 * @throws NullPointerException If content is null.
 	 */
@@ -150,7 +150,7 @@ public class HttpHeader extends Header {
 	 * Copy content from another header.
 	 */
 	@Override
-	public void setContent(Header header) throws IOException, NullPointerException {
+	public void setContent(AbstractHeader header) throws IOException, NullPointerException {
 		if (header == null)
 			throw new NullPointerException("The input header is null!");
 		
@@ -173,7 +173,7 @@ public class HttpHeader extends Header {
 	@Override
 	public String toString() throws NullPointerException {
 		if (getContent() == null)
-			throw new NullPointerException("Header content is null!");
+			throw new NullPointerException("AbstractHeader content is null!");
 
 		StringBuilder sb = new StringBuilder();
 		if (getMethod() != null && getUrl() != null && getVersion() != null) {

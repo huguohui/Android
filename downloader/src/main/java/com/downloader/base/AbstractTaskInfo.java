@@ -3,7 +3,7 @@ package com.downloader.base;
 /**
  * Information for task.
  */
-public abstract class TaskInfo {
+public abstract class AbstractTaskInfo {
 	/** Name of task. */
 	private String mName;
 
@@ -15,10 +15,10 @@ public abstract class TaskInfo {
 
 
 	/**
-	 * Create a instance of TaskInfo by special mName.
+	 * Create a instance of AbstractTaskInfo by special mName.
 	 * @param name Name of task.
 	 */
-	public TaskInfo(String name) {
+	public AbstractTaskInfo(String name) {
 		this.mName = name;
 	}
 

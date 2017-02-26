@@ -2,6 +2,7 @@ package com.downloader.manager;
 
 import com.downloader.base.AbstractDownloadTask;
 import com.downloader.base.Protocol;
+import com.downloader.base.AbstractTaskInfo;
 import com.downloader.http.HttpDownloadTask;
 
 import java.net.URL;
@@ -17,9 +18,6 @@ import java.util.TimerTask;
  * @since 2016/12/26 15:45
  */
 public class DownloadTaskManager extends AbstractDownloadTaskManager {
-	/** Download queue. */
-	private List<AbstractDownloadTask> mQueue = new LinkedList<>();
-	
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = null;
 	
@@ -36,12 +34,12 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		if (task == null)
 			throw new RuntimeException("The task is null!");
 		
-		mQueue.add(task);
+		mList.add(task);
 	}
 	
 	
 	public void startTask(int id) throws Exception {
-		AbstractDownloadTask dt = mQueue.get(id);
+		AbstractDownloadTask dt = mList.get(id);
 		if (dt == null)
 			throw new RuntimeException("The specail task not exists!");
 		
@@ -56,7 +54,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				for (AbstractDownloadTask dt : mQueue) {
+				for (AbstractDownloadTask dt : mList) {
 					int pg = dt.progress();
 					System.out.println(pg + "%");
 					if (pg == 100)
@@ -80,61 +78,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 
 
 	/**
-	 * Get a managed object by index.
-	 *
-	 * @param idx Index of object.
-	 * @return Managed object.
-	 */
-	@Override
-	public AbstractDownloadTask get(int idx) {
-		return null;
-	}
-
-	/**
-	 * Add a object for management.
-	 *
-	 * @param obj Object what will to managing.
-	 */
-	@Override
-	public boolean add(AbstractDownloadTask obj) {
-		return false;
-	}
-
-	/**
-	 * Remove a managed object by index.
-	 *
-	 * @param idx Index of managed object.
-	 * @return Removed object or null on remove failed.
-	 */
-	@Override
-	public AbstractDownloadTask remove(int idx) {
-		return null;
-	}
-
-	/**
-	 * Search a object.
-	 *
-	 * @param sf A search condition of object will be searched.
-	 * @return If searched had result list else null.
-	 */
-	@Override
-	public List<AbstractDownloadTask> search(SearchFilter sf) {
-		return null;
-	}
-
-
-	/**
-	 * Get a list that inArray all managed objects.
-	 *
-	 * @return A list that inArray all managed objects.
-	 */
-	@Override
-	public List<AbstractDownloadTask> getList() {
-		return mQueue;
-	}
-
-
-	/**
 	 * To create something for managing.
 	 *
 	 * @param descriptor Data for creating.
@@ -143,12 +86,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	@Override
 	public AbstractDownloadTask create(AbstractDescriptor descriptor) throws Throwable {
 		return create((DownloadTaskDescriptor) descriptor);
-	}
-
-
-	@Override
-	public Iterator<AbstractDownloadTask> iterator() {
-		return mQueue.iterator();
 	}
 
 
@@ -204,7 +141,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		switch(Protocol.valueOf(protocol)) {
 			case HTTP:
 				adt = new HttpDownloadTask(url.getFile());
-				adt.setUrl(url);
+				AbstractTaskInfo ti = adt.info();
+				ti.setName("abc");
+
 				break;
 		}
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * @author HGH
  * @since 2015/11/05
  */
-public abstract class Header {
+public abstract class AbstractHeader {
     /** The data of header. */
     private Map<String, String> mContent = new HashMap<String, String>();
 
@@ -21,7 +21,7 @@ public abstract class Header {
 	/**
 	 * Construct a header.
 	 */
-	public Header() {
+	public AbstractHeader() {
 	}
 	
 	
@@ -31,7 +31,7 @@ public abstract class Header {
 	 * @throws IOException 
 	 * @throws NullPointerException 
 	 */
-	public Header(Header header) throws NullPointerException, IOException {
+	public AbstractHeader(AbstractHeader header) throws NullPointerException, IOException {
 		setContent(header);
 	}
 
@@ -40,7 +40,7 @@ public abstract class Header {
      * Construct a header by input stream.
      * @param header A stream inArray header data.
      */
-	public Header(InputStream header) throws IOException {
+	public AbstractHeader(InputStream header) throws IOException {
 		setContent(header);
 	}
 
@@ -49,7 +49,7 @@ public abstract class Header {
      * Construct a header by reader.
      * @param header A reader inArray header data.
      */
-	public Header(Reader header) throws IOException {
+	public AbstractHeader(Reader header) throws IOException {
 		setContent(header);
 	}
 
@@ -60,7 +60,7 @@ public abstract class Header {
      * @throws IOException 
      * @throws NullPointerException 
      */
-	public Header(String header) throws NullPointerException, IOException {
+	public AbstractHeader(String header) throws NullPointerException, IOException {
         setContent(header);
 	}
 
@@ -69,14 +69,14 @@ public abstract class Header {
      * Construct a header by hash map.
      * @param header A string inArray header data.
      */
-	public Header(Map<String, String> header) {
+	public AbstractHeader(Map<String, String> header) {
         setContent(header);
 	}
 
 
     /**
      * Get the header content.
-     * @return Header content.
+     * @return AbstractHeader content.
      */
     public Map<String, String> getContent() {
         return mContent;
@@ -85,7 +85,7 @@ public abstract class Header {
 
 	/**
 	 * Set header content by hash map.
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws NullPointerException If content is null.
 	 */
     public void setContent(Map<String, String> data) throws NullPointerException{
@@ -115,7 +115,7 @@ public abstract class Header {
 	 * @param headerKey The key of new line.
 	 * @param headerValue The value of new line.
 	 */
-	public Header add(String headerKey, String headerValue) {
+	public AbstractHeader add(String headerKey, String headerValue) {
 		mContent.put(headerKey, headerValue);
 		return this;
 	}
@@ -133,7 +133,7 @@ public abstract class Header {
 
 	/**
 	 * Set header content by string.
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException 
 	 */
@@ -142,7 +142,7 @@ public abstract class Header {
 
 	/**
 	 * Set header content by reader.
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException If can't read content.
 	 */
@@ -151,7 +151,7 @@ public abstract class Header {
 
 	/**
 	 * Set header content by input stream.
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws IOException If content is null.
 	 * @throws NullPointerException If can't read content.
 	 */
@@ -160,11 +160,11 @@ public abstract class Header {
     
 	/**
 	 * Copy content from another header.
-	 * @param data Header content.
+	 * @param data AbstractHeader content.
 	 * @throws IOException If content is null.
 	 * @throws NullPointerException If can't read content.
 	 */
-    public abstract void setContent(Header header) throws IOException, NullPointerException;
+    public abstract void setContent(AbstractHeader header) throws IOException, NullPointerException;
 
 
 	/**

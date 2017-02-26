@@ -1,17 +1,17 @@
 package com.downloader.http;
 
 import com.downloader.base.AbstractDownloadTask;
-import com.downloader.base.AbstractReceiver;
-import com.downloader.base.TaskInfo;
-import com.downloader.util.StringUtil;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
+import com.downloader.base.AbstractTaskInfo;
+import com.downloader.base.DownloadTaskInfo;
 
 /**
  * Download task of http.
  */
 public class HttpDownloadTask extends AbstractDownloadTask {
+	/** Download task information. */
+	private DownloadTaskInfo mTaskInfo = new DownloadTaskInfo("");
+
+
 	/**
 	 * Constructor for creating task with name.
 	 *
@@ -19,51 +19,6 @@ public class HttpDownloadTask extends AbstractDownloadTask {
 	 */
 	public HttpDownloadTask(String name) {
 		super(name);
-	}
-
-
-	/**
-	 * Checks the server "resume from break-point" support.
-	 * @return true for support, false for not support.
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private void fetchTaskInfo() throws IOException {
-		HttpRequest r = new HttpRequest(getUrl(), Http.Method.HEAD);
-		r.getHeader().add(Http.RANGE, "bytes=0-1");
-		r.send();
-		HttpReceiver hr = r.getReceiver();
-		HttpHeader header = hr.getHeader();
-
-		setBreakPointResume(header != null ? "206".equals(header.getStatusCode()) : false);
-		setContentType(header.get(Http.CONTENT_TYPE));
-		setName(hr.getFileName());
-		if (isBreakPointResume())
-			setLength(StringUtil.str2Long(header.get(Http.CONTENT_RANGE).split("/")[1], 0L));
-		else if (header.get(Http.CONTENT_LENGTH) != null)
-			setLength(StringUtil.str2Long(header.get(Http.CONTENT_LENGTH), 0L));
-	}
-
-
-	/**
-	 * Computes how to doing download task.
-	 * @throws IOException
-	 */
-	private void prepare() throws IOException {
-		long len = getLength(), avgLen = len / DOWNLOAD_THREADS;
-		int remain = (int) len % DOWNLOAD_THREADS;
-		boolean breakPoint = isBreakPointResume();
-
-		if (breakPoint) {
-			for (int i = 0; i < DOWNLOAD_THREADS; i++) {
-				AbstractReceiver.Range r = new AbstractReceiver.Range(avgLen * i, avgLen * (i + 1) + (i + 1 == DOWNLOAD_THREADS ? remain : 0));
-				mReceivers[i] = new HttpReceiver(new HttpRequest(getUrl()), r);
-				mReceivers[i].setSaveTo(new FileOutputStream(String.format("D:\\%s.td%d", getName(), i)));
-			}
-		}else{
-			mReceivers[0] = new HttpReceiver(new HttpRequest(getUrl()));
-			mReceivers[0].setSaveTo(new FileOutputStream(String.format("D:\\%s", getName())));
-		}
 	}
 
 
@@ -83,8 +38,8 @@ public class HttpDownloadTask extends AbstractDownloadTask {
 	 * @return Information of current task.
 	 */
 	@Override
-	public TaskInfo info() {
-		return null;
+	public AbstractTaskInfo info() {
+		return mTaskInfo;
 	}
 
 	/**
@@ -100,13 +55,7 @@ public class HttpDownloadTask extends AbstractDownloadTask {
 	 */
 	@Override
 	public void pause() throws Exception {
-		for (HttpReceiver hr : mReceivers) {
-			if (hr != null) {
-				try { hr.pause(); } catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
+
 	}
 
 	/**

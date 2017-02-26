@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import com.downloader.base.Request;
+import com.downloader.base.AbstractRequest;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
 
@@ -14,7 +14,7 @@ import com.downloader.util.UrlUtil;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpRequest extends Request {
+public class HttpRequest extends AbstractRequest {
     /** The method of requesting  */
     private Http.Method mMethod = Http.Method.GET;
 
@@ -105,10 +105,10 @@ public class HttpRequest extends Request {
 
 
 	/**
-	 * Send data to somewhere.
+	 * Request data to somewhere.
 	 *
 	 * @param data The data.
-	 * @param to   Send to somewhere.
+	 * @param to   Request to somewhere.
 	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */

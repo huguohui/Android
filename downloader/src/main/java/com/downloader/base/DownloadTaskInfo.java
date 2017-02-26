@@ -5,7 +5,7 @@ import java.net.URL;
 /**
  * Information for download task.
  */
-public class DownloadTaskInfo extends TaskInfo {
+public class DownloadTaskInfo extends AbstractTaskInfo {
 	/** Start time of task in millisecond. */
 	private long startTime;
 
@@ -23,7 +23,7 @@ public class DownloadTaskInfo extends TaskInfo {
 
 
 	/**
-	 * Create a instance of TaskInfo by special name.
+	 * Create a instance of AbstractTaskInfo by special name.
 	 * @param name Name of downloading task.
 	 */
 	public DownloadTaskInfo(String name) {

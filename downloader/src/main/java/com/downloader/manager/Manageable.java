@@ -43,7 +43,7 @@ public interface Manageable<T> extends Iterable<T> {
 	 * @param sf A search condition of object will be searched.
 	 * @return If searched had result list else null.
 	 */
-	List<T> search(SearchFilter sf);
+	List<T> search(SearchFilter<T> sf);
 
 
 	/**
@@ -64,12 +64,12 @@ public interface Manageable<T> extends Iterable<T> {
 	/**
 	 * Filter of searching.
 	 */
-	public interface SearchFilter {
+	public interface SearchFilter<T> {
 		/**
 		 * Run filter on given data.
 		 * @param data Given data.
 		 * @return true on filte pass, false on fail.
 		 */
-		boolean filter(String data);
+		boolean filter(T data);
 	}
 }

@@ -1,7 +1,7 @@
 package com.downloader.http;
 
 
-import com.downloader.base.Body;
+import com.downloader.base.AbstractBody;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -11,7 +11,7 @@ import java.io.Reader;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpBody extends Body {
+public class HttpBody extends AbstractBody {
 	/**
 	 * Construct a HTTP body from string.
 	 * @param body The content of body.

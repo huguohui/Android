@@ -8,12 +8,19 @@ import java.util.Arrays;
 import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Parser;
 import com.downloader.base.Receive;
+import com.downloader.base.SocketReceiver;
 
 /**
  * The Chunked content parser.
  * @since 2015/12/2
  */
 public class HttpChunkedParser implements Parser {
+	/**
+	 * Receiver for receiveing data.
+	 */
+	private SocketReceiver mReceiver;
+
+
 	/**
 	 * Parse data to a kind of format.
 	 *
@@ -34,51 +41,16 @@ public class HttpChunkedParser implements Parser {
 	@Override
 	public byte[] parse(InputStream data) throws IOException {
 		int chunkSize = 0;
+		if (mReceiver == null)
+			mReceiver = new SocketReceiver(data);
 
 		while((chunkSize = getChunkSize(data)) != 0) {
 			if (chunkSize > 0) {
-				return receiveData(data, chunkSize);
+				return mReceiver.receive(data, chunkSize);
 			}
 		}
 
 		return null;
-	}
-	
-	
-	/**
-	 * Receives data by size.
-	 * @param size Size of receive.
-	 * @throws IOException 
-	 */
-	private byte[] receiveData(InputStream source, int size) throws IOException {
-		byte[] chunk = new byte[size];
-		int count = 0, read = 0, freeLoop = 0;
-
-		while(count < size) {
-			int available = source.available();
-			byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE];
-			
-			if (available == 0 && freeLoop++ < 100) {
-				try { Thread.sleep(1); } catch( Exception ex ) {
-					ex.printStackTrace();
-				}
-				continue;
-			}
-
-			if (AbstractReceiver.END_OF_STREAM == (read = source.read(buff, 0,
-					count + AbstractReceiver.BUFFER_SIZE > size ? size - count : AbstractReceiver.BUFFER_SIZE))) {
-				if (count != 0 && count != size)
-					return Arrays.copyOfRange(buff, 0, count);
-				
-				return null;
-			}
-			
-			System.arraycopy(buff, 0, chunk, count, read);
-			count += read;
-			freeLoop = 0;
-		}
-		
-		return chunk;
 	}
 	
 	

@@ -14,9 +14,6 @@ import java.util.List;
  * @since 2015/12/15
  */
 public class FileManager extends AbstractFileManager {
-	/** The collection of all file. */
-	private List<File> mFiles = new ArrayList<>();
-
 	/** The home directory. */
 	private String mHomeDirectory = "/";
 
@@ -62,7 +59,8 @@ public class FileManager extends AbstractFileManager {
 
 		if (!dir.isDirectory()) {
 			msg = String.format("No such a directory %s!", dir.getAbsoluteFile());
-		}else if (!dir.canRead()) {
+		}
+		else if (!dir.canRead()) {
 			msg = String.format("The directory %s can't be read!", dir.getAbsoluteFile());
 		}
 
@@ -76,73 +74,10 @@ public class FileManager extends AbstractFileManager {
 	public void loadFiles(String dir) throws IOException {
 		checkDirectory(dir);
 		for (File file : new File(dir).listFiles()) {
-			mFiles.add(file);
+			mList.add(file);
 		}
 	}
 
-
-	/**
-	 * Get a managed object by index.
-	 *
-	 * @param idx Index of object.
-	 * @return Managed object.
-	 */
-	@Override
-	public File get(int idx) {
-		return null;
-	}
-
-	/**
-	 * Add a object for management.
-	 *
-	 * @param obj Object what will to managing.
-	 */
-	@Override
-	public boolean add(File obj) {
-		return false;
-	}
-
-	/**
-	 * Remove a managed object by index.
-	 *
-	 * @param idx Index of managed object.
-	 * @return Removed object or null on remove failed.
-	 */
-	@Override
-	public File remove(int idx) {
-		return null;
-	}
-
-	/**
-	 * Search a file.
-	 *
-	* @param sf A search condition of object will be searched.
-	* @return If searched had result list else null.
-			*/
-	@Override
-	public synchronized List<File> search(SearchFilter sf) {
-		if (sf == null) return mFiles;
-
-		List<File> searched = new ArrayList<>();
-		for (File file : mFiles) {
-			if (mFiles != null && sf.filter(file.getName())) {
-				searched.add(file);
-			}
-		}
-
-		return searched;
-	}
-
-
-	/**
-	 * Get a list that contians all managed objects.
-	 *
-	 * @return A list that contians all managed objects.
-	 */
-	@Override
-	public List<File> getList() {
-		return mFiles;
-	}
 
 	/**
 	 * To create something for managing.
@@ -244,21 +179,11 @@ public class FileManager extends AbstractFileManager {
 	public File getByName(String name) {
 		if (name == null) return null;
 
-		for (File file : mFiles) {
+		for (File file : mList) {
 			if (file.getName().equals(name)) {
 				return file;
 			}
 		}
 		return null;
-	}
-
-
-	/**
-	 * Get a instance of iterator.
-	 * @return Instance of iterator.
-	 */
-	@Override
-	public Iterator<File> iterator() {
-		return mFiles.iterator();
 	}
 }

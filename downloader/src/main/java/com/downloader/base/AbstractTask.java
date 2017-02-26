@@ -1,19 +1,27 @@
 package com.downloader.base;
 
+import com.downloader.manager.AbstractDescriptor;
+
 /**
  * Interface of task.
  */
 public abstract class AbstractTask implements Controlable {
-	/** Name of task. */
-	protected String name;
-
-
 	/**
 	 * Create a task with name.
 	 * @param name Task name.
 	 */
 	public AbstractTask(String name) {
-		this.name = name;
+
+	}
+
+
+
+	/**
+	 * Create a task by special task descriptor.
+	 * @param desc Task descriptor.
+	 */
+	public AbstractTask(AbstractDescriptor desc) {
+
 	}
 
 
@@ -28,5 +36,5 @@ public abstract class AbstractTask implements Controlable {
 	 * Get information of current task.
 	 * @return Information of current task.
 	 */
-	public abstract TaskInfo info();
+	public abstract AbstractTaskInfo info();
 }
