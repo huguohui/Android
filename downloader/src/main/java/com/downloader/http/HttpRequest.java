@@ -3,8 +3,10 @@ package com.downloader.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URL;
 
+import com.downloader.base.AbstractDownloader;
 import com.downloader.base.AbstractRequest;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
@@ -71,6 +73,15 @@ public class HttpRequest extends AbstractRequest {
 		setHeader(getDefaultHeader());
 	}
 
+	/**
+	 * Get a downloader of this request.
+	 * return A {@link AbstractDownloader} of this request.
+	 */
+	@Override
+	public AbstractDownloader getDownloader() throws Exception {
+		return null;
+	}
+
 
 	/**
 	 * Build default http header.
@@ -90,7 +101,7 @@ public class HttpRequest extends AbstractRequest {
 	}
 
 
-    /**
+	/**
      * Sends http request.
      */
     @Override
@@ -140,17 +151,6 @@ public class HttpRequest extends AbstractRequest {
 	public void open(URL url) throws IOException {
 		open(url, null);
 	}
-	
-
-	/**
-     * Get a downloader of this request.
-     * return A downloader of this request.
-	 * @throws IOException 
-     */
-	@Override
-	public HttpReceiver getReceiver() throws IOException {
-		return new HttpReceiver(this);
-	}
 
 
 	/**
@@ -173,12 +173,6 @@ public class HttpRequest extends AbstractRequest {
     	open(mUrl);
 	}
 	
-	
-	/**
-	 * 
-	 * @return
-	 */
-
 
     public Http.Method getMethod() {
         return mMethod;

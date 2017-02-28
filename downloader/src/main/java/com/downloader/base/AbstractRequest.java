@@ -73,9 +73,9 @@ public abstract class AbstractRequest implements Request {
     
     /**
      * Get a downloader of this request.
-     * return A {@link AbstractReceiver} of this request.
+     * return A {@link AbstractDownloader} of this request.
      */
-    public abstract AbstractReceiver getReceiver() throws IOException;
+    public abstract AbstractDownloader getDownloader() throws Exception;
 
 
     /**
