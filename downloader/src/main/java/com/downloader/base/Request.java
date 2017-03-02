@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * Sender can send something to somewhere.
@@ -13,7 +14,7 @@ public interface Request {
 	 * Open a request by speical internet address.
 	 * @param address Specials internet address.
 	 */
-	void open(InetSocketAddress address) throws Exception;
+	void open(SocketAddress address) throws Exception;
 
 
 	/**
@@ -21,7 +22,7 @@ public interface Request {
 	 * @param address Specials socket address.
 	 * @param timeout Timeout in milliseconds.
 	 */
-	void open(InetSocketAddress address, int timeout) throws Exception;
+	void open(SocketAddress address, int timeout) throws Exception;
 
 
 	/**
