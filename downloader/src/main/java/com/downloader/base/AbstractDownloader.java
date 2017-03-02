@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public abstract class AbstractDownloader implements Controlable {
+public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	/** The length of data. */
 	private long mLength = -1;
 

@@ -1,21 +1,11 @@
 package com.downloader.http;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.util.Arrays;
-
-import com.downloader.base.AbstractReceiver;
 import com.downloader.base.AbstractRequest;
 import com.downloader.base.SocketReceiver;
-import com.downloader.manager.ThreadManager;
-import com.downloader.util.UrlUtil;
 
-import static com.downloader.base.AbstractDownloader.State.exceptional;
-import static com.downloader.base.AbstractDownloader.State.stoped;
-import static com.downloader.base.AbstractDownloader.State.waiting;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Download data from URL, based HTTP protocol.
@@ -34,17 +24,8 @@ public class HttpReceiver extends SocketReceiver {
 	/** Is stop receive? */
 	private boolean isStop = false;
 	
-	/** Http response header. */
-	private HttpHeader mHeader = new HttpHeader();
-	
 	/** Is receives portal data? */
 	private boolean isPortal = false;
-	
-	/** Http status code. */
-	private int mStatusCode = 0;
-	
-	/** File name of download. */
-	private String mFileName = "";
 
 	/** The length of data. */
 	private long mLength = -1;
@@ -127,26 +108,6 @@ public class HttpReceiver extends SocketReceiver {
 	private void setLength(long length) {
 		mLength = length;
 	}
-
-
-	public HttpHeader getHeader() {
-		return mHeader;
-	}
-
-
-	public void setHeader(HttpHeader header) {
-		mHeader = header;
-	}
-
-
-	public int getStatusCode() {
-		return mStatusCode;
-	}
-
-
-	public void setStatusCode(int statusCode) {
-		mStatusCode = statusCode;
-	}
 	
 
 	public boolean isPortal() {
@@ -156,15 +117,5 @@ public class HttpReceiver extends SocketReceiver {
 
 	public void setPortal(boolean isPortal) {
 		this.isPortal = isPortal;
-	}
-
-
-	public String getFileName() {
-		return mFileName;
-	}
-
-
-	public void setFileName(String fileName) {
-		mFileName = fileName;
 	}
 }

@@ -11,7 +11,7 @@ import java.io.Reader;
  */
 public interface Receive {
 	/** Flag of stream end. */
-	final public static int END_OF_STREAM = -1;
+	int END_OF_STREAM = -1;
 	
 	
 	/**

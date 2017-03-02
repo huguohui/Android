@@ -1,12 +1,9 @@
 package com.downloader.manager;
 
-import com.downloader.base.AbstractDownloadTask;
+import com.downloader.base.DownloadTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * File manager is manager based directory, managed files is under special directory.
@@ -99,7 +96,7 @@ public class FileManager extends AbstractFileManager {
 	 * @throws Throwable When exception occured.
 	 */
 	@Override
-	public AbstractDownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
 		return null;
 	}
 
@@ -110,7 +107,7 @@ public class FileManager extends AbstractFileManager {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public boolean delete(AbstractDownloadTask obj) throws IOException {
+	public boolean delete(DownloadTask obj) throws IOException {
 		return false;
 	}
 

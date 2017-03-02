@@ -1,8 +1,7 @@
 package com.downloader.http;
 
 import com.downloader.base.AbstractDownloader;
-import com.downloader.manager.ThreadManager;
-import com.downloader.util.UrlUtil;
+import com.downloader.base.AbstractTaskInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -106,5 +105,27 @@ public class HttpDownloader extends AbstractDownloader {
 //		ThreadManager.ThreadDescriptor td = new ThreadManager.ThreadDescriptor(this, "");
 //		setThread(ThreadManager.getInstance().create(td));
 //		getThread().start();
+	}
+
+
+	/**
+	 * Get the progress of task. value: 0 ~ 100
+	 *
+	 * @return Progress of task.
+	 */
+	@Override
+	public int progress() {
+		return 0;
+	}
+
+
+	/**
+	 * Get information of current task.
+	 *
+	 * @return Information of current task.
+	 */
+	@Override
+	public AbstractTaskInfo info() {
+		return null;
 	}
 }

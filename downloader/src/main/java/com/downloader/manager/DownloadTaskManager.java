@@ -1,14 +1,10 @@
 package com.downloader.manager;
 
-import com.downloader.base.AbstractDownloadTask;
+import com.downloader.base.DownloadTask;
 import com.downloader.base.Protocol;
 import com.downloader.base.AbstractTaskInfo;
-import com.downloader.http.HttpDownloadTask;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,7 +26,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	}
 	
 	
-	public void addTask(AbstractDownloadTask task) {
+	public void addTask(DownloadTask task) {
 		if (task == null)
 			throw new RuntimeException("The task is null!");
 		
@@ -39,7 +35,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	
 	
 	public void startTask(int id) throws Exception {
-		AbstractDownloadTask dt = mList.get(id);
+		DownloadTask dt = mList.get(id);
 		if (dt == null)
 			throw new RuntimeException("The specail task not exists!");
 		
@@ -54,7 +50,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				for (AbstractDownloadTask dt : mList) {
+				for (DownloadTask dt : mList) {
 					int pg = dt.progress();
 					System.out.println(pg + "%");
 					if (pg == 100)
@@ -84,7 +80,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return true for success, false for fail.
 	 */
 	@Override
-	public AbstractDownloadTask create(AbstractDescriptor descriptor) throws Throwable {
+	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
 		return create((DownloadTaskDescriptor) descriptor);
 	}
 
@@ -133,10 +129,10 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @throws Throwable When exception occured.
 	 */
 	@Override
-	public AbstractDownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
 		URL url = desc.getUrl();
 		String protocol = url.getProtocol();
-		AbstractDownloadTask adt = null;
+		DownloadTask adt = null;
 
 		switch(Protocol.valueOf(protocol)) {
 			case HTTP:
