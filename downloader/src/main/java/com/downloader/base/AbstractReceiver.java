@@ -1,14 +1,12 @@
 package com.downloader.base;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 
 /**
  * Download some data form a place.
  */
-public abstract class AbstractReceiver implements Receive, Runnable {
+public abstract class AbstractReceiver implements Receiver, Runnable {
 	/** The requester object. */
 	protected InputStream mInputStream;
 

@@ -1,7 +1,6 @@
 package com.downloader.http;
 
 
-import com.downloader.base.AbstractRequest;
 import com.downloader.base.SocketReceiver;
 
 import java.io.IOException;
@@ -33,9 +32,6 @@ public class HttpReceiver extends SocketReceiver {
 	/** The length of downloaded data. */
 	private long mReceivedLength;
 
-	/** Input stream what will to receiving. */
-	private InputStream mInputStream;
-
 	/** Chunked parser. */
 	private HttpChunkedParser mChunkedParser = new HttpChunkedParser();
 
@@ -46,37 +42,36 @@ public class HttpReceiver extends SocketReceiver {
 	 * @throws IOException If exception.
 	 */
 	public HttpReceiver(InputStream is, Range r) throws IOException {
-		super(is, r);
+		super(is);
 		setPortal(r != null);
 	}
 	
 
 	/**
 	 * Construct a http downloader object.
-	 *  @param is A {@link AbstractRequest}.
+	 *  @param is A {@link InputStream}.
 	 * @throws IOException If exception.
 	 */
 	public HttpReceiver(InputStream is) throws IOException {
 		this(is, null);
 	}
 
+
 	/**
 	 * Download data as chunk.
-	 * @return 
+	 * @return Parsed chunk data.
 	 */
-	private byte[] receiveChunked(InputStream is) throws IOException {
-		return mChunkedParser.parse(is);
+	private byte[] receiveChunked() throws IOException {
+		return mChunkedParser.parse(mInputStream);
 	}
 
 
 	/**
 	 * To receiving data from source, and save data to somewhere.
-	 *
-	 * @param source Data source.
 	 * @param size Size of will receiving.
 	 */
 	@Override
-	public synchronized byte[] receive(InputStream source, int size) throws IOException {
+	public synchronized void receive(int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 		
@@ -84,9 +79,9 @@ public class HttpReceiver extends SocketReceiver {
 			size = (int) (getLength() - getReceivedLength());
 
 		if (isChunked)
-			return receiveChunked(source);
-
-		return super.receive(source, size);
+			receiveChunked();
+		else
+			super.receive(size);
 	}
 
 

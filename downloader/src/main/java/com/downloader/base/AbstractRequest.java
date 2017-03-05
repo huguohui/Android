@@ -14,34 +14,34 @@ import java.net.SocketAddress;
  */
 public abstract class AbstractRequest implements Request {
     /** The requests address. */
-    private SocketAddress mSocketAddress;
+    protected SocketAddress mSocketAddress;
 
     /** The socket of requester. */
-    private Socket mSocket;
+    protected Socket mSocket;
 
     /** The connection timeout. (ms) */
-    private int mTimeout = 100000;
+    protected int mTimeout = 100000;
 
     /** Http header. */
-    private AbstractHeader mHeader;
+    protected AbstractHeader mHeader;
 
     /** Http body. */
-    private AbstractBody mBody;
+    protected AbstractBody mBody;
 
     /** The state of requester. */
-    private State mState = State.ready;
+    protected State mState = State.ready;
 
 	/** The requester start time. */
-	private long mStartTime = 0;
+	protected long mStartTime = 0;
 	
 	/** State of connection by boolean. */
-	private boolean isConnect = false;
+	protected boolean isConnect = false;
 	
 	/** Flag for reqeust send. */
-	private boolean isSend = false;
+	protected boolean isSend = false;
 	
 	/** Address of reqeust. */
-	private String mAddress = "";
+	protected String mAddress = "";
 
     /** AbstractRequest states. */
     public enum State {
@@ -101,43 +101,7 @@ public abstract class AbstractRequest implements Request {
      * @param address The {@link SocketAddress} to describing a address.
      * @param timeout The timeout time of connection.
      */
-    public void open(SocketAddress address, int timeout)
-            throws IOException {
-		if (!mState.equals(State.closed) && !mState.equals(State.ready)) {
-			throw new ConnectException("Only open connection after request " +
-					"closed or requester don't connected!");
-		}
-
-		mStartTime = System.currentTimeMillis();
-		mSocket = new Socket();
-		mState = State.connecting;
-		mSocket.connect(address, timeout);
-		mState = State.connected;
-		isConnect = true;
-    }
-    
-    
-    /**
-     * Request request.
-     */
-    public void send() throws IOException {
-    	isSend = true;
-    }
-
-
-    /**
-     * Close connection.
-     */
-    public void close() throws IOException {
-    	mState = State.closed;
-        if (mSocket.isClosed() || !mSocket.isConnected())
-            throw new ConnectException("The socket don't connected!");
-
-        mSocket.shutdownInput();
-        mSocket.shutdownOutput();
-        mSocket.close();
-        isConnect = false;
-    }
+    public abstract void open(SocketAddress address, int timeout) throws IOException;
     
     
     /**

@@ -3,11 +3,10 @@ package com.downloader.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.URL;
 
 import com.downloader.base.AbstractDownloader;
-import com.downloader.base.AbstractRequest;
+import com.downloader.base.SocketRequest;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
 
@@ -16,7 +15,7 @@ import com.downloader.util.UrlUtil;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpRequest extends AbstractRequest {
+public class HttpRequest extends SocketRequest {
     /** The method of requesting  */
     private Http.Method mMethod = Http.Method.GET;
 

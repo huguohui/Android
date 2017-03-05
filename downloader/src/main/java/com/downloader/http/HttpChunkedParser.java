@@ -3,11 +3,9 @@ package com.downloader.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Arrays;
 
-import com.downloader.base.AbstractReceiver;
+import com.downloader.base.Receiver;
 import com.downloader.base.Parser;
-import com.downloader.base.Receive;
 import com.downloader.base.SocketReceiver;
 
 /**
@@ -63,9 +61,9 @@ public class HttpChunkedParser implements Parser {
 	private int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
-		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE << 1], crlf = {0x0D, 0x0A};
+		byte[] buff = new byte[Receiver.BUFFER_SIZE << 1], crlf = {0x0D, 0x0A};
 
-		while(Receive.END_OF_STREAM != (aByte = (byte)is.read())) {
+		while(Receiver.END_OF_STREAM != (aByte = (byte)is.read())) {
 			if (aByte == crlf[matchCount]) {
 				if (++matchCount == 2) {
 					if (byteCount != 0)

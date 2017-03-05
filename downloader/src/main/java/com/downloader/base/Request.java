@@ -38,11 +38,10 @@ public interface Request {
 	 * Request data to somewhere.
 	 *
 	 * @param data The data.
-	 * @param to   Request to somewhere.
 	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
-	void send(byte[] data, OutputStream to) throws Exception;
+	void send(byte[] data) throws Exception;
 
 
 	/**

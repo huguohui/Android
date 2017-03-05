@@ -31,7 +31,7 @@ public abstract class AbstractHeader {
 	 * @throws IOException 
 	 * @throws NullPointerException 
 	 */
-	public AbstractHeader(AbstractHeader header) throws NullPointerException, IOException {
+	public AbstractHeader(AbstractHeader header) throws Exception {
 		setContent(header);
 	}
 
@@ -40,7 +40,7 @@ public abstract class AbstractHeader {
      * Construct a header by input stream.
      * @param header A stream inArray header data.
      */
-	public AbstractHeader(InputStream header) throws IOException {
+	public AbstractHeader(InputStream header) throws Exception {
 		setContent(header);
 	}
 
@@ -49,7 +49,7 @@ public abstract class AbstractHeader {
      * Construct a header by reader.
      * @param header A reader inArray header data.
      */
-	public AbstractHeader(Reader header) throws IOException {
+	public AbstractHeader(Reader header) throws Exception {
 		setContent(header);
 	}
 
@@ -60,7 +60,7 @@ public abstract class AbstractHeader {
      * @throws IOException 
      * @throws NullPointerException 
      */
-	public AbstractHeader(String header) throws NullPointerException, IOException {
+	public AbstractHeader(String header) throws Exception {
         setContent(header);
 	}
 
@@ -137,7 +137,7 @@ public abstract class AbstractHeader {
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException 
 	 */
-    public abstract void setContent(String data) throws NullPointerException, IOException;
+    public abstract void setContent(String data) throws Exception;
 
 
 	/**
@@ -146,7 +146,7 @@ public abstract class AbstractHeader {
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException If can't read content.
 	 */
-    public abstract void setContent(Reader data) throws NullPointerException, IOException;
+    public abstract void setContent(Reader data) throws Exception;
 
 
 	/**
@@ -155,21 +155,21 @@ public abstract class AbstractHeader {
 	 * @throws IOException If content is null.
 	 * @throws NullPointerException If can't read content.
 	 */
-    public abstract void setContent(InputStream data) throws IOException, NullPointerException;
+    public abstract void setContent(InputStream data) throws Exception;
     
     
 	/**
 	 * Copy content from another header.
-	 * @param data AbstractHeader content.
+	 * @param header AbstractHeader content.
 	 * @throws IOException If content is null.
 	 * @throws NullPointerException If can't read content.
 	 */
-    public abstract void setContent(AbstractHeader header) throws IOException, NullPointerException;
+    public abstract void setContent(AbstractHeader header) throws Exception;
 
 
 	/**
 	 * Get header content as string.
 	 * @return Stringify header content.
 	 */
-	public abstract String toString() throws NullPointerException;
+	public abstract String toString();
 }

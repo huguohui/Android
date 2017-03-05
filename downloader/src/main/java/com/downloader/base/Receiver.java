@@ -9,7 +9,7 @@ import java.io.Reader;
  *
  * @since 2015/11/29
  */
-public interface Receive {
+public interface Receiver {
 	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
 	
@@ -20,19 +20,12 @@ public interface Receive {
 	 * @throws IOException When I/O exception.
 	 * @throws java.net.ConnectException When connection exception.
 	 */
-	byte receive() throws IOException;
+	void receive() throws IOException;
 
 
 	/**
 	 * To receiving data from source, and save data to somewhere.
-	 * @param source Data source.
+	 * @param len Length of data.
 	 */
-	byte[] receive(InputStream source, int size) throws IOException;
-
-
-	/**
-	 * To receiving data from source.
-	 * @param source Data source.
-	 */
-	char[] receive(Reader source, int size) throws IOException;
+	void receive(int len) throws IOException;
 }

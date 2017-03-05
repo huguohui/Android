@@ -38,19 +38,27 @@ public class SocketReceiver extends AbstractReceiver {
 	 * @throws ConnectException When connection exception.
 	 */
 	@Override
-	public byte receive() throws IOException {
-		return receive(mInputStream, 1)[0];
+	public void receive() throws IOException {
+
 	}
 
 
 	/**
 	 * To receiving data from source, and save data to somewhere.
 	 *
-	 * @param source Data source.
 	 * @param size
 	 */
 	@Override
-	public byte[] receive(InputStream source, int size) throws IOException {
+	public void receive(int size) throws IOException {
+
+	}
+
+
+	/**
+	 * Receiving data with special length.
+	 * @param size Special length.
+	 */
+	private byte[] receiveData(int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
@@ -58,7 +66,7 @@ public class SocketReceiver extends AbstractReceiver {
 		int count = 0, read = 0, freeLoop = 0;
 
 		while(count < size) {
-			int available = source.available();
+			int available = mInputStream.available();
 			byte[] buff = new byte[BUFFER_SIZE];
 
 			if (available == 0 && freeLoop++ < 100) {
@@ -68,7 +76,7 @@ public class SocketReceiver extends AbstractReceiver {
 				continue;
 			}
 
-			if (END_OF_STREAM == (read = source.read(buff, 0,
+			if (END_OF_STREAM == (read = mInputStream.read(buff, 0,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
 				if (count != 0 && count != size)
 					return Arrays.copyOfRange(buff, 0, count);
@@ -79,34 +87,6 @@ public class SocketReceiver extends AbstractReceiver {
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
 			freeLoop = 0;
-		}
-
-		return chunk;
-	}
-
-
-	/**
-	 * To receiving data from source.
-	 *
-	 * @param source Data source.
-	 * @param size
-	 */
-	@Override
-	public char[] receive(Reader source, int size) throws IOException {
-		if (size <= 0)
-			throw new IllegalArgumentException("The size is illegal!");
-
-		char[] buff = new char[BUFFER_SIZE];
-		char[] chunk = new char[size];
-		int count = 0, read = 0;
-
-		while(count < size) {
-
-			if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
-				return null;
-
-			System.arraycopy(buff, 0, chunk, count, read);
-			count += read;
 		}
 
 		return chunk;
