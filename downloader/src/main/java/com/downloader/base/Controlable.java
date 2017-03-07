@@ -9,14 +9,14 @@ public interface Controlable {
 	 * Controls the task start.
 	 */
 	void start() throws Exception;
-	
-	
+
+
 	/**
 	 * Controls the task pause.
 	 */
 	void pause() throws Exception;
-	
-	
+
+
 	/**
 	 * Controls the task resume.
 	 */

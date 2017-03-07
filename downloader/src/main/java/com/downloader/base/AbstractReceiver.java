@@ -1,5 +1,7 @@
 package com.downloader.base;
 
+import com.downloader.util.Writable;
+
 import java.io.InputStream;
 
 
@@ -16,19 +18,19 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	/** Range of data will to receiving. */
 	protected AbstractReceiver.Range mRange = null;
 
+	/** Writable of receiver. */
+	protected Writable mWritable;
+
 	/** Default buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
 
 
 	/**
-
-	 * @param downloader The listenered downloader.
-	 */ /**
 	 * Construct a downloader by requester.
 	 * @param is A {@link AbstractRequest}.
 	 */
-	public AbstractReceiver(InputStream is) {
-		this(is, null);
+	public AbstractReceiver(InputStream is, Writable writable) {
+		this(is, writable, null);
 	}
 	
 	
@@ -37,8 +39,9 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	 * @param is A {@link AbstractRequest}.
 	 * @param r Range of data will to receiving.
 	 */
-	public AbstractReceiver(InputStream is, Range r) {
+	public AbstractReceiver(InputStream is, Writable writable, Range r) {
 		mInputStream = is;
+		mWritable = writable;
 		mRange = r;
 	}
 	

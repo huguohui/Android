@@ -1,14 +1,14 @@
 package com.downloader.http;
 
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-
 import com.downloader.base.AbstractDownloader;
 import com.downloader.base.SocketRequest;
 import com.downloader.http.Http.Method;
 import com.downloader.util.UrlUtil;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * HTTP request class implement.
@@ -104,11 +104,10 @@ public class HttpRequest extends SocketRequest {
      * Sends http request.
      */
     @Override
-    public synchronized void send() throws IOException {
-		OutputStream os = getSocket().getOutputStream();
-		send(getHeader().toString().getBytes(), os);
+    public synchronized void send() throws Exception {
+		send(getHeader().toString().getBytes());
 		if (getBody() != null)
-			send(getBody().getContent(), os);
+			send(getBody().getContent());
 
 		setState(State.sent);
     }
@@ -118,13 +117,12 @@ public class HttpRequest extends SocketRequest {
 	 * Request data to somewhere.
 	 *
 	 * @param data The data.
-	 * @param to   Request to somewhere.
 	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public synchronized void send(byte[] data, OutputStream to) throws IOException {
-    	super.send();
+	public synchronized void send(byte[] data) throws Exception {
+		OutputStream to = getSocket().getOutputStream();
 		if (to == null || data == null)
 			throw new RuntimeException("The OutputStream or data is null!");
 

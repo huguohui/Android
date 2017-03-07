@@ -10,6 +10,23 @@ import java.net.SocketAddress;
  */
 public class SocketRequest extends AbstractRequest {
 	/**
+	 * Constructor a request by socket address.
+	 * @param  socketAddress The requests address.
+	 */
+	public SocketRequest(SocketAddress socketAddress) throws IOException {
+		setSocketAddress(socketAddress);
+		open(socketAddress, mTimeout);
+	}
+
+
+	/**
+	 * Empty constructor.
+	 */
+	public SocketRequest() {
+	}
+
+
+	/**
 	 * Open a connection with timeout and prepare to send request.
 	 * @param address The {@link SocketAddress} to describing a address.
 	 * @param timeout The timeout time of connection.

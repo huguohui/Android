@@ -1,8 +1,9 @@
 package com.downloader.base;
 
+import com.downloader.util.Writable;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.ConnectException;
 import java.util.Arrays;
 
@@ -15,8 +16,8 @@ public class SocketReceiver extends AbstractReceiver {
 	 *
 	 * @param is A {@link InputStream}.
 	 */
-	public SocketReceiver(InputStream is) {
-		this(is, null);
+	public SocketReceiver(InputStream is, Writable w) {
+		this(is, w, null);
 	}
 
 
@@ -25,8 +26,8 @@ public class SocketReceiver extends AbstractReceiver {
 	 * @param is A {@link AbstractRequest}.
 	 * @param r Range of data will to receiving.
 	 */
-	public SocketReceiver(InputStream is, Range r) {
-		super(is, r);
+	public SocketReceiver(InputStream is, Writable w, Range r) {
+		super(is, w, r);
 	}
 
 
@@ -39,7 +40,9 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void receive() throws IOException {
-
+		byte[] data;
+		while(null != (data = receiveData(BUFFER_SIZE)))
+			mWritable.write(data);
 	}
 
 
@@ -50,7 +53,7 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void receive(int size) throws IOException {
-
+		mWritable.write(receiveData(size));
 	}
 
 
