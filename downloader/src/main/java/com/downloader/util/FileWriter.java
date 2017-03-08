@@ -15,6 +15,16 @@ public class FileWriter implements FileWritable {
 	/** The data queue for writing. */
 	protected Queue<byte[]> mQueue = new ArrayDeque<>();
 
+	/**
+	 * Constructor a object for file writer.
+	 */
+	public FileWrite(File file) throws IOException {
+		if (file == null)
+			throw new NullPointerException();
+
+		mFile = file;
+	}
+
 
 	/**
 	 * To writing data from offset 0.
@@ -22,7 +32,7 @@ public class FileWriter implements FileWritable {
 	 * @param data Data will to writing.
 	 */
 	@Override
-	public   void write(byte[] data) throws IOException {
+	public void write(byte[] data) throws IOException {
 
 	}
 
