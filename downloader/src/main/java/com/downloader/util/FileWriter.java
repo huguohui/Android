@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * File writer.
@@ -13,12 +15,16 @@ public class FileWriter implements FileWritable {
 	protected File mFile;
 
 	/** The data queue for writing. */
-	protected Queue<byte[]> mQueue = new ArrayDeque<>();
+	protected Queue<Map<Long, byte[]> mQueue = new ArrayDeque<>();
+
+	/** Offset of file writer. */
+	protected long mOffset = 0;
+
 
 	/**
 	 * Constructor a object for file writer.
 	 */
-	public FileWrite(File file) throws IOException {
+	public FileWrite(File file, ) throws IOException {
 		if (file == null)
 			throw new NullPointerException();
 
@@ -33,7 +39,7 @@ public class FileWriter implements FileWritable {
 	 */
 	@Override
 	public void write(byte[] data) throws IOException {
-
+		write(offset, data);
 	}
 
 
@@ -46,7 +52,7 @@ public class FileWriter implements FileWritable {
 	 */
 	@Override
 	public void wirte(byte[] data, int start, int end) throws IOException {
-
+		write(offset, data, start, end);
 	}
 
 
@@ -58,7 +64,7 @@ public class FileWriter implements FileWritable {
 	 */
 	@Override
 	public void write(long offset, byte[] data) throws IOException {
-
+		write(offset, data, 0, data.length);
 	}
 
 
@@ -72,6 +78,16 @@ public class FileWriter implements FileWritable {
 	 */
 	@Override
 	public void write(long offset, byte[] data, int start, int end) throws IOException {
+		if (data == null)
+			throw new NullPointerException();
 
+		if (offset < 0)
+			throw new IllegalArgumentsException("Special offset is illegal!");
+
+		Map<int, byte[]> map = new HashMap<>();
+		data = Arrays.copyRangeOf(data, start, end);
+		map.put(offset, data);
+		mQueue.add(map);
+		mOffset = offset + (end - start);
 	}
 }
