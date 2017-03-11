@@ -21,12 +21,11 @@ import android.widget.Toast;
 
 import com.tankwar.game.Client;
 import com.tankwar.game.Game;
-import com.tankwar.utils.FileOperator;
+import com.tankwar.util.FileOperator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -144,7 +143,7 @@ final public class GameContext extends Application
             for (String assetName : getAssets().list(BITMAP_DIR)) {
                 if (!new FileOperator(getAssets().open(BITMAP_DIR + DS + assetName))
                         .copyTo(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + assetName)) {
-                    com.tankwar.utils.Log.s(assetName + " copy failed!");
+                    com.tankwar.util.Log.s(assetName + " copy failed!");
                 }
             }
 
@@ -152,13 +151,13 @@ final public class GameContext extends Application
                 if (assetName.matches(".+\\.(wav|mp3|mid|ogg)$"))
                     if (!new FileOperator(getAssets().open(SOUND_DIR + DS + assetName))
                             .copyTo(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + assetName)) {
-                        com.tankwar.utils.Log.s(assetName + "copy failed!");
+                        com.tankwar.util.Log.s(assetName + "copy failed!");
                     }
             }
             new File(SDCARD_APP_ROOT + DS + BITMAP_DIR + DS + ".exists").createNewFile();
             new File(SDCARD_APP_ROOT + DS + SOUND_DIR + DS + ".exists").createNewFile();
         } catch (IOException e) {
-            com.tankwar.utils.Log.e(e);
+            com.tankwar.util.Log.e(e);
         }
     }
 

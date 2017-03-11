@@ -7,7 +7,7 @@ import com.tankwar.engine.entity.MovableEntity;
 import com.tankwar.engine.subsystem.Updatable;
 import com.tankwar.game.GameMap;
 import com.tankwar.engine.GameContext;
-import com.tankwar.utils.GameSound;
+import com.tankwar.util.GameSound;
 
 import java.util.ArrayList;
 import java.util.List;

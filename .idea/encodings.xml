@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/downloader/src/main/java/com/downloader/client/downloader.cfg" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/downloader/src/main/java/com/downloader/http/HttpDownloadTask.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/downloader/src/main/java/com/downloader/util/StringUtil.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/downloader/src/main/java/com/downloader/util/UrlUtil.java" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

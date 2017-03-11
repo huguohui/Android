@@ -3,15 +3,12 @@ package com.tankwar.engine.subsystem;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.SoundPool;
 
 import com.tankwar.engine.Engine;
 import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.Terrain;
-import com.tankwar.utils.Log;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 

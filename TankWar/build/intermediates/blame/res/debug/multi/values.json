@@ -1,6 +1,6 @@
 [
     {
-        "outputFile": "D:\\android\\TankWar\\build\\intermediates\\res\\merged\\debug\\values\\values.xml",
+        "outputFile": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
         "map": [
             {
                 "to": {
@@ -11,13 +11,13 @@
                     "endOffset": 108
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\dimens.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\dimens.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 89,
+                        "startOffset": 92,
                         "endColumn": 57,
-                        "endOffset": 142
+                        "endOffset": 145
                     }
                 }
             },
@@ -30,13 +30,13 @@
                     "endOffset": 164
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\dimens.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\dimens.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 147,
+                        "startOffset": 151,
                         "endColumn": 55,
-                        "endOffset": 198
+                        "endOffset": 202
                     }
                 }
             },
@@ -49,13 +49,13 @@
                     "endOffset": 217
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\strings.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\strings.xml",
                     "position": {
                         "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 98,
+                        "startOffset": 102,
                         "endColumn": 52,
-                        "endOffset": 146
+                        "endOffset": 150
                     }
                 }
             },
@@ -68,13 +68,13 @@
                     "endOffset": 259
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\strings.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\strings.xml",
                     "position": {
                         "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 56,
+                        "startOffset": 59,
                         "endColumn": 41,
-                        "endOffset": 93
+                        "endOffset": 96
                     }
                 }
             },
@@ -87,13 +87,13 @@
                     "endOffset": 312
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\strings.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\strings.xml",
                     "position": {
                         "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 151,
+                        "startOffset": 156,
                         "endColumn": 52,
-                        "endOffset": 199
+                        "endOffset": 204
                     }
                 }
             },
@@ -107,14 +107,14 @@
                     "endOffset": 603
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\styles.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\styles.xml",
                     "position": {
                         "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 186,
+                        "startOffset": 192,
                         "endLine": 12,
                         "endColumn": 12,
-                        "endOffset": 472
+                        "endOffset": 484
                     }
                 }
             },
@@ -128,14 +128,14 @@
                     "endOffset": 763
                 },
                 "from": {
-                    "file": "D:\\android\\TankWar\\src\\main\\res\\values\\styles.xml",
+                    "file": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\values\\styles.xml",
                     "position": {
                         "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 510,
+                        "startOffset": 525,
                         "endLine": 17,
                         "endColumn": 12,
-                        "endOffset": 665
+                        "endOffset": 682
                     }
                 }
             }

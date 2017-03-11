@@ -12,7 +12,7 @@ import com.tankwar.engine.subsystem.ControlSubsystem;
 import com.tankwar.engine.subsystem.Controllable;
 import com.tankwar.engine.subsystem.Drawable;
 import com.tankwar.game.Game;
-import com.tankwar.utils.GameSound;
+import com.tankwar.util.GameSound;
 
 final public class VirtualPad implements ControlSubsystem.TouchEventListener, Drawable {
 	public int D_Pad_W = 50;

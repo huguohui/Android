@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.SoundPool;
 
-import com.tankwar.engine.manager.FileManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,7 +48,7 @@ public class ResourceManager extends FileManager {
 				fis = new FileInputStream(file);
 			}
 		}catch(IOException e) {
-			com.tankwar.utils.Log.e(e);
+			com.tankwar.util.Log.e(e);
 		}
 
 		return fis;
