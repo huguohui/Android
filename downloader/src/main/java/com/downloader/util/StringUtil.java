@@ -167,4 +167,23 @@ final public class StringUtil {
 
 		return null;
 	}
+
+
+	/**
+	 * Checks given string if hex.
+	 * @param hex String that need to checking.
+	 * @return If is hex true else false.
+	 */
+	public final static boolean isHex(String hex) {
+		if (hex == null || hex.length() == 0) return false;
+
+		byte[] chars = hex.getBytes();
+		for (int i = 0; i < chars.length; i++) {
+			if (!((chars[i] >= 48 && chars[i] <= 57)
+					|| (chars[i] >= 65 && chars[i] <= 90)
+					|| (chars[i] >= 97 && chars[i] <= 122)))
+				return false;
+		}
+		return true;
+	}
 }

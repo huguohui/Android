@@ -48,7 +48,7 @@ public class HttpHeader extends AbstractHeader {
 	 * @throws IOException 
 	 * @throws NullPointerException 
 	 */
-	public HttpHeader(String header) throws NullPointerException, IOException {
+	public HttpHeader(String header) throws Exception {
 		super(header);
 	}
 
@@ -68,7 +68,7 @@ public class HttpHeader extends AbstractHeader {
 	 *
 	 * @param header A string inArray header data.
 	 */
-	public HttpHeader(InputStream header) throws IOException {
+	public HttpHeader(InputStream header) throws Exception {
 		super(header);
 	}
 	
@@ -79,7 +79,7 @@ public class HttpHeader extends AbstractHeader {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public HttpHeader(HttpHeader header) throws NullPointerException, IOException {
+	public HttpHeader(HttpHeader header) throws Exception {
 		super(header);
 	}
 
@@ -90,7 +90,7 @@ public class HttpHeader extends AbstractHeader {
 	 *
 	 * @param header A string inArray header data.
 	 */
-	public HttpHeader(Reader header) throws IOException {
+	public HttpHeader(Reader header) throws Exception {
 		super(header);
 	}
 	

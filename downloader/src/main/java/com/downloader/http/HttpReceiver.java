@@ -1,7 +1,10 @@
 package com.downloader.http;
 
 
+import com.downloader.base.AbstractReceiver;
+import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
+import com.downloader.util.Writable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,8 +35,8 @@ public class HttpReceiver extends SocketReceiver {
 	/** The length of downloaded data. */
 	private long mReceivedLength;
 
-	/** Chunked parser. */
-	private HttpChunkedParser mChunkedParser = new HttpChunkedParser();
+	/** Buffer for receiver. */
+	private byte[] mBuffer = new byte[0x100000];
 
 	
 	/**
@@ -41,8 +44,8 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param is A {@link InputStream}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(InputStream is, Range r) throws IOException {
-		super(is);
+	public HttpReceiver(InputStream is, Writable w, Range r) throws IOException {
+		super(is, w);
 		setPortal(r != null);
 	}
 	
@@ -52,8 +55,8 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param is A {@link InputStream}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(InputStream is) throws IOException {
-		this(is, null);
+	public HttpReceiver(InputStream is, Writable w) throws IOException {
+		this(is, w, null);
 	}
 
 
@@ -62,7 +65,43 @@ public class HttpReceiver extends SocketReceiver {
 	 * @return Parsed chunk data.
 	 */
 	private byte[] receiveChunked() throws IOException {
-		return mChunkedParser.parse(mInputStream);
+		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE];
+		int chunkSize = 0;
+		while((chunkSize = getChunkSize(mInputStream)) > 0) {
+
+		}
+	}
+
+
+	/**
+	 * Gets chunk size from special InputStream.
+	 * @param is Special InputStream.
+	 * @return Chunk size.
+	 * @throws IOException
+	 */
+	private int getChunkSize(InputStream is) throws IOException {
+		byte aByte;
+		int matchCount = 0, byteCount = 0, emptyLine = 0;
+		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
+
+		while(Receiver.END_OF_STREAM != (aByte = (byte)is.read())) {
+			if (aByte == crlf[matchCount]) {
+				if (++matchCount == 2) {
+					if (byteCount != 0)
+						return Integer.parseInt(new String(buff, 0, byteCount), 16);
+					else
+						emptyLine++;
+
+					byteCount = 0;
+					matchCount = 0;
+				}
+			}else{
+				matchCount = 0;
+				buff[byteCount++] = aByte;
+			}
+		}
+
+		return emptyLine > 1 ? 0 : -1;
 	}
 
 

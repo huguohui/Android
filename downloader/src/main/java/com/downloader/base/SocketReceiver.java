@@ -4,6 +4,7 @@ import com.downloader.util.Writable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.util.Arrays;
 
@@ -100,4 +101,39 @@ public class SocketReceiver extends AbstractReceiver {
 	public void run() {
 
 	}
+
+
+	/**
+	 * Keep receving data from stream.
+	 * @throws IOException If exception.
+	 */
+	private void receiveAndSave() {
+		byte[] buff;
+		int remianLen = (int) (getLength() - getReceivedLength()),
+				receiveLen = BUFFER_SIZE;
+
+		try {
+			if (!isChunked) {
+				if (remianLen <= 0) {
+					setState(State.finished);
+					return;
+				}
+				receiveLen = Math.min(BUFFER_SIZE, remianLen);
+			}
+
+			buff = receive(mInputStream, receiveLen);
+			if (buff == null) {
+				setState(State.finished);
+				return;
+			}
+
+			setReceivedLength(getReceivedLength() + buff.length);
+			getSaveTo().write(buff);
+		} catch(IOException e) {
+			setState(State.exceptional);
+			e.printStackTrace();
+		}
+	}
+
+
 }

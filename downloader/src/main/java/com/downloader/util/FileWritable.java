@@ -1,5 +1,7 @@
 package com.downloader.util;
 
+import com.downloader.client.Workable;
+
 import java.io.IOException;
 
 /**
@@ -22,4 +24,16 @@ public interface FileWritable extends Writable {
 	 * @param end Position of data end.
 	 */
 	void write(long offset, byte[] data, int start, int end) throws IOException;
+
+
+	/**
+	 * Listener for listening file state.
+	 */
+	interface OnFileCreateListener {
+		/**
+		 * Invokes on file created.
+		 * @param fw File writer.
+		 */
+		void onFileCreate(AbstractFileWriter fw);
+	}
 }

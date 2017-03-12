@@ -45,57 +45,7 @@ public class HttpDownloader extends AbstractDownloader {
 	}
 
 
-	/**
-	 * Keep receving data from stream.
-	 * @throws IOException If exception.
-	 */
-//	private void receiveAndSave() {
-//		byte[] buff;
-//		int remianLen = (int) (getLength() - getReceivedLength()),
-//				receiveLen = BUFFER_SIZE;
-//
-//		try {
-//			if (!isChunked) {
-//				if (remianLen <= 0) {
-//					setState(State.finished);
-//					return;
-//				}
-//				receiveLen = Math.min(BUFFER_SIZE, remianLen);
-//			}
-//
-//			buff = receive(mInputStream, receiveLen);
-//			if (buff == null) {
-//				setState(State.finished);
-//				return;
-//			}
-//
-//			setReceivedLength(getReceivedLength() + buff.length);
-//			getSaveTo().write(buff);
-//		} catch(IOException e) {
-//			setState(State.exceptional);
-//			e.printStackTrace();
-//		}
-//	}
 
-
-	/**
-	 * Finish to receiving data.
-	 */
-	private void finishReceive() {
-		try {
-			OutputStream os = getSaveTo();
-			os.flush();
-			os.close();
-
-		//	isStop = true;
-			invokeListener("onFinish");
-			setState(State.finished);
-			setIsFinished(true);
-		} catch (IOException e) {
-			setState(State.exceptional);
-			e.printStackTrace();
-		}
-	}
 
 
 	/**
@@ -105,17 +55,6 @@ public class HttpDownloader extends AbstractDownloader {
 //		ThreadManager.ThreadDescriptor td = new ThreadManager.ThreadDescriptor(this, "");
 //		setThread(ThreadManager.getInstance().create(td));
 //		getThread().start();
-	}
-
-
-	/**
-	 * Get the progress of task. value: 0 ~ 100
-	 *
-	 * @return Progress of task.
-	 */
-	@Override
-	public int progress() {
-		return 0;
 	}
 
 

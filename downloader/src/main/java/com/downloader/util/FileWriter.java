@@ -1,70 +1,69 @@
 package com.downloader.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Map;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * File writer.
  */
-public class FileWriter implements FileWritable {
-	/** The file for writing. */
-	protected File mFile;
+public class FileWriter extends AbstractFileWriter {
+	/** Step for writing. */
+	protected int step = 0;
 
-	/** The data queue for writing. */
-	protected Queue<Map<Long, byte[]> mQueue = new ArrayDeque<>();
-
-	/** Offset of file writer. */
-	protected long mOffset = 0;
+	/** Random access file for writer. */
+	protected RandomAccessFile mWriter;
 
 
 	/**
-	 * Constructor a object for file writer.
+	 * Create a file with special name and size.
+	 *
+	 * @param file File will to creating.
+	 * @param size Size of file will to creating.
 	 */
-	public FileWrite(File file, ) throws IOException {
-		if (file == null)
-			throw new NullPointerException();
-
-		mFile = file;
+	public FileWriter(File file, long size) throws IOException {
+		super(file, size);
+		mWriter = new RandomAccessFile(file, "w");
 	}
 
 
 	/**
-	 * To writing data from offset 0.
-	 *
-	 * @param data Data will to writing.
+	 * Create a file by file.
+	 * @param file File will to creating.
 	 */
-	@Override
-	public void write(byte[] data) throws IOException {
-		write(offset, data);
+	public FileWriter(File file) throws IOException {
+		this(file, 0);
 	}
 
 
 	/**
-	 * To writing data with special length form offset 0.
-	 *
-	 * @param data  Data will to writing.
-	 * @param start Position of start.
-	 * @param end   Position of end.
+	 * To do some work.
 	 */
 	@Override
-	public void wirte(byte[] data, int start, int end) throws IOException {
-		write(offset, data, start, end);
-	}
+	public void work() throws Exception {
+		switch(step) {
+			case 1:
+				synchronized (mQueue) {
+					Map<Long, byte[]> map = mQueue.remove();
+					if (map != null) {
+						mWriter.seek(mOffset);
+						for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
+							mWriter.write(it.next());
+						}
+					}
+				}
+				break;
 
-
-	/**
-	 * To writing data from special offset.
-	 *
-	 * @param offset Special offset.
-	 * @param data   Data will to writing.
-	 */
-	@Override
-	public void write(long offset, byte[] data) throws IOException {
-		write(offset, data, 0, data.length);
+			case 0:
+				makeFile(mFile, mLength);
+				break;
+		}
 	}
 
 
@@ -78,16 +77,38 @@ public class FileWriter implements FileWritable {
 	 */
 	@Override
 	public void write(long offset, byte[] data, int start, int end) throws IOException {
-		if (data == null)
-			throw new NullPointerException();
+		if (offset < 0) {
+			throw new IllegalArgumentException("Specials offset is invalid!");
+		}
+		else if (data == null) {
+			throw new NullPointerException("Data for writing can't be null!");
+		}
+		else if (start < 0 || end < 0 || end < start) {
+			throw new IllegalArgumentException("Specials start or end is invalid!");
+		}
 
-		if (offset < 0)
-			throw new IllegalArgumentsException("Special offset is illegal!");
+		synchronized (mQueue) {
+			int writeLen = end - start;
+			Map<Long, byte[]> map = new HashMap<>();
+			data = writeLen == data.length ? data : Arrays.copyOfRange(data, start, end);
+			map.put(offset, data);
+			mQueue.add(map);
+			mOffset = offset + writeLen;
+		}
+	}
 
-		Map<int, byte[]> map = new HashMap<>();
-		data = Arrays.copyRangeOf(data, start, end);
-		map.put(offset, data);
-		mQueue.add(map);
-		mOffset = offset + (end - start);
+
+	/**
+	 * Make a file with special name and size.
+	 *
+	 * @param file File object.
+	 * @param size File size.
+	 */
+	@Override
+	public void makeFile(File file, long size) throws IOException {
+		if (file != null) {
+			mWriter.setLength(size);
+			step++;
+		}
 	}
 }
