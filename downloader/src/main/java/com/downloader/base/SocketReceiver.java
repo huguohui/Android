@@ -82,8 +82,10 @@ public class SocketReceiver extends AbstractReceiver {
 
 			if (END_OF_STREAM == (read = mInputStream.read(buff, 0,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
-				if (count != 0 && count != size)
+				if (count != 0 && count != size) {
+					mReceivedLength += read;
 					return Arrays.copyOfRange(buff, 0, count);
+				}
 
 				return null;
 			}
@@ -91,6 +93,7 @@ public class SocketReceiver extends AbstractReceiver {
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
 			freeLoop = 0;
+			mReceivedLength += read;
 		}
 
 		return chunk;
@@ -101,39 +104,4 @@ public class SocketReceiver extends AbstractReceiver {
 	public void run() {
 
 	}
-
-
-	/**
-	 * Keep receving data from stream.
-	 * @throws IOException If exception.
-	 */
-	private void receiveAndSave() {
-		byte[] buff;
-		int remianLen = (int) (getLength() - getReceivedLength()),
-				receiveLen = BUFFER_SIZE;
-
-		try {
-			if (!isChunked) {
-				if (remianLen <= 0) {
-					setState(State.finished);
-					return;
-				}
-				receiveLen = Math.min(BUFFER_SIZE, remianLen);
-			}
-
-			buff = receive(mInputStream, receiveLen);
-			if (buff == null) {
-				setState(State.finished);
-				return;
-			}
-
-			setReceivedLength(getReceivedLength() + buff.length);
-			getSaveTo().write(buff);
-		} catch(IOException e) {
-			setState(State.exceptional);
-			e.printStackTrace();
-		}
-	}
-
-
 }

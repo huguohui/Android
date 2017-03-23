@@ -30,6 +30,7 @@ public class FileWriter extends AbstractFileWriter {
 	public FileWriter(File file, long size) throws IOException {
 		super(file, size);
 		mWriter = new RandomAccessFile(file, "w");
+		makeFileBySize(mFile, mLength);
 	}
 
 
@@ -47,22 +48,14 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void work() throws Exception {
-		switch(step) {
-			case 1:
-				synchronized (mQueue) {
-					Map<Long, byte[]> map = mQueue.remove();
-					if (map != null) {
-						mWriter.seek(mOffset);
-						for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
-							mWriter.write(it.next());
-						}
-					}
+		synchronized (mQueue) {
+			Map<Long, byte[]> map = mQueue.remove();
+			if (map != null) {
+				mWriter.seek(mOffset);
+				for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
+					mWriter.write(it.next());
 				}
-				break;
-
-			case 0:
-				makeFile(mFile, mLength);
-				break;
+			}
 		}
 	}
 
@@ -105,7 +98,7 @@ public class FileWriter extends AbstractFileWriter {
 	 * @param size File size.
 	 */
 	@Override
-	public void makeFile(File file, long size) throws IOException {
+	public void makeFileBySize(File file, long size) throws IOException {
 		if (file != null) {
 			mWriter.setLength(size);
 			step++;

@@ -8,7 +8,7 @@ import java.io.InputStream;
 /**
  * Download some data form a place.
  */
-public abstract class AbstractReceiver implements Receiver, Runnable {
+public abstract class AbstractReceiver implements Receiver, Runnable, Stopable {
 	/** The requester object. */
 	protected InputStream mInputStream;
 
@@ -20,6 +20,9 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 
 	/** Writable of receiver. */
 	protected Writable mWritable;
+
+	/** Is finished? */
+	protected boolean isFinished = false;
 
 	/** Default buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
