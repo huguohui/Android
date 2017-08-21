@@ -27,5 +27,11 @@ public interface Receiver {
 	 * To receiving data from source, and save data to somewhere.
 	 * @param len Length of data.
 	 */
-	void receive(int len) throws IOException;
+	void receive(long len) throws IOException;
+
+
+	void start() throws IOException;
+
+
+	void stop() throws IOException;
 }

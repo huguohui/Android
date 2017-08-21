@@ -92,10 +92,12 @@ public class HttpRequest extends SocketRequest {
 		header.setVersion(HTTP_VERSION);
 		header.add("Accept", ACCEPT).add("Accept-Encoding", ACCEPT_ENCODING)
 			  .add("User-Agent", USER_AGENT).add("Connecting", CONNECTING);
+
 		if (mUrl != null) {
 			header.setUrl(UrlUtil.getUrlFullPath(mUrl));
 			header.add("Host", UrlUtil.getDomainWithPort(mUrl));
 		}
+
 		return header;
 	}
 

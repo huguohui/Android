@@ -39,7 +39,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		if (dt == null)
 			throw new RuntimeException("The specail task not exists!");
 		
-		dt.start();
+	//	dt.start();
 	}
 	
 	/**
@@ -51,10 +51,10 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 			@Override
 			public void run() {
 				for (DownloadTask dt : mList) {
-					int pg = dt.progress();
-					System.out.println(pg + "%");
-					if (pg == 100)
-						timer.cancel();
+//					int pg = dt.progress();
+//					System.out.println(pg + "%");
+//					if (pg == 100)
+//						timer.cancel();
 				}
 			}
 		}, 0, 1000);
@@ -136,9 +136,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 
 		switch(Protocol.valueOf(protocol)) {
 			case HTTP:
-				adt = new HttpDownloadTask(url.getFile());
-				AbstractTaskInfo ti = adt.info();
-				ti.setName("abc");
+//				adt = new HttpDownloadTask(url.getFile());
+//				AbstractTaskInfo ti = adt.info();
+//				ti.setName("abc");
 
 				break;
 		}

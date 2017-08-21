@@ -98,6 +98,17 @@ public class FileWriter extends AbstractFileWriter {
 	 * @param size File size.
 	 */
 	@Override
+	public void makeFile(File file, long size) throws IOException {
+
+	}
+
+
+	/**
+	 * Make a file with special name and size.
+	 *
+	 * @param file File object.
+	 * @param size File size.
+	 */
 	public void makeFileBySize(File file, long size) throws IOException {
 		if (file != null) {
 			mWriter.setLength(size);

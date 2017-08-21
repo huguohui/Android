@@ -6,43 +6,62 @@ import com.downloader.util.StringUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	/** The length of data. */
-	private long mLength = -1;
+	protected long mLength = -1;
 
 	/** The length of downloaded data. */
-	private long mReceivedLength;
-
-	/** The file name of saving download. */
-	private OutputStream mSaveTo;
+	protected long mReceivedLength;
 
 	/** The download start time. */
-	private long mStartTime;
+	protected long mStartTime;
 
 	/** The download state. */
-	private State mState = State.unstart;
+	protected State mState = State.unstart;
 
 	/** The download finished time. */
-	private long mFinishedTime;
+	protected long mFinishedTime;
 
 	/** Download is finished? */
-	private boolean mIsFinished = false;
+	protected boolean mIsFinished = false;
 
 	/** Datasource of downloading. */
-	private InputStream mDataSource = null;
+	protected InputStream mDataSource = null;
 
 	/** Listener of downloading state. */
-	private AbstractDownloader.Listener mListener = null;
+	protected AbstractDownloader.Listener mListener = null;
+
+	/** Download from special url. */
+	protected URL mUrl;
+
+	protected Request mRequest;
 
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {
-		"onStart", "onPause", "onResume", "onStop", "onFinish", "onReceive"
+		"onStart", "onPause", "onResume", "onStop", "onFinish"
 	};
 
 	/** The download states. */
 	public enum State {
 		unstart, receiving, paused, stoped, finished, exceptional, waiting
+	}
+
+
+	public AbstractDownloader(URL url) throws NullPointerException {
+		if (url == null)
+			throw new NullPointerException();
+
+		mUrl = url;
+	}
+
+
+	public AbstractDownloader(Request r) throws NullPointerException, IOException {
+		if (r == null)
+			throw new NullPointerException();
+
+		mRequest  = r;
 	}
 
 
@@ -97,7 +116,6 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 			case 2:		mListener.onResume(this);	break;
 			case 3:		mListener.onStop(this);		break;
 			case 4:		mListener.onFinish(this);	break;
-			case 5:		mListener.onReceive(this);	break;
 			default: 	// Do nothing...
 		}
 	}
@@ -117,14 +135,6 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 
 	public synchronized void setReceivedLength(long downloadedLength) {
 		mReceivedLength = downloadedLength;
-	}
-
-	public OutputStream getSaveTo() {
-		return mSaveTo;
-	}
-
-	public synchronized void setSaveTo(OutputStream saveTo) {
-		mSaveTo = saveTo;
 	}
 
 
@@ -191,17 +201,13 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 		 */
 		void onStart(AbstractDownloader abstractDownloader);
 
+
 		/**
 		 * Invokes on downloader stop download.
 		 * @param absReceiver The listenered downloader.
 		 */
 		void onStop(AbstractDownloader absReceiver);
 
-		/**
-		 * Invokes on downloader per receive.
-		 * @param downloader The listenered downloader.
-		 */
-		void onReceive(AbstractDownloader downloader);
 
 		/**
 		 * Invokes on downloader pause download.
@@ -209,11 +215,13 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 		 */
 		void onPause(AbstractDownloader downloader);
 
+
 		/**
 		 * Invokes on downloader resume download.
 		 * @param downloader The listenered downloader.
 		 */
 		void onResume(AbstractDownloader downloader);
+
 
 		/**
 		 * Invokes on downloader finish download.

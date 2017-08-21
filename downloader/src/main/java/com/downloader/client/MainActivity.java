@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,7 +33,7 @@ import java.util.TimerTask;
 
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     ListView listView;
     Looper looper = Looper.getMainLooper();
     Handler handler ;
@@ -46,60 +47,61 @@ public class MainActivity extends ActionBarActivity {
 
         listView = (ListView) findViewById(R.id.listView2);
         List<Map<String, Object>> list = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             Map<String, Object> map = new HashMap<>();
-            map.put("progress", i);
+            map.put("progress", i * 10);
             list.add(map);
         }
 
         final MyAdspter ma = new MyAdspter(this, list);
         listView.setAdapter(ma);
+        ma.notifyDataSetChanged();
 
 
 
-        final Timer timer = new Timer();
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                int last = i;
-                i += new Random().nextInt(30);
-                int num = 0, diff = i - last;
-                if (i >= 100) {
-                    timer.cancel();
-                }
-
-
-
-                while(num++ < diff) {
-                    Message m = new Message();
-                    m.what = 0;
-                    m.arg1 = last + num;
-                    ((Map<String, Object>) ma.getItem(0)).put("progress", last + num);
-                    Log.e("progress", String.valueOf(last + num));
-                    try {
-                        Thread.sleep(10);
-                    } catch (Exception e) {
-                    }
-                    handler.sendMessage(m);
-                }
-            }
-        }, 0, 1000);
-
-
-        handler = new Handler() {
-            public int last = 0;
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-
-                switch(msg.what) {
-                    case  0:
-                        ma.notifyDataSetChanged();
-                        break;
-                }
-            }
-        };
+//        final Timer timer = new Timer();
+//
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                int last = i;
+//                i += new Random().nextInt(30);
+//                int num = 0, diff = i - last;
+//                if (i >= 100) {
+//                    timer.cancel();
+//                }
+//
+//
+//
+//                while(num++ < diff) {
+//                    Message m = new Message();
+//                    m.what = 0;
+//                    m.arg1 = last + num;
+//                    ((Map<String, Object>) ma.getItem(0)).put("progress", last + num);
+//                    Log.e("progress", String.valueOf(last + num));
+//                    try {
+//                        Thread.sleep(10);
+//                    } catch (Exception e) {
+//                    }
+//                    handler.sendMessage(m);
+//                }
+//            }
+//        }, 0, 1000);
+//
+//
+//        handler = new Handler() {
+//            public int last = 0;
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//
+//                switch(msg.what) {
+//                    case  0:
+//                        ma.notifyDataSetChanged();
+//                        break;
+//                }
+//            }
+//        };
     }
 
 
@@ -183,7 +185,7 @@ class MyAdspter extends BaseAdapter {
     public View getView(int position, View cv, ViewGroup parent) {
         cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
         ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
-        pb.setProgress((Integer) data.get(0).get("progress"));
+        pb.setProgress((Integer) data.get(position).get("progress"));
         return cv;
     }
 }

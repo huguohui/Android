@@ -4,7 +4,6 @@ import com.downloader.util.Writable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ConnectException;
 import java.util.Arrays;
 
@@ -12,6 +11,13 @@ import java.util.Arrays;
  * Socket receiver can receive data from input stream.
  */
 public class SocketReceiver extends AbstractReceiver {
+	/** Size for next receiving. */
+	protected long mSizeWillReceive = 0;
+
+	/** Is receives portal data? */
+	protected boolean isPortal = false;
+
+
 	/**
 	 * Construct a downloader by requester.
 	 *
@@ -29,6 +35,10 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	public SocketReceiver(InputStream is, Writable w, Range r) {
 		super(is, w, r);
+		isPortal = r != null;
+
+		if (isPortal)
+			mSizeWillReceive = r.getRange();
 	}
 
 
@@ -53,8 +63,17 @@ public class SocketReceiver extends AbstractReceiver {
 	 * @param size
 	 */
 	@Override
-	public void receive(int size) throws IOException {
-		mWritable.write(receiveData(size));
+	public void receive(long size) throws IOException {
+		while(size > 0) {
+			mWritable.write(receiveData(BUFFER_SIZE >= size ? (int)size : BUFFER_SIZE));
+			size -= BUFFER_SIZE;
+		}
+	}
+
+
+	@Override
+	public void start() throws IOException {
+
 	}
 
 
@@ -74,9 +93,13 @@ public class SocketReceiver extends AbstractReceiver {
 			byte[] buff = new byte[BUFFER_SIZE];
 
 			if (available == 0 && freeLoop++ < 100) {
-				try { Thread.sleep(1); } catch( Exception ex ) {
+				try {
+					Thread.sleep(1);
+				}
+				catch ( Exception ex ) {
 					ex.printStackTrace();
 				}
+
 				continue;
 			}
 
@@ -102,6 +125,15 @@ public class SocketReceiver extends AbstractReceiver {
 
 	@Override
 	public void run() {
+
+	}
+
+
+	/**
+	 * Stop the object of managment.
+	 */
+	@Override
+	public void stop() {
 
 	}
 }

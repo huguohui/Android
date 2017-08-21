@@ -6,6 +6,8 @@ import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
 import com.downloader.util.Writable;
 
+import org.apache.http.client.methods.HttpHead;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,9 +27,6 @@ public class HttpReceiver extends SocketReceiver {
 	
 	/** Is stop receive? */
 	protected boolean isStop = false;
-	
-	/** Is receives portal data? */
-	protected boolean isPortal = false;
 
 	/** The length of data. */
 	protected long mLength = -1;
@@ -38,11 +37,10 @@ public class HttpReceiver extends SocketReceiver {
 	/** Buffer for receiver. */
 	protected byte[] mBuffer = new byte[0x100000];
 
-	/** Size for next receiving. */
-	protected int mSizeWillReceive = 0;
-
 	/** Size of current receiving chunked block. */
 	protected long mCurrentChunkedSize = 0;
+
+	protected HttpHeader mHeader;
 
 	
 	/**
@@ -50,10 +48,10 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpDownloaer d, Writable w, Range r) throws IOException {
-		super(d.getInputStream(), w);
-		isPortal = r != null;
-		isChunked = CHUNKED.equals(((HttpHeader) d.getHeader()).get(Http.TRANSFER_ENCODING));
+	public HttpReceiver(HttpRequest d, Writable w, Range r) throws IOException {
+		super(d.getSocket().getInputStream(), w);
+		mHeader = (HttpHeader) d.getHeader();
+		isChunked = CHUNKED.equals(mHeader.get(Http.TRANSFER_ENCODING));
 	}
 	
 
@@ -62,7 +60,7 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpDownloader d, Writable w) throws IOException {
+	public HttpReceiver(HttpRequest d, Writable w) throws IOException {
 		this(d, w, null);
 	}
 
@@ -71,17 +69,25 @@ public class HttpReceiver extends SocketReceiver {
 	 * Download data as chunk.
 	 * @return Parsed chunk data.
 	 */
-	private void receiveChunked(int size) throws IOException {
-		mSizeWillReceive = size;
-		while(mSizeWillReceive > 0) {
-			if (mCurrentChunkedSize <= 0)
+	private void receiveChunked(long size) throws IOException {
+		if (size < 0) {
+			while(mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
+				super.receive(mCurrentChunkedSize);
+				mCurrentChunkedSize = 0;
+			}
+
+			return;
+		}
+
+		while (size > 0) {
+			if (mCurrentChunkedSize <= 0) {
 				if ((mCurrentChunkedSize = getChunkSize(mInputStream)) == 0) {
 					isFinished = true;
 					return;
 				}
 			}
 
-			int willToReceiving = mCurrentChunkedSize < mSizeWillReceive ? mCurrentChunkedSize : mSizeWillReceive;
+			long willToReceiving = mCurrentChunkedSize < mSizeWillReceive ? mCurrentChunkedSize : mSizeWillReceive;
 			super.receive(willToReceiving);
 			mCurrentChunkedSize -= willToReceiving;
 			mSizeWillReceive -= willToReceiving;
@@ -126,7 +132,7 @@ public class HttpReceiver extends SocketReceiver {
 	 * @param size Size of will receiving.
 	 */
 	@Override
-	public synchronized void receive(int size) throws IOException {
+	public synchronized void receive(long size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 		

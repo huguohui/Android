@@ -2,14 +2,27 @@ package com.downloader.http;
 
 import com.downloader.base.AbstractDownloader;
 import com.downloader.base.AbstractTaskInfo;
+import com.downloader.base.Request;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * Downloads data based http protocol.
  */
 public class HttpDownloader extends AbstractDownloader {
+	public HttpDownloader(URL url) throws NullPointerException {
+		super(url);
+	}
+
+
+	public HttpDownloader(HttpRequest hr) throws NullPointerException, IOException {
+		this((URL)null);
+
+	}
+
+
 	/**
 	 * Prepare to start receiving data.
 	 * @throws IOException

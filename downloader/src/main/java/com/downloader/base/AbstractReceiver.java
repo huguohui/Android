@@ -8,7 +8,7 @@ import java.io.InputStream;
 /**
  * Download some data form a place.
  */
-public abstract class AbstractReceiver implements Receiver, Runnable, Stopable {
+public abstract class AbstractReceiver implements Receiver, Runnable {
 	/** The requester object. */
 	protected InputStream mInputStream;
 
@@ -26,6 +26,9 @@ public abstract class AbstractReceiver implements Receiver, Runnable, Stopable {
 
 	/** Default buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
+
+	/** Received data length. */
+	protected long mReceivedLength;
 
 
 	/**
@@ -78,12 +81,21 @@ public abstract class AbstractReceiver implements Receiver, Runnable, Stopable {
 		mInputStream = inputStream;
 	}
 
+
+	private long getReceivedLength() {
+		return mReceivedLength;
+	}
+
+
+	private void setReceivedLength(long receivedLength) {
+		mReceivedLength = receivedLength;
+	}
 	
 	
 	/**
 	 * A range of data.
 	 */
-	public static class Range {
+	final public static class Range {
 		/** Start offset. */
 		public long start;
 		
@@ -91,16 +103,21 @@ public abstract class AbstractReceiver implements Receiver, Runnable, Stopable {
 		public long end;
 	
 		public Range(long s, long e) {
-			if (s < 0 || e < 0 || s > e)
-				throw new IllegalArgumentException("The start and end can't < 0 and end must >= start!");
+			if (s > e || e != 0)
+				throw new IllegalArgumentException("The end must >= start and end must > 0!");
 
 			this.start = s;
 			this.end = e;
 		}
+
+
+		public long getRange() {
+			return -~end - start;
+		}
 		
 		
 		public String toString() {
-			return String.format("%d-%d", start, end - 1);
+			return String.format("%d-%d", start, end);
 		}
 	}
 }
