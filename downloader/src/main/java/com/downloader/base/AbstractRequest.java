@@ -2,7 +2,6 @@ package com.downloader.base;
 
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -26,7 +25,7 @@ public abstract class AbstractRequest implements Request {
     protected AbstractHeader mHeader;
 
     /** Http body. */
-    protected AbstractBody mBody;
+    protected AbstractEntity mBody;
 
     /** The state of requester. */
     protected State mState = State.ready;
@@ -69,13 +68,6 @@ public abstract class AbstractRequest implements Request {
      */
     public AbstractRequest() {
     }
-    
-    
-    /**
-     * Get a downloader of this request.
-     * return A {@link AbstractDownloader} of this request.
-     */
-    public abstract AbstractDownloader getDownloader() throws Exception;
 
 
     /**
@@ -146,11 +138,11 @@ public abstract class AbstractRequest implements Request {
         mHeader = header;
     }
 
-    public AbstractBody getBody() {
+    public AbstractEntity getBody() {
         return mBody;
     }
 
-    public void setBody(AbstractBody body) {
+    public void setBody(AbstractEntity body) {
         mBody = body;
     }
 

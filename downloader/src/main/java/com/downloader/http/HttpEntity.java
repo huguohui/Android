@@ -1,7 +1,7 @@
 package com.downloader.http;
 
 
-import com.downloader.base.AbstractBody;
+import com.downloader.base.AbstractEntity;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -11,12 +11,12 @@ import java.io.Reader;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpBody extends AbstractBody {
+public class HttpEntity extends AbstractEntity {
 	/**
 	 * Construct a HTTP body from string.
 	 * @param body The content of body.
 	 */
-	public HttpBody(String body) {
+	public HttpEntity(String body) {
 		super(body);
 	}
 
@@ -55,7 +55,7 @@ public class HttpBody extends AbstractBody {
      * Construct a HTTP body from input stream.
      * @param body The input stream of inArray content.
      */
-    public HttpBody(InputStream body) {
+    public HttpEntity(InputStream body) {
         super(body);
     }
 

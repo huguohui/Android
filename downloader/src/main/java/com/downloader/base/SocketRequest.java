@@ -63,6 +63,15 @@ public class SocketRequest extends AbstractRequest {
 
 
 	/**
+	 * Get response of this request.
+	 */
+	@Override
+	public Response response() throws Exception {
+		return null;
+	}
+
+
+	/**
 	 * Request data to somewhere.
 	 *
 	 * @return If sent return true, else false.
@@ -84,16 +93,6 @@ public class SocketRequest extends AbstractRequest {
 	@Override
 	public void send(byte[] data) throws Exception {
 
-	}
-
-
-	/**
-	 * Get a downloader of this request.
-	 * return A {@link AbstractDownloader} of this request.
-	 */
-	@Override
-	public AbstractDownloader getDownloader() throws Exception {
-		return null;
 	}
 
 

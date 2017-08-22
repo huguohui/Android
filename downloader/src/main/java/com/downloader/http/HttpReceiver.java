@@ -6,8 +6,6 @@ import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
 import com.downloader.util.Writable;
 
-import org.apache.http.client.methods.HttpHead;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,10 +46,9 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpRequest d, Writable w, Range r) throws IOException {
-		super(d.getSocket().getInputStream(), w);
-		mHeader = (HttpHeader) d.getHeader();
-		isChunked = CHUNKED.equals(mHeader.get(Http.TRANSFER_ENCODING));
+	public HttpReceiver(HttpResponse d, Writable w, Range r) throws IOException {
+		super(d.getInputStream(), w, r);
+		isChunked = d.getTransferEncoding().equalsIgnoreCase(Http.CHUNKED);
 	}
 	
 
@@ -60,7 +57,7 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpRequest d, Writable w) throws IOException {
+	public HttpReceiver(HttpResponse d, Writable w) throws IOException {
 		this(d, w, null);
 	}
 

@@ -116,6 +116,7 @@ public abstract class AbstractHeader {
 	 * @param headerValue The value of new line.
 	 */
 	public AbstractHeader add(String headerKey, String headerValue) {
+		mContent.containsKey(headerKey);
 		mContent.put(headerKey, headerValue);
 		return this;
 	}

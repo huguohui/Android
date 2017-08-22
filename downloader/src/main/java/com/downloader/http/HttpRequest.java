@@ -72,15 +72,6 @@ public class HttpRequest extends SocketRequest {
 		setHeader(getDefaultHeader());
 	}
 
-	/**
-	 * Get a downloader of this request.
-	 * return A {@link AbstractDownloader} of this request.
-	 */
-	@Override
-	public AbstractDownloader getDownloader() throws Exception {
-		return null;
-	}
-
 
 	/**
 	 * Build default http header.
@@ -194,5 +185,10 @@ public class HttpRequest extends SocketRequest {
 		mUrl = url;
 		((HttpHeader)getHeader()).setUrl(UrlUtil.getUrlFullPath(mUrl));
 		getHeader().add("Host", UrlUtil.getDomainWithPort(mUrl));
+	}
+
+
+	public HttpResponse response() throws IOException {
+		return new HttpResponse(this);
 	}
 }

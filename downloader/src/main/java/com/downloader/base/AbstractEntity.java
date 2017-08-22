@@ -8,7 +8,7 @@ import java.io.Reader;
  * @author HGH
  * @since 2015/11/05
  */
-public abstract class AbstractBody {
+public abstract class AbstractEntity {
 	/**
 	 * content of binary.
 	 */
@@ -52,11 +52,14 @@ public abstract class AbstractBody {
 	private String type;
 
 
+	private InputStream mInputStream;
+
+
 	/** 
 	 * Construct a body from input stream.
 	 * @param body The content source.
 	 */
-	public AbstractBody(InputStream body) {
+	public AbstractEntity(InputStream body) {
         setContent(body);
 	}
 
@@ -65,7 +68,7 @@ public abstract class AbstractBody {
 	 * Construct a body from reader.
 	 * @param body The content source.
 	 */
-	public AbstractBody(Reader body) {
+	public AbstractEntity(Reader body) {
 		setContent(body);
 	}
 
@@ -74,7 +77,7 @@ public abstract class AbstractBody {
 	 * Construct a body from input stream.
 	 * @param body The content.
 	 */
-	public AbstractBody(String body) {
+	public AbstractEntity(String body) {
         setContent(body);
 	}
 

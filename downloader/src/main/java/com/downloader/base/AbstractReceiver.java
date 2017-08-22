@@ -50,7 +50,11 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 		mWritable = writable;
 		mRange = r;
 	}
-	
+
+
+	protected AbstractReceiver() {
+	}
+
 
 	public Thread getThread() {
 		return mThread;

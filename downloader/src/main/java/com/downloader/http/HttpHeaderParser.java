@@ -41,7 +41,9 @@ public class HttpHeaderParser implements Parser {
 				if (lineOffset == 0)
 					break;
 
-				while(pos <= lineOffset && buff[pos] != ':') pos++;
+				while(pos <= lineOffset && buff[pos] != ':')
+					pos++;
+
 				if (pos <= lineOffset - 1) {
 					header.add(new String(buff, 0, pos), new String(buff, pos + 1,
 							lineOffset - pos - 1).trim());
@@ -49,21 +51,18 @@ public class HttpHeaderParser implements Parser {
 					if (pos == lineOffset - 1) {
 						header.add(new String(buff, 0, pos - 1), "");
 					}else{
-						Pattern response = Pattern.compile("^HTTP\\/(\\d\\.\\d)\\s(\\d+)\\s(.+)");
-						Pattern request = Pattern.compile(
-								"^(GET|POST|PUT|HEAD)\\s([^\\s]+)\\sHTTP/(\\d\\.\\d)$");
-						Matcher matcher;
+						String firstLine = new String(buff, 0, lineOffset);
+						String[] arrStr = firstLine.split("\\s");
+						boolean isResponse = arrStr[0].startsWith("HTTP");
 						
-						if ((matcher = response.matcher(new String(buff, 0, lineOffset))) != null
-								&& matcher.matches()) {
-							header.setVersion(matcher.group(1));
-							header.setStatusCode(matcher.group(2));
-							header.setStatusMsg(matcher.group(3));
-						}else if ((matcher = request.matcher(new String(buff, 0, lineOffset))) != null
-								&& matcher.matches()) {
-							header.setMethod(Http.Method.valueOf(matcher.group(1)));
-							header.setUrl(matcher.group(2));
-							header.setVersion(matcher.group(3));
+						if (isResponse) {
+							header.setVersion(arrStr[0]);
+							header.setStatusCode(arrStr[1]);
+							header.setStatusMsg(arrStr[2]);
+						}else{
+							header.setMethod(Http.Method.valueOf(arrStr[0]));
+							header.setUrl(arrStr[1]);
+							header.setVersion(arrStr[2]);
 						}
 					}
 				}

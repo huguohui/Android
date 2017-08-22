@@ -3,6 +3,8 @@ package com.downloader.http;
 
 import com.downloader.base.AbstractHeader;
 
+import org.apache.http.client.methods.HttpHead;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -184,17 +186,28 @@ public class HttpHeader extends AbstractHeader {
 			  .append(mStatusCode).append(Http.SPACE).append(mStatusMsg).append(Http.CRLF);
 		}
 
-		for (String key : getContent().keySet()) {
-			if (key.length() == 0) {
-				sb.append(getContent().get(key));
+		for (Map.Entry<String, String> key : getContent().entrySet()) {
+			if (key.getKey().length() == 0) {
+				sb.append(key.getValue());
 				continue;
 			}
-			sb.append(key).append(":").append(Http.SPACE)
-			  .append(getContent().get(key)).append(Http.CRLF);
+
+			sb.append(key.getKey()).append(":").append(Http.SPACE)
+			  .append(key.getValue()).append(Http.CRLF);
 		}
 
 		sb.append(Http.CRLF);
 		return sb.toString();
+	}
+
+
+	public HttpHeader add(String key, String val) {
+		if (key.equals(Http.SET_COOKIE))
+			getContent().put(key, getContent().get(key).concat(Http.CRLF).concat(val));
+		else
+			super.add(key, val);
+
+		return this;
 	}
 
 

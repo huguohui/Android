@@ -18,6 +18,8 @@ public abstract class Http {
 	/** The default port of http. */
 	public final static int DEFAULT_PORT = 80;
 
+	public final static String CHUNKED = "chunked";
+
 	/** Enum of support request method. */
 	public enum Method {
 		GET,  //GET request.
@@ -69,6 +71,7 @@ public abstract class Http {
 	public final static String CONTENT_LOCATION		= "Content-Location";
 	public final static String CONTENT_MD5			= "Content-MD5";
 	public final static String CONTENT_DISPOSITION	= "Content-Disposition";
+
 
 	/**
 	 * MIME types.

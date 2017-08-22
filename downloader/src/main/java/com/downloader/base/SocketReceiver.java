@@ -42,6 +42,10 @@ public class SocketReceiver extends AbstractReceiver {
 	}
 
 
+	public SocketReceiver() {
+	}
+
+
 	/**
 	 * Receiving data.
 	 *

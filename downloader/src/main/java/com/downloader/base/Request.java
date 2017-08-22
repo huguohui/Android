@@ -48,4 +48,8 @@ public interface Request {
 	 * Closes this request.
 	 */
 	void close() throws Exception;
+
+
+	/** Get response of this request. */
+	Response response() throws Exception;
 }
