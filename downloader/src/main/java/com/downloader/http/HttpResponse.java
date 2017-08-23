@@ -2,9 +2,11 @@ package com.downloader.http;
 
 import com.downloader.base.Response;
 import com.downloader.util.StringUtil;
+import com.downloader.util.UrlUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +20,8 @@ public class HttpResponse extends Response {
 	private HttpRequest mHttpRequest;
 
 	private InputStream mInputStream;
+
+	private Socket mSocket;
 
 	private HttpHeader mHeader;
 
@@ -48,7 +52,8 @@ public class HttpResponse extends Response {
 		mHttpRequest = r;
 
 		if (r.isConnect() && r.isSend()) {
-			mInputStream = r.getSocket().getInputStream();
+			mSocket = r.getSocket();
+			mInputStream = mSocket.getInputStream();
 			mHeader = new HttpHeader();
 			mHeader.setContent(mInputStream);
 			parseResponse();
@@ -68,7 +73,14 @@ public class HttpResponse extends Response {
 		mContentType = mHeader.get(Http.CONTENT_TYPE);
 		isKeepAlive = mHeader.get(Http.CONNECTION).equalsIgnoreCase("Keep-Alive");
 		mHttpVersion = Float.parseFloat(mHeader.getVersion());
+		String fileName = UrlUtil.getFilename(mHttpRequest.getUrl()), disp = "";
+		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.length() != 0) {
+			int off = 0;
+			if ((off = disp.indexOf("filename")) != -1)
+				fileName = disp.substring(off + 8);
+		}
 
+		mFileName = fileName;
 		String cookieStr = mHeader.get(Http.SET_COOKIE);
 		String[] cookieArr = cookieStr.split(Http.CRLF);
 		mCookies = new HttpCookie[cookieArr.length];
@@ -85,6 +97,13 @@ public class HttpResponse extends Response {
 								.parse(mHeader.get(Http.DATE));
 		}
 		catch(ParseException pe) {}
+	}
+
+
+	@Override
+	public void close() throws IOException {
+		mInputStream.close();
+		mSocket.close();
 	}
 
 

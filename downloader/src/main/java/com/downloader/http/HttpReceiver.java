@@ -26,12 +26,6 @@ public class HttpReceiver extends SocketReceiver {
 	/** Is stop receive? */
 	protected boolean isStop = false;
 
-	/** The length of data. */
-	protected long mLength = -1;
-
-	/** The length of downloaded data. */
-	protected long mReceivedLength;
-
 	/** Buffer for receiver. */
 	protected byte[] mBuffer = new byte[0x100000];
 
@@ -132,9 +126,6 @@ public class HttpReceiver extends SocketReceiver {
 	public synchronized void receive(long size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
-		
-		if (getLength() > 0 && size + getReceivedLength() > getLength())
-			size = (int) (getLength() - getReceivedLength());
 
 		if (isChunked)
 			receiveChunked(size);
@@ -143,25 +134,17 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
-	private long getReceivedLength() {
-		return mReceivedLength;
+	public void run() {
+		try {
+			if (!isPortal)
+				receive();
+			else
+				receive(mSizeWillReceive);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-
-	private void setReceivedLength(long receivedLength) {
-		mReceivedLength = receivedLength;
-	}
-
-
-	private long getLength() {
-		return mLength;
-	}
-
-
-	private void setLength(long length) {
-		mLength = length;
-	}
-	
 
 	public boolean isPortal() {
 		return isPortal;

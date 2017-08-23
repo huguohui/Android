@@ -14,9 +14,6 @@ public class SocketReceiver extends AbstractReceiver {
 	/** Size for next receiving. */
 	protected long mSizeWillReceive = 0;
 
-	/** Is receives portal data? */
-	protected boolean isPortal = false;
-
 
 	/**
 	 * Construct a downloader by requester.
@@ -35,7 +32,6 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	public SocketReceiver(InputStream is, Writable w, Range r) {
 		super(is, w, r);
-		isPortal = r != null;
 
 		if (isPortal)
 			mSizeWillReceive = r.getRange();
@@ -72,12 +68,6 @@ public class SocketReceiver extends AbstractReceiver {
 			mWritable.write(receiveData(BUFFER_SIZE >= size ? (int)size : BUFFER_SIZE));
 			size -= BUFFER_SIZE;
 		}
-	}
-
-
-	@Override
-	public void start() throws IOException {
-
 	}
 
 
@@ -129,15 +119,13 @@ public class SocketReceiver extends AbstractReceiver {
 
 	@Override
 	public void run() {
-
-	}
-
-
-	/**
-	 * Stop the object of managment.
-	 */
-	@Override
-	public void stop() {
-
+		try {
+			if (isPortal)
+				receive();
+			else
+				receive(mSizeWillReceive);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

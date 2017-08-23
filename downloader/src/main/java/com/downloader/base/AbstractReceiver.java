@@ -9,11 +9,11 @@ import java.io.InputStream;
  * Download some data form a place.
  */
 public abstract class AbstractReceiver implements Receiver, Runnable {
+	/** Default buffer size. */
+	public final static int BUFFER_SIZE = 1024 << 3;
+
 	/** The requester object. */
 	protected InputStream mInputStream;
-
-	/** The thread of receiver. */
-	protected Thread mThread = null;
 
 	/** Range of data will to receiving. */
 	protected AbstractReceiver.Range mRange = null;
@@ -24,11 +24,11 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	/** Is finished? */
 	protected boolean isFinished = false;
 
-	/** Default buffer size. */
-	public final static int BUFFER_SIZE = 1024 << 3;
-
 	/** Received data length. */
 	protected long mReceivedLength;
+
+	/** Is receives portal data? */
+	protected boolean isPortal = false;
 
 
 	/**
@@ -49,20 +49,11 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 		mInputStream = is;
 		mWritable = writable;
 		mRange = r;
+		isPortal = r != null;
 	}
 
 
 	protected AbstractReceiver() {
-	}
-
-
-	public Thread getThread() {
-		return mThread;
-	}
-
-
-	public void setThread(Thread thread) {
-		mThread = thread;
 	}
 
 
@@ -71,31 +62,26 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	}
 
 
-	public void setRange(Range range) {
-		mRange = range;
-	}
-
-
-	private InputStream getInputStream() {
+	public InputStream getInputStream() {
 		return mInputStream;
 	}
 
 
-	private void setInputStream(InputStream inputStream) {
-		mInputStream = inputStream;
-	}
-
-
-	private long getReceivedLength() {
+	public long getReceivedLength() {
 		return mReceivedLength;
 	}
 
 
-	private void setReceivedLength(long receivedLength) {
-		mReceivedLength = receivedLength;
+	public boolean isFinished() {
+		return isFinished;
 	}
-	
-	
+
+
+	public boolean isPortal() {
+		return isPortal;
+	}
+
+
 	/**
 	 * A range of data.
 	 */

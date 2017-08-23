@@ -1,10 +1,12 @@
 package com.downloader.base;
 
 
+import java.io.Closeable;
+
 /**
  * Response for requesting.
  */
-public abstract class Response {
+public abstract class Response implements Closeable {
 	/**
 	 * Get response from request.
 	 * @param r Request object.

@@ -5,15 +5,13 @@ import com.downloader.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 
-public abstract class AbstractDownloader implements Controlable, DownloadTask {
+public abstract class AbstractDownloader implements Controlable {
 	/** The length of data. */
 	protected long mLength = -1;
 
 	/** The length of downloaded data. */
-	protected long mReceivedLength;
+	protected long mDownloadedLength;
 
 	/** The download start time. */
 	protected long mStartTime;
@@ -33,11 +31,6 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	/** Listener of downloading state. */
 	protected AbstractDownloader.Listener mListener = null;
 
-	/** Download from special url. */
-	protected URL mUrl;
-
-	protected Request mRequest;
-
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {
 		"onStart", "onPause", "onResume", "onStop", "onFinish"
@@ -46,22 +39,6 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	/** The download states. */
 	public enum State {
 		unstart, receiving, paused, stoped, finished, exceptional, waiting
-	}
-
-
-	public AbstractDownloader(URL url) throws NullPointerException {
-		if (url == null)
-			throw new NullPointerException();
-
-		mUrl = url;
-	}
-
-
-	public AbstractDownloader(Request r) throws NullPointerException, IOException {
-		if (r == null)
-			throw new NullPointerException();
-
-		mRequest  = r;
 	}
 
 
@@ -121,6 +98,10 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	}
 
 
+	public long getDownloadedLength() {
+		return mDownloadedLength;
+	}
+
 	public long getLength() {
 		return mLength;
 	}
@@ -128,15 +109,6 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	public synchronized void setLength(long length) {
 		mLength = length;
 	}
-
-	public long getReceivedLength() {
-		return mReceivedLength;
-	}
-
-	public synchronized void setReceivedLength(long downloadedLength) {
-		mReceivedLength = downloadedLength;
-	}
-
 
 	public long getStartTime() {
 		return mStartTime;
@@ -178,12 +150,12 @@ public abstract class AbstractDownloader implements Controlable, DownloadTask {
 	}
 
 
-	public Listener getReceiverListener() {
+	public Listener getListener() {
 		return mListener;
 	}
 
 
-	public void setReceiverListener(Listener Listener) {
+	public void setListener(Listener Listener) {
 		if (Listener == null)
 			return;
 

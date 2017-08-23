@@ -29,9 +29,4 @@ public interface Receiver {
 	 */
 	void receive(long len) throws IOException;
 
-
-	void start() throws IOException;
-
-
-	void stop() throws IOException;
 }
