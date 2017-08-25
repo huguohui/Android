@@ -17,7 +17,7 @@ import java.net.URL;
  */
 public class HttpRequest extends SocketRequest {
     /** The method of requesting  */
-    private Http.Method mMethod = Http.Method.GET;
+    private Method mMethod = Method.GET;
 
 	/** Requested url. */
 	private URL mUrl;
@@ -43,7 +43,7 @@ public class HttpRequest extends SocketRequest {
      * @param url Special URL.
      * @param method Special method of requesting.
      */
-	public HttpRequest(URL url, Http.Method method) throws IOException {
+	public HttpRequest(URL url, Method method) throws IOException {
 		super(UrlUtil.getSocketAddressByUrl(url));
 		if (url == null)
 			throw new NullPointerException("The URL can't null!");
@@ -97,7 +97,7 @@ public class HttpRequest extends SocketRequest {
      * Sends http request.
      */
     @Override
-    public synchronized void send() throws Exception {
+    public synchronized void send() throws IOException {
 		send(getHeader().toString().getBytes());
 		if (getBody() != null)
 			send(getBody().getContent());
@@ -114,7 +114,7 @@ public class HttpRequest extends SocketRequest {
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public synchronized void send(byte[] data) throws Exception {
+	public synchronized void send(byte[] data) throws IOException {
 		OutputStream to = getSocket().getOutputStream();
 		if (to == null || data == null)
 			throw new RuntimeException("The OutputStream or data is null!");
@@ -127,7 +127,7 @@ public class HttpRequest extends SocketRequest {
 	 * Open a url address.
 	 * @throws IOException If exception.
 	 */
-	public void open(URL url, Http.Method method) throws IOException {
+	public void open(URL url, Method method) throws IOException {
 		setUrl(url);
 		setMethod(method == null ? Method.GET : method);
 		open(UrlUtil.getSocketAddressByUrl(url));
@@ -164,11 +164,11 @@ public class HttpRequest extends SocketRequest {
 	}
 	
 
-    public Http.Method getMethod() {
+    public Method getMethod() {
         return mMethod;
     }
 
-    public void setMethod(Http.Method method) {
+    public void setMethod(Method method) {
         this.mMethod = method;
     }
 

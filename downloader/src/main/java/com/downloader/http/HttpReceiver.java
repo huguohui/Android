@@ -42,7 +42,7 @@ public class HttpReceiver extends SocketReceiver {
 	 */
 	public HttpReceiver(HttpResponse d, Writable w, Range r) throws IOException {
 		super(d.getInputStream(), w, r);
-		isChunked = d.getTransferEncoding().equalsIgnoreCase(Http.CHUNKED);
+		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
 	}
 	
 

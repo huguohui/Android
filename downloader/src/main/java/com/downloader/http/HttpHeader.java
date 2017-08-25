@@ -1,14 +1,12 @@
 package com.downloader.http;
 
 
-import com.downloader.base.AbstractHeader;
-
-import org.apache.http.client.methods.HttpHead;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
+
+import com.downloader.base.AbstractHeader;
 
 /**
  * Describe a HTTP header. This header maybe 
@@ -202,8 +200,9 @@ public class HttpHeader extends AbstractHeader {
 
 
 	public HttpHeader add(String key, String val) {
-		if (key.equals(Http.SET_COOKIE))
-			getContent().put(key, getContent().get(key).concat(Http.CRLF).concat(val));
+		if (Http.SET_COOKIE.equalsIgnoreCase(key))
+			getContent().put(key, getContent().containsKey(key) ?
+					getContent().get(key).concat(Http.CRLF).concat(val) : val);
 		else
 			super.add(key, val);
 

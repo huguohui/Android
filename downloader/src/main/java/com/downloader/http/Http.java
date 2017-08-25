@@ -19,6 +19,11 @@ public abstract class Http {
 	public final static int DEFAULT_PORT = 80;
 
 	public final static String CHUNKED = "chunked";
+	
+	public final static String GMT_DATE_FORMAT[] = {
+			"EEE, dd MMM yyyy HH:mm:ss z",
+			"EEE, dd-MMM-yy HH:mm:ss z"
+	};
 
 	/** Enum of support request method. */
 	public enum Method {

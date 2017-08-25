@@ -1,9 +1,9 @@
 package com.downloader.http;
 
-import com.downloader.base.AbstractDownloader;
-
 import java.io.IOException;
 import java.net.URL;
+
+import com.downloader.base.AbstractDownloader;
 
 /**
  * Downloads data based http protocol.
@@ -25,10 +25,12 @@ public class HttpDownloader extends AbstractDownloader {
 
 
 	/**
-	 * Prepare to start receiving data.
+	 * Fetch info from given url.
 	 * @throws IOException
 	 */
 	private void fetchInfo() throws IOException {
-
+		if (httpResponse != null) {
+			mLength = httpResponse.getContentLength();
+		}
 	}
 }

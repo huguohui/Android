@@ -51,7 +51,10 @@ public class HttpResponse extends Response {
 		super(r);
 		mHttpRequest = r;
 
-		if (r.isConnect() && r.isSend()) {
+		if (r.isConnect()) {
+			if (!r.isSend())
+				r.send();
+			
 			mSocket = r.getSocket();
 			mInputStream = mSocket.getInputStream();
 			mHeader = new HttpHeader();
@@ -82,21 +85,25 @@ public class HttpResponse extends Response {
 
 		mFileName = fileName;
 		String cookieStr = mHeader.get(Http.SET_COOKIE);
-		String[] cookieArr = cookieStr.split(Http.CRLF);
-		mCookies = new HttpCookie[cookieArr.length];
-		for (int i = 0; i < cookieArr.length; i++) {
-			try {
-				mCookies[i] = new HttpCookie(cookieArr[i]);
-			} catch(Exception e) {
-				e.printStackTrace();
+		if (cookieStr != null) {
+			String[] cookieArr = cookieStr.split(Http.CRLF);
+			mCookies = new HttpCookie[cookieArr.length];
+			for (int i = 0; i < cookieArr.length; i++) {
+				try {
+					mCookies[i] = HttpCookie.formString(cookieArr[i]);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
 		try {
-			mDate = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss GMT", Locale.ENGLISH)
-								.parse(mHeader.get(Http.DATE));
+			mDate = new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
+							.parse(mHeader.get(Http.DATE));
 		}
-		catch(ParseException pe) {}
+		catch(ParseException pe) {
+			pe.printStackTrace();
+		}
 	}
 
 

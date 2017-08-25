@@ -25,11 +25,8 @@ public abstract class AbstractDownloader implements Controlable {
 	/** Download is finished? */
 	protected boolean mIsFinished = false;
 
-	/** Datasource of downloading. */
-	protected InputStream mDataSource = null;
-
 	/** Listener of downloading state. */
-	protected AbstractDownloader.Listener mListener = null;
+	protected Listener mListener = null;
 
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {

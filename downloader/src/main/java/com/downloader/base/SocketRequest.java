@@ -78,7 +78,7 @@ public class SocketRequest extends AbstractRequest {
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public void send() throws Exception {
+	public void send() throws IOException {
 
 	}
 
@@ -91,7 +91,7 @@ public class SocketRequest extends AbstractRequest {
 	 * @throws IOException If exception.
 	 */
 	@Override
-	public void send(byte[] data) throws Exception {
+	public void send(byte[] data) throws IOException {
 
 	}
 

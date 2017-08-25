@@ -56,7 +56,7 @@ public class HttpHeaderParser implements Parser {
 						boolean isResponse = arrStr[0].startsWith("HTTP");
 						
 						if (isResponse) {
-							header.setVersion(arrStr[0]);
+							header.setVersion(arrStr[0].split("/")[1]);
 							header.setStatusCode(arrStr[1]);
 							header.setStatusMsg(arrStr[2]);
 						}else{

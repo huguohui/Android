@@ -16,7 +16,7 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	protected InputStream mInputStream;
 
 	/** Range of data will to receiving. */
-	protected AbstractReceiver.Range mRange = null;
+	protected Range mRange = null;
 
 	/** Writable of receiver. */
 	protected Writable mWritable;
