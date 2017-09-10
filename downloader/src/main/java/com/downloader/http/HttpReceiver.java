@@ -134,6 +134,20 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
+	/**
+	 * To receiving data from source, and save data to somewhere.
+	 */
+	@Override
+	public synchronized void receive() throws IOException {
+		if (isChunked) {
+			receiveChunked(END_OF_STREAM);
+			return;
+		}
+
+		super.receive();
+	}
+
+
 	public void run() {
 		try {
 			if (!isPortal)

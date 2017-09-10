@@ -64,9 +64,11 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void receive(long size) throws IOException {
+		int willRec = 0;
 		while(size > 0) {
-			mWritable.write(receiveData(BUFFER_SIZE >= size ? (int)size : BUFFER_SIZE));
-			size -= BUFFER_SIZE;
+			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
+			mWritable.write(receiveData(willRec));
+			size -= willRec;
 		}
 	}
 
