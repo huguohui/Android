@@ -8,9 +8,9 @@ import java.util.Queue;
 /**
  * Abstract
  */
-public class TaskWorker implements ControlableWorker {
+public abstract class TaskWorker implements ControlableWorker {
 	/** Tag for class. */
-	public final static String TAG = "WORKER";
+	public final static String TAG = "TASK_WORKER";
 
 	/** Queue of workables. */
 	protected Queue<Workable> mWorkableQueue = new ArrayDeque<>();
