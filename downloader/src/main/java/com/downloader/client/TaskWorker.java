@@ -2,18 +2,20 @@ package com.downloader.client;
 
 import com.downloader.manager.ThreadManager;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Abstract
  */
-public abstract class TaskWorker implements ControlableWorker {
+public class TaskWorker implements ControlableWorker {
 	/** Tag for class. */
 	public final static String TAG = "TASK_WORKER";
 
 	/** Queue of workables. */
-	protected Queue<Workable> mWorkableQueue = new ArrayDeque<>();
+	protected Queue<Workable> mWorkableQueue = new ConcurrentLinkedQueue<>();
 
 	/** A thread for worker. */
 	protected Thread mThread;
@@ -28,7 +30,7 @@ public abstract class TaskWorker implements ControlableWorker {
 	/**
 	 * Private contructor.
 	 */
-	protected TaskWorker() {
+	public TaskWorker() {
 		try {
 			mThread = ThreadManager.getInstance().create(
 								new ThreadManager.ThreadDescriptor(this, TAG));
@@ -57,10 +59,8 @@ public abstract class TaskWorker implements ControlableWorker {
 	 */
 	@Override
 	public void add(Workable workable) throws Exception {
-		synchronized (mWorkableQueue) {
-			mWorkableQueue.add(workable);
-			resume();
-		}
+		mWorkableQueue.offer(workable);
+		resume();
 	}
 
 
@@ -72,10 +72,8 @@ public abstract class TaskWorker implements ControlableWorker {
 	@Override
 	public Workable remove(Workable workable) {
 		boolean remove = false;
-		synchronized (mWorkableQueue) {
-			remove = mWorkableQueue.remove(workable);
-			return remove ? workable : null;
-		}
+		remove = mWorkableQueue.remove(workable);
+		return remove ? workable : null;
 	}
 
 
@@ -118,6 +116,7 @@ public abstract class TaskWorker implements ControlableWorker {
 	 */
 	@Override
 	public void stop() throws Exception {
+		resume();
 		isStop = true;
 	}
 
@@ -136,7 +135,8 @@ public abstract class TaskWorker implements ControlableWorker {
 			}
 
 			try {
-				workable = mWorkableQueue.remove();
+				System.out.println("work?" + mWorkableQueue.size());
+				workable = mWorkableQueue.poll();
 				if (workable != null)
 					workable.work();
 				else

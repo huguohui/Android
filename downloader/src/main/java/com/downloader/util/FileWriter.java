@@ -29,7 +29,7 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	public FileWriter(File file, long size) throws IOException {
 		super(file, size);
-		mWriter = new RandomAccessFile(file, "w");
+		mWriter = new RandomAccessFile(file, "rw");
 		makeFileBySize(mFile, mLength);
 	}
 
@@ -48,15 +48,17 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void work() throws Exception {
-		synchronized (mQueue) {
-			Map<Long, byte[]> map = mQueue.remove();
-			if (map != null) {
-				mWriter.seek(mOffset);
-				for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
-					mWriter.write(it.next());
-				}
+		Map<Long, byte[]> map = mQueue.poll();
+
+		System.out.println("Work!");
+		if (map != null) {
+			mWriter.seek(mOffset);
+			for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
+				mWriter.write(it.next());
 			}
 		}
+
+		mWriter.close();
 	}
 
 
@@ -80,14 +82,13 @@ public class FileWriter extends AbstractFileWriter {
 			throw new IllegalArgumentException("Specials start or end is invalid!");
 		}
 
-		synchronized (mQueue) {
-			int writeLen = end - start;
-			Map<Long, byte[]> map = new HashMap<>();
-			data = writeLen == data.length ? data : Arrays.copyOfRange(data, start, end);
-			map.put(offset, data);
-			mQueue.add(map);
-			mOffset = offset + writeLen;
-		}
+
+		int writeLen = end - start;
+		Map<Long, byte[]> map = new HashMap<>();
+		data = writeLen == data.length ? data : Arrays.copyOfRange(data, start, end);
+		map.put(offset, data);
+		mQueue.offer(map);
+		mOffset = offset + writeLen;
 	}
 
 

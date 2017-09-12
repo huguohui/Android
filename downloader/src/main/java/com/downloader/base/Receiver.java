@@ -9,7 +9,7 @@ import java.io.Reader;
  *
  * @since 2015/11/29
  */
-public interface Receiver {
+public interface Receiver extends Stopable {
 	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
 	
@@ -29,4 +29,12 @@ public interface Receiver {
 	 */
 	void receive(long len) throws IOException;
 
+
+	interface OnFinishedListener {
+		void onFinished(Receiver r);
+	}
+
+	interface OnStopListener {
+		void onStop(Receiver r);
+	}
 }

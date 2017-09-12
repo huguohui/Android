@@ -16,6 +16,7 @@ public class HttpDownloader extends AbstractDownloader {
 
 	public HttpDownloader(URL url) throws NullPointerException {
 		this.url = url;
+
 	}
 
 

@@ -5,7 +5,6 @@ import com.downloader.util.Writable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
-import java.util.Arrays;
 
 /**
  * Socket receiver can receive data from input stream.
@@ -21,20 +20,7 @@ public class SocketReceiver extends AbstractReceiver {
 	 * @param is A {@link InputStream}.
 	 */
 	public SocketReceiver(InputStream is, Writable w) {
-		this(is, w, null);
-	}
-
-
-	/**
-	 * Construct a downloader by requester.
-	 * @param is A {@link AbstractRequest}.
-	 * @param r Range of data will to receiving.
-	 */
-	public SocketReceiver(InputStream is, Writable w, Range r) {
-		super(is, w, r);
-
-		if (isPortal)
-			mSizeWillReceive = r.getRange();
+		super(is, w);
 	}
 
 
@@ -52,8 +38,12 @@ public class SocketReceiver extends AbstractReceiver {
 	@Override
 	public void receive() throws IOException {
 		byte[] data;
-		while(null != (data = receiveData(BUFFER_SIZE)))
+		while(!isStop && null != (data = receiveData(BUFFER_SIZE))) {
 			mWritable.write(data);
+		}
+
+		isFinished = !isStop && true;
+		invokeListener();
 	}
 
 
@@ -64,12 +54,20 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void receive(long size) throws IOException {
-		int willRec = 0;
-		while(size > 0) {
-			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
-			mWritable.write(receiveData(willRec));
-			size -= willRec;
+		receiveData(size);
+		isFinished = !isStop && true;
+		invokeListener();
+	}
+
+
+	protected void invokeListener() {
+		if (!isStop && isFinished && onFinishedListener != null) {
+			if (mSizeWillReceive != 0 && mSizeWillReceive == mReceivedLength)
+				onFinishedListener.onFinished(this);
 		}
+
+		if (isStop && onStopListener != null)
+			onStopListener.onStop(this);
 	}
 
 
@@ -77,7 +75,7 @@ public class SocketReceiver extends AbstractReceiver {
 	 * Receiving data with special length.
 	 * @param size Special length.
 	 */
-	private byte[] receiveData(int size) throws IOException {
+	protected byte[] receiveData(int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
@@ -88,46 +86,50 @@ public class SocketReceiver extends AbstractReceiver {
 			int available = mInputStream.available();
 			byte[] buff = new byte[BUFFER_SIZE];
 
-			if (available == 0 && freeLoop++ < 100) {
-				try {
-					Thread.sleep(1);
-				}
-				catch ( Exception ex ) {
-					ex.printStackTrace();
-				}
-
-				continue;
+			try {
+				Thread.sleep(1);
 			}
+			catch ( Exception ex ) {
+				ex.printStackTrace();
+			}
+
+			if (available == 0 && freeLoop++ != 50)
+				continue;
 
 			if (END_OF_STREAM == (read = mInputStream.read(buff, 0,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
-				if (count != 0 && count != size) {
-					mReceivedLength += read;
-					return Arrays.copyOfRange(buff, 0, count);
-				}
-
 				return null;
 			}
 
 			System.arraycopy(buff, 0, chunk, count, read);
 			count += read;
-			freeLoop = 0;
 			mReceivedLength += read;
+			freeLoop = 0;
 		}
 
 		return chunk;
 	}
 
 
-	@Override
-	public void run() {
-		try {
-			if (isPortal)
-				receive();
-			else
-				receive(mSizeWillReceive);
-		} catch(Exception e) {
-			e.printStackTrace();
+	/**
+	 * Receiving data with special length.
+	 * @param size Special length.
+	 */
+	protected void receiveData(long size) throws IOException {
+		int willRec = 0;
+		while(!isStop && size > 0) {
+			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
+			mWritable.write(receiveData(willRec));
+			size -= willRec;
 		}
+	}
+
+
+	/**
+	 * Stop the object of managment.
+	 */
+	@Override
+	public synchronized void stop() throws IOException {
+		isStop = true;
 	}
 }

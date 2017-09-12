@@ -8,5 +8,5 @@ public interface Stopable {
 	/**
 	 * Stop the object of managment.
 	 */
-	 void stop();
+	 void stop() throws Exception;
 }

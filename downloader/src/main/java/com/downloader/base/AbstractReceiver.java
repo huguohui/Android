@@ -8,7 +8,7 @@ import java.io.InputStream;
 /**
  * Download some data form a place.
  */
-public abstract class AbstractReceiver implements Receiver, Runnable {
+public abstract class AbstractReceiver implements Receiver {
 	/** Default buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
 
@@ -27,29 +27,21 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	/** Received data length. */
 	protected long mReceivedLength;
 
-	/** Is receives portal data? */
-	protected boolean isPortal = false;
+	/** Is stop receive? */
+	protected boolean isStop = false;
 
+	protected OnFinishedListener onFinishedListener;
 
+	protected OnStopListener onStopListener;
+
+	
 	/**
 	 * Construct a downloader by requester.
 	 * @param is A {@link AbstractRequest}.
 	 */
 	public AbstractReceiver(InputStream is, Writable writable) {
-		this(is, writable, null);
-	}
-	
-	
-	/**
-	 * Construct a downloader by requester.
-	 * @param is A {@link AbstractRequest}.
-	 * @param r Range of data will to receiving.
-	 */
-	public AbstractReceiver(InputStream is, Writable writable, Range r) {
 		mInputStream = is;
 		mWritable = writable;
-		mRange = r;
-		isPortal = r != null;
 	}
 
 
@@ -77,8 +69,18 @@ public abstract class AbstractReceiver implements Receiver, Runnable {
 	}
 
 
-	public boolean isPortal() {
-		return isPortal;
+	public boolean isStop() {
+		return isStop;
+	}
+
+
+	public void setOnFinishedListener(OnFinishedListener onFinishedListener) {
+		this.onFinishedListener = onFinishedListener;
+	}
+
+
+	public void setOnStopListener(OnStopListener onStopListener) {
+		this.onStopListener = onStopListener;
 	}
 
 

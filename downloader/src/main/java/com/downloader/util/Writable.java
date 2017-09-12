@@ -19,5 +19,5 @@ public interface Writable {
 	 * @param start Position of start.
 	 * @param end Position of end.
 	 */
-	void wirte (byte[] data, int start, int end) throws IOException;
+	void write (byte[] data, int start, int end) throws IOException;
 }

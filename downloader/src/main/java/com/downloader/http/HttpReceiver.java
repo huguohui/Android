@@ -22,9 +22,6 @@ public class HttpReceiver extends SocketReceiver {
 	
 	/** Flag of content compressed by gzip. */
 	protected boolean isGzip = false;
-	
-	/** Is stop receive? */
-	protected boolean isStop = false;
 
 	/** Buffer for receiver. */
 	protected byte[] mBuffer = new byte[0x100000];
@@ -34,25 +31,19 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpHeader mHeader;
 
-	
-	/**
-	 * Construct a http downloader object.
-	 *  @param d A {@link HttpDownloader}.
-	 * @throws IOException If exception.
-	 */
-	public HttpReceiver(HttpResponse d, Writable w, Range r) throws IOException {
-		super(d.getInputStream(), w, r);
-		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
-	}
-	
+	protected HttpResponse httpResponse;
 
+	
 	/**
 	 * Construct a http downloader object.
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
 	public HttpReceiver(HttpResponse d, Writable w) throws IOException {
-		this(d, w, null);
+		super(d.getInputStream(), w);
+		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
+		httpResponse = d;
+		mSizeWillReceive = d.getContentLength();
 	}
 
 
@@ -62,27 +53,27 @@ public class HttpReceiver extends SocketReceiver {
 	 */
 	private void receiveChunked(long size) throws IOException {
 		if (size < 0) {
-			while(mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
-				super.receive(mCurrentChunkedSize);
+			while(!isStop && mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
+				receiveData(mCurrentChunkedSize);
 				mCurrentChunkedSize = 0;
 			}
-
-			return;
-		}
-
-		while (size > 0) {
-			if (mCurrentChunkedSize <= 0) {
-				if ((mCurrentChunkedSize = getChunkSize(mInputStream)) == 0) {
-					isFinished = true;
-					return;
+		} else {
+			while (!isStop && size > 0) {
+				if (mCurrentChunkedSize <= 0) {
+					if ((mCurrentChunkedSize = getChunkSize(mInputStream)) == 0) {
+						isFinished = true;
+						return;
+					}
 				}
-			}
 
-			long willToReceiving = mCurrentChunkedSize < mSizeWillReceive ? mCurrentChunkedSize : mSizeWillReceive;
-			super.receive(willToReceiving);
-			mCurrentChunkedSize -= willToReceiving;
-			mSizeWillReceive -= willToReceiving;
+				long willToReceiving = mCurrentChunkedSize /*< mSizeWillReceive ? mCurrentChunkedSize : mSizeWillReceive*/;
+				receiveData(willToReceiving);
+				mCurrentChunkedSize = 0 /*-= willToReceiving*/;
+//				mSizeWillReceive -= willToReceiving;
+			}
 		}
+
+		invokeListener();
 	}
 
 
@@ -92,7 +83,7 @@ public class HttpReceiver extends SocketReceiver {
 	 * @return Chunk size.
 	 * @throws IOException
 	 */
-	private int getChunkSize(InputStream is) throws IOException {
+	protected int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
 		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
@@ -123,14 +114,14 @@ public class HttpReceiver extends SocketReceiver {
 	 * @param size Size of will receiving.
 	 */
 	@Override
-	public synchronized void receive(long size) throws IOException {
-		if (size <= 0)
+	public void receive(long size) throws IOException {
+		if (size == 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 
 		if (isChunked)
 			receiveChunked(size);
 		else
-			super.receive(size);
+			super.receive(size > 0 ? size : mSizeWillReceive);
 	}
 
 
@@ -138,34 +129,17 @@ public class HttpReceiver extends SocketReceiver {
 	 * To receiving data from source, and save data to somewhere.
 	 */
 	@Override
-	public synchronized void receive() throws IOException {
-		if (isChunked) {
-			receiveChunked(END_OF_STREAM);
-			return;
-		}
-
-		super.receive();
+	public void receive() throws IOException {
+		receive(END_OF_STREAM);
 	}
 
 
-	public void run() {
-		try {
-			if (!isPortal)
-				receive();
-			else
-				receive(mSizeWillReceive);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+	public HttpResponse getHttpResponse() {
+		return httpResponse;
 	}
 
 
-	public boolean isPortal() {
-		return isPortal;
-	}
-
-
-	public void setPortal(boolean isPortal) {
-		this.isPortal = isPortal;
+	public synchronized void Stop() throws IOException {
+		isStop = true;
 	}
 }
