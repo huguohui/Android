@@ -135,7 +135,6 @@ public class TaskWorker implements ControlableWorker {
 			}
 
 			try {
-				System.out.println("work?" + mWorkableQueue.size());
 				workable = mWorkableQueue.poll();
 				if (workable != null)
 					workable.work();

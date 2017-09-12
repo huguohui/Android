@@ -42,7 +42,6 @@ public class SocketReceiver extends AbstractReceiver {
 			mWritable.write(data);
 		}
 
-		isFinished = !isStop && true;
 		invokeListener();
 	}
 
@@ -98,6 +97,7 @@ public class SocketReceiver extends AbstractReceiver {
 
 			if (END_OF_STREAM == (read = mInputStream.read(buff, 0,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
+				isFinished = true;
 				return null;
 			}
 

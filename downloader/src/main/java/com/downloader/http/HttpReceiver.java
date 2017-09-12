@@ -57,6 +57,8 @@ public class HttpReceiver extends SocketReceiver {
 				receiveData(mCurrentChunkedSize);
 				mCurrentChunkedSize = 0;
 			}
+
+			isFinished = !isStop && true;
 		} else {
 			while (!isStop && size > 0) {
 				if (mCurrentChunkedSize <= 0) {
