@@ -58,7 +58,6 @@ public class FileWriter extends AbstractFileWriter {
 		}
 
 		data = end - start == data.length ? data : Arrays.copyOfRange(data, start, end);
-		Log.println(offset);
 		mWriter.seek(offset);
 		mWriter.write(data);
 		mOffset = offset;
