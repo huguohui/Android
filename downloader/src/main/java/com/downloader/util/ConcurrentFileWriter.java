@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.downloader.base.AbstractReceiver.BUFFER_SIZE;
-
 /**
  * File writer.
  */
@@ -47,9 +45,9 @@ public class ConcurrentFileWriter extends FileWriter {
 	}
 
 
-	protected DataBlock createDataBlock(Long curOff) {
+	protected DataBlock createDataBlock(Long off) {
 		DataBlock dl = new DataBlock();
-		dl.offset = curOff;
+		dl.offset = off;
 		dl.data = createBuffer();
 		return dl;
 	}
@@ -60,29 +58,28 @@ public class ConcurrentFileWriter extends FileWriter {
 			throw new NullPointerException();
 
 		if (!dataBlocks.containsKey(startOff))
-			dataBlocks.put(startOff, createDataBlock(curOff));
+			dataBlocks.put(startOff, createDataBlock(startOff));
 
-		long surplus = 0; //多余的
-		DataBlock dl = dataBlocks.get(startOff);
-		dl.size += data.length;
-		dl.bufferSize += data.length;
+		int surplus = 0; //多余的
+		DataBlock dataBlock = dataBlocks.get(startOff);
+		dataBlock.size += data.length;
+		dataBlock.bufferSize += data.length;
 
-		if ((surplus = dl.bufferSize - WRITE_BUFFER_SIZE) >= 0) {
-			Log.println(startOff);
-			dl.data.write(data, 0, data.length - (int) surplus);
-			write(dl);
-			dl.offset += WRITE_BUFFER_SIZE;
-			if (surplus != 0)
-				dl.data.write(data, data.length - (int) surplus, data.length);
-
+		if ((surplus = dataBlock.bufferSize - WRITE_BUFFER_SIZE) >= 0) {
+			dataBlock.data.write(data, 0, data.length - surplus);
+			writeToFile(dataBlock);
+			dataBlock.offset += WRITE_BUFFER_SIZE;
+			if (surplus != 0) {
+				dataBlock.data.write(data, data.length - surplus, data.length);
+			}
 			return;
 		}
 
-		dl.data.write(data);
+		dataBlock.data.write(data);
 	}
 
 
-	protected void write(DataBlock dl) throws IOException {
+	protected void writeToFile(DataBlock dl) throws IOException {
 		super.write(dl.offset, dl.data.toByteArray());
 		dl.bufferSize = 0;
 		dl.data.reset();
@@ -94,10 +91,8 @@ public class ConcurrentFileWriter extends FileWriter {
 		for (Iterator<Map.Entry<Long, DataBlock>> it = es.iterator(); it.hasNext(); ) {
 			Map.Entry<Long, DataBlock> map = it.next();
 			DataBlock dl = map.getValue();
-			if (dl.bufferSize != 0) {
-				Log.println(dl.bufferSize);
-				write(dl);
-			}
+			if (dl.bufferSize != 0)
+				writeToFile(dl);
 		}
 	}
 

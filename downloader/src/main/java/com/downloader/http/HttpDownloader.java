@@ -48,7 +48,7 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 	};
 
 	final public static int[] ALLOW_THREAD_LEVELS = {
-		3, 4, 10
+		3, 3, 10
 	};
 
 
@@ -105,7 +105,7 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 		threads = new Thread[allowThreads];
 		fileWriter = new ConcurrentFileWriter(
 							new File(URLDecoder.decode(httpResponse.getFileName(), "UTF-8")),
-								httpResponse.getContentLength());
+								/*httpResponse.getContentLength()*/ 0);
 
 		for (int i = 0; i < allowThreads; i++) {
 			httpRequests[i] = buildHttpRequest(url, Http.Method.GET);

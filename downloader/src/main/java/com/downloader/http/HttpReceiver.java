@@ -145,7 +145,8 @@ public class HttpReceiver extends SocketReceiver {
 	protected void writeData(byte[] data) throws IOException {
 		if (dataStart != -1) {
 			if (mWritable instanceof ConcurrentFileWriter)
-				((ConcurrentFileWriter) mWritable).write(dataStart, mReceivedLength - data.length, data);
+				((ConcurrentFileWriter) mWritable).write(
+						dataStart, mReceivedLength - data.length, data);
 
 			return;
 		}

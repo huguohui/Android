@@ -124,7 +124,7 @@ public class Main {
 			// create a new RandomAccessFile with filename test
 			RandomAccessFile raf = new RandomAccessFile("c:/test.txt", "rw");
 
-			// write something in the file
+			// writeToFile something in the file
 			raf.writeUTF("Hello World");
 
 			// set the file pointer at 0 position
