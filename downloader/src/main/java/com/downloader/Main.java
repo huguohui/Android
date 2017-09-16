@@ -7,11 +7,8 @@ import com.downloader.http.HttpDownloader;
 import com.downloader.http.HttpReceiver;
 import com.downloader.http.HttpRequest;
 import com.downloader.http.HttpResponse;
-import com.downloader.util.ConcurrentFileWritable;
 import com.downloader.util.ConcurrentFileWriter;
-import com.downloader.util.FileWritable;
 import com.downloader.util.FileWriter;
-import com.downloader.util.Log;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -59,7 +56,7 @@ public class Main {
 			}
 		});
 		time = System.currentTimeMillis() / 1000;
-		HttpDownloader hd = new HttpDownloader(new URL(urls[2]));
+		HttpDownloader hd = new HttpDownloader(new URL(urls[1]));
 		hd.start();
 	}
 
@@ -76,7 +73,7 @@ public class Main {
 		};
 
 		time = System.currentTimeMillis() / 1000;
-		HttpRequest hr = new HttpRequest(new URL(urls[2]));
+		HttpRequest hr = new HttpRequest(new URL(urls[1]));
 		HttpResponse hs = hr.response();
 		fw = new ConcurrentFileWriter(new File("e:\\"+ hs.getFileName()), hs.getContentLength());
 
