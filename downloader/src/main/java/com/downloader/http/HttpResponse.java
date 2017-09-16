@@ -1,6 +1,7 @@
 package com.downloader.http;
 
 import com.downloader.base.Response;
+import com.downloader.util.Log;
 import com.downloader.util.StringUtil;
 import com.downloader.util.UrlUtil;
 
@@ -39,6 +40,8 @@ public class HttpResponse extends Response {
 
 	private boolean isKeepAlive;
 
+	private boolean isSupportRange;
+
 	private Float mHttpVersion;
 
 
@@ -74,13 +77,16 @@ public class HttpResponse extends Response {
 		mTransferEncoding = mHeader.get(Http.TRANSFER_ENCODING);
 		mFileName = mHttpRequest.getUrl().getFile();
 		mContentType = mHeader.get(Http.CONTENT_TYPE);
-		isKeepAlive = mHeader.get(Http.CONNECTION).equalsIgnoreCase("Keep-Alive");
 		mHttpVersion = Float.parseFloat(mHeader.getVersion());
+		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(mHeader.get(Http.CONNECTION));
+		isSupportRange = mHeader.get(Http.CONTENT_RANGE) != null;
+
+		int off = 0;
+		String contentRange = mHeader.get(Http.CONTENT_RANGE);
 		String fileName = UrlUtil.getFilename(mHttpRequest.getUrl()), disp = "";
 		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.length() != 0) {
-			int off = 0;
 			if ((off = disp.indexOf("filename")) != -1)
-				fileName = disp.substring(off + 8);
+				fileName = disp.substring(off + 9);
 		}
 
 		mFileName = fileName;
@@ -110,7 +116,7 @@ public class HttpResponse extends Response {
 	@Override
 	public void close() throws IOException {
 		mInputStream.close();
-		mSocket.close();
+		mHttpRequest.close();
 	}
 
 
@@ -162,4 +168,10 @@ public class HttpResponse extends Response {
 	public Float getHttpVersion() {
 		return mHttpVersion;
 	}
+
+
+	public boolean isSupportRange() {
+		return isSupportRange;
+	}
+
 }

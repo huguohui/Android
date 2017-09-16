@@ -3,15 +3,22 @@ package com.downloader;
 import com.downloader.base.Receiver;
 import com.downloader.client.TaskWorker;
 import com.downloader.http.Http;
+import com.downloader.http.HttpDownloader;
 import com.downloader.http.HttpReceiver;
 import com.downloader.http.HttpRequest;
 import com.downloader.http.HttpResponse;
+import com.downloader.util.ConcurrentFileWritable;
+import com.downloader.util.ConcurrentFileWriter;
+import com.downloader.util.FileWritable;
 import com.downloader.util.FileWriter;
+import com.downloader.util.Log;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -21,6 +28,7 @@ public class Main {
 	public HttpReceiver mRec = null;
 	public TaskWorker t;
 	FileWriter fw;
+	long time;
 
 
 	public static void main(String[] args) throws Exception {
@@ -30,7 +38,33 @@ public class Main {
 		new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
 				.parse("Mon, 16 Jul 2007 22:23:00 GMT");
 
-		new Main().test();
+		new Main().test2();
+	}
+
+	public void test2() throws Exception {
+		String[] urls = {
+				"http://www.baidu.com",
+				"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe",
+				"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe"
+		};
+
+
+		new File("E:\\MyCodes\\Android").list(new FilenameFilter() {
+			@Override
+			public boolean accept(File file, String s) {
+				if (s.contains(".exe"))
+					new File(file, s).delete();
+
+				return false;
+			}
+		});
+		time = System.currentTimeMillis() / 1000;
+		HttpDownloader hd = new HttpDownloader(new URL(urls[2]));
+		hd.start();
+	}
+
+
+	public static void println(Object args) {
 	}
 
 
@@ -41,22 +75,23 @@ public class Main {
 				"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe"
 		};
 
-		HttpRequest hr = new HttpRequest(new URL(urls[0]));
+		time = System.currentTimeMillis() / 1000;
+		HttpRequest hr = new HttpRequest(new URL(urls[2]));
 		HttpResponse hs = hr.response();
-		fw = new FileWriter(new File("e:\\"+ hs.getFileName()), hs.getContentLength());
-		t = new TaskWorker();
-		t.start();
+		fw = new ConcurrentFileWriter(new File("e:\\"+ hs.getFileName()), hs.getContentLength());
 
+		System.out.println(URLDecoder.decode(hs.getFileName(), "utf-8"));
 		System.out.println("Content-Length: " + hs.getContentLength());
+		println(fw instanceof ConcurrentFileWriter);
 
-		mRec = new HttpReceiver(hs, fw);
 
+		mRec = new HttpReceiver(hs, fw, 0);
 		mRec.setOnFinishedListener(new Receiver.OnFinishedListener() {
 			@Override
 			public void onFinished(Receiver r) {
-
 				try {
-					t.add(fw);
+					println(System.currentTimeMillis() / 1000 - time);
+					fw.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -81,13 +116,6 @@ public class Main {
 				}
 			}
 		}).start();
-
-
-
-
-		//Thread.sleep(2000);
-		//mRec.stop();
-		//t.stop();
 	}
 
 

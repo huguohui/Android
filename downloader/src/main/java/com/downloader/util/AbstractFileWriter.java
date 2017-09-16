@@ -1,24 +1,15 @@
 package com.downloader.util;
 
-import com.downloader.client.Workable;
-
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * File writer.
  */
-public abstract class AbstractFileWriter implements FileWritable, Workable {
+public abstract class AbstractFileWriter implements FileWritable, Closeable {
 	/** The file for writing. */
 	protected File mFile;
-
-	/** The data queue for writing. */
-	protected Queue<Map<Long, byte[]>> mQueue = new ConcurrentLinkedQueue<>();
 
 	/** Offset of file writer. */
 	protected long mOffset = 0;
@@ -38,6 +29,7 @@ public abstract class AbstractFileWriter implements FileWritable, Workable {
 
 		mFile = file;
 		mLength = Math.max(0, size);
+		makeFile(file, mLength);
 	}
 
 

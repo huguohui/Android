@@ -1,14 +1,9 @@
 package com.downloader.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * File writer.
@@ -29,8 +24,7 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	public FileWriter(File file, long size) throws IOException {
 		super(file, size);
-		mWriter = new RandomAccessFile(file, "rw");
-		makeFileBySize(mFile, mLength);
+		makeFile(mFile, mLength);
 	}
 
 
@@ -44,25 +38,6 @@ public class FileWriter extends AbstractFileWriter {
 
 
 	/**
-	 * To do some work.
-	 */
-	@Override
-	public void work() throws Exception {
-		Map<Long, byte[]> map = mQueue.poll();
-
-		System.out.println("Work!");
-		if (map != null) {
-			mWriter.seek(mOffset);
-			for (Iterator<byte[]> it = map.values().iterator(); it.hasNext(); ) {
-				mWriter.write(it.next());
-			}
-		}
-
-		mWriter.close();
-	}
-
-
-	/**
 	 * To writing data with special length from special offset.
 	 *
 	 * @param offset Special offset.
@@ -71,7 +46,7 @@ public class FileWriter extends AbstractFileWriter {
 	 * @param end    Position of data end.
 	 */
 	@Override
-	public void write(long offset, byte[] data, int start, int end) throws IOException {
+	public synchronized void write(long offset, byte[] data, int start, int end) throws IOException {
 		if (offset < 0) {
 			throw new IllegalArgumentException("Specials offset is invalid!");
 		}
@@ -82,13 +57,11 @@ public class FileWriter extends AbstractFileWriter {
 			throw new IllegalArgumentException("Specials start or end is invalid!");
 		}
 
-
-		int writeLen = end - start;
-		Map<Long, byte[]> map = new HashMap<>();
-		data = writeLen == data.length ? data : Arrays.copyOfRange(data, start, end);
-		map.put(offset, data);
-		mQueue.offer(map);
-		mOffset = offset + writeLen;
+		data = end - start == data.length ? data : Arrays.copyOfRange(data, start, end);
+		mWriter.seek(offset);
+		mWriter.write(data);
+		mOffset = offset;
+		mLength += data.length;
 	}
 
 
@@ -100,20 +73,16 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void makeFile(File file, long size) throws IOException {
-
+		if (file != null) {
+			mWriter = new RandomAccessFile(file, "rw");
+			if (size != 0)
+				mWriter.setLength(size);
+		}
 	}
 
 
-	/**
-	 * Make a file with special name and size.
-	 *
-	 * @param file File object.
-	 * @param size File size.
-	 */
-	public void makeFileBySize(File file, long size) throws IOException {
-		if (file != null) {
-			mWriter.setLength(size);
-			step++;
-		}
+	@Override
+	public synchronized void close() throws IOException {
+		mWriter.close();
 	}
 }

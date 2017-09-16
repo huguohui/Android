@@ -4,6 +4,10 @@ package com.downloader.http;
 import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
+import com.downloader.util.ConcurrentFileWritable;
+import com.downloader.util.ConcurrentFileWriter;
+import com.downloader.util.FileWritable;
+import com.downloader.util.Log;
 import com.downloader.util.Writable;
 
 import java.io.IOException;
@@ -33,17 +37,28 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
+	protected Writable mWritable;
+
+	protected long dataStart = -1;
+
 	
 	/**
 	 * Construct a http downloader object.
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, Writable w) throws IOException {
+	public HttpReceiver(HttpResponse d, FileWritable w) throws IOException {
+		this(d, w, -1);
+	}
+
+
+	public HttpReceiver(HttpResponse d, FileWritable w, long dataStart) throws IOException {
 		super(d.getInputStream(), w);
-		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
+		mWritable = w;
 		httpResponse = d;
+		this.dataStart = dataStart;
 		mSizeWillReceive = d.getContentLength();
+		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
 	}
 
 
@@ -116,7 +131,7 @@ public class HttpReceiver extends SocketReceiver {
 	 * @param size Size of will receiving.
 	 */
 	@Override
-	public void receive(long size) throws IOException {
+	public synchronized void receive(long size) throws IOException {
 		if (size == 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 
@@ -127,11 +142,23 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
+	protected void writeData(byte[] data) throws IOException {
+		if (dataStart != -1) {
+			if (mWritable instanceof ConcurrentFileWriter)
+				((ConcurrentFileWriter) mWritable).write(dataStart, mReceivedLength - data.length, data);
+
+			return;
+		}
+
+		super.writeData(data);
+	}
+
+
 	/**
 	 * To receiving data from source, and save data to somewhere.
 	 */
 	@Override
-	public void receive() throws IOException {
+	public synchronized void receive() throws IOException {
 		receive(END_OF_STREAM);
 	}
 

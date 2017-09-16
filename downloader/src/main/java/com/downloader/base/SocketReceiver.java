@@ -1,6 +1,7 @@
 package com.downloader.base;
 
-import com.downloader.util.Writable;
+import com.downloader.util.FileWritable;
+import com.downloader.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,14 +14,17 @@ public class SocketReceiver extends AbstractReceiver {
 	/** Size for next receiving. */
 	protected long mSizeWillReceive = 0;
 
+	protected FileWritable mWritable;
+
 
 	/**
 	 * Construct a downloader by requester.
 	 *
 	 * @param is A {@link InputStream}.
 	 */
-	public SocketReceiver(InputStream is, Writable w) {
+	public SocketReceiver(InputStream is, FileWritable w) {
 		super(is, w);
+		mWritable = w;
 	}
 
 
@@ -37,9 +41,9 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void receive() throws IOException {
-		byte[] data;
-		while(!isStop && null != (data = receiveData(BUFFER_SIZE))) {
-			mWritable.write(data);
+		byte[] data = null;
+		while(!isStop && null != (data = receiveBySize(BUFFER_SIZE))) {
+			writeData(data);
 		}
 
 		invokeListener();
@@ -70,11 +74,16 @@ public class SocketReceiver extends AbstractReceiver {
 	}
 
 
+	protected void writeData(byte[] data) throws IOException {
+		mWritable.write(mReceivedLength - data.length, data);
+	}
+
+
 	/**
 	 * Receiving data with special length.
 	 * @param size Special length.
 	 */
-	protected byte[] receiveData(int size) throws IOException {
+	protected byte[] receiveBySize(int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
@@ -119,7 +128,7 @@ public class SocketReceiver extends AbstractReceiver {
 		int willRec = 0;
 		while(!isStop && size > 0) {
 			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
-			mWritable.write(receiveData(willRec));
+			writeData(receiveBySize(willRec));
 			size -= willRec;
 		}
 	}

@@ -78,6 +78,16 @@ final public class Log
 	public final synchronized static void error(String key, String val) {
 		android.util.Log.e(key, val);
 	}
+
+
+	public static void println(Object obj) {
+		System.out.println("[**] " + obj);
+	}
+
+
+	public static void print(Object obj) {
+		System.out.print("[**] " + obj + "\t");
+	}
 }
 
 

@@ -199,4 +199,39 @@ public abstract class AbstractRequest implements Request {
 	 */
 	public interface Listener {
 	}
+
+
+	/**
+	 * A range of data.
+	 */
+	final public static class Range {
+		/** Start offset. */
+		public long start;
+
+		/** End offset. */
+		public long end;
+
+		public Range(long s, long e) {
+			if (e > 0 && s > e || e == 0)
+				throw new IllegalArgumentException("The end must >= start and end must != 0!");
+
+			this.start = s;
+			this.end = e;
+		}
+
+		public Range(long s) {
+			this(s, -1);
+		}
+
+
+		public long getRange() {
+			return -~end - start;
+		}
+
+
+		public String toString() {
+			return end > 0 ? String.format("bytes=%d-%d", start, end)
+					: String.format("bytes=%d-", start);
+		}
+	}
 }

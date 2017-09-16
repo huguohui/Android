@@ -15,9 +15,6 @@ public abstract class AbstractReceiver implements Receiver {
 	/** The requester object. */
 	protected InputStream mInputStream;
 
-	/** Range of data will to receiving. */
-	protected Range mRange = null;
-
 	/** Writable of receiver. */
 	protected Writable mWritable;
 
@@ -49,11 +46,6 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 
-	public Range getRange() {
-		return mRange;
-	}
-
-
 	public InputStream getInputStream() {
 		return mInputStream;
 	}
@@ -81,35 +73,5 @@ public abstract class AbstractReceiver implements Receiver {
 
 	public void setOnStopListener(OnStopListener onStopListener) {
 		this.onStopListener = onStopListener;
-	}
-
-
-	/**
-	 * A range of data.
-	 */
-	final public static class Range {
-		/** Start offset. */
-		public long start;
-		
-		/** End offset. */
-		public long end;
-	
-		public Range(long s, long e) {
-			if (s > e || e != 0)
-				throw new IllegalArgumentException("The end must >= start and end must > 0!");
-
-			this.start = s;
-			this.end = e;
-		}
-
-
-		public long getRange() {
-			return -~end - start;
-		}
-		
-		
-		public String toString() {
-			return String.format("%d-%d", start, end);
-		}
 	}
 }

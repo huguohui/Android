@@ -77,6 +77,7 @@ public abstract class Http {
 	public final static String CONTENT_MD5			= "Content-MD5";
 	public final static String CONTENT_DISPOSITION	= "Content-Disposition";
 
+	public final static String KEEP_ALIVE	= "Keep-Alive";
 
 	/**
 	 * MIME types.

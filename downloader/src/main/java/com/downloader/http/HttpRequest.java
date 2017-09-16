@@ -1,9 +1,9 @@
 package com.downloader.http;
 
 
-import com.downloader.base.AbstractDownloader;
 import com.downloader.base.SocketRequest;
 import com.downloader.http.Http.Method;
+import com.downloader.util.Log;
 import com.downloader.util.UrlUtil;
 
 import java.io.IOException;

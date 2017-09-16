@@ -1,5 +1,7 @@
 package com.downloader.manager;
 
+import java.io.IOException;
+
 /**
  * Thread manager.
  */
@@ -15,7 +17,7 @@ public class ThreadManager extends AbstractManager<Thread> {
 	 * @return true for success, false for fail.
 	 */
 	@Override
-	public synchronized Thread create(AbstractDescriptor descriptor) throws Throwable {
+	public synchronized Thread create(AbstractDescriptor descriptor) throws IOException {
 		ThreadDescriptor td = (ThreadDescriptor) descriptor;
 		Thread thread = new Thread(td.runnable);
 
