@@ -5,10 +5,7 @@ import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
 import com.downloader.util.ConcurrentFileWritable;
-import com.downloader.util.ConcurrentFileWriter;
 import com.downloader.util.FileWritable;
-import com.downloader.util.Log;
-import com.downloader.util.Writable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +36,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected ConcurrentFileWritable mWritable;
 
-	protected long dataStart = -1;
+	protected long offsetDataBegin = -1;
 
 	
 	/**
@@ -52,11 +49,11 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
-	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, long dataStart) throws IOException {
+	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, long offsetDataBegin) throws IOException {
 		super(d.getInputStream(), (FileWritable) w);
 		mWritable = w;
 		httpResponse = d;
-		this.dataStart = dataStart;
+		this.offsetDataBegin = offsetDataBegin;
 		mSizeWillReceive = d.getContentLength();
 		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
 	}
@@ -143,8 +140,8 @@ public class HttpReceiver extends SocketReceiver {
 
 
 	protected void writeData(byte[] data) throws IOException {
-		if (dataStart != -1) {
-			mWritable.write(dataStart, mReceivedLength - data.length, data);
+		if (offsetDataBegin != -1) {
+			mWritable.write(offsetDataBegin, mReceivedLength - data.length, data);
 			return;
 		}
 
