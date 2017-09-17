@@ -1,7 +1,10 @@
 package com.downloader.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.regex.Pattern;
 
 /**
@@ -185,5 +188,10 @@ final public class StringUtil {
 				return false;
 		}
 		return true;
+	}
+
+
+	public final static String decimal2Str(Double d, int len) {
+		return new java.text.DecimalFormat("0.00").format(d);
 	}
 }

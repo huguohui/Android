@@ -37,7 +37,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
-	protected Writable mWritable;
+	protected ConcurrentFileWritable mWritable;
 
 	protected long dataStart = -1;
 
@@ -47,13 +47,13 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, FileWritable w) throws IOException {
+	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w) throws IOException {
 		this(d, w, -1);
 	}
 
 
-	public HttpReceiver(HttpResponse d, FileWritable w, long dataStart) throws IOException {
-		super(d.getInputStream(), w);
+	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, long dataStart) throws IOException {
+		super(d.getInputStream(), (FileWritable) w);
 		mWritable = w;
 		httpResponse = d;
 		this.dataStart = dataStart;
@@ -144,10 +144,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected void writeData(byte[] data) throws IOException {
 		if (dataStart != -1) {
-			if (mWritable instanceof ConcurrentFileWriter)
-				((ConcurrentFileWriter) mWritable).write(
-						dataStart, mReceivedLength - data.length, data);
-
+			mWritable.write(dataStart, mReceivedLength - data.length, data);
 			return;
 		}
 

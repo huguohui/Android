@@ -44,6 +44,7 @@ public class SocketRequest extends AbstractRequest {
 		mSocket.connect(address, timeout);
 		mState = State.connected;
 		isConnect = true;
+		mOutputStream = mSocket.getOutputStream();
 	}
 
 
@@ -59,6 +60,7 @@ public class SocketRequest extends AbstractRequest {
 		mSocket.shutdownOutput();
 		mSocket.close();
 		isConnect = false;
+		isClose = true;
 	}
 
 
@@ -72,14 +74,28 @@ public class SocketRequest extends AbstractRequest {
 
 
 	/**
+	 * Ensure connectioned.
+	 */
+	protected void ensureConnected() throws ConnectException {
+		if (!isConnect)
+			throw new ConnectException("Connection abort!");
+
+		if (isClose)
+			throw new ConnectException("Connection closed!");
+
+		if (mOutputStream == null)
+			throw new ConnectException("The OutputStream or data is null!");
+	}
+
+
+	/**
 	 * Request data to somewhere.
 	 *
-	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
 	@Override
 	public void send() throws IOException {
-
+		send(mData);
 	}
 
 
@@ -87,12 +103,13 @@ public class SocketRequest extends AbstractRequest {
 	 * Request data to somewhere.
 	 *
 	 * @param data The data.
-	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
 	@Override
 	public void send(byte[] data) throws IOException {
-
+		ensureConnected();
+		mOutputStream.write(data);
+		isSend = true;
 	}
 
 

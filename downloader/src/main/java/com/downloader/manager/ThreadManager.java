@@ -20,7 +20,6 @@ public class ThreadManager extends AbstractManager<Thread> {
 	public synchronized Thread create(AbstractDescriptor descriptor) throws IOException {
 		ThreadDescriptor td = (ThreadDescriptor) descriptor;
 		Thread thread = new Thread(td.runnable);
-
 		thread.setName(td.name);
 		thread.setPriority(td.priority);
 		mList.add(thread);

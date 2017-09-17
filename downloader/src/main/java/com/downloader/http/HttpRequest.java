@@ -104,23 +104,6 @@ public class HttpRequest extends SocketRequest {
 
 		setState(State.sent);
     }
-
-
-	/**
-	 * Request data to somewhere.
-	 *
-	 * @param data The data.
-	 * @return If sent return true, else false.
-	 * @throws IOException If exception.
-	 */
-	@Override
-	public synchronized void send(byte[] data) throws IOException {
-		OutputStream to = getSocket().getOutputStream();
-		if (to == null || data == null)
-			throw new RuntimeException("The OutputStream or data is null!");
-
-		to.write(data);
-	}
 	
 	
 	/**
@@ -159,7 +142,7 @@ public class HttpRequest extends SocketRequest {
     	if (!getState().equals(State.closed))
     		close();
     	
-    	setSend(false);
+    	isSend = false;
     	open(mUrl);
 	}
 	

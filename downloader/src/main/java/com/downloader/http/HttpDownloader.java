@@ -1,17 +1,18 @@
 package com.downloader.http;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLDecoder;
-
 import com.downloader.base.AbstractDownloader;
-import com.downloader.base.AbstractReceiver;
 import com.downloader.base.AbstractRequest;
 import com.downloader.base.Receiver;
 import com.downloader.manager.ThreadManager;
 import com.downloader.util.ConcurrentFileWriter;
+import com.downloader.util.DateUtil;
 import com.downloader.util.Log;
+import com.downloader.util.StringUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 /**
  * Downloads data based http protocol.
@@ -31,24 +32,27 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 
 	protected HttpReceiver[] httpReceivers;
 
-	protected Thread[] threads;
+	protected Thread[] recThreads;
 
 	protected ConcurrentFileWriter fileWriter;
 
-	protected int allowThreads = 1;
+	protected int allocThreads = 1;
 
 	protected int finished = 0;
+
+	protected long blockSize;
 
 	final public static int MAX_THREAD = 10;
 
 	final public static long[] SIZE_LEVELS = {
+			1024,
 			1024 * 1024,
 			1024 * 1024 * 1024,
-			1024 * 1024 * 1024,
+			1024 * 1024 * 1024 * 1024
 	};
 
 	final public static int[] ALLOW_THREAD_LEVELS = {
-		3, 3, 10
+		1, 4, 7, 10
 	};
 
 
@@ -89,38 +93,25 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 
 
 	protected void prepare() throws IOException {
-		long blockSize = 0;
-
 		for (int i = 0; i < SIZE_LEVELS.length; i++) {
 			if (SIZE_LEVELS[i] > mLength) {
-				allowThreads = ALLOW_THREAD_LEVELS[i];
+				allocThreads = ALLOW_THREAD_LEVELS[i];
 				break;
 			}
 		}
 
-		blockSize = mLength / allowThreads;
-		httpRequests = new HttpRequest[allowThreads];
-		httpResponses = new HttpResponse[allowThreads];
-		httpReceivers = new HttpReceiver[allowThreads];
-		threads = new Thread[allowThreads];
+		blockSize = mLength / allocThreads;
+		httpRequests = new HttpRequest[allocThreads];
+		httpResponses = new HttpResponse[allocThreads];
+		httpReceivers = new HttpReceiver[allocThreads];
+		recThreads = new Thread[allocThreads];
 		fileWriter = new ConcurrentFileWriter(
 							new File(URLDecoder.decode(httpResponse.getFileName(), "UTF-8")),
-								httpResponse.getContentLength());
-
-		for (int i = 0; i < allowThreads; i++) {
-			httpRequests[i] = buildHttpRequest(url, Http.Method.GET);
-			httpRequests[i].getHeader().add(Http.RANGE,
-					new AbstractRequest.Range(i * blockSize,
-							-~i == allowThreads ? mLength : ~-(-~i * blockSize)).toString());
-			httpResponses[i] = httpRequests[i].response();
-			httpReceivers[i] = new HttpReceiver(httpResponses[i], fileWriter, i * blockSize);
-			httpReceivers[i].setOnFinishedListener(this);
-			threads[i] = assocThread(i);
-		}
+									httpResponse.getContentLength());
 	}
 
 
-	protected Thread assocThread(int id) throws IOException {
+	protected Thread allocThread(int id) throws IOException {
 		ThreadManager.ThreadDescriptor desc = new ThreadManager.ThreadDescriptor(new Runnable() {
 			@Override
 			public void run() {
@@ -137,39 +128,52 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 
 
 	protected void download() throws IOException {
-		for (Thread t : threads) {
+		for (int i = 0; i < allocThreads; i++) {
+			httpRequests[i] = buildHttpRequest(url, Http.Method.GET);
+			httpRequests[i].getHeader().add(Http.RANGE,
+					new AbstractRequest.Range(i * blockSize,
+							-~i == allocThreads ? mLength : ~-(-~i * blockSize)).toString());
+			httpResponses[i] = httpRequests[i].response();
+			httpReceivers[i] = new HttpReceiver(httpResponses[i], fileWriter, i * blockSize);
+			httpReceivers[i].setOnFinishedListener(this);
+			recThreads[i] = allocThread(i);
+		}
+		for (Thread t : recThreads) {
 			t.start();
 		}
 	}
 
 
 	public void start() throws IOException {
+		super.start();
 		download();
 	}
 
 
 	public void pause() throws IOException {
-
+		super.pause();
 	}
 
 
 	public void stop() throws IOException {
-
+		super.stop();
 	}
 
 
 	@Override
 	public void onFinished(Receiver r) {
-		mDownloadedLength += ((HttpReceiver) r).getReceivedLength();
-		Log.println("downloaded:" + mDownloadedLength);
-		Log.println("total length:" + mLength);
-
-		if (++finished == allowThreads) {
+		if (++finished == allocThreads) {
 			try {
 				fileWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			mFinishedTime = System.currentTimeMillis();
+			mDownloadTime = mFinishedTime - mStartTime;
+
+			Log.println("Download time: " + mFinishedTime + "," + mStartTime + "," +
+					StringUtil.decimal2Str((double)DateUtil.getMillisTimeDiffInSec(mStartTime, mFinishedTime), 2));
 		}
 	}
 }

@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * File writer.
  */
-public class ConcurrentFileWriter extends FileWriter {
+public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWritable {
 	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 1;
 
 	private class DataBlock {

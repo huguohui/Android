@@ -1,14 +1,13 @@
 package com.downloader;
 
 import com.downloader.base.Receiver;
-import com.downloader.client.TaskWorker;
+import com.downloader.client.AbstractWorker;
 import com.downloader.http.Http;
 import com.downloader.http.HttpDownloader;
 import com.downloader.http.HttpReceiver;
 import com.downloader.http.HttpRequest;
 import com.downloader.http.HttpResponse;
 import com.downloader.util.ConcurrentFileWriter;
-import com.downloader.util.FileWriter;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,8 +22,8 @@ public class Main {
 	static long length = 0;
 
 	public HttpReceiver mRec = null;
-	public TaskWorker t;
-	FileWriter fw;
+	public AbstractWorker t;
+	ConcurrentFileWriter fw;
 	long time;
 
 
@@ -56,7 +55,7 @@ public class Main {
 			}
 		});
 		time = System.currentTimeMillis() / 1000;
-		HttpDownloader hd = new HttpDownloader(new URL(urls[1]));
+		HttpDownloader hd = new HttpDownloader(new URL(urls[2]));
 		hd.start();
 	}
 

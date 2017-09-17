@@ -2,6 +2,7 @@ package com.downloader.base;
 
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 
@@ -35,12 +36,19 @@ public abstract class AbstractRequest implements Request {
 	
 	/** State of connection by boolean. */
 	protected boolean isConnect = false;
+
+	protected boolean isClose = false;
 	
 	/** Flag for reqeust send. */
 	protected boolean isSend = false;
 	
 	/** Address of reqeust. */
 	protected String mAddress = "";
+
+	/** Data will send. */
+	protected byte[] mData;
+
+	protected OutputStream mOutputStream;
 
     /** AbstractRequest states. */
     public enum State {
@@ -113,9 +121,11 @@ public abstract class AbstractRequest implements Request {
         mSocketAddress = socketAddress;
     }
 
+
     public Socket getSocket() {
         return mSocket;
     }
+
 
     public void setSocket(Socket socket) {
         mSocket = socket;
@@ -126,51 +136,48 @@ public abstract class AbstractRequest implements Request {
         return mTimeout;
     }
 
+
     public void setTimeout(int timeout) {
         mTimeout = timeout;
     }
+
 
     public AbstractHeader getHeader() {
         return mHeader;
     }
 
+
     public void setHeader(AbstractHeader header) {
         mHeader = header;
     }
+
 
     public AbstractEntity getBody() {
         return mBody;
     }
 
+
     public void setBody(AbstractEntity body) {
         mBody = body;
     }
+
 
     public State getState() {
         return mState;
     }
 
+
     public void setState(State state) {
         mState = state;
     }
+
 
 	public long getStartTime() {
 		return mStartTime;
 	}
 
-
-	public void setStartTime(long startTime) {
-		mStartTime = startTime;
-	}
-	
-	
 	public boolean isConnect() {
 		return isConnect;
-	}
-
-
-	public void setConnect(boolean isConnetion) {
-		this.isConnect = isConnetion;
 	}
 
 
@@ -189,8 +196,18 @@ public abstract class AbstractRequest implements Request {
 	}
 
 
-	public void setSend(boolean isSend) {
-		this.isSend = isSend;
+	public boolean isClose() {
+		return isClose;
+	}
+
+
+	public byte[] getData() {
+		return mData;
+	}
+
+
+	public OutputStream getOutputStream() {
+		return mOutputStream;
 	}
 
 

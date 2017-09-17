@@ -5,22 +5,13 @@ package com.downloader.base;
  */
 public abstract class AbstractTaskInfo {
 	/** Name of task. */
-	private String mName;
+	protected String mName;
 
 	/** Start time of task in millisecond. */
-	private long mStartTime;
+	protected long mStartTime;
 
 	/** Time of task execution time. **/
-	private long mExectionTime;
-
-
-	/**
-	 * Create a instance of AbstractTaskInfo by special mName.
-	 * @param name Name of task.
-	 */
-	public AbstractTaskInfo(String name) {
-		this.mName = name;
-	}
+	protected long mExectionTime;
 
 	public String getName() {
 		return mName;

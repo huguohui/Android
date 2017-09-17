@@ -1,6 +1,7 @@
 package com.downloader.base;
 
 
+import com.downloader.util.DateUtil;
 import com.downloader.util.StringUtil;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ public abstract class AbstractDownloader implements Controlable {
 	/** Listener of downloading state. */
 	protected Listener mListener = null;
 
+	protected long mDownloadTime = 0;
+
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {
 		"onStart", "onPause", "onResume", "onStop", "onFinish"
@@ -44,6 +47,7 @@ public abstract class AbstractDownloader implements Controlable {
 	 * @throws IOException
 	 */
 	public synchronized void start() throws IOException {
+		mStartTime = DateUtil.getMillisTime();
 		mState = State.receiving;
 		invokeListener("onStart");
 	}
@@ -149,6 +153,11 @@ public abstract class AbstractDownloader implements Controlable {
 
 	public Listener getListener() {
 		return mListener;
+	}
+
+
+	public long getDownloadTime() {
+		return mDownloadTime;
 	}
 
 
