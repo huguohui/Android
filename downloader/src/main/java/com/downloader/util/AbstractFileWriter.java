@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * File writer.
  */
-public abstract class AbstractFileWriter implements FileWritable, Closeable {
+public abstract class AbstractFileWriter implements DataWritable, Closeable {
 	/** The file for writing. */
 	protected File mFile;
 

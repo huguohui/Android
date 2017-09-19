@@ -1,5 +1,7 @@
 package com.downloader.base;
 
+import com.downloader.client.Workable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -9,11 +11,11 @@ import java.io.Reader;
  *
  * @since 2015/11/29
  */
-public interface Receiver extends Stopable {
+public interface Receiver extends Stopable, Workable {
 	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
-	
-	
+
+
 	/**
 	 * Receiving data.
 	 * @return Received data by byte.

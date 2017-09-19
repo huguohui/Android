@@ -1,7 +1,7 @@
 package com.downloader.base;
 
-import com.downloader.util.FileWritable;
-import com.downloader.util.Log;
+import com.downloader.client.Worker;
+import com.downloader.util.DataWritable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,17 +14,14 @@ public class SocketReceiver extends AbstractReceiver {
 	/** Size for next receiving. */
 	protected long mSizeWillReceive = 0;
 
-	protected FileWritable mWritable;
-
 
 	/**
 	 * Construct a downloader by requester.
 	 *
 	 * @param is A {@link InputStream}.
 	 */
-	public SocketReceiver(InputStream is, FileWritable w) {
-		super(is, w);
-		mWritable = w;
+	public SocketReceiver(InputStream is, DataWritable w, Worker worker) {
+		super(is, w, worker);
 	}
 
 
@@ -76,6 +73,11 @@ public class SocketReceiver extends AbstractReceiver {
 
 	protected void writeData(byte[] data) throws IOException {
 		mWritable.write(mReceivedLength - data.length, data);
+	}
+
+
+	protected void finishReceive() {
+
 	}
 
 
@@ -140,5 +142,14 @@ public class SocketReceiver extends AbstractReceiver {
 	@Override
 	public synchronized void stop() throws IOException {
 		isStop = true;
+	}
+
+
+	/**
+	 * To do some work.
+	 */
+	@Override
+	public void work() throws Exception {
+
 	}
 }

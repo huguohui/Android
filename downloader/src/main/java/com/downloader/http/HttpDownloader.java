@@ -134,7 +134,7 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 					new AbstractRequest.Range(i * blockSize,
 							-~i == allocThreads ? mLength : ~-(-~i * blockSize)).toString());
 			httpResponses[i] = httpRequests[i].response();
-			httpReceivers[i] = new HttpReceiver(httpResponses[i], fileWriter, i * blockSize);
+			httpReceivers[i] = new HttpReceiver(httpResponses[i], fileWriter, null, i * blockSize);
 			httpReceivers[i].setOnFinishedListener(this);
 			recThreads[i] = allocThread(i);
 		}

@@ -3,6 +3,7 @@ package com.downloader.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -11,17 +12,55 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * File writer.
  */
-public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWritable {
+public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWritable {
 	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 1;
 
-	private class DataBlock {
+	private class DataBuffer {
 		private long offset;
-		private ByteArrayOutputStream data;
 		private long size;
 		private int bufferSize;
+		private byte[] surplusData;
+		private boolean isFull;
+		private ByteArrayOutputStream buffer;
+
+		private DataBuffer(long offset, ByteArrayOutputStream bos) {
+			this.offset = offset;
+			buffer = bos;
+		}
+
+
+		private DataBuffer save(byte[] data) throws IOException {
+			int surplus = 0;
+			if (surplusData != null) {
+				buffer.write(surplusData);
+				bufferSize = surplusData.length;
+				surplusData = null;
+			}
+
+			if (data != null) {
+				size += data.length;
+				bufferSize += data.length;
+				isFull = (surplus = (bufferSize - WRITE_BUFFER_SIZE)) >= 0;
+				buffer.write(data, 0, surplus != 0 ? data.length - surplus : data.length);
+				surplusData = isFull ? Arrays.copyOfRange(data, surplus, data.length) : null;
+			}
+
+			return this;
+		}
+
+
+		private boolean isFull() {
+			return isFull;
+		}
+
+
+		private void clean() throws IOException {
+			bufferSize = 0;
+			buffer.reset();
+		}
 	}
 
-	protected Map<Long, DataBlock> dataBlocks = new ConcurrentHashMap<>();
+	protected Map<Long, DataBuffer> dataBuffers = new ConcurrentHashMap<>();
 
 
 	/**
@@ -40,16 +79,8 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWr
 	}
 
 
-	protected ByteArrayOutputStream createBuffer() {
-		return new ByteArrayOutputStream(WRITE_BUFFER_SIZE);
-	}
-
-
-	protected DataBlock createDataBlock(Long off) {
-		DataBlock dl = new DataBlock();
-		dl.offset = off;
-		dl.data = createBuffer();
-		return dl;
+	protected DataBuffer createDataBuffer(Long off) {
+		return new DataBuffer(off, new ByteArrayOutputStream(WRITE_BUFFER_SIZE));
 	}
 
 
@@ -57,40 +88,35 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWr
 		if (data == null)
 			throw new NullPointerException();
 
-		if (!dataBlocks.containsKey(startOff))
-			dataBlocks.put(startOff, createDataBlock(startOff));
+		if (!dataBuffers.containsKey(startOff))
+			dataBuffers.put(startOff, createDataBuffer(startOff));
 
-		int surplus = 0; //多余的
-		DataBlock dataBlock = dataBlocks.get(startOff);
-		dataBlock.size += data.length;
-		dataBlock.bufferSize += data.length;
-
-		if ((surplus = dataBlock.bufferSize - WRITE_BUFFER_SIZE) >= 0) {
-			dataBlock.data.write(data, 0, data.length - surplus);
-			writeToFile(dataBlock);
-			dataBlock.offset += WRITE_BUFFER_SIZE;
-			if (surplus != 0) {
-				dataBlock.data.write(data, data.length - surplus, data.length);
-			}
-			return;
+		DataBuffer buffer = dataBuffers.get(startOff);
+		if (buffer.save(data).isFull()) {
+			writeToFile(buffer);
 		}
-
-		dataBlock.data.write(data);
 	}
 
 
-	protected void writeToFile(DataBlock dl) throws IOException {
-		super.write(dl.offset, dl.data.toByteArray());
-		dl.bufferSize = 0;
-		dl.data.reset();
+	public synchronized void write(long offset, byte[] data, int s, int e) throws IOException {
+
+	}
+
+
+	protected void writeToFile(DataBuffer dl) throws IOException {
+		super.write(dl.offset, dl.buffer.toByteArray());
+		dl.clean();
 	}
 
 
 	protected void flush() throws IOException {
-		Set<Map.Entry<Long, DataBlock>> es = dataBlocks.entrySet();
-		for (Iterator<Map.Entry<Long, DataBlock>> it = es.iterator(); it.hasNext(); ) {
-			Map.Entry<Long, DataBlock> map = it.next();
-			DataBlock dl = map.getValue();
+		Set<Map.Entry<Long, DataBuffer>> es = dataBuffers.entrySet();
+		for (Iterator<Map.Entry<Long, DataBuffer>> it = es.iterator(); it.hasNext(); ) {
+			Map.Entry<Long, DataBuffer> map = it.next();
+			DataBuffer dl = map.getValue();
+			if (dl.surplusData != null)
+				dl.save(null);
+
 			if (dl.bufferSize != 0)
 				writeToFile(dl);
 		}
@@ -98,8 +124,8 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWr
 
 
 	protected void release() {
-		dataBlocks.clear();
-		dataBlocks = null;
+		dataBuffers.clear();
+		dataBuffers = null;
 	}
 
 

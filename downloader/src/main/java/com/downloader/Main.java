@@ -9,6 +9,7 @@ import com.downloader.http.HttpRequest;
 import com.downloader.http.HttpResponse;
 import com.downloader.util.ConcurrentFileWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -34,7 +35,9 @@ public class Main {
 		new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
 				.parse("Mon, 16 Jul 2007 22:23:00 GMT");
 
-		new Main().test2();
+		new ByteArrayOutputStream(1).write("ssa".getBytes());
+
+//		new Main().test2();
 	}
 
 	public void test2() throws Exception {
@@ -81,7 +84,7 @@ public class Main {
 		println(fw instanceof ConcurrentFileWriter);
 
 
-		mRec = new HttpReceiver(hs, fw, 0);
+		//mRec = new HttpReceiver(hs, fw, 0);
 		mRec.setOnFinishedListener(new Receiver.OnFinishedListener() {
 			@Override
 			public void onFinished(Receiver r) {

@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Interface of file writable.
  */
-public interface FileWritable extends Writable {
+public interface DataWritable extends Writable {
 	/**
 	 * To writing data from special offset.
 	 * @param offset Special offset.

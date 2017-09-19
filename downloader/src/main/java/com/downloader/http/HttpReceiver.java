@@ -4,8 +4,8 @@ package com.downloader.http;
 import com.downloader.base.AbstractReceiver;
 import com.downloader.base.Receiver;
 import com.downloader.base.SocketReceiver;
-import com.downloader.util.ConcurrentFileWritable;
-import com.downloader.util.FileWritable;
+import com.downloader.client.Worker;
+import com.downloader.util.ConcurrentDataWritable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +17,10 @@ import java.io.InputStream;
 public class HttpReceiver extends SocketReceiver {
 	/** Chunked of key value for http header Transfer-Encoding. */
 	public final static String CHUNKED = "chunked";
-	
-	/** Http header with key "Transfer-Encoding"? */     
+
+	/** Http header with key "Transfer-Encoding"? */
 	protected boolean isChunked = false;
-	
+
 	/** Flag of content compressed by gzip. */
 	protected boolean isGzip = false;
 
@@ -34,23 +34,23 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
-	protected ConcurrentFileWritable mWritable;
+	protected ConcurrentDataWritable mWritable;
 
 	protected long offsetDataBegin = -1;
 
-	
+
 	/**
 	 * Construct a http downloader object.
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w) throws IOException {
-		this(d, w, -1);
+	public HttpReceiver(HttpResponse d, ConcurrentDataWritable w, Worker worker) throws IOException {
+		this(d, w, worker, -1);
 	}
 
 
-	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, long offsetDataBegin) throws IOException {
-		super(d.getInputStream(), (FileWritable) w);
+	public HttpReceiver(HttpResponse d, ConcurrentDataWritable w, Worker worker, long offsetDataBegin) throws IOException {
+		super(d.getInputStream(), w, worker);
 		mWritable = w;
 		httpResponse = d;
 		this.offsetDataBegin = offsetDataBegin;
