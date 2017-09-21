@@ -1,6 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.base.DownloadTask;
+import com.downloader.net.DownloadTask;
 
 import java.io.File;
 import java.io.IOException;

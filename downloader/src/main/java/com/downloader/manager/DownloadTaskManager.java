@@ -1,8 +1,7 @@
 package com.downloader.manager;
 
-import com.downloader.base.DownloadTask;
-import com.downloader.base.Protocol;
-import com.downloader.base.AbstractTaskInfo;
+import com.downloader.net.DownloadTask;
+import com.downloader.net.Protocol;
 
 import java.net.URL;
 import java.util.Timer;

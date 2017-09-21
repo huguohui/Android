@@ -1,27 +1,18 @@
 package com.downloader.manager;
 
-import java.io.IOException;
+import com.downloader.util.Log;
 
 /**
  * Thread manager.
  */
-public class ThreadManager extends AbstractThreadManager {
-	/** Single instance of ThreadManager. */
-	private static ThreadManager mManager = null;
+public abstract class AbstractThreadManager extends AbstractManager<Thread> implements Thread.UncaughtExceptionHandler {
 
-
-	/**
-	 * Get single instance of ThreadManager.
-	 * @return Instance of ThreadManager.
-	 */
-	public synchronized static ThreadManager getInstance() {
-		return mManager == null ? mManager = new ThreadManager() : mManager;
-	}
+	public abstract Thread[] alloc(Runnable... r);
 
 
 	@Override
-	public Thread[] alloc(Runnable... r) {
-		return new Thread[0];
+	public void uncaughtException(Thread thread, Throwable throwable) {
+		Log.println("There is a exception at thread " + thread.getName());
 	}
 
 

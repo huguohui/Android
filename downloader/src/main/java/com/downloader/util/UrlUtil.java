@@ -7,7 +7,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.regex.Pattern;
 
-import com.downloader.http.Http;
+import com.downloader.net.http.Http;
 
 
 /**

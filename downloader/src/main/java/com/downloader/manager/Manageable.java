@@ -1,13 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.base.Controlable;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Defines some operations that to implementing management operation for example :
@@ -51,14 +44,6 @@ public interface Manageable<T> extends Iterable<T> {
 	 * @return A list that inArray all managed objects.
 	 */
 	List<T> getList();
-
-
-	/**
-	 * To create something for managing.
-	 * @param descriptor Data for creating.
-	 * @return true for success, false for fail.
-	 */
-	T create(AbstractDescriptor descriptor) throws Throwable;
 
 
 	/**
