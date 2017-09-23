@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Describe a HTTP header. This header maybe 
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public abstract class AbstractHeader {
     /** The data of header. */
-    private Map<String, String> mContent = new HashMap<String, String>();
+    private Map<String, String> mContent = new ConcurrentHashMap<>();
 
 
 	/**
@@ -115,8 +116,7 @@ public abstract class AbstractHeader {
 	 * @param headerKey The key of new line.
 	 * @param headerValue The value of new line.
 	 */
-	public AbstractHeader add(String headerKey, String headerValue) {
-		mContent.containsKey(headerKey);
+	public AbstractHeader set(String headerKey, String headerValue) {
 		mContent.put(headerKey, headerValue);
 		return this;
 	}

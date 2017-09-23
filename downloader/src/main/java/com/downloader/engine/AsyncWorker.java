@@ -9,6 +9,7 @@ public class AsyncWorker extends AbstractWorker {
 
 	public AsyncWorker(ThreadManager tm) {
 		threadManager = tm;
+		mThread = tm.alloc(this);
 	}
 
 
@@ -27,7 +28,7 @@ public class AsyncWorker extends AbstractWorker {
 	 * Controls the task start.
 	 */
 	@Override
-	public void start() throws Exception {
+	public void start() {
 		mThread.start();
 	}
 
@@ -35,5 +36,8 @@ public class AsyncWorker extends AbstractWorker {
 	protected void doWork(Workable workable) throws Exception {
 		if (workable == null)
 			return;
+
+		threadManager.alloc(new RunnableAdapter(workable)).start();
 	}
 }
+

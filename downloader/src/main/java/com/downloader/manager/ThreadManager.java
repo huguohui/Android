@@ -1,6 +1,7 @@
 package com.downloader.manager;
 
-import java.io.IOException;
+import com.downloader.manager.factory.ThreadFactory;
+import com.downloader.util.Log;
 
 /**
  * Thread manager.
@@ -8,6 +9,9 @@ import java.io.IOException;
 public class ThreadManager extends AbstractThreadManager {
 	/** Single instance of ThreadManager. */
 	private static ThreadManager mManager = null;
+
+	protected ThreadManager() {
+	}
 
 
 	/**
@@ -21,45 +25,50 @@ public class ThreadManager extends AbstractThreadManager {
 
 	@Override
 	public Thread[] alloc(Runnable... r) {
-		return new Thread[0];
+		int size = r.length;
+		Thread[] threads = new Thread[size];
+
+		synchronized (mList) {
+			for (int i = 0; i < size; i++) {
+				if (r[i] == null)
+					continue;
+
+				threads[i] = ThreadFactory.createThread(r[i]);
+				threads[i].setUncaughtExceptionHandler(this);
+				mList.add(threads[i]);
+			}
+		}
+
+		return threads;
+	}
+
+
+	@Override
+	public Thread alloc(Runnable r) {
+		Thread th = ThreadFactory.createThread(r);
+		th.setUncaughtExceptionHandler(this);
+		synchronized (mList) {
+			mList.add(th);
+		}
+
+		return th;
 	}
 
 
 	/**
-	 * Thread descriptor.
+	 * List all objects by pass a callback.
+	 *
+	 * @param callback
 	 */
-	public static class ThreadDescriptor extends AbstractDescriptor {
-		/** Name of thread. */
-		public String name = "";
-
-		/** priority of thread. */
-		public int priority = Thread.NORM_PRIORITY;
-
-		/** Runnable object. */
-		public Runnable runnable;
-
-
-		/**
-		 * Create a thread descriptor with name and priority.
-		 * @param name Name of thread.
-		 * @param priority priority of thread.
-		 */
-		public ThreadDescriptor(Runnable runnable, String name, int priority) {
-			if (runnable == null || name == null || priority <= 0)
-				return;
-
-			this.runnable = runnable;
-			this.name = name;
-			this.priority = priority;
-		}
-
-
-		/**
-		 * Create a thread descriptor with name.
-		 * @param name Thread of name.
-		 */
-		public ThreadDescriptor(Runnable runnable, String name) {
-			this(runnable, name, Thread.NORM_PRIORITY);
+	@Override
+	public void list(ListCallback<Thread> callback) {
+		synchronized (mList) {
+			for (Thread thread : mList) {
+				if (thread != null) {
+					callback.call(thread);
+					Log.println(thread.getId() + "\t" + thread.getName()+ "\t" + thread.getState().toString() + "\n");
+				}
+			}
 		}
 	}
 }

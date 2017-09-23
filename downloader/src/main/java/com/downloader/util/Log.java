@@ -82,11 +82,13 @@ final public class Log
 
 	public static void println(Object obj) {
 		System.out.println("[**] " + obj);
+		//android.util.Log.e("ERROR", obj.toString());
 	}
 
 
 	public static void print(Object obj) {
 		System.out.print("[**] " + obj + "\t");
+		//android.util.Log.e("ERROR", obj.toString());
 	}
 }
 

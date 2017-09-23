@@ -1,13 +1,18 @@
 package com.downloader.net.http;
 
+import com.downloader.engine.AsyncWorker;
+import com.downloader.engine.ControlableWorker;
+import com.downloader.engine.Workable;
+import com.downloader.io.ConcurrentFileWriter;
+import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractDownloader;
 import com.downloader.net.AbstractRequest;
 import com.downloader.net.Receiver;
-import com.downloader.manager.ThreadManager;
-import com.downloader.io.ConcurrentFileWriter;
-import com.downloader.util.TimeUtil;
+import com.downloader.net.Response;
 import com.downloader.util.Log;
 import com.downloader.util.StringUtil;
+import com.downloader.util.TimeUtil;
+import com.downloader.util.UrlUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +22,8 @@ import java.net.URLDecoder;
 /**
  * Downloads data based http protocol.
  */
-public class HttpDownloader extends AbstractDownloader implements HttpReceiver.OnFinishedListener {
+public class HttpDownloader extends AbstractDownloader implements Workable, HttpReceiver.OnFinishedListener,
+		HttpRequest.OnConnectedListener, HttpRequest.OnSendListener, HttpRequest.OnResponseListener {
 	protected URL url;
 
 	protected HttpResponse httpResponse;
@@ -32,15 +38,17 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 
 	protected HttpReceiver[] httpReceivers;
 
-	protected Thread[] recThreads;
-
 	protected ConcurrentFileWriter fileWriter;
+
+	protected ThreadManager threadManager;
 
 	protected int allocThreads = 1;
 
 	protected int finished = 0;
 
 	protected long blockSize;
+
+	protected ControlableWorker worker;
 
 	final public static int MAX_THREAD = 10;
 
@@ -56,15 +64,29 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 	};
 
 
-	public HttpDownloader(URL url) throws NullPointerException, IOException {
+	public HttpDownloader(URL url) {
 		this.url = url;
-		fetchInfo();
+
+		try {
+			init();
+			fetchInfo();
+			prepare();
+		} catch(RedirectException re) {
+			re.printStackTrace();
+		} catch(IOException ie) {
+			ie.printStackTrace();
+		}
 	}
 
 
-	public HttpDownloader(HttpResponse hr) throws NullPointerException, IOException {
-		httpResponse = hr;
-		fetchInfo();
+	public HttpDownloader(HttpResponse hr) {
+		this(hr.getURL());
+	}
+
+
+	protected void init() throws IOException {
+		threadManager = ThreadManager.getInstance();
+		worker = new AsyncWorker(threadManager);
 	}
 
 
@@ -75,19 +97,25 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 	protected void fetchInfo() throws IOException {
 		if (httpResponse == null) {
 			HttpRequest hr = buildHttpRequest(url, Http.Method.HEAD);
-			hr.getHeader().add(Http.RANGE, new AbstractRequest.Range(0).toString());
+			hr.setHeader(Http.RANGE, new AbstractRequest.Range(0).toString());
+			hr.send();
 			httpResponse = hr.response();
 		}
 
 		mLength = httpResponse.getContentLength();
 		fileName = URLDecoder.decode(httpResponse.getFileName(), "UTF-8");
 		contentType = httpResponse.getContentType();
-		prepare();
 	}
 
 
 	protected HttpRequest buildHttpRequest(URL url, Http.Method method) throws IOException {
-		HttpRequest hr = new HttpRequest(url, method);
+		HttpRequest hr = new HttpRequest();
+		hr.setUrl(url);
+		hr.setMethod(method);
+		hr.setOnConnectedListener(this);
+		hr.setOnSendListener(this);
+		hr.setOnResponseListener(this);
+		hr.open();
 		return hr;
 	}
 
@@ -104,49 +132,35 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 		httpRequests = new HttpRequest[allocThreads];
 		httpResponses = new HttpResponse[allocThreads];
 		httpReceivers = new HttpReceiver[allocThreads];
-		recThreads = new Thread[allocThreads];
 		fileWriter = new ConcurrentFileWriter(
-							new File(URLDecoder.decode(httpResponse.getFileName(), "UTF-8")),
-									httpResponse.getContentLength());
-	}
-
-
-	protected Thread allocThread(int id) throws IOException {
-		ThreadManager.ThreadDescriptor desc = new ThreadManager.ThreadDescriptor(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					httpReceivers[Integer.parseInt(Thread.currentThread().getName())].receive();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}, id + "");
-
-		return ThreadManager.getInstance().create(desc);
+				new File(UrlUtil.decode(httpResponse.getFileName(), "UTF-8")),  httpResponse.getContentLength());
 	}
 
 
 	protected void download() throws IOException {
 		for (int i = 0; i < allocThreads; i++) {
 			httpRequests[i] = buildHttpRequest(url, Http.Method.GET);
-			httpRequests[i].getHeader().add(Http.RANGE,
+			httpRequests[i].setHeader(Http.RANGE,
 					new AbstractRequest.Range(i * blockSize,
 							-~i == allocThreads ? mLength : ~-(-~i * blockSize)).toString());
+			httpRequests[i].send();
 			httpResponses[i] = httpRequests[i].response();
 			httpReceivers[i] = new HttpReceiver(httpResponses[i], fileWriter, null, i * blockSize);
 			httpReceivers[i].setOnFinishedListener(this);
-			recThreads[i] = allocThread(i);
-		}
-		for (Thread t : recThreads) {
-			t.start();
+			worker.add(httpReceivers[i]);
 		}
 	}
 
 
 	public void start() throws IOException {
 		super.start();
-		download();
+		worker.add(this);
+
+		try {
+			worker.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -172,8 +186,42 @@ public class HttpDownloader extends AbstractDownloader implements HttpReceiver.O
 			mFinishedTime = System.currentTimeMillis();
 			mDownloadTime = mFinishedTime - mStartTime;
 
-			Log.println("Download time: " + mFinishedTime + "," + mStartTime + "," +
-					StringUtil.decimal2Str((double) TimeUtil.getMillisTimeDiffInSec(mStartTime, mFinishedTime), 2));
+			Log.println("Download time: " + StringUtil.decimal2Str(
+					(double) TimeUtil.getMillisTimeDiffInSec(mStartTime, mFinishedTime), 2));
+
+			try {
+				worker.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+
+	/**
+	 * To do some work.
+	 */
+	@Override
+	public void work() throws Exception {
+		download();
+	}
+
+
+	@Override
+	public void onConnected(AbstractRequest r) {
+		HttpRequest hr = (HttpRequest) r;
+	}
+
+
+	@Override
+	public void onSend(AbstractRequest r) {
+		HttpRequest hr = (HttpRequest) r;
+
+	}
+
+
+	@Override
+	public void onResponse(Response r) {
+		HttpResponse hp = (HttpResponse) r;
 	}
 }

@@ -2,13 +2,17 @@ package com.downloader.net.http;
 
 import com.downloader.net.Response;
 import com.downloader.util.StringUtil;
+import com.downloader.util.TimeUtil;
 import com.downloader.util.UrlUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -17,31 +21,35 @@ import java.util.Locale;
  */
 public class HttpResponse extends Response {
 
-	private HttpRequest mHttpRequest;
+	protected HttpRequest mHttpRequest;
 
-	private InputStream mInputStream;
+	protected InputStream mInputStream;
 
-	private Socket mSocket;
+	protected Socket mSocket;
 
-	private HttpHeader mHeader;
+	protected HttpHeader mHeader;
 
-	private long mContentLength;
+	protected long mContentLength;
 
-	private String mTransferEncoding;
+	protected String mTransferEncoding;
 
-	private String mFileName;
+	protected String mFileName;
 
-	private String mContentType;
+	protected String mContentType;
 
-	private Date mDate;
+	protected Date mDate;
 
-	private HttpCookie[] mCookies;
+	protected HttpCookie[] mCookies;
 
-	private boolean isKeepAlive;
+	protected boolean isKeepAlive;
 
-	private boolean isSupportRange;
+	protected boolean isSupportRange;
 
-	private Float mHttpVersion;
+	protected Float mHttpVersion;
+
+	protected URL mUrl;
+
+	protected int redirectTimes = 5;
 
 
 	/**
@@ -49,19 +57,22 @@ public class HttpResponse extends Response {
 	 *
 	 * @param r Request object.
 	 */
-	public HttpResponse(HttpRequest r) throws IOException {
+	public HttpResponse(HttpRequest r) throws IOException, RedirectException {
 		super(r);
 		mHttpRequest = r;
 
 		if (r.isConnect()) {
-			if (!r.isSend())
-				r.send();
-			
+			if (!r.isSend()) {
+				throw new ConnectException();
+			}
+
 			mSocket = r.getSocket();
 			mInputStream = mSocket.getInputStream();
 			mHeader = new HttpHeader();
 			mHeader.setContent(mInputStream);
+			mUrl = mHttpRequest.getUrl();
 			parseResponse();
+			checkRedirect();
 		}
 	}
 
@@ -71,51 +82,63 @@ public class HttpResponse extends Response {
 	}
 
 
-	private void parseResponse() {
+	protected void parseResponse() throws IOException {
 		mContentLength = StringUtil.str2Long(mHeader.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = mHeader.get(Http.TRANSFER_ENCODING);
-		mFileName = mHttpRequest.getUrl().getFile();
+		mFileName = UrlUtil.getFilename(mHttpRequest.getUrl());
 		mContentType = mHeader.get(Http.CONTENT_TYPE);
 		mHttpVersion = Float.parseFloat(mHeader.getVersion());
+		mCookies = HttpCookie.formString(mHeader.get(Http.SET_COOKIE));
+		mDate = TimeUtil.str2Date(mHeader.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
 		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(mHeader.get(Http.CONNECTION));
 		isSupportRange = mHeader.get(Http.CONTENT_RANGE) != null;
-
+		parseContentDisposition();
+	}
+	
+	
+	protected void parseContentDisposition() {
 		int off = 0;
-		String contentRange = mHeader.get(Http.CONTENT_RANGE);
-		String fileName = UrlUtil.getFilename(mHttpRequest.getUrl()), disp = "";
-		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.length() != 0) {
-			if ((off = disp.indexOf("filename")) != -1)
-				fileName = disp.substring(off + 9);
-		}
+		String 	disp = "", type = "";
+		String[] arr = null;
 
-		mFileName = fileName;
-		String cookieStr = mHeader.get(Http.SET_COOKIE);
-		if (cookieStr != null) {
-			String[] cookieArr = cookieStr.split(Http.CRLF);
-			mCookies = new HttpCookie[cookieArr.length];
-			for (int i = 0; i < cookieArr.length; i++) {
-				try {
-					mCookies[i] = HttpCookie.formString(cookieArr[i]);
-				} catch(Exception e) {
-					e.printStackTrace();
+		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.trim().length() != 0) {
+			if (disp.contains(";")) {
+				arr = disp.split(";");
+				mContentType = arr[0];
+				if ((off = arr[1].indexOf("filename")) != -1) {
+					mFileName = UrlUtil.decode(arr[1].substring(off + 9), "UTF-8");
 				}
 			}
-		}
-
-		try {
-			mDate = new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
-							.parse(mHeader.get(Http.DATE));
-		}
-		catch(ParseException pe) {
-			pe.printStackTrace();
+		} else {
+			mContentType = disp;
 		}
 	}
+
+
+	protected void checkRedirect() throws IOException, RedirectException {
+		String newUrl = "";
+		if ((newUrl = mHeader.get(Http.LOCATION)) != null) {
+			if (redirectTimes-- <= 0) {
+				throw new RedirectException();
+			}
+			mHttpRequest.setUrl(UrlUtil.getFullUrl(mUrl, newUrl));
+			mHttpRequest.reopen();
+			parseResponse();
+			checkRedirect();
+		}
+	}
+	
 
 
 	@Override
 	public void close() throws IOException {
 		mInputStream.close();
 		mHttpRequest.close();
+	}
+
+
+	public String getHeader(String key) {
+		return mHeader.get(key);
 	}
 
 
@@ -173,4 +196,10 @@ public class HttpResponse extends Response {
 		return isSupportRange;
 	}
 
+
+	public URL getURL() {
+		return mUrl;
+	}
 }
+
+

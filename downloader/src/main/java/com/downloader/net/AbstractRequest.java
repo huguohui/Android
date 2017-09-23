@@ -1,10 +1,13 @@
 package com.downloader.net;
 
 
+import com.downloader.util.TimeUtil;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Describe a request.
@@ -20,7 +23,10 @@ public abstract class AbstractRequest implements Request {
     protected Socket mSocket;
 
     /** The connection timeout. (ms) */
-    protected int mTimeout = 100000;
+    protected int mTimeout = 200000;
+
+	/** The connection used time. */
+	protected long mConnectionTime;
 
     /** Http header. */
     protected AbstractHeader mHeader;
@@ -50,6 +56,13 @@ public abstract class AbstractRequest implements Request {
 
 	protected OutputStream mOutputStream;
 
+	protected OnConnectedListener mOnConnectedListener;
+
+	protected OnSendListener mOnSendListener;
+
+	protected OnResponseListener mOnResponseListener;
+
+
     /** AbstractRequest states. */
     public enum State {
         ready,      // Ready to requesting.
@@ -66,9 +79,7 @@ public abstract class AbstractRequest implements Request {
      * @param  socketAddress The requests address.
      */
     public AbstractRequest(SocketAddress socketAddress) throws IOException {
-        setSocketAddress(socketAddress);
-        open(socketAddress, mTimeout);
-    }
+	}
 
 
     /**
@@ -86,14 +97,7 @@ public abstract class AbstractRequest implements Request {
     }
 
 
-    /**
-     * Open a connection and prepare to send request.
-     *
-     * @return If connect success, return true else false.
-     */
-    public void open(SocketAddress address) throws IOException {
-        open(address, mTimeout);
-    }
+	public abstract void open(SocketAddress address) throws IOException;
 
 
     /**
@@ -108,6 +112,16 @@ public abstract class AbstractRequest implements Request {
      * Reopen the request with last data.
      */
     public abstract void reopen() throws IOException;
+
+
+	public void setHeader(String key, String val) {
+		mHeader.set(key, val);
+	}
+
+
+	public String getHeader(String key) {
+		return mHeader.get(key);
+	}
     
 
     public SocketAddress getSocketAddress() {
@@ -211,10 +225,45 @@ public abstract class AbstractRequest implements Request {
 	}
 
 
+	public AbstractRequest setOnConnectedListener(OnConnectedListener onConnectedListener) {
+		mOnConnectedListener = onConnectedListener;
+		return this;
+	}
+
+
+	public AbstractRequest setOnSendListener(OnSendListener onSendListener) {
+		mOnSendListener = onSendListener;
+		return this;
+	}
+
+
+
+	public AbstractRequest setOnResponseListener(OnResponseListener onResponseListener) {
+		mOnResponseListener = onResponseListener;
+		return this;
+	}
+
+
+	public long getConnectionTime() {
+		return mConnectionTime;
+	}
+
+
 	/**
 	 * AbstractRequest state listener.
 	 */
-	public interface Listener {
+	public interface OnConnectedListener {
+		void onConnected(AbstractRequest r);
+	}
+
+
+	public interface OnSendListener {
+		void onSend(AbstractRequest r);
+	}
+
+
+	public interface OnResponseListener {
+		void onResponse(Response r);
 	}
 
 

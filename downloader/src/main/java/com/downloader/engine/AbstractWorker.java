@@ -18,6 +18,10 @@ public abstract class AbstractWorker implements ControlableWorker {
 
 	protected Thread mThread;
 
+	protected OnExceptionListener mOnExceptionListener;
+
+	protected OnWorkDoneListener mOnWorkDoneListener;
+
 
 	/**
 	 * Add a workable to working.
@@ -25,7 +29,7 @@ public abstract class AbstractWorker implements ControlableWorker {
 	 * @param workable For working.
 	 */
 	@Override
-	public void add(Workable workable) throws Exception {
+	public void add(Workable workable) {
 		mQueue.offer(workable);
 		resume();
 	}
@@ -48,7 +52,7 @@ public abstract class AbstractWorker implements ControlableWorker {
 	 * Controls the task pause.
 	 */
 	@Override
-	public void pause() throws Exception {
+	public void pause() {
 		isPause = true;
 	}
 
@@ -57,7 +61,7 @@ public abstract class AbstractWorker implements ControlableWorker {
 	 * Controls the task resume.
 	 */
 	@Override
-	public void resume() throws Exception {
+	public void resume() {
 		synchronized (this) {
 			if (isPause) {
 				isPause = false;
@@ -89,6 +93,7 @@ public abstract class AbstractWorker implements ControlableWorker {
 			doWork(mQueue.poll());
 			isPause = mQueue.isEmpty();
 		} catch (Exception e) {
+
 			e.printStackTrace();
 		} finally {
 
@@ -115,5 +120,9 @@ public abstract class AbstractWorker implements ControlableWorker {
 
 			doWorks();
 		}
+	}
+
+	interface OnExceptionListener {
+		void onException(Exception e);
 	}
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * Defines some operations that to implementing management operation for example :
- * List, delete, add, modify etc.
+ * List, delete, set, modify etc.
  * @since 2015/12/14
  */
 public interface Manageable<T> extends Iterable<T> {
@@ -47,14 +47,25 @@ public interface Manageable<T> extends Iterable<T> {
 
 
 	/**
+	 * List all objects by pass a callback.
+	 */
+	void list(ListCallback<T> callback);
+
+
+	/**
 	 * Filter of searching.
 	 */
-	public interface SearchFilter<T> {
+	interface SearchFilter<T> {
 		/**
 		 * Run filter on given data.
 		 * @param data Given data.
 		 * @return true on filte pass, false on fail.
 		 */
 		boolean filter(T data);
+	}
+
+
+	interface ListCallback<T> {
+		void call(T obj);
 	}
 }

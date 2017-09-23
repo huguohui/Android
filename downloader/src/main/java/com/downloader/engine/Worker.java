@@ -8,7 +8,7 @@ public interface Worker extends Runnable {
 	 * Add a workable to working.
 	 * @param workable For working.
 	 */
-	void add(Workable workable) throws Exception;
+	void add(Workable workable);
 
 
 	/**
@@ -34,5 +34,24 @@ public interface Worker extends Runnable {
 		 * @param w {@lik Worker}.
 		 */
 		void onWorkDone(Worker w);
+	}
+
+	class RunnableAdapter implements Runnable {
+		Workable workable;
+
+		RunnableAdapter(Workable w) {
+			workable = w;
+		}
+
+
+		@Override
+		public void run() {
+			try {
+				if (workable != null)
+					workable.work();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

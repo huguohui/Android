@@ -5,6 +5,7 @@ import com.downloader.net.SocketRequest;
 import com.downloader.net.http.Http.Method;
 import com.downloader.util.UrlUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -14,26 +15,28 @@ import java.net.URL;
  * @since 2015/11/05
  */
 public class HttpRequest extends SocketRequest {
-    /** The method of requesting  */
-    private Method mMethod = Method.GET;
-
-	/** Requested url. */
-	private URL mUrl;
-
 	/** Accept field. */
-	private final String ACCEPT = "*/*";
+	protected final String ACCEPT = "*/*";
 
 	/** User-Agent field. */
-	private final String USER_AGENT = "T-Virus v1.0";
+	protected final String USER_AGENT = "T-Virus v1.0";
 
 	/** Accept-Encoding field. */
-	private final String ACCEPT_ENCODING = "identity";
+	protected final String ACCEPT_ENCODING = "identity";
 
 	/** Connection field. */
-	private final String CONNECTING = "Close";
+	protected final String CONNECTING = "Close";
 
 	/** The default http version. */
-	private final String HTTP_VERSION = "1.1";
+	protected final String HTTP_VERSION = "1.1";
+
+	/** The method of requesting  */
+	protected Method mMethod = Method.GET;
+
+	/** Requested url. */
+	protected URL mUrl;
+
+	protected HttpResponse mHttpResponse;
 
 
 	/**
@@ -43,16 +46,13 @@ public class HttpRequest extends SocketRequest {
      */
 	public HttpRequest(URL url, Method method) throws IOException {
 		super(UrlUtil.getSocketAddressByUrl(url));
-		if (url == null)
-			throw new NullPointerException("The URL can't null!");
-
 		if (method != null)
 			this.mMethod = method;
 
 		mUrl = url;
 		setHeader(getDefaultHeader());
 	}
-	
+
 	
 	/**
      * Construct a http request object.
@@ -75,16 +75,16 @@ public class HttpRequest extends SocketRequest {
 	 * Build default http header.
 	 * @return Default header.
 	 */
-	private HttpHeader getDefaultHeader() {
+	protected HttpHeader getDefaultHeader() {
 		HttpHeader header = new HttpHeader();
 		header.setMethod(mMethod);
 		header.setVersion(HTTP_VERSION);
-		header.add("Accept", ACCEPT).add("Accept-Encoding", ACCEPT_ENCODING)
-			  .add("User-Agent", USER_AGENT).add("Connecting", CONNECTING);
+		header.set("Accept", ACCEPT).set("Accept-Encoding", ACCEPT_ENCODING)
+			  .set("User-Agent", USER_AGENT).set("Connecting", CONNECTING);
 
 		if (mUrl != null) {
 			header.setUrl(UrlUtil.getUrlFullPath(mUrl));
-			header.add("Host", UrlUtil.getDomainWithPort(mUrl));
+			header.set("Host", UrlUtil.getDomainWithPort(mUrl));
 		}
 
 		return header;
@@ -96,12 +96,35 @@ public class HttpRequest extends SocketRequest {
      */
     @Override
     public synchronized void send() throws IOException {
-		send(getHeader().toString().getBytes());
-		if (getBody() != null)
-			send(getBody().getContent());
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		bos.write(getHeader().toString().getBytes());
+		if (getBody() != null && getBody().getContent() != null) {
+			bos.write(getBody().getContent());
+		}
 
+		send(bos.toByteArray());
 		setState(State.sent);
+		isSend = true;
+		if (mOnSendListener != null) {
+			mOnSendListener.onSend(this);
+		}
+
+		receiveResponse();
     }
+
+
+    public void send(byte[] data) throws IOException {
+		ensureConnected();
+		mOutputStream.write(data);
+	}
+
+
+	protected void receiveResponse() throws IOException {
+		mHttpResponse = new HttpResponse(this);
+		if (mOnResponseListener != null) {
+			mOnResponseListener.onResponse(mHttpResponse);
+		}
+	}
 	
 	
 	/**
@@ -124,6 +147,11 @@ public class HttpRequest extends SocketRequest {
 	}
 
 
+	public void open() throws IOException {
+		open(mUrl, mMethod);
+	}
+
+
 	/**
 	 * Reopen a connection.
 	 */
@@ -137,8 +165,9 @@ public class HttpRequest extends SocketRequest {
 	 * Reopen a connection.
 	 */
 	public void reopen() throws IOException {
-    	if (!getState().equals(State.closed))
-    		close();
+    	if (!getState().equals(State.closed)) {
+			close();
+		}
     	
     	isSend = false;
     	open(mUrl);
@@ -165,11 +194,11 @@ public class HttpRequest extends SocketRequest {
 
 		mUrl = url;
 		((HttpHeader)getHeader()).setUrl(UrlUtil.getUrlFullPath(mUrl));
-		getHeader().add("Host", UrlUtil.getDomainWithPort(mUrl));
+		getHeader().set("Host", UrlUtil.getDomainWithPort(mUrl));
 	}
 
 
 	public HttpResponse response() throws IOException {
-		return new HttpResponse(this);
+		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
 	}
 }

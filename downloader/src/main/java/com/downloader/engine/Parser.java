@@ -1,4 +1,4 @@
-package com.downloader.net;
+package com.downloader.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ public interface Parser {
 	 * @param data Provided data.
 	 * @return Some data.
 	 */
-	public abstract Object parse(byte[] data);
+	Object parse(Object data);
 
 
 	/**
@@ -22,7 +22,7 @@ public interface Parser {
 	 * @param data Provided data.
 	 * @return Some data.
 	 */
-	public abstract Object parse(InputStream data) throws IOException;
+	Object parse(byte[] data);
 
 
 	/**
@@ -30,6 +30,14 @@ public interface Parser {
 	 * @param data Provided data.
 	 * @return Some data.
 	 */
-	public abstract Object parse(Reader data) throws IOException;
+	Object parse(InputStream data) throws IOException;
+
+
+	/**
+	 * Parse data to a kind of format.
+	 * @param data Provided data.
+	 * @return Some data.
+	 */
+	Object parse(Reader data) throws IOException;
 
 }

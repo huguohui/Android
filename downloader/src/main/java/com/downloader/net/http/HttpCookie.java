@@ -1,5 +1,10 @@
 package com.downloader.net.http;
 
+import com.downloader.engine.Parser;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +33,8 @@ public class HttpCookie {
     
     private Long mMaxAge;
 
+    static HttpCookieParser httpCookieParser = new HttpCookieParser();
+
 
 	private final static SimpleDateFormat mDateFormat = new SimpleDateFormat(Http.GMT_DATE_FORMAT[1], Locale.ENGLISH);
     
@@ -53,38 +60,8 @@ public class HttpCookie {
     }
 
 
-    public static HttpCookie formString(String str) throws Exception {
-        String[] strArr = str.split(";");
-        boolean secure = false;
-        Date date = null;
-        long maxAge = 0L;
-        String k = null, v = null, domain = null, path = null;
-        
-        for (String s : strArr) {
-        	s = s.trim();
-            if (!s.contains("=")) {
-                if (s.equals("secure"))
-                	secure = true;
-                else
-                    k = s;
-            }else{
-                String[] arr = s.split("=");
-                if (arr[0].equals("domain"))
-                    domain = arr[1];
-                else if (arr[0].equals("path"))
-                    path = arr[1];
-                else if (arr[0].equals("expires"))
-                    try { date = mDateFormat.parse(arr[1]); } catch (ParseException e) {}
-                else if (arr[0].equals("max-age"))
-                	maxAge = Long.parseLong(arr[1]);
-                else {
-                    k = arr[0];
-                    v = arr[1];
-                }
-            }
-        }
-        
-        return new HttpCookie(k, v, domain, path, date, maxAge, secure);
+    public static HttpCookie[] formString(String str) {
+        return httpCookieParser.parse(str);
     }
     
     
@@ -152,6 +129,7 @@ public class HttpCookie {
         mValue = value;
     }
 
+
     public Long getmMaxAge() {
 		return mMaxAge;
 	}
@@ -160,4 +138,96 @@ public class HttpCookie {
 	public void setmMaxAge(Long mMaxAge) {
 		this.mMaxAge = mMaxAge;
 	}
+
+
+	public static class HttpCookieParser implements Parser {
+
+        /**
+         * Parse data to a kind of format.
+         *
+         * @param data Provided data.
+         * @return Some data.
+         */
+        @Override
+        public HttpCookie[] parse(Object data) {
+            if (data == null)
+                return new HttpCookie[0];
+
+            String str = (String) data;
+            String[] cookieArr = str.contains(Http.CRLF) ? str.split(Http.CRLF) : new String[] { str };
+            HttpCookie[] cookies = new HttpCookie[cookieArr.length];
+
+            for (String cs : cookieArr) {
+                String[] kvArr = str.split(";");
+                boolean secure = false;
+                Date date = null;
+                long maxAge = 0L;
+                String k = null, v = null, domain = null, path = null;
+                for (String s : kvArr) {
+                    s = s.trim();
+                    if (!s.contains("=")) {
+                        if (s.equals("secure"))
+                            secure = true;
+                        else
+                            k = s;
+                    } else {
+                        String[] arr = s.split("=");
+                        if (arr[0].equals("domain"))
+                            domain = arr[1];
+                        else if (arr[0].equals("path"))
+                            path = arr[1];
+                        else if (arr[0].equals("expires"))
+                            try {
+                                date = mDateFormat.parse(arr[1]);
+                            } catch (ParseException e) {
+                            }
+                        else if (arr[0].equals("max-age"))
+                            maxAge = Long.parseLong(arr[1]);
+                        else {
+                            k = arr[0];
+                            v = arr[1];
+                        }
+                    }
+                }
+            }
+
+            return cookies;
+        }
+
+
+        /**
+         * Parse data to a kind of format.
+         *
+         * @param data Provided data.
+         * @return Some data.
+         */
+        @Override
+        public HttpCookie[] parse(byte[] data) {
+            return parse(new String(data));
+        }
+
+
+        /**
+         * Parse data to a kind of format.
+         *
+         * @param data Provided data.
+         * @return Some data.
+         */
+        @Override
+        public Object parse(InputStream data) throws IOException {
+            return null;
+        }
+
+
+        /**
+         * Parse data to a kind of format.
+         *
+         * @param data Provided data.
+         * @return Some data.
+         */
+        @Override
+        public Object parse(Reader data) throws IOException {
+            return null;
+        }
+    }
 }

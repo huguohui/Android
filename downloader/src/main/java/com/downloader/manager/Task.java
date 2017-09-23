@@ -1,4 +1,7 @@
-package com.downloader.net;
+package com.downloader.manager;
+
+import com.downloader.net.AbstractTaskInfo;
+import com.downloader.engine.Controlable;
 
 /**
  * Interface of task.

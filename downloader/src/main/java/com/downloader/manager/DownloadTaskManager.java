@@ -1,6 +1,5 @@
 package com.downloader.manager;
 
-import com.downloader.net.DownloadTask;
 import com.downloader.net.Protocol;
 
 import java.net.URL;
@@ -78,7 +77,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @param descriptor Data for creating.
 	 * @return true for success, false for fail.
 	 */
-	@Override
 	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
 		return create((DownloadTaskDescriptor) descriptor);
 	}
@@ -143,5 +141,16 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		}
 
 		return adt;
+	}
+
+
+	/**
+	 * List all objects by pass a callback.
+	 *
+	 * @param callback
+	 */
+	@Override
+	public void list(ListCallback<DownloadTask> callback) {
+
 	}
 }

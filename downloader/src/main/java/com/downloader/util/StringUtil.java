@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -14,6 +15,10 @@ import java.util.regex.Pattern;
 final public class StringUtil {
 	/** 用于匹配整数的正则。*/
 	public final static Pattern mIntPattern = Pattern.compile("^-?\\d+$");
+
+	final static char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIjKLMNOPQRSTUVWXYZ".toCharArray();
+
+	static int counter = 0;
 	
 	/** 
 	 * 日期格式。
@@ -193,5 +198,24 @@ final public class StringUtil {
 
 	public final static String decimal2Str(Double d, int len) {
 		return new java.text.DecimalFormat("0.00").format(d);
+	}
+
+
+	public final static String nonceStr(int len) {
+		counter++;
+		char[] numChars = Integer.toString(counter).toCharArray(),
+			   nonceStr = new char[len + numChars.length];
+		Random random = new Random();
+
+		for (int i = 0; i < nonceStr.length; i++) {
+			nonceStr[i] = chars[i >= len ? numChars[i - len] - '1' : random.nextInt(0xff) % chars.length];
+		}
+
+		return new String(nonceStr);
+	}
+
+
+	public static void main(String[] args) {
+		Log.println(nonceStr(10));
 	}
 }

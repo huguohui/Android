@@ -1,7 +1,7 @@
 package com.downloader.net.http;
 
 import com.downloader.net.AbstractTaskInfo;
-import com.downloader.net.DownloadTask;
+import com.downloader.manager.DownloadTask;
 import com.downloader.manager.DownloadTaskDescriptor;
 
 

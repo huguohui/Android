@@ -1,8 +1,7 @@
 package com.downloader.manager;
 
-import com.downloader.net.DownloadTask;
-
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 /**
@@ -77,18 +76,6 @@ public class FileManager extends AbstractFileManager {
 
 
 	/**
-	 * To create something for managing.
-	 *
-	 * @param descriptor Data for creating.
-	 * @return true for success, false for fail.
-	 */
-	@Override
-	public File create(AbstractDescriptor descriptor) throws Throwable {
-		return null;
-	}
-
-
-	/**
 	 * Create a download task by task descriptor.
 	 *
 	 * @param desc Task descriptor.
@@ -96,7 +83,7 @@ public class FileManager extends AbstractFileManager {
 	 * @throws Throwable When exception occured.
 	 */
 	@Override
-	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
+	public DownloadTask create(FileDescriptor desc) throws Throwable {
 		return null;
 	}
 
@@ -182,5 +169,16 @@ public class FileManager extends AbstractFileManager {
 			}
 		}
 		return null;
+	}
+
+
+	/**
+	 * List all objects by pass a callback.
+	 *
+	 * @param callback
+	 */
+	@Override
+	public void list(ListCallback<File> callback) {
+
 	}
 }

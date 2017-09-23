@@ -150,6 +150,6 @@ public class SocketReceiver extends AbstractReceiver {
 	 */
 	@Override
 	public void work() throws Exception {
-
+		receive();
 	}
 }

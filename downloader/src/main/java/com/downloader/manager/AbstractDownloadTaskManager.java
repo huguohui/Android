@@ -1,7 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.net.Controlable;
-import com.downloader.net.DownloadTask;
+import com.downloader.engine.Controlable;
 
 /**
  * Abstracts for manager of download task.

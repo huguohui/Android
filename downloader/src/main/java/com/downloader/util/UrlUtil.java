@@ -1,9 +1,12 @@
 package com.downloader.util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.regex.Pattern;
 
@@ -86,12 +89,18 @@ final public class UrlUtil {
 		if (url == null) return null;
 		String file = url.getFile();
 		String[] path = file.split("/");
-		if (file.length() == 0)
+		if (file.trim().length() == 0)
 			return "index.html";
 		
-		if (path.length != 0)
-			return path[path.length - 1];
-		
+		if (path.length != 0) {
+			try {
+				return URLDecoder.decode(path[path.length - 1], "UTF-8");
+			}
+			catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+
 		return file;
 	}
 	
@@ -131,8 +140,9 @@ final public class UrlUtil {
 			return new URL(url);
 		
 		String baseUrlStr = getUrlWithoutPath(baseUrl), newPath = "", newUrl = "";
-		if (url.startsWith("/"))
+		if (url.startsWith("/")) {
 			newUrl = baseUrlStr + url;
+		}
 		else {
 			String p = baseUrl.getPath();
 			int offset = p.lastIndexOf("/");
@@ -142,16 +152,42 @@ final public class UrlUtil {
 
 		return new URL(newUrl);
 	}
+
+
+	public static String decode(String url, String enc) {
+		try {
+			return URLDecoder.decode(url, enc);
+		}
+		catch (UnsupportedEncodingException ue) {
+			ue.printStackTrace();
+		}
+
+		return "";
+	}
+
+
+	public static String encode(String url, String enc) {
+		try {
+			return URLEncoder.encode(url, enc);
+		}
+		catch (UnsupportedEncodingException ue) {
+			ue.printStackTrace();
+		}
+
+		return "";
+	}
 	
 	
 	public static void main(String[] args) throws MalformedURLException {
-//		String url = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
-//		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
-//		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
-//		if (pattern.matcher(url).matches()) {
-//			System.out.println(url);
-//		}
-		
+/*
+		String url = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
+		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
+		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+		if (pattern.matcher(url).matches()) {
+			System.out.println(url);
+		}
+*/
+
 
 		System.out.println(getFullUrl(new URL("http://baidu.com/dfa/a"), "../"));
 	}

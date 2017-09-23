@@ -1,5 +1,7 @@
 package com.downloader.net;
 
+import com.downloader.util.TimeUtil;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
@@ -26,6 +28,17 @@ public class SocketRequest extends AbstractRequest {
 	}
 
 
+
+	/**
+	 * Open a connection and prepare to send request.
+	 *
+	 * @return If connect success, return true else false.
+	 */
+	public void open(SocketAddress address) throws IOException {
+		open(address, mTimeout);
+	}
+
+
 	/**
 	 * Open a connection with timeout and prepare to send request.
 	 * @param address The {@link SocketAddress} to describing a address.
@@ -44,7 +57,10 @@ public class SocketRequest extends AbstractRequest {
 		mSocket.connect(address, timeout);
 		mState = State.connected;
 		isConnect = true;
+		mConnectionTime = TimeUtil.getMillisTime() - mStartTime;
 		mOutputStream = mSocket.getOutputStream();
+		if (mOnConnectedListener != null)
+			mOnConnectedListener.onConnected(this);
 	}
 
 
@@ -110,6 +126,8 @@ public class SocketRequest extends AbstractRequest {
 		ensureConnected();
 		mOutputStream.write(data);
 		isSend = true;
+		if (mOnSendListener != null)
+			mOnSendListener.onSend(this);
 	}
 
 

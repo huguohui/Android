@@ -1,24 +1,26 @@
-package com.downloader.manager;
+package com.downloader.manager.factory;
 
-import com.downloader.util.Log;
+import com.downloader.manager.AbstractDescriptor;
+import com.downloader.util.StringUtil;
 
-/**
- * Thread manager.
- */
-public abstract class AbstractThreadManager extends AbstractManager<Thread> implements Thread.UncaughtExceptionHandler {
+public abstract class ThreadFactory {
+	public final static int THREAD_NAME_LEN = 20;
 
+	public static Thread createThread(String name, Runnable runnable, int priority) {
+		if (runnable == null)
+			return null;
 
-	public abstract Thread[] alloc(Runnable... r);
+		Thread t = new Thread(runnable);
+		t.setName(name);
+		t.setPriority(priority);
 
-
-	public abstract Thread alloc(Runnable r);
-
-
-	@Override
-	public void uncaughtException(Thread thread, Throwable throwable) {
-		Log.println("There is a exception at thread " + thread.getName());
+		return t;
 	}
 
+
+	public static Thread createThread(Runnable runnable) {
+		return createThread(StringUtil.nonceStr(THREAD_NAME_LEN), runnable, Thread.NORM_PRIORITY);
+	}
 
 	/**
 	 * Thread descriptor.

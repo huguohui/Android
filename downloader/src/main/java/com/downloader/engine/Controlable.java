@@ -1,4 +1,4 @@
-package com.downloader.net;
+package com.downloader.engine;
 
 /**
  * Defines some method for describing object is controlable.

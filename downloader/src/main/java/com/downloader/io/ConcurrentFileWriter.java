@@ -1,5 +1,7 @@
 package com.downloader.io;
 
+import com.downloader.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +43,7 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 				size += data.length;
 				bufferSize += data.length;
 				isFull = (surplus = (bufferSize - WRITE_BUFFER_SIZE)) >= 0;
-				buffer.write(data, 0, surplus != 0 ? data.length - surplus : data.length);
+				buffer.write(data, 0, isFull ? data.length - surplus : data.length);
 				surplusData = isFull ? Arrays.copyOfRange(data, surplus, data.length) : null;
 			}
 

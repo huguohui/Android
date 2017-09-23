@@ -1,4 +1,6 @@
-package com.downloader.net;
+package com.downloader.manager;
+
+import com.downloader.net.AbstractTaskInfo;
 
 import java.net.URL;
 

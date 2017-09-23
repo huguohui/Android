@@ -1,8 +1,7 @@
 package com.downloader.manager;
 
-import com.downloader.net.DownloadTask;
-
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 
 /**
@@ -15,7 +14,7 @@ public abstract class AbstractFileManager extends AbstractManager<File>{
 	 * @return Download task instance.
 	 * @throws Throwable When exception occured.
 	 */
-	public abstract DownloadTask create(DownloadTaskDescriptor desc) throws Throwable;
+	public abstract DownloadTask create(FileDescriptor desc) throws Throwable;
 
 
 	/**

@@ -1,6 +1,7 @@
 package com.downloader.net;
 
 
+import com.downloader.engine.Controlable;
 import com.downloader.util.TimeUtil;
 import com.downloader.util.StringUtil;
 

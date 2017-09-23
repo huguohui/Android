@@ -9,7 +9,7 @@ import java.io.Reader;
 import java.util.Map;
 
 import com.downloader.net.AbstractHeader;
-import com.downloader.net.Parser;
+import com.downloader.engine.Parser;
 
 /**
  * Describe a HTTP header. This header maybe 
@@ -20,22 +20,22 @@ import com.downloader.net.Parser;
  */
 public class HttpHeader extends AbstractHeader {
 	/** Http method of requesting. */
-	private Http.Method mMethod;
+	protected Http.Method mMethod;
 
 	/** Http Version. */
-	private String mVersion;
+	protected String mVersion;
 
 	/** The request url. */
-	private String mUrl;
+	protected String mUrl;
 
 	/** The response status code. */
-	private String mStatusCode;
+	protected String mStatusCode;
 
 	/** The response status message. */
-	private String mStatusMsg;
+	protected String mStatusMsg;
 
 	/** The parser of http header. */
-	private HttpHeaderParser mParser;
+	protected HttpHeaderParser mParser;
 
 
 	/**
@@ -101,7 +101,7 @@ public class HttpHeader extends AbstractHeader {
 	/**
 	 * Set the parser.
 	 */
-	private void initParser() {
+	protected void initParser() {
 		if (mParser == null)
 			mParser = new HttpHeaderParser();
 	}
@@ -176,7 +176,7 @@ public class HttpHeader extends AbstractHeader {
 	@Override
 	public String toString() throws NullPointerException {
 		if (getContent() == null)
-			throw new NullPointerException("AbstractHeader content is null!");
+			throw new NullPointerException("Header content is null!");
 
 		StringBuilder sb = new StringBuilder();
 		if (getMethod() != null && getUrl() != null && getVersion() != null) {
@@ -201,12 +201,13 @@ public class HttpHeader extends AbstractHeader {
 	}
 
 
-	public HttpHeader add(String key, String val) {
-		if (Http.SET_COOKIE.equalsIgnoreCase(key))
+	public HttpHeader set(String key, String val) {
+		if (Http.SET_COOKIE.equalsIgnoreCase(key)) {
 			getContent().put(key, getContent().containsKey(key) ?
 					getContent().get(key).concat(Http.CRLF).concat(val) : val);
-		else
-			super.add(key, val);
+		} else {
+			super.set(key, val);
+		}
 
 		return this;
 	}
@@ -274,6 +275,18 @@ public class HttpHeader extends AbstractHeader {
 		 * @return Some data.
 		 */
 		@Override
+		public Object parse(Object data) {
+			return null;
+		}
+
+
+		/**
+		 * Parse data to a kind of format.
+		 *
+		 * @param data Provided data.
+		 * @return Some data.
+		 */
+		@Override
 		public HttpHeader parse(byte[] data) {
 			if (data == null)
 				throw new NullPointerException("The data to parsing is null!");
@@ -294,11 +307,11 @@ public class HttpHeader extends AbstractHeader {
 						pos++;
 
 					if (pos <= lineOffset - 1) {
-						header.add(new String(buff, 0, pos), new String(buff, pos + 1,
+						header.set(new String(buff, 0, pos), new String(buff, pos + 1,
 								lineOffset - pos - 1).trim());
 					}else{
 						if (pos == lineOffset - 1) {
-							header.add(new String(buff, 0, pos - 1), "");
+							header.set(new String(buff, 0, pos - 1), "");
 						}else{
 							String firstLine = new String(buff, 0, lineOffset);
 							String[] arrStr = firstLine.split("\\s");

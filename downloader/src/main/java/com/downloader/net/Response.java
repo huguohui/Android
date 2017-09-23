@@ -14,6 +14,5 @@ public abstract class Response implements Closeable {
 	public Response(Request r) {
 	}
 
-
 	public abstract Object info();
 }
