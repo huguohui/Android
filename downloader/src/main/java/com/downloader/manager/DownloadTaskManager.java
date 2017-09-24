@@ -1,6 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.net.Protocol;
+import com.downloader.net.SupportedProtocol;
 
 import java.net.URL;
 import java.util.Timer;
@@ -104,7 +104,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task resume.
 	 */
 	@Override
-	public void resume() throws Exception {
+	public void resume()  {
 
 	}
 
@@ -113,7 +113,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop() throws Exception {
+	public void stop() {
 
 	}
 
@@ -131,7 +131,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		String protocol = url.getProtocol();
 		DownloadTask adt = null;
 
-		switch(Protocol.valueOf(protocol)) {
+		switch(SupportedProtocol.valueOf(protocol)) {
 			case HTTP:
 //				adt = new HttpDownloadTask(url.getFile());
 //				AbstractTaskInfo ti = adt.info();

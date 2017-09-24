@@ -20,11 +20,11 @@ public interface Controlable {
 	/**
 	 * Controls the task resume.
 	 */
-	void resume() throws Exception;
+	void resume();
 	
 	
 	/**
 	 * Controls the task stop.
 	 */
-	void stop() throws Exception;
+	void stop();
 }

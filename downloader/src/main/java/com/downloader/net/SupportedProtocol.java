@@ -3,7 +3,7 @@ package com.downloader.net;
 /**
  * Common protocol. 
  */
-public enum Protocol {
+public enum SupportedProtocol {
 	/** HyperText Transfer Protocol. */
 	HTTP,
 
@@ -11,8 +11,5 @@ public enum Protocol {
 	HTTPS,
 	
 	/** File Transfer Protocol. */
-	FTP,
-
-	/** File Protocol. */
-	FILE
+	FTP
 }

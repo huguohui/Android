@@ -1,7 +1,9 @@
-package com.downloader.net;
+package com.downloader.client.downloader;
 
 
 import com.downloader.engine.Controlable;
+import com.downloader.net.AbstractRequest;
+import com.downloader.net.AbstractTaskInfo;
 import com.downloader.util.TimeUtil;
 import com.downloader.util.StringUtil;
 
@@ -26,10 +28,13 @@ public abstract class AbstractDownloader implements Controlable {
 	/** Download is finished? */
 	protected boolean mIsFinished = false;
 
+	protected boolean mIsStop = false;
+
 	/** Listener of downloading state. */
 	protected Listener mListener = null;
 
 	protected long mDownloadTime = 0;
+
 
 	/** Methods of listener. */
 	private final String mListenerMethods[] = {
@@ -38,7 +43,12 @@ public abstract class AbstractDownloader implements Controlable {
 
 	/** The download states. */
 	public enum State {
-		unstart, receiving, paused, stoped, finished, exceptional, waiting
+		unstart, init, prepared, started, paused, stoped, finished, exceptional, waiting
+	}
+
+
+	public AbstractDownloader() {
+		mState = State.init;
 	}
 
 
@@ -46,9 +56,9 @@ public abstract class AbstractDownloader implements Controlable {
 	 * Starts to downloading.
 	 * @throws IOException
 	 */
-	public synchronized void start() throws IOException {
+	public synchronized void start() throws Exception {
 		mStartTime = TimeUtil.getMillisTime();
-		mState = State.receiving;
+		setState(State.started);
 		invokeListener("onStart");
 	}
 
@@ -56,8 +66,8 @@ public abstract class AbstractDownloader implements Controlable {
 	/**
 	 * Pauses task of downloading.
 	 */
-	public synchronized void pause() throws IOException {
-		mState = State.paused;
+	public synchronized void pause() throws Exception {
+		setState(State.paused);
 		invokeListener("onPauses");
 	}
 
@@ -65,8 +75,8 @@ public abstract class AbstractDownloader implements Controlable {
 	/**
 	 * Resumes task of downloading.
 	 */
-	public synchronized void resume() throws IOException {
-		mState = State.receiving;
+	public synchronized void resume() {
+		setState(State.started);
 		invokeListener("onResume");
 	}
 
@@ -74,8 +84,9 @@ public abstract class AbstractDownloader implements Controlable {
 	/**
 	 * Stops to downloading.
 	 */
-	public synchronized void stop() throws IOException {
-		mState = State.stoped;
+	public synchronized void stop() {
+		setState(State.stoped);
+		mIsStop = true;
 		invokeListener("onStop");
 	}
 
@@ -103,13 +114,16 @@ public abstract class AbstractDownloader implements Controlable {
 		return mDownloadedLength;
 	}
 
+
 	public long getLength() {
 		return mLength;
 	}
 
+
 	public synchronized void setLength(long length) {
 		mLength = length;
 	}
+
 
 	public long getStartTime() {
 		return mStartTime;
@@ -158,6 +172,11 @@ public abstract class AbstractDownloader implements Controlable {
 
 	public long getDownloadTime() {
 		return mDownloadTime;
+	}
+
+
+	public boolean isStop() {
+		return mIsStop;
 	}
 
 

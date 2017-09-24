@@ -1,4 +1,4 @@
-package com.downloader.net.http;
+package com.downloader.client.downloader;
 
 import com.downloader.net.AbstractTaskInfo;
 import com.downloader.manager.DownloadTask;
@@ -38,7 +38,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 * Controls the task resume.
 	 */
 	@Override
-	public void resume() throws Exception {
+	public void resume()  {
 
 	}
 
@@ -47,7 +47,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop() throws Exception {
+	public void stop() {
 
 	}
 

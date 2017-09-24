@@ -7,12 +7,9 @@ import com.downloader.util.UrlUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -44,6 +41,8 @@ public class HttpResponse extends Response {
 	protected boolean isKeepAlive;
 
 	protected boolean isSupportRange;
+
+	protected boolean isChunked;
 
 	protected Float mHttpVersion;
 
@@ -85,13 +84,14 @@ public class HttpResponse extends Response {
 	protected void parseResponse() throws IOException {
 		mContentLength = StringUtil.str2Long(mHeader.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = mHeader.get(Http.TRANSFER_ENCODING);
-		mFileName = UrlUtil.getFilename(mHttpRequest.getUrl());
+		mFileName = UrlUtil.decode(UrlUtil.getFilename(mHttpRequest.getUrl()), "UTF-8");
 		mContentType = mHeader.get(Http.CONTENT_TYPE);
 		mHttpVersion = Float.parseFloat(mHeader.getVersion());
 		mCookies = HttpCookie.formString(mHeader.get(Http.SET_COOKIE));
 		mDate = TimeUtil.str2Date(mHeader.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
 		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(mHeader.get(Http.CONNECTION));
 		isSupportRange = mHeader.get(Http.CONTENT_RANGE) != null;
+		isChunked = Http.CHUNKED.equalsIgnoreCase(mHeader.get(Http.TRANSFER_ENCODING));
 		parseContentDisposition();
 	}
 	
@@ -199,6 +199,11 @@ public class HttpResponse extends Response {
 
 	public URL getURL() {
 		return mUrl;
+	}
+
+
+	public boolean isChunked() {
+		return isChunked;
 	}
 }
 

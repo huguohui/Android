@@ -2,10 +2,9 @@ package com.downloader.client;
 
 import com.downloader.engine.AbstractWorker;
 import com.downloader.io.ConcurrentFileWriter;
-import com.downloader.manager.Manageable;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.http.Http;
-import com.downloader.net.http.HttpDownloader;
+import com.downloader.client.downloader.HttpDownloader;
 import com.downloader.net.http.HttpReceiver;
 
 import java.io.ByteArrayOutputStream;
@@ -53,7 +52,12 @@ public class Main {
 		});
 		time = System.currentTimeMillis() / 1000;
 		ThreadManager tm = ThreadManager.getInstance();
-		HttpDownloader hd = new HttpDownloader(new URL(urls[2]));
+		HttpDownloader hd = new HttpDownloader(new Context() {
+			@Override
+			protected Object clone() throws CloneNotSupportedException {
+				return super.clone();
+			}
+		}, new URL(urls[2]));
 		hd.start();
 
 	}

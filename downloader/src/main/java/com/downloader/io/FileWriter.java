@@ -1,6 +1,7 @@
 package com.downloader.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ public class FileWriter extends AbstractFileWriter {
 	 * @param end    Position of data end.
 	 */
 	@Override
-	public synchronized void write(long offset, byte[] data, int start, int end) throws IOException {
+	public void write(long offset, byte[] data, int start, int end) throws IOException {
 		if (offset < 0) {
 			throw new IllegalArgumentException("Specials offset is invalid!");
 		}
@@ -60,7 +61,7 @@ public class FileWriter extends AbstractFileWriter {
 		data = end - start == data.length ? data : Arrays.copyOfRange(data, start, end);
 		mWriter.seek(offset);
 		mWriter.write(data);
-		mOffset = offset;
+		mOffset = offset + data.length;
 		mLength += data.length;
 	}
 
@@ -73,16 +74,19 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void makeFile(File file, long size) throws IOException {
-		if (file != null) {
-			mWriter = new RandomAccessFile(file, "rw");
-			if (size != 0)
-				mWriter.setLength(size);
+		if (file == null) {
+			throw new FileNotFoundException();
+		}
+
+		mWriter = new RandomAccessFile(file, "rw");
+		if (size > 0) {
+			mWriter.setLength(size);
 		}
 	}
 
 
 	@Override
-	public synchronized void close() throws IOException {
+	public void close() throws IOException {
 		mWriter.close();
 	}
 }

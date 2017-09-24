@@ -11,7 +11,7 @@ import java.net.ConnectException;
  * Socket receiver can receive data from input stream.
  */
 public class SocketReceiver extends AbstractReceiver {
-	/** Size for next receiving. */
+	/** Size for next started. */
 	protected long mSizeWillReceive = 0;
 
 
@@ -43,31 +43,32 @@ public class SocketReceiver extends AbstractReceiver {
 			writeData(data);
 		}
 
-		invokeListener();
+		finishReceive();
 	}
 
 
 	/**
-	 * To receiving data from source, and save data to somewhere.
+	 * To started data from source, and save data to somewhere.
 	 *
 	 * @param size
 	 */
 	@Override
 	public void receive(long size) throws IOException {
-		receiveData(size);
-		isFinished = !isStop && true;
-		invokeListener();
+		receiveDataBySize(size);
+		finishReceive();
 	}
 
 
 	protected void invokeListener() {
 		if (!isStop && isFinished && onFinishedListener != null) {
-			if (mSizeWillReceive != 0 && mSizeWillReceive == mReceivedLength)
+			if (mSizeWillReceive < 0 || mSizeWillReceive == mReceivedLength) {
 				onFinishedListener.onFinished(this);
+			}
 		}
 
-		if (isStop && onStopListener != null)
+		if (isStop && onStopListener != null) {
 			onStopListener.onStop(this);
+		}
 	}
 
 
@@ -76,8 +77,10 @@ public class SocketReceiver extends AbstractReceiver {
 	}
 
 
-	protected void finishReceive() {
-
+	protected void finishReceive() throws IOException {
+		isFinished = !isStop;
+		invokeListener();
+		mInputStream.close();
 	}
 
 
@@ -126,7 +129,7 @@ public class SocketReceiver extends AbstractReceiver {
 	 * Receiving data with special length.
 	 * @param size Special length.
 	 */
-	protected void receiveData(long size) throws IOException {
+	protected void receiveDataBySize(long size) throws IOException {
 		int willRec = 0;
 		while(!isStop && size > 0) {
 			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;

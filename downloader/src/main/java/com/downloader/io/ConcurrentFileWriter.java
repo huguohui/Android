@@ -43,8 +43,8 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 				size += data.length;
 				bufferSize += data.length;
 				isFull = (surplus = (bufferSize - WRITE_BUFFER_SIZE)) >= 0;
-				buffer.write(data, 0, isFull ? data.length - surplus : data.length);
-				surplusData = isFull ? Arrays.copyOfRange(data, surplus, data.length) : null;
+				buffer.write(data, 0, isFull && surplus != data.length ? data.length - surplus : data.length);
+				surplusData = surplus > 0 ? Arrays.copyOfRange(data, data.length - surplus, data.length) : null;
 			}
 
 			return this;
@@ -57,6 +57,7 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 
 
 		private void clean() throws IOException {
+			offset += WRITE_BUFFER_SIZE;
 			bufferSize = 0;
 			buffer.reset();
 		}
@@ -101,7 +102,7 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 
 
 	public synchronized void write(long offset, byte[] data, int s, int e) throws IOException {
-
+		super.write(offset, data, s, e);
 	}
 
 

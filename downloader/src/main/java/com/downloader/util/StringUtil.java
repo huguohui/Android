@@ -201,16 +201,18 @@ final public class StringUtil {
 	}
 
 
-	public final static String nonceStr(int len) {
-		counter++;
+	public final static synchronized String nonceStr(int len) {
 		char[] numChars = Integer.toString(counter).toCharArray(),
 			   nonceStr = new char[len + numChars.length];
 		Random random = new Random();
 
+
+
 		for (int i = 0; i < nonceStr.length; i++) {
-			nonceStr[i] = chars[i >= len ? numChars[i - len] - '1' : random.nextInt(0xff) % chars.length];
+			nonceStr[i] = chars[i >= len ? numChars[i - len] - '0' : random.nextInt(0xff) % chars.length];
 		}
 
+		counter++;
 		return new String(nonceStr);
 	}
 

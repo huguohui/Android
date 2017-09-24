@@ -1,6 +1,7 @@
 package com.downloader.net.http;
 
 
+import com.downloader.client.downloader.HttpDownloader;
 import com.downloader.net.AbstractReceiver;
 import com.downloader.net.Receiver;
 import com.downloader.net.SocketReceiver;
@@ -27,7 +28,7 @@ public class HttpReceiver extends SocketReceiver {
 	/** Buffer for receiver. */
 	protected byte[] mBuffer = new byte[0x100000];
 
-	/** Size of current receiving chunked block. */
+	/** Size of current started chunked block. */
 	protected long mCurrentChunkedSize = 0;
 
 	protected HttpHeader mHeader;
@@ -54,8 +55,8 @@ public class HttpReceiver extends SocketReceiver {
 		mWritable = w;
 		httpResponse = d;
 		this.offsetDataBegin = offsetDataBegin;
-		mSizeWillReceive = d.getContentLength();
-		isChunked = Http.CHUNKED.equalsIgnoreCase(d.getTransferEncoding());
+		isChunked = d.isChunked();
+		mSizeWillReceive = isChunked ? -1 : d.getContentLength();
 	}
 
 
@@ -66,11 +67,11 @@ public class HttpReceiver extends SocketReceiver {
 	private void receiveChunked(long size) throws IOException {
 		if (size < 0) {
 			while(!isStop && mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
-				receiveData(mCurrentChunkedSize);
+				receiveDataBySize(mCurrentChunkedSize);
 				mCurrentChunkedSize = 0;
 			}
 
-			isFinished = !isStop && true;
+			isFinished = !isStop;
 		} else {
 			while (!isStop && size > 0) {
 				if (mCurrentChunkedSize <= 0) {
@@ -80,14 +81,13 @@ public class HttpReceiver extends SocketReceiver {
 					}
 				}
 
-				long willToReceiving = mCurrentChunkedSize /*< mSizeWillReceive ? mCurrentChunkedSize : mSizeWillReceive*/;
-				receiveData(willToReceiving);
-				mCurrentChunkedSize = 0 /*-= willToReceiving*/;
-//				mSizeWillReceive -= willToReceiving;
+				long willToReceiving = mCurrentChunkedSize;
+				receiveDataBySize(willToReceiving);
+				mCurrentChunkedSize = 0 ;
 			}
 		}
 
-		invokeListener();
+		finishReceive();
 	}
 
 
@@ -123,22 +123,6 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
-	/**
-	 * To receiving data from source, and save data to somewhere.
-	 * @param size Size of will receiving.
-	 */
-	@Override
-	public synchronized void receive(long size) throws IOException {
-		if (size == 0)
-			throw new IllegalArgumentException("Size of receive is illegal!");
-
-		if (isChunked)
-			receiveChunked(size);
-		else
-			super.receive(size > 0 ? size : mSizeWillReceive);
-	}
-
-
 	protected void writeData(byte[] data) throws IOException {
 		if (offsetDataBegin != -1) {
 			mWritable.write(offsetDataBegin, mReceivedLength - data.length, data);
@@ -150,11 +134,46 @@ public class HttpReceiver extends SocketReceiver {
 
 
 	/**
-	 * To receiving data from source, and save data to somewhere.
+	 * To started data from source, and save data to somewhere.
+	 * @param size Size of will started.
 	 */
-	@Override
+	protected void receiveData(long size) throws IOException {
+		if (size == 0)
+			throw new IllegalArgumentException("Size of receive is illegal!");
+
+		if (isChunked) {
+			receiveChunked(size);
+		}
+		else {
+			if (size < 0)
+				super.receive();
+			else
+				super.receive(size);
+		}
+	}
+
+
+	/**
+	 * To started data from source, and save data to somewhere.
+	 */
+	protected void receiveData() throws IOException {
+		receiveData(mSizeWillReceive);
+	}
+
+
+	public synchronized void receive(long size) throws IOException {
+		mSizeWillReceive = size > 0 ? size : mSizeWillReceive;
+		mWorker.add(this);
+	}
+
+
 	public synchronized void receive() throws IOException {
-		receive(END_OF_STREAM);
+		receive(-1);
+	}
+
+
+	public void work() throws IOException {
+		receiveData();
 	}
 
 

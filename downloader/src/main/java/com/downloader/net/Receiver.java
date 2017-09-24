@@ -24,7 +24,7 @@ public interface Receiver extends Stopable, Workable {
 
 
 	/**
-	 * To receiving data from source, and save data to somewhere.
+	 * To started data from source, and save data to somewhere.
 	 * @param len Length of data.
 	 */
 	void receive(long len) throws IOException;

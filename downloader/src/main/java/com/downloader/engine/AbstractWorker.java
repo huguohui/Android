@@ -75,7 +75,7 @@ public abstract class AbstractWorker implements ControlableWorker {
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop() throws Exception {
+	public void stop()  {
 		resume();
 		isStop = true;
 	}

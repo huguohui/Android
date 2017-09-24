@@ -1,5 +1,4 @@
 {
-    // х╚╬жеДжц
     "global" : {
         "max_threads" : 10,
         "max_connections" : 100,
