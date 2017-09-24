@@ -43,7 +43,7 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 				size += data.length;
 				bufferSize += data.length;
 				isFull = (surplus = (bufferSize - WRITE_BUFFER_SIZE)) >= 0;
-				buffer.write(data, 0, isFull && surplus != data.length ? data.length - surplus : data.length);
+				buffer.write(data, 0, isFull ? data.length - surplus : data.length);
 				surplusData = surplus > 0 ? Arrays.copyOfRange(data, data.length - surplus, data.length) : null;
 			}
 

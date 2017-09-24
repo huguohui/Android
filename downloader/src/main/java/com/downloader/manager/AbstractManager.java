@@ -1,6 +1,5 @@
 package com.downloader.manager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -72,7 +71,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @return A list that inArray all managed objects.
      */
     @Override
-    public List<T> getList() {
+    public List<T> list() {
         return mList;
     }
 
@@ -84,10 +83,10 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @return If searched had result list else null.
      */
     @Override
-    public synchronized List<T> search(SearchFilter<T> sf) {
+    public synchronized List<T> filter(Filter<T> sf) {
         List<T> searched = new ArrayList<>();
         for (T obj : mList) {
-            if (obj != null && sf.filter(obj)) {
+            if (obj != null && sf.doFilter(obj)) {
                 searched.add(obj);
             }
         }

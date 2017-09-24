@@ -3,6 +3,8 @@ package com.downloader.manager;
 import com.downloader.manager.factory.ThreadFactory;
 import com.downloader.util.Log;
 
+import java.util.List;
+
 /**
  * Thread manager.
  */
@@ -52,23 +54,5 @@ public class ThreadManager extends AbstractThreadManager {
 		}
 
 		return th;
-	}
-
-
-	/**
-	 * List all objects by pass a callback.
-	 *
-	 * @param callback
-	 */
-	@Override
-	public void list(ListCallback<Thread> callback) {
-		synchronized (mList) {
-			for (Thread thread : mList) {
-				if (thread != null) {
-					callback.call(thread);
-					Log.println(thread.getId() + "\t" + thread.getName()+ "\t" + thread.getState().toString() + "\n");
-				}
-			}
-		}
 	}
 }

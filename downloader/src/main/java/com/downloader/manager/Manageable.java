@@ -36,36 +36,25 @@ public interface Manageable<T> extends Iterable<T> {
 	 * @param sf A search condition of object will be searched.
 	 * @return If searched had result list else null.
 	 */
-	List<T> search(SearchFilter<T> sf);
+	List<T> filter(Filter<T> sf);
 
 
 	/**
 	 * Get a list that inArray all managed objects.
 	 * @return A list that inArray all managed objects.
 	 */
-	List<T> getList();
-
-
-	/**
-	 * List all objects by pass a callback.
-	 */
-	void list(ListCallback<T> callback);
+	List<T> list();
 
 
 	/**
 	 * Filter of searching.
 	 */
-	interface SearchFilter<T> {
+	interface Filter<T> {
 		/**
-		 * Run filter on given data.
+		 * Run doFilter on given data.
 		 * @param data Given data.
 		 * @return true on filte pass, false on fail.
 		 */
-		boolean filter(T data);
-	}
-
-
-	interface ListCallback<T> {
-		void call(T obj);
+		boolean doFilter(T data);
 	}
 }
