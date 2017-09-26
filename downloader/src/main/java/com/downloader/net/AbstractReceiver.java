@@ -1,7 +1,7 @@
 package com.downloader.net;
 
 import com.downloader.engine.Worker;
-import com.downloader.io.DataWritable;
+import com.downloader.io.FileWritable;
 
 import java.io.InputStream;
 
@@ -17,7 +17,7 @@ public abstract class AbstractReceiver implements Receiver {
 	protected InputStream mInputStream;
 
 	/** Writable of receiver. */
-	protected DataWritable mWritable;
+	protected FileWritable mWritable;
 
 	/** Is finished? */
 	protected boolean isFinished = false;
@@ -39,7 +39,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 * Construct a downloader by requester.
 	 * @param is A {@link AbstractRequest}.
 	 */
-	public AbstractReceiver(InputStream is, DataWritable writable, Worker worker) {
+	public AbstractReceiver(InputStream is, FileWritable writable, Worker worker) {
 		mInputStream = is;
 		mWritable = writable;
 		mWorker = worker;

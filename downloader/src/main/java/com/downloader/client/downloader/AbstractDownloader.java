@@ -2,8 +2,6 @@ package com.downloader.client.downloader;
 
 
 import com.downloader.engine.Controlable;
-import com.downloader.net.AbstractRequest;
-import com.downloader.net.AbstractTaskInfo;
 import com.downloader.util.TimeUtil;
 import com.downloader.util.StringUtil;
 

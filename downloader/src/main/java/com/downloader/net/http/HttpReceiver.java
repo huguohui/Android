@@ -6,7 +6,7 @@ import com.downloader.net.AbstractReceiver;
 import com.downloader.net.Receiver;
 import com.downloader.net.SocketReceiver;
 import com.downloader.engine.Worker;
-import com.downloader.io.ConcurrentDataWritable;
+import com.downloader.io.ConcurrentFileWritable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
-	protected ConcurrentDataWritable mWritable;
+	protected ConcurrentFileWritable mWritable;
 
 	protected long offsetDataBegin = -1;
 
@@ -45,12 +45,12 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, ConcurrentDataWritable w, Worker worker) throws IOException {
+	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, Worker worker) throws IOException {
 		this(d, w, worker, -1);
 	}
 
 
-	public HttpReceiver(HttpResponse d, ConcurrentDataWritable w, Worker worker, long offsetDataBegin) throws IOException {
+	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, Worker worker, long offsetDataBegin) throws IOException {
 		super(d.getInputStream(), w, worker);
 		mWritable = w;
 		httpResponse = d;

@@ -1,5 +1,7 @@
 package com.downloader.manager;
 
+import com.downloader.client.downloader.DownloadTask;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -169,16 +171,5 @@ public class FileManager extends AbstractFileManager {
 			}
 		}
 		return null;
-	}
-
-
-	/**
-	 * List all objects by pass a callback.
-	 *
-	 * @param callback
-	 */
-	@Override
-	public void list(ListCallback<File> callback) {
-
 	}
 }

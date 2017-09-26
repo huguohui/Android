@@ -1,5 +1,6 @@
 package com.downloader.manager;
 
+import com.downloader.client.downloader.DownloadTask;
 import com.downloader.net.SupportedProtocol;
 
 import java.net.URL;
@@ -78,7 +79,20 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return true for success, false for fail.
 	 */
 	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
-		return create((DownloadTaskDescriptor) descriptor);
+		URL url = ((DownloadTaskDescriptor) descriptor).getUrl();
+		String protocol = url.getProtocol();
+		DownloadTask adt = null;
+
+		switch(SupportedProtocol.valueOf(protocol)) {
+			case HTTP:
+//				adt = new HttpDownloadTask(url.getFile());
+//				AbstractTaskInfo ti = adt.info();
+//				ti.setName("abc");
+
+				break;
+		}
+
+		return adt;
 	}
 
 
@@ -114,43 +128,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 */
 	@Override
 	public void stop() {
-
-	}
-
-
-	/**
-	 * Create a download task by task descriptor.
-	 *
-	 * @param desc Task descriptor.
-	 * @return Download task instance.
-	 * @throws Throwable When exception occured.
-	 */
-	@Override
-	public DownloadTask create(DownloadTaskDescriptor desc) throws Throwable {
-		URL url = desc.getUrl();
-		String protocol = url.getProtocol();
-		DownloadTask adt = null;
-
-		switch(SupportedProtocol.valueOf(protocol)) {
-			case HTTP:
-//				adt = new HttpDownloadTask(url.getFile());
-//				AbstractTaskInfo ti = adt.info();
-//				ti.setName("abc");
-
-				break;
-		}
-
-		return adt;
-	}
-
-
-	/**
-	 * List all objects by pass a callback.
-	 *
-	 * @param callback
-	 */
-	@Override
-	public void list(ListCallback<DownloadTask> callback) {
 
 	}
 }

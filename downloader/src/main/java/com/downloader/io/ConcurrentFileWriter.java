@@ -1,7 +1,5 @@
 package com.downloader.io;
 
-import com.downloader.util.Log;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * File writer.
  */
-public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWritable {
-	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 1;
+public class ConcurrentFileWriter extends FileWriter implements ConcurrentFileWritable {
+	/** Buffer size of writing. */
+	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 10;
 
+	/** A data buffer. */
 	private class DataBuffer {
 		private long offset;
 		private long size;
@@ -112,7 +112,7 @@ public class ConcurrentFileWriter extends FileWriter implements ConcurrentDataWr
 	}
 
 
-	protected void flush() throws IOException {
+	public void flush() throws IOException {
 		Set<Map.Entry<Long, DataBuffer>> es = dataBuffers.entrySet();
 		for (Iterator<Map.Entry<Long, DataBuffer>> it = es.iterator(); it.hasNext(); ) {
 			Map.Entry<Long, DataBuffer> map = it.next();

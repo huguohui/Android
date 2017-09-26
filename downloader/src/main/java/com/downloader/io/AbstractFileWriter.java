@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * File writer.
  */
-public abstract class AbstractFileWriter implements DataWritable, Closeable {
+public abstract class AbstractFileWriter implements FileWritable, Closeable {
 	/** The file for writing. */
 	protected File mFile;
 
@@ -96,4 +96,7 @@ public abstract class AbstractFileWriter implements DataWritable, Closeable {
 	 * @param size File size.
 	 */
 	public abstract void makeFile(File file, long size) throws IOException;
+
+
+	public abstract void flush() throws IOException;
 }

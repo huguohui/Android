@@ -27,9 +27,9 @@ public class Main {
 		new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
 				.parse("Mon, 16 Jul 2007 22:23:00 GMT");
 
-		new ByteArrayOutputStream(1).write("ssa".getBytes());
-
-		new Main().test2();
+		int val = 0xffffffff;
+		System.out.println(Long.SIZE);
+		//new Main().test2();
 	}
 
 

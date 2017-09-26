@@ -1,4 +1,4 @@
-package com.downloader.net;
+package com.downloader.engine;
 
 /**
  * Information for task.

@@ -38,6 +38,12 @@ public class FileWriter extends AbstractFileWriter {
 	}
 
 
+	protected void ensureWritable() {
+		if (mWriter == null)
+			throw new NullPointerException();
+	}
+
+
 	/**
 	 * To writing data with special length from special offset.
 	 *
@@ -48,6 +54,7 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void write(long offset, byte[] data, int start, int end) throws IOException {
+		ensureWritable();
 		if (offset < 0) {
 			throw new IllegalArgumentException("Specials offset is invalid!");
 		}
@@ -58,9 +65,13 @@ public class FileWriter extends AbstractFileWriter {
 			throw new IllegalArgumentException("Specials start or end is invalid!");
 		}
 
-		data = end - start == data.length ? data : Arrays.copyOfRange(data, start, end);
+		writeData(offset, data, start, end);
+	}
+
+
+	protected void writeData(long offset, byte[] data, int start, int end) throws IOException {
 		mWriter.seek(offset);
-		mWriter.write(data);
+		mWriter.write(data, start, end);
 		mOffset = offset + data.length;
 		mLength += data.length;
 	}
@@ -86,7 +97,14 @@ public class FileWriter extends AbstractFileWriter {
 
 
 	@Override
+	public void flush() throws IOException {
+
+	}
+
+
+	@Override
 	public void close() throws IOException {
+		flush();
 		mWriter.close();
 	}
 }

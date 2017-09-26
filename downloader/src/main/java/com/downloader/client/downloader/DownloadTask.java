@@ -1,4 +1,7 @@
-package com.downloader.manager;
+package com.downloader.client.downloader;
+
+import com.downloader.engine.Task;
+import com.downloader.manager.DownloadTaskDescriptor;
 
 /**
  * A task for downloading.

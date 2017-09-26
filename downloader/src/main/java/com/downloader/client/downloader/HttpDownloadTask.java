@@ -1,7 +1,6 @@
 package com.downloader.client.downloader;
 
-import com.downloader.net.AbstractTaskInfo;
-import com.downloader.manager.DownloadTask;
+import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.manager.DownloadTaskDescriptor;
 
 
