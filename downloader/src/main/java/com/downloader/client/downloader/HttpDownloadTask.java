@@ -1,17 +1,23 @@
 package com.downloader.client.downloader;
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.manager.DownloadTaskDescriptor;
-
 
 public class HttpDownloadTask extends DownloadTask {
+	protected DownloadTaskInfo info;
+
+	protected HttpDownloader downloader;
+
+
 	public HttpDownloadTask(DownloadTaskDescriptor d) {
 		super(d);
+		init();
 	}
 
 
-	protected void readDesc() {
+	protected void init() {
+		info = new DownloadTaskInfo();
 		info.setUrl(descriptor.getUrl());
+		info.setThreadNumber(descriptor.getMaxThread());
+		downloader = new HttpDownloader(info.getUrl());
 	}
 
 
@@ -57,7 +63,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 * @return Information of current task.
 	 */
 	@Override
-	public AbstractTaskInfo info() {
-		return null;
+	public DownloadTaskInfo info() {
+		return info;
 	}
 }

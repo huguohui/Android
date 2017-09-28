@@ -5,36 +5,36 @@ package com.downloader.engine;
  */
 public abstract class AbstractTaskInfo {
 	/** Name of task. */
-	protected String mName;
+	protected String name;
 
 	/** Start time of task in millisecond. */
-	protected long mStartTime;
+	protected long startTime;
 
 	/** Time of task execution time. **/
-	protected long mExectionTime;
+	protected long exectionTime;
 
 	public String getName() {
-		return mName;
+		return name;
 	}
 
 	public void setName(String mName) {
-		this.mName = mName;
+		this.name = mName;
 	}
 
 
 	public long getStartTime() {
-		return mStartTime;
+		return startTime;
 	}
 
 	public void setStartTime(long mStartTime) {
-		this.mStartTime = mStartTime;
+		this.startTime = mStartTime;
 	}
 
 	public long getExectionTime() {
-		return mExectionTime;
+		return exectionTime;
 	}
 
 	public void setExectionTime(long mExectionTime) {
-		this.mExectionTime = mExectionTime;
+		this.exectionTime = mExectionTime;
 	}
 }

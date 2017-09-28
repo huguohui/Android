@@ -16,5 +16,11 @@ public interface DataWritable extends Writable {
 	void writeByte(byte b) throws IOException;
 
 
-	void writeByte(char c) throws IOException;
+	void writeChar(char c) throws IOException;
+
+
+	void writeChars(char[] cs) throws IOException;
+
+
+	void writeChars(char[] cs, int s, int e) throws IOException;
 }

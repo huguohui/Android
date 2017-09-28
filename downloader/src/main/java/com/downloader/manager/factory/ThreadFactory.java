@@ -1,6 +1,5 @@
 package com.downloader.manager.factory;
 
-import com.downloader.manager.AbstractDescriptor;
 import com.downloader.util.StringUtil;
 
 public abstract class ThreadFactory {

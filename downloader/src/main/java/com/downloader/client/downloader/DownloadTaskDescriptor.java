@@ -1,5 +1,6 @@
-package com.downloader.manager;
+package com.downloader.client.downloader;
 
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -7,16 +8,29 @@ import java.net.URL;
  */
 public class DownloadTaskDescriptor extends AbstractDescriptor {
 	/** URL for downloading. */
-	private URL mUrl;
+	protected URL mUrl;
 
 	/** Task priority. */
-	private int mPriority;
+	protected int mPriority;
 
 	/** Number of max used for threads. */
-	private int mMaxThread;
+	protected int mMaxThread;
 
 	/** Task start time. */
-	private int mStartTime;
+	protected int mStartTime;
+
+	protected File path;
+
+
+	public File getPath() {
+		return path;
+	}
+
+
+	public DownloadTaskDescriptor setPath(File path) {
+		this.path = path;
+		return this;
+	}
 
 
 	public URL getUrl() {

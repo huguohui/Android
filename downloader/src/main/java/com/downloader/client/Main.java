@@ -1,16 +1,23 @@
 package com.downloader.client;
 
+import com.downloader.client.downloader.DownloadInfoRecoder;
+import com.downloader.client.downloader.DownloadTask;
+import com.downloader.client.downloader.DownloadTaskInfo;
 import com.downloader.engine.AbstractWorker;
 import com.downloader.io.ConcurrentFileWriter;
+import com.downloader.io.DataWriter;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.http.Http;
 import com.downloader.client.downloader.HttpDownloader;
 import com.downloader.net.http.HttpReceiver;
+import com.downloader.util.TimeUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.URL;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -27,9 +34,27 @@ public class Main {
 		new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
 				.parse("Mon, 16 Jul 2007 22:23:00 GMT");
 
-		int val = 0xffffffff;
-		System.out.println(Long.SIZE);
-		//new Main().test2();
+
+		DownloadTaskInfo info = new DownloadTaskInfo();
+		info.setName("d:\\a.txt");
+		info.setLength(10);
+		info.setDownloadLength(1);
+		info.setStartTime(TimeUtil.getMillisTime());
+		info.setUsedTime(TimeUtil.getMillisTime());
+		info.setTotalParts(1);
+		info.setPartOffsetStart(new long[]{ 1 });
+		info.setPartLength(new long[]{ 10 });
+		info.setPartDownloadLength(new long[]{ 1 });
+
+		new DownloadInfoRecoder(info).write();
+		info = new DownloadInfoRecoder(new File("d:\\a.txt")).read();
+
+
+		long i = 0;
+
+		System.out.println(new String(new byte[] {0, 0, 0, 45, 0, 0}));
+
+//		new Main().test2();403726925942
 	}
 
 

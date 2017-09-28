@@ -13,7 +13,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
 	/**
      * List of managed objects.
      */
-    protected LinkedList<T> mList;
+    protected List<T> mList;
 
 
     /**
@@ -37,7 +37,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @return Managed object.
      */
     @Override
-    public T get(int idx) {
+    public synchronized T get(int idx) {
         return mList.get(idx);
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @param obj Object what will to managing.
      */
     @Override
-    public boolean add(T obj) {
+    public synchronized boolean add(T obj) {
         return mList.add(obj);
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @return Removed object or null on remove failed.
      */
     @Override
-    public T remove(int idx) {
+    public synchronized T remove(int idx) {
         return mList.remove(idx);
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractManager<T> implements Manageable<T> {
      * @return If searched had result list else null.
      */
     @Override
-    public synchronized List<T> filter(Filter<T> sf) {
+    public synchronized List<T> search(SearchFilter<T> sf) {
         List<T> searched = new ArrayList<>();
         for (T obj : mList) {
             if (obj != null && sf.doFilter(obj)) {
@@ -97,6 +97,6 @@ public abstract class AbstractManager<T> implements Manageable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return mList.iterator();
     }
 }

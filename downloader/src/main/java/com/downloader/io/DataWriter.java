@@ -1,11 +1,12 @@
 package com.downloader.io;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteOrder;
 
 public class DataWriter implements DataWritable, Closeable {
+
 	protected OutputStream mOutputStream;
 
 
@@ -32,8 +33,8 @@ public class DataWriter implements DataWritable, Closeable {
 
 	@Override
 	public void writeLong(long val) throws IOException {
-		for (int i = 7; i > 0; i--) {
-			mOutputStream.write((byte) (((0xff << (i << 3)) & val) >> (i << 3)));
+		for (int i = 1; i >= 0; i--) {
+			writeInt((int) (val >>> i * Integer.SIZE));
 		}
 	}
 
@@ -45,8 +46,22 @@ public class DataWriter implements DataWritable, Closeable {
 
 
 	@Override
-	public void writeByte(char c) throws IOException {
+	public void writeChar(char c) throws IOException {
 		writeShort((short) c);
+	}
+
+
+	@Override
+	public void writeChars(char[] cs) throws IOException {
+		writeChars(cs, 0, cs.length);
+	}
+
+
+	@Override
+	public void writeChars(char[] cs, int s, int e) throws IOException {
+		for (int i = s; i < e; i++) {
+			writeChar(cs[i]);
+		}
 	}
 
 

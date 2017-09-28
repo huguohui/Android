@@ -1,11 +1,8 @@
 package com.downloader.manager;
 
 import com.downloader.client.downloader.DownloadTask;
-import com.downloader.net.SupportedProtocol;
 
-import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
+import static android.R.attr.id;
 
 
 /**
@@ -25,40 +22,10 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	}
 	
 	
-	public void addTask(DownloadTask task) {
-		if (task == null)
-			throw new RuntimeException("The task is null!");
-		
-		mList.add(task);
-	}
-	
-	
 	public void startTask(int id) throws Exception {
-		DownloadTask dt = mList.get(id);
-		if (dt == null)
-			throw new RuntimeException("The specail task not exists!");
-		
-	//	dt.start();
+
 	}
-	
-	/**
-	 * To monitoring download task.
-	 */
-	public void monitoring() {
-		final Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				for (DownloadTask dt : mList) {
-//					int pg = dt.progress();
-//					System.out.println(pg + "%");
-//					if (pg == 100)
-//						timer.cancel();
-				}
-			}
-		}, 0, 1000);
-	}
-	
+
 	
 	/**
 	 * Gets instance of manager.
@@ -69,30 +36,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 			mInstance = new DownloadTaskManager();
 		
 		return mInstance;
-	}
-
-
-	/**
-	 * To create something for managing.
-	 *
-	 * @param descriptor Data for creating.
-	 * @return true for success, false for fail.
-	 */
-	public DownloadTask create(AbstractDescriptor descriptor) throws Throwable {
-		URL url = ((DownloadTaskDescriptor) descriptor).getUrl();
-		String protocol = url.getProtocol();
-		DownloadTask adt = null;
-
-		switch(SupportedProtocol.valueOf(protocol)) {
-			case HTTP:
-//				adt = new HttpDownloadTask(url.getFile());
-//				AbstractTaskInfo ti = adt.info();
-//				ti.setName("abc");
-
-				break;
-		}
-
-		return adt;
 	}
 
 
@@ -128,6 +71,40 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 */
 	@Override
 	public void stop() {
+
+	}
+
+
+	@Override
+	public void start(int i) throws Exception {
+		synchronized (mList) {
+			if (mList.isEmpty())
+				return;
+
+			DownloadTask dt = mList.get(id);
+			if (dt == null) {
+				throw new RuntimeException("The specail task not exists!");
+			}
+
+			dt.start();
+		}
+	}
+
+
+	@Override
+	public void pause(int i) {
+
+	}
+
+
+	@Override
+	public void resume(int i) {
+
+	}
+
+
+	@Override
+	public void stop(int i) {
 
 	}
 }

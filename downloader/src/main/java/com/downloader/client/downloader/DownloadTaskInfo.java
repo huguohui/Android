@@ -8,6 +8,13 @@ import java.net.URL;
  * Information for download task.
  */
 public class DownloadTaskInfo extends AbstractTaskInfo {
+	protected final static byte[] FILE_FORMAT_CHARS = {'D', 'T', 'I'};
+
+	public final static int MAX_NAME_LEN = 0xff;
+
+	/** Url of downloading. */
+	protected URL url;
+
 	/** Start time of task in millisecond. */
 	protected long startTime;
 
@@ -17,11 +24,22 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 	/** Used time of downloading in millisecond. */
 	protected long usedTime;
 
+	protected int priority;
+
 	/** Length of downloading task. */
 	protected long length;
 
-	/** Url of downloading. */
-	protected URL url;
+	protected long downloadLength;
+
+	protected int totalParts;
+
+	protected int threadNumber;
+
+	protected long[] partOffsetStart;
+
+	protected long[] partLength;
+
+	protected long[] partDownloadLength;
 
 
 	public long getStartTime() {
@@ -62,5 +80,82 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 
 	public void setUrl(URL mUrl) {
 		url = mUrl;
+	}
+
+
+	public long getDownloadLength() {
+		return downloadLength;
+	}
+
+
+	public DownloadTaskInfo setDownloadLength(long downloadLength) {
+		this.downloadLength = downloadLength;
+		return this;
+	}
+
+
+	public int getTotalParts() {
+		return totalParts;
+	}
+
+
+	public DownloadTaskInfo setTotalParts(int totalParts) {
+		this.totalParts = totalParts;
+		return this;
+	}
+
+
+	public long[] getPartOffsetStart() {
+		return partOffsetStart;
+	}
+
+
+	public DownloadTaskInfo setPartOffsetStart(long[] partOffsetStart) {
+		this.partOffsetStart = partOffsetStart;
+		return this;
+	}
+
+
+	public long[] getPartLength() {
+		return partLength;
+	}
+
+
+	public DownloadTaskInfo setPartLength(long[] partLength) {
+		this.partLength = partLength;
+		return this;
+	}
+
+
+	public long[] getPartDownloadLength() {
+		return partDownloadLength;
+	}
+
+
+	public DownloadTaskInfo setPartDownloadLength(long[] partDownloadLength) {
+		this.partDownloadLength = partDownloadLength;
+		return this;
+	}
+
+
+	public int getThreadNumber() {
+		return threadNumber;
+	}
+
+
+	public DownloadTaskInfo setThreadNumber(int threadNumber) {
+		this.threadNumber = threadNumber;
+		return this;
+	}
+
+
+	public int getPriority() {
+		return priority;
+	}
+
+
+	public DownloadTaskInfo setPriority(int priority) {
+		this.priority = priority;
+		return this;
 	}
 }

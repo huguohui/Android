@@ -1,6 +1,5 @@
 package com.downloader.client.downloader;
 
-import com.downloader.client.Context;
 import com.downloader.engine.AsyncWorker;
 import com.downloader.engine.ControlableWorker;
 import com.downloader.engine.Workable;
@@ -10,6 +9,7 @@ import com.downloader.net.AbstractRequest;
 import com.downloader.net.Receiver;
 import com.downloader.net.Response;
 import com.downloader.net.http.Http;
+import com.downloader.net.http.HttpHeader;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.net.http.HttpRequest;
 import com.downloader.net.http.HttpResponse;
@@ -31,6 +31,8 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	protected String fileName;
 
 	protected String contentType;
+
+	protected HttpResponse httpResponse;
 
 	protected HttpRequest[] httpRequests;
 
@@ -66,15 +68,15 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	};
 
 
-	public HttpDownloader(Context context, URL url) {
+	public HttpDownloader(URL url) {
 		super();
 		this.url = url;
 		init();
 	}
 
-
-	public HttpDownloader(Context context, HttpResponse hr) {
-		this(context, hr.getURL());
+	public HttpDownloader(HttpResponse hr) {
+		this(hr.getURL());
+		httpResponse = hr;
 	}
 
 
@@ -82,20 +84,6 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		threadManager = ThreadManager.getInstance();
 		worker = new AsyncWorker(threadManager);
 		worker.add(this);
-	}
-
-
-	/**
-	 * Fetch info from given url.
-	 * @throws IOException
-	 */
-	protected void fetchInfo() throws IOException {
-		HttpRequest httpRequest;
-		HttpResponse httpResponse;
-
-		httpRequest = buildHttpRequest(url, Http.Method.HEAD, true);
-		httpRequest.setHeader(Http.RANGE, new AbstractRequest.Range(0).toString());
-		httpRequest.send();
 	}
 
 
@@ -119,6 +107,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		fileName = res.getFileName();
 		contentType = res.getContentType();
 		isChunked = res.isChunked();
+		url = res.getURL();
 
 		for (int i = 0; i < SIZE_LEVELS.length; i++) {
 			if (SIZE_LEVELS[i] > mLength) {
@@ -199,7 +188,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 
 	@Override
-	public void onFinished(Receiver r) {
+	public synchronized void onFinished(Receiver r) {
 		mDownloadedLength += ((HttpReceiver) r).getReceivedLength();
 		if (checkFinished()) {
 			mFinishedTime = System.currentTimeMillis();
@@ -222,21 +211,13 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	 */
 	@Override
 	public void work() throws Exception {
-		fetchInfo();
+		prepare(fetchResponseByUrl(url));
 		download();
 	}
 
 
 	@Override
 	public void onResponse(Response r) {
-		HttpResponse httpResponse = (HttpResponse) r;
-		switch(getState()) {
-			case init:
-				try { prepare(httpResponse); } catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-		}
 	}
 
 

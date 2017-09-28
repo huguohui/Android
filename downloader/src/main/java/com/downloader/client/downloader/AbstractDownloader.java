@@ -2,10 +2,13 @@ package com.downloader.client.downloader;
 
 
 import com.downloader.engine.Controlable;
+import com.downloader.net.AbstractHeader;
+import com.downloader.net.Response;
 import com.downloader.util.TimeUtil;
 import com.downloader.util.StringUtil;
 
 import java.io.IOException;
+import java.net.URL;
 
 public abstract class AbstractDownloader implements Controlable {
 	/** The length of data. */
@@ -48,6 +51,9 @@ public abstract class AbstractDownloader implements Controlable {
 	public AbstractDownloader() {
 		mState = State.init;
 	}
+
+
+	public abstract Response fetchResponseByUrl(URL url) throws IOException;
 
 
 	/**

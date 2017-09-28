@@ -6,10 +6,10 @@ import com.downloader.engine.Controlable;
 /**
  * Interface of task.
  */
-public interface Task extends Controlable {
+public abstract class Task implements Controlable {
 	/**
 	 * Get information of current task.
 	 * @return Information of current task.
 	 */
-	AbstractTaskInfo info();
+	public abstract AbstractTaskInfo info();
 }
