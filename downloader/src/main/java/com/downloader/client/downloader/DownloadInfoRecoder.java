@@ -37,9 +37,9 @@ public class DownloadInfoRecoder {
 		dataWriter.writeLong(info.getDownloadLength());
 		dataWriter.writeLong(info.getStartTime());
 		dataWriter.writeLong(info.getUsedTime());
-		dataWriter.writeInt(info.getTotalParts());
+		dataWriter.writeInt(info.getTotalThreads());
 
-		int parts = info.getTotalParts();
+		int parts = info.getTotalThreads();
 		for (int i = 0; i < parts; i++) {
 			dataWriter.writeLong(info.getPartOffsetStart()[i]);
 			dataWriter.writeLong(info.getPartLength()[i]);
@@ -54,10 +54,10 @@ public class DownloadInfoRecoder {
 		info.setDownloadLength(dataReader.readLong());
 		info.setStartTime(dataReader.readLong());
 		info.setUsedTime(dataReader.readLong());
-		info.setTotalParts(dataReader.readInt());
+		info.setTotalThreads(dataReader.readInt());
 
 
-		int parts = info.getTotalParts();
+		int parts = info.getTotalThreads();
 		long[]  partOffsetStarts = new long[parts],
 				partLengths = new long[parts],
 				partDownloadLengths = new long[parts];

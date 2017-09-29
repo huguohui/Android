@@ -2,11 +2,13 @@ package com.downloader.net.http;
 
 
 import com.downloader.client.downloader.HttpDownloader;
+import com.downloader.engine.Worker;
+import com.downloader.io.ConcurrentFileWritable;
+import com.downloader.io.FileWritable;
+import com.downloader.io.Writable;
 import com.downloader.net.AbstractReceiver;
 import com.downloader.net.Receiver;
 import com.downloader.net.SocketReceiver;
-import com.downloader.engine.Worker;
-import com.downloader.io.ConcurrentFileWritable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +37,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
-	protected ConcurrentFileWritable mWritable;
+	protected ConcurrentFileWritable fileWriter;
 
 	protected long offsetDataBegin = -1;
 
@@ -45,14 +47,24 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, Worker worker) throws IOException {
+	public HttpReceiver(HttpResponse d) throws IOException {
+		this(d, null, null);
+	}
+
+
+	/**
+	 * Construct a http downloader object.
+	 *  @param d A {@link HttpDownloader}.
+	 * @throws IOException If exception.
+	 */
+	public HttpReceiver(HttpResponse d, FileWritable w, Worker worker) throws IOException {
 		this(d, w, worker, -1);
 	}
 
 
-	public HttpReceiver(HttpResponse d, ConcurrentFileWritable w, Worker worker, long offsetDataBegin) throws IOException {
+	public HttpReceiver(HttpResponse d, FileWritable w, Worker worker, long offsetDataBegin) throws IOException {
 		super(d.getInputStream(), w, worker);
-		mWritable = w;
+		fileWriter = (ConcurrentFileWritable) w;
 		httpResponse = d;
 		this.offsetDataBegin = offsetDataBegin;
 		isChunked = d.isChunked();
@@ -64,7 +76,7 @@ public class HttpReceiver extends SocketReceiver {
 	 * Download data as chunk.
 	 * @return Parsed chunk data.
 	 */
-	private void receiveChunked(long size) throws IOException {
+	protected void receiveChunked(long size) throws IOException {
 		if (size < 0) {
 			while(!isStop && mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
 				receiveDataBySize(mCurrentChunkedSize);
@@ -125,7 +137,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected void writeData(byte[] data) throws IOException {
 		if (offsetDataBegin != -1) {
-			mWritable.write(offsetDataBegin, mReceivedLength - data.length, data);
+			fileWriter.write(offsetDataBegin, mReceivedLength - data.length, data);
 			return;
 		}
 
@@ -184,5 +196,16 @@ public class HttpReceiver extends SocketReceiver {
 
 	public synchronized void Stop() throws IOException {
 		isStop = true;
+	}
+
+
+	public FileWritable getFileWriter() {
+		return fileWriter;
+	}
+
+
+	public HttpReceiver setFileWriter(FileWritable fileWriter) {
+		this.fileWriter = (ConcurrentFileWritable) fileWriter;
+		return this;
 	}
 }

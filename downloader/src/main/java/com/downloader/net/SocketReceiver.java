@@ -25,7 +25,7 @@ public class SocketReceiver extends AbstractReceiver {
 	}
 
 
-	public SocketReceiver() {
+	public SocketReceiver(InputStream is) {
 	}
 
 
@@ -73,7 +73,7 @@ public class SocketReceiver extends AbstractReceiver {
 
 
 	protected void writeData(byte[] data) throws IOException {
-		mWritable.write(mReceivedLength - data.length, data);
+		mFileWriter.write(mReceivedLength - data.length, data);
 	}
 
 

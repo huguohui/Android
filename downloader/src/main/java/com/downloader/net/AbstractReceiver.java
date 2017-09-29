@@ -17,7 +17,7 @@ public abstract class AbstractReceiver implements Receiver {
 	protected InputStream mInputStream;
 
 	/** Writable of receiver. */
-	protected FileWritable mWritable;
+	protected FileWritable mFileWriter;
 
 	/** Is finished? */
 	protected boolean isFinished = false;
@@ -41,7 +41,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 */
 	public AbstractReceiver(InputStream is, FileWritable writable, Worker worker) {
 		mInputStream = is;
-		mWritable = writable;
+		mFileWriter = writable;
 		mWorker = worker;
 	}
 
@@ -67,6 +67,28 @@ public abstract class AbstractReceiver implements Receiver {
 
 	public boolean isStop() {
 		return isStop;
+	}
+
+
+	public FileWritable getFileWriter() {
+		return mFileWriter;
+	}
+
+
+	public AbstractReceiver setFileWriter(FileWritable fileWriter) {
+		mFileWriter = fileWriter;
+		return this;
+	}
+
+
+	public Worker getWorker() {
+		return mWorker;
+	}
+
+
+	public AbstractReceiver setWorker(Worker worker) {
+		mWorker = worker;
+		return this;
 	}
 
 

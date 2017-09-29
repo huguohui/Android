@@ -1,23 +1,18 @@
 package com.downloader.client;
 
 import com.downloader.client.downloader.DownloadInfoRecoder;
-import com.downloader.client.downloader.DownloadTask;
 import com.downloader.client.downloader.DownloadTaskInfo;
 import com.downloader.engine.AbstractWorker;
 import com.downloader.io.ConcurrentFileWriter;
-import com.downloader.io.DataWriter;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.http.Http;
 import com.downloader.client.downloader.HttpDownloader;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.util.TimeUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.URL;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -41,7 +36,7 @@ public class Main {
 		info.setDownloadLength(1);
 		info.setStartTime(TimeUtil.getMillisTime());
 		info.setUsedTime(TimeUtil.getMillisTime());
-		info.setTotalParts(1);
+		info.setTotalThreads(1);
 		info.setPartOffsetStart(new long[]{ 1 });
 		info.setPartLength(new long[]{ 10 });
 		info.setPartDownloadLength(new long[]{ 1 });
@@ -77,12 +72,7 @@ public class Main {
 		});
 		time = System.currentTimeMillis() / 1000;
 		ThreadManager tm = ThreadManager.getInstance();
-		HttpDownloader hd = new HttpDownloader(new Context() {
-			@Override
-			protected Object clone() throws CloneNotSupportedException {
-				return super.clone();
-			}
-		}, new URL(urls[2]));
+		HttpDownloader hd = new HttpDownloader(new URL(urls[2]));
 		hd.start();
 
 	}

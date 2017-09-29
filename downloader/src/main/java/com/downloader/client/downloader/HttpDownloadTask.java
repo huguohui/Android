@@ -1,6 +1,8 @@
 package com.downloader.client.downloader;
 
 
+import com.downloader.util.TimeUtil;
+
 public class HttpDownloadTask extends DownloadTask {
 	protected DownloadTaskInfo info;
 
@@ -14,10 +16,7 @@ public class HttpDownloadTask extends DownloadTask {
 
 
 	protected void init() {
-		info = new DownloadTaskInfo();
-		info.setUrl(descriptor.getUrl());
-		info.setThreadNumber(descriptor.getMaxThread());
-		downloader = new HttpDownloader(info.getUrl());
+		downloader = new HttpDownloader(descriptor.getUrl());
 	}
 
 
@@ -26,7 +25,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void start() throws Exception {
-
+		downloader.start();
 	}
 
 
@@ -35,7 +34,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void pause() throws Exception {
-
+		downloader.pause();
 	}
 
 
@@ -44,7 +43,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void resume()  {
-
+		downloader.resume();
 	}
 
 
@@ -53,7 +52,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void stop() {
-
+		downloader.stop();
 	}
 
 
@@ -64,6 +63,6 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public DownloadTaskInfo info() {
-		return info;
+		return (DownloadTaskInfo) downloader.getInfo();
 	}
 }

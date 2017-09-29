@@ -13,6 +13,7 @@ public enum SupportedProtocol {
 	/** File Transfer Protocol. */
 	FTP;
 
+
 	public boolean isSupport(String ptl) {
 		Enum<SupportedProtocol> protocol = null;
 		try {

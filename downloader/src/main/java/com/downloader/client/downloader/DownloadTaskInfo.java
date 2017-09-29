@@ -31,9 +31,7 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 
 	protected long downloadLength;
 
-	protected int totalParts;
-
-	protected int threadNumber;
+	protected int totalThreads;
 
 	protected long[] partOffsetStart;
 
@@ -94,13 +92,13 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 	}
 
 
-	public int getTotalParts() {
-		return totalParts;
+	public int getTotalThreads() {
+		return totalThreads;
 	}
 
 
-	public DownloadTaskInfo setTotalParts(int totalParts) {
-		this.totalParts = totalParts;
+	public DownloadTaskInfo setTotalThreads(int totalThreads) {
+		this.totalThreads = totalThreads;
 		return this;
 	}
 
@@ -134,17 +132,6 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 
 	public DownloadTaskInfo setPartDownloadLength(long[] partDownloadLength) {
 		this.partDownloadLength = partDownloadLength;
-		return this;
-	}
-
-
-	public int getThreadNumber() {
-		return threadNumber;
-	}
-
-
-	public DownloadTaskInfo setThreadNumber(int threadNumber) {
-		this.threadNumber = threadNumber;
 		return this;
 	}
 

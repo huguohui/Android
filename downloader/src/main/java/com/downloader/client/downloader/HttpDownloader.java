@@ -4,12 +4,12 @@ import com.downloader.engine.AsyncWorker;
 import com.downloader.engine.ControlableWorker;
 import com.downloader.engine.Workable;
 import com.downloader.io.ConcurrentFileWriter;
+import com.downloader.io.FileWritable;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractRequest;
 import com.downloader.net.Receiver;
 import com.downloader.net.Response;
 import com.downloader.net.http.Http;
-import com.downloader.net.http.HttpHeader;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.net.http.HttpRequest;
 import com.downloader.net.http.HttpResponse;
@@ -44,8 +44,6 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected ThreadManager threadManager;
 
-	protected int allocThreads = 1;
-
 	protected int finished = 0;
 
 	protected long blockSize;
@@ -53,6 +51,8 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	protected ControlableWorker worker;
 
 	protected boolean isChunked;
+
+	protected DownloadTaskInfo info = new DownloadTaskInfo();
 
 	final public static int MAX_THREAD = 10;
 
@@ -102,24 +102,38 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	}
 
 
-	protected void prepare(HttpResponse res) throws IOException {
-		mLength = res.getContentLength();
-		fileName = res.getFileName();
-		contentType = res.getContentType();
-		isChunked = res.isChunked();
-		url = res.getURL();
+	protected void fetchInfo() throws IOException {
+		if (httpResponse != null) {
+			return;
+		}
 
+		HttpRequest hr = buildHttpRequest(url, Http.Method.HEAD, false);
+		hr.send();
+
+		httpResponse = hr.response();
+		mLength = httpResponse.getContentLength();
+		fileName = httpResponse.getFileName();
+		contentType = httpResponse.getContentType();
+		isChunked = httpResponse.isChunked();
+		url = httpResponse.getURL();
+		info.setLength(mLength);
+		info.setName(fileName);
+		info.setUrl(url);
+	}
+
+
+	protected void prepare() throws IOException {
 		for (int i = 0; i < SIZE_LEVELS.length; i++) {
 			if (SIZE_LEVELS[i] > mLength) {
-				allocThreads = ALLOW_THREAD_LEVELS[i];
+				totalThreads = ALLOW_THREAD_LEVELS[i];
 				break;
 			}
 		}
 
-		blockSize = mLength / allocThreads;
-		httpRequests = new HttpRequest[allocThreads];
-		httpResponses = new HttpResponse[allocThreads];
-		httpReceivers = new HttpReceiver[allocThreads];
+		blockSize = mLength / totalThreads;
+		httpRequests = new HttpRequest[totalThreads];
+		httpResponses = new HttpResponse[totalThreads];
+		httpReceivers = new HttpReceiver[totalThreads];
 		fileWriter = new ConcurrentFileWriter(new File(fileName), mLength);
 		setState(State.prepared);
 	}
@@ -127,12 +141,12 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected void download() throws Exception {
 		super.start();
-		for (int i = 0; i < allocThreads; i++) {
+		for (int i = 0; i < totalThreads; i++) {
 			httpRequests[i] = buildHttpRequest(url, Http.Method.GET, true);
 			if (!isChunked) {
 				httpRequests[i].setHeader(Http.RANGE,
 						new AbstractRequest.Range(i * blockSize,
-								-~i == allocThreads ? mLength : ~-(-~i * blockSize)).toString());
+								-~i == totalThreads ? mLength : ~-(-~i * blockSize)).toString());
 			}
 
 			httpRequests[i].send();
@@ -151,12 +165,13 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 
 	protected boolean checkFinished() {
-		return ++finished == allocThreads && (mLength == 0 || mLength == mDownloadedLength);
+		return ++finished == totalThreads && (mLength == 0 || mLength == mDownloadedLength);
 	}
 
 
 	public void start() throws IOException {
 		try {
+			info.setStartTime(TimeUtil.getMillisTime());
 			worker.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -211,7 +226,8 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	 */
 	@Override
 	public void work() throws Exception {
-		prepare(fetchResponseByUrl(url));
+		fetchInfo();
+		prepare();
 		download();
 	}
 
@@ -228,5 +244,60 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	@Override
 	public void onSend(AbstractRequest r) {
+	}
+
+
+	public URL getUrl() {
+		return url;
+	}
+
+
+	public String getFileName() {
+		return fileName;
+	}
+
+
+	public String getContentType() {
+		return contentType;
+	}
+
+
+	public HttpResponse getHttpResponse() {
+		return httpResponse;
+	}
+
+
+	public HttpRequest[] getHttpRequests() {
+		return httpRequests;
+	}
+
+
+	public HttpResponse[] getHttpResponses() {
+		return httpResponses;
+	}
+
+
+	public HttpReceiver[] getHttpReceivers() {
+		return httpReceivers;
+	}
+
+
+	public FileWritable getFileWriter() {
+		return fileWriter;
+	}
+
+
+	public int getFinished() {
+		return finished;
+	}
+
+
+	public long getBlockSize() {
+		return blockSize;
+	}
+
+
+	public ControlableWorker getWorker() {
+		return worker;
 	}
 }

@@ -1,6 +1,7 @@
 package com.downloader.client.downloader;
 
 
+import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.Controlable;
 import com.downloader.net.AbstractHeader;
 import com.downloader.net.Response;
@@ -31,16 +32,12 @@ public abstract class AbstractDownloader implements Controlable {
 
 	protected boolean mIsStop = false;
 
-	/** Listener of downloading state. */
-	protected Listener mListener = null;
-
 	protected long mDownloadTime = 0;
 
+	protected int totalThreads = 1;
 
-	/** Methods of listener. */
-	private final String mListenerMethods[] = {
-		"onStart", "onPause", "onResume", "onStop", "onFinish"
-	};
+	protected AbstractTaskInfo info;
+
 
 	/** The download states. */
 	public enum State {
@@ -53,9 +50,6 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public abstract Response fetchResponseByUrl(URL url) throws IOException;
-
-
 	/**
 	 * Starts to downloading.
 	 * @throws IOException
@@ -63,7 +57,6 @@ public abstract class AbstractDownloader implements Controlable {
 	public synchronized void start() throws Exception {
 		mStartTime = TimeUtil.getMillisTime();
 		setState(State.started);
-		invokeListener("onStart");
 	}
 
 
@@ -72,7 +65,6 @@ public abstract class AbstractDownloader implements Controlable {
 	 */
 	public synchronized void pause() throws Exception {
 		setState(State.paused);
-		invokeListener("onPauses");
 	}
 
 
@@ -81,7 +73,6 @@ public abstract class AbstractDownloader implements Controlable {
 	 */
 	public synchronized void resume() {
 		setState(State.started);
-		invokeListener("onResume");
 	}
 
 
@@ -91,28 +82,7 @@ public abstract class AbstractDownloader implements Controlable {
 	public synchronized void stop() {
 		setState(State.stoped);
 		mIsStop = true;
-		invokeListener("onStop");
 	}
-
-
-	/**
-	 * Invokes the special method of listener.
-	 * @param name The name of listener method.
-	 */
-	protected synchronized void invokeListener(String name) {
-		if (mListener == null)
-			return;
-
-		switch(StringUtil.inArray(mListenerMethods, name)) {
-			case 0:		mListener.onStart(this); 	break;
-			case 1:		mListener.onPause(this);	break;
-			case 2:		mListener.onResume(this);	break;
-			case 3:		mListener.onStop(this);		break;
-			case 4:		mListener.onFinish(this);	break;
-			default: 	// Do nothing...
-		}
-	}
-
 
 	public long getDownloadedLength() {
 		return mDownloadedLength;
@@ -169,11 +139,6 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public Listener getListener() {
-		return mListener;
-	}
-
-
 	public long getDownloadTime() {
 		return mDownloadTime;
 	}
@@ -184,50 +149,12 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public void setListener(Listener Listener) {
-		if (Listener == null)
-			return;
-
-		mListener = Listener;
+	public int getTotalThreads() {
+		return totalThreads;
 	}
 
 
-	/**
-	 * The listener of downloading.
-	 */
-	public interface Listener {
-		/**
-		 * Invokes on downloader start download.
-		 * @param abstractDownloader
-		 */
-		void onStart(AbstractDownloader abstractDownloader);
-
-
-		/**
-		 * Invokes on downloader stop download.
-		 * @param absReceiver The listenered downloader.
-		 */
-		void onStop(AbstractDownloader absReceiver);
-
-
-		/**
-		 * Invokes on downloader pause download.
-		 * @param downloader The listenered downloader.
-		 */
-		void onPause(AbstractDownloader downloader);
-
-
-		/**
-		 * Invokes on downloader resume download.
-		 * @param downloader The listenered downloader.
-		 */
-		void onResume(AbstractDownloader downloader);
-
-
-		/**
-		 * Invokes on downloader finish download.
-		 * @param downloader The listenered downloader.
-		 */
-		void onFinish(AbstractDownloader downloader);
+	public AbstractTaskInfo getInfo() {
+		return info;
 	}
 }
