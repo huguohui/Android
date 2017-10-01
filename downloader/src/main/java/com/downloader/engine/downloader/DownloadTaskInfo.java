@@ -1,4 +1,4 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 import com.downloader.engine.AbstractTaskInfo;
 

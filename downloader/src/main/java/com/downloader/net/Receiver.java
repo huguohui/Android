@@ -24,7 +24,7 @@ public interface Receiver extends Stopable, Workable {
 
 
 	/**
-	 * To started data from source, and save data to somewhere.
+	 * To downloading data from source, and save data to somewhere.
 	 * @param len Length of data.
 	 */
 	void receive(long len) throws IOException;
@@ -34,7 +34,13 @@ public interface Receiver extends Stopable, Workable {
 		void onFinished(Receiver r);
 	}
 
+
 	interface OnStopListener {
 		void onStop(Receiver r);
+	}
+
+
+	interface OnReceiveListener {
+		void onReceive(byte[] data);
 	}
 }

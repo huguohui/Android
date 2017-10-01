@@ -1,6 +1,6 @@
 package com.downloader.manager;
 
-import com.downloader.client.downloader.DownloadTask;
+import com.downloader.engine.downloader.DownloadTask;
 
 import static android.R.attr.id;
 

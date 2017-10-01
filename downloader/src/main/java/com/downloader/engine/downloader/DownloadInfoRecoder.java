@@ -1,4 +1,4 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 import com.downloader.io.DataReader;
 import com.downloader.io.DataWriter;
@@ -45,6 +45,8 @@ public class DownloadInfoRecoder {
 			dataWriter.writeLong(info.getPartLength()[i]);
 			dataWriter.writeLong(info.getPartDownloadLength()[i]);
 		}
+
+		close();
 	}
 
 
@@ -70,6 +72,8 @@ public class DownloadInfoRecoder {
 		info.setPartOffsetStart(partOffsetStarts);
 		info.setPartLength(partLengths);
 		info.setPartDownloadLength(partDownloadLengths);
+
+		close();
 		return info;
 	}
 

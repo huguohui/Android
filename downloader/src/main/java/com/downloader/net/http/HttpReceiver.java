@@ -1,11 +1,10 @@
 package com.downloader.net.http;
 
 
-import com.downloader.client.downloader.HttpDownloader;
+import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.engine.Worker;
 import com.downloader.io.ConcurrentFileWritable;
 import com.downloader.io.FileWritable;
-import com.downloader.io.Writable;
 import com.downloader.net.AbstractReceiver;
 import com.downloader.net.Receiver;
 import com.downloader.net.SocketReceiver;
@@ -30,7 +29,7 @@ public class HttpReceiver extends SocketReceiver {
 	/** Buffer for receiver. */
 	protected byte[] mBuffer = new byte[0x100000];
 
-	/** Size of current started chunked block. */
+	/** Size of current downloading chunked block. */
 	protected long mCurrentChunkedSize = 0;
 
 	protected HttpHeader mHeader;
@@ -146,8 +145,8 @@ public class HttpReceiver extends SocketReceiver {
 
 
 	/**
-	 * To started data from source, and save data to somewhere.
-	 * @param size Size of will started.
+	 * To downloading data from source, and save data to somewhere.
+	 * @param size Size of will downloading.
 	 */
 	protected void receiveData(long size) throws IOException {
 		if (size == 0)
@@ -166,7 +165,7 @@ public class HttpReceiver extends SocketReceiver {
 
 
 	/**
-	 * To started data from source, and save data to somewhere.
+	 * To downloading data from source, and save data to somewhere.
 	 */
 	protected void receiveData() throws IOException {
 		receiveData(mSizeWillReceive);

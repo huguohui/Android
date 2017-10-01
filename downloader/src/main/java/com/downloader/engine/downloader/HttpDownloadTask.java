@@ -1,7 +1,7 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 
-import com.downloader.util.TimeUtil;
+import java.io.IOException;
 
 public class HttpDownloadTask extends DownloadTask {
 	protected DownloadTaskInfo info;
@@ -15,8 +15,14 @@ public class HttpDownloadTask extends DownloadTask {
 	}
 
 
+	public HttpDownloadTask(DownloadTaskInfo info) {
+		this((DownloadTaskDescriptor) null);
+		this.info = info;
+	}
+
+
 	protected void init() {
-		downloader = new HttpDownloader(descriptor.getUrl());
+		downloader = info != null ? new HttpDownloader(info) : new HttpDownloader(descriptor.getUrl());
 	}
 
 
@@ -42,7 +48,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 * Controls the task resume.
 	 */
 	@Override
-	public void resume()  {
+	public void resume() throws IOException {
 		downloader.resume();
 	}
 
@@ -51,7 +57,7 @@ public class HttpDownloadTask extends DownloadTask {
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop() {
+	public void stop() throws IOException {
 		downloader.stop();
 	}
 

@@ -1,15 +1,12 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 
 import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.Controlable;
-import com.downloader.net.AbstractHeader;
-import com.downloader.net.Response;
 import com.downloader.util.TimeUtil;
-import com.downloader.util.StringUtil;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 
 public abstract class AbstractDownloader implements Controlable {
 	/** The length of data. */
@@ -38,15 +35,21 @@ public abstract class AbstractDownloader implements Controlable {
 
 	protected AbstractTaskInfo info;
 
+	protected String path = "";
+
+	protected OnDownloadFinishListener onDownloadFinishListener;
+
+	protected OnDownloadListener onDownloadListener;
+
 
 	/** The download states. */
 	public enum State {
-		unstart, init, prepared, started, paused, stoped, finished, exceptional, waiting
+		unstart, initing, preparing, downloading, paused, stoped, finished, exceptional
 	}
 
 
 	public AbstractDownloader() {
-		mState = State.init;
+		mState = State.initing;
 	}
 
 
@@ -56,7 +59,7 @@ public abstract class AbstractDownloader implements Controlable {
 	 */
 	public synchronized void start() throws Exception {
 		mStartTime = TimeUtil.getMillisTime();
-		setState(State.started);
+		setState(State.downloading);
 	}
 
 
@@ -71,15 +74,15 @@ public abstract class AbstractDownloader implements Controlable {
 	/**
 	 * Resumes task of downloading.
 	 */
-	public synchronized void resume() {
-		setState(State.started);
+	public synchronized void resume() throws IOException {
+		setState(State.downloading);
 	}
 
 
 	/**
 	 * Stops to downloading.
 	 */
-	public synchronized void stop() {
+	public synchronized void stop() throws IOException {
 		setState(State.stoped);
 		mIsStop = true;
 	}
@@ -156,5 +159,35 @@ public abstract class AbstractDownloader implements Controlable {
 
 	public AbstractTaskInfo getInfo() {
 		return info;
+	}
+
+
+	public String getPath() {
+		return path;
+	}
+
+
+	public AbstractDownloader setPath(String path) {
+		this.path = path;
+		return this;
+	}
+
+
+	public OnDownloadFinishListener getOnDownloadFinishListener() {
+		return onDownloadFinishListener;
+	}
+
+
+	public OnDownloadListener getOnDownloadListener() {
+		return onDownloadListener;
+	}
+
+
+	interface OnDownloadListener {
+		void onDownload(AbstractDownloader d);
+	}
+
+	interface OnDownloadFinishListener {
+		void onDownloadFinish(AbstractDownloader d);
 	}
 }

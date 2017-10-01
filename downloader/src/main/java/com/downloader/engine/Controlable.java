@@ -1,5 +1,7 @@
 package com.downloader.engine;
 
+import java.io.FileNotFoundException;
+
 /**
  * Defines some method for describing object is controlable.
  * @since 2016/12/25 16:23:06
@@ -20,11 +22,11 @@ public interface Controlable {
 	/**
 	 * Controls the task resume.
 	 */
-	void resume();
+	void resume() throws Exception;
 	
 	
 	/**
 	 * Controls the task stop.
 	 */
-	void stop();
+	void stop() throws Exception;
 }

@@ -34,6 +34,8 @@ public abstract class AbstractReceiver implements Receiver {
 
 	protected OnStopListener onStopListener;
 
+	protected OnReceiveListener onReceiveListener;
+
 	
 	/**
 	 * Construct a downloader by requester.
@@ -99,5 +101,11 @@ public abstract class AbstractReceiver implements Receiver {
 
 	public void setOnStopListener(OnStopListener onStopListener) {
 		this.onStopListener = onStopListener;
+	}
+
+
+	public AbstractReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+		this.onReceiveListener = onReceiveListener;
+		return this;
 	}
 }

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.listView2);
         List<Map<String, Object>> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<>();
             map.put("progress", i * 10);
             list.add(map);
@@ -57,51 +57,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(ma);
         ma.notifyDataSetChanged();
 
-
-
-//        final Timer timer = new Timer();
-//
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                int last = i;
-//                i += new Random().nextInt(30);
-//                int num = 0, diff = i - last;
-//                if (i >= 100) {
-//                    timer.cancel();
-//                }
-//
-//
-//
-//                while(num++ < diff) {
-//                    Message m = new Message();
-//                    m.what = 0;
-//                    m.arg1 = last + num;
-//                    ((Map<String, Object>) ma.getItem(0)).put("progress", last + num);
-//                    Log.e("progress", String.valueOf(last + num));
-//                    try {
-//                        Thread.sleep(10);
-//                    } catch (Exception e) {
-//                    }
-//                    handler.sendMessage(m);
-//                }
-//            }
-//        }, 0, 1000);
-//
-//
-//        handler = new Handler() {
-//            public int last = 0;
-//            @Override
-//            public void handleMessage(Message msg) {
-//                super.handleMessage(msg);
-//
-//                switch(msg.what) {
-//                    case  0:
-//                        ma.notifyDataSetChanged();
-//                        break;
-//                }
-//            }
-//        };
     }
 
 
@@ -148,44 +103,47 @@ public class MainActivity extends AppCompatActivity {
     public void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
+
+
+	class MyAdspter extends BaseAdapter {
+		private List<Map<String, Object>> data;
+		private LayoutInflater layoutInflater;
+		private Context context;
+		public MyAdspter(Context context,List<Map<String, Object>> data){
+			this.context=context;
+			this.data=data;
+			this.layoutInflater= LayoutInflater.from(context);
+		}
+
+		@Override
+		public int getCount() {
+			return data.size();
+		}
+		/**
+		 * 获得某一位置的数据
+		 */
+		@Override
+		public Object getItem(int position) {
+			return data.get(position);
+		}
+		/**
+		 * 获得唯一标识
+		 */
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+
+		@Override
+		public View getView(int position, View cv, ViewGroup parent) {
+			cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
+			ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
+			pb.setProgress((Integer) data.get(position).get("progress"));
+			return cv;
+		}
+	}
 }
 
-
-class MyAdspter extends BaseAdapter {
-    private List<Map<String, Object>> data;
-    private LayoutInflater layoutInflater;
-    private Context context;
-    public MyAdspter(Context context,List<Map<String, Object>> data){
-        this.context=context;
-        this.data=data;
-        this.layoutInflater= LayoutInflater.from(context);
-    }
-
-    @Override
-    public int getCount() {
-        return data.size();
-    }
-    /**
-     * 获得某一位置的数据
-     */
-    @Override
-    public Object getItem(int position) {
-        return data.get(position);
-    }
-    /**
-     * 获得唯一标识
-     */
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-
-    @Override
-    public View getView(int position, View cv, ViewGroup parent) {
-        cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
-        ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
-        pb.setProgress((Integer) data.get(position).get("progress"));
-        return cv;
-    }
-}

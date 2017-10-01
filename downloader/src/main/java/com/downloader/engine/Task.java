@@ -9,7 +9,7 @@ import com.downloader.engine.Controlable;
 public abstract class Task implements Controlable {
 
 	public enum State {
-		unstart, init, running, paused, resuming, stoped, finished
+		unstart, waiting, initing, running, paused, resuming, stoped, finished
 	}
 
 	protected State state;

@@ -1,4 +1,4 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 import java.io.File;
 import java.net.URL;

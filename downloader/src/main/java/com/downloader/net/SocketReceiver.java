@@ -6,12 +6,13 @@ import com.downloader.io.FileWritable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
+import java.util.Arrays;
 
 /**
  * Socket receiver can receive data from input stream.
  */
 public class SocketReceiver extends AbstractReceiver {
-	/** Size for next started. */
+	/** Size for next downloading. */
 	protected long mSizeWillReceive = 0;
 
 
@@ -48,7 +49,7 @@ public class SocketReceiver extends AbstractReceiver {
 
 
 	/**
-	 * To started data from source, and save data to somewhere.
+	 * To downloading data from source, and save data to somewhere.
 	 *
 	 * @param size
 	 */
@@ -92,36 +93,52 @@ public class SocketReceiver extends AbstractReceiver {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
-		byte[] chunk = new byte[size];
+		byte[] chunk = new byte[size], buff;
 		int count = 0, read = 0, freeLoop = 0;
 
 		while(count < size) {
-			int available = mInputStream.available();
-			byte[] buff = new byte[BUFFER_SIZE];
-
-			try {
-				Thread.sleep(1);
-			}
-			catch ( Exception ex ) {
-				ex.printStackTrace();
-			}
-
-			if (available == 0 && freeLoop++ != 50)
-				continue;
-
-			if (END_OF_STREAM == (read = mInputStream.read(buff, 0,
+			if (null == (buff = receiveFromStream(mInputStream,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
+				return null;
+			}
+
+			count += buff.length;
+			System.arraycopy(buff, 0, chunk, count, read);
+			mReceivedLength += read;
+		}
+
+		return chunk;
+	}
+
+
+	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
+		int available = is.available(), read = 0;
+		byte[] buff = new byte[size];
+
+		try { Thread.sleep(1); } catch ( Exception ex ) {
+			ex.printStackTrace();
+		}
+
+		if (available != 0) {
+			if (END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
 				isFinished = true;
 				return null;
 			}
 
-			System.arraycopy(buff, 0, chunk, count, read);
-			count += read;
-			mReceivedLength += read;
-			freeLoop = 0;
+			buff = Arrays.copyOf(buff, read);
+			onReceive(buff);
 		}
 
-		return chunk;
+		return buff;
+	}
+
+
+	protected void onReceive(byte[] data) {
+		if (onReceiveListener == null) {
+			return;
+		}
+
+		onReceiveListener.onReceive(data);
 	}
 
 

@@ -1,4 +1,4 @@
-package com.downloader.client.downloader;
+package com.downloader.engine.downloader;
 
 import com.downloader.engine.Task;
 
@@ -7,6 +7,7 @@ import com.downloader.engine.Task;
  * @since 2016/12/26 15:46
  */
 public abstract class DownloadTask extends Task {
+
 	protected DownloadTaskInfo info;
 
 	protected DownloadTaskDescriptor descriptor;

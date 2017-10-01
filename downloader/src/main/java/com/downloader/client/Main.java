@@ -1,12 +1,12 @@
 package com.downloader.client;
 
-import com.downloader.client.downloader.DownloadInfoRecoder;
-import com.downloader.client.downloader.DownloadTaskInfo;
+import com.downloader.engine.downloader.DownloadInfoRecoder;
+import com.downloader.engine.downloader.DownloadTaskInfo;
 import com.downloader.engine.AbstractWorker;
 import com.downloader.io.ConcurrentFileWriter;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.http.Http;
-import com.downloader.client.downloader.HttpDownloader;
+import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.util.TimeUtil;
 
