@@ -6,7 +6,7 @@ import com.downloader.engine.Controlable;
 /**
  * Interface of task.
  */
-public abstract class Task implements Controlable {
+public abstract class Task implements Controlable, Workable {
 
 	public enum State {
 		unstart, waiting, initing, running, paused, resuming, stoped, finished
@@ -23,5 +23,10 @@ public abstract class Task implements Controlable {
 
 	public State getState() {
 		return state;
+	}
+
+
+	interface OnFinishListener {
+		void onFinish(Task t);
 	}
 }
