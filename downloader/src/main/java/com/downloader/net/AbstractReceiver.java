@@ -23,7 +23,7 @@ public abstract class AbstractReceiver implements Receiver {
 	protected boolean isFinished = false;
 
 	/** Received data length. */
-	protected long mReceivedLength;
+	protected volatile long mReceivedLength;
 
 	protected Worker mWorker;
 
@@ -57,7 +57,7 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 
-	public long getReceivedLength() {
+	public synchronized long getReceivedLength() {
 		return mReceivedLength;
 	}
 

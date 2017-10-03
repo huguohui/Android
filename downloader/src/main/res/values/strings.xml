@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Downloader</string>
+    <string name="app_name">X-Stream</string>
     <string name="action_settings">设置</string>
     <string name="action_new_task">新建任务</string>
     <string name="action_pause_all">暂停所有任务</string>

@@ -4,6 +4,8 @@ import com.downloader.engine.Workable;
 
 import java.io.IOException;
 
+import static android.R.attr.data;
+
 /**
  * Receiver can receive some data form somewhere.
  *
@@ -41,6 +43,6 @@ public interface Receiver extends Stopable, Workable {
 
 
 	interface OnReceiveListener {
-		void onReceive(byte[] data);
+		void onReceive(Receiver r, byte[] data);
 	}
 }

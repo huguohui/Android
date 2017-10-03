@@ -97,37 +97,41 @@ public class SocketReceiver extends AbstractReceiver {
 		int count = 0, read = 0, freeLoop = 0;
 
 		while(count < size) {
+			checkAvaliable(mInputStream);
 			if (null == (buff = receiveFromStream(mInputStream,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
 				return null;
 			}
 
-			count += buff.length;
+			read = buff.length;
 			System.arraycopy(buff, 0, chunk, count, read);
-			mReceivedLength += read;
+			count += read;
+			synchronized (this) {
+				mReceivedLength += read;
+			}
 		}
 
 		return chunk;
 	}
 
 
-	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
-		int available = is.available(), read = 0;
-		byte[] buff = new byte[size];
-
-		try { Thread.sleep(1); } catch ( Exception ex ) {
+	protected void checkAvaliable(InputStream is) throws IOException {
+		int idle = 1, maxWaitMs = 50;
+		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
+	}
 
-		if (available != 0) {
-			if (END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
-				isFinished = true;
-				return null;
-			}
 
-			buff = Arrays.copyOf(buff, read);
-			onReceive(buff);
+	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
+		int read = 0;
+		byte[] buff = new byte[size];
+		if (END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
+			return null;
 		}
+
+		buff = Arrays.copyOf(buff, read);
+		onReceive(buff);
 
 		return buff;
 	}
@@ -138,7 +142,7 @@ public class SocketReceiver extends AbstractReceiver {
 			return;
 		}
 
-		onReceiveListener.onReceive(data);
+		onReceiveListener.onReceive(this, data);
 	}
 
 

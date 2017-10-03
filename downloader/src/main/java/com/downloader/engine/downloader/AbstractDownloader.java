@@ -5,7 +5,6 @@ import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.Controlable;
 import com.downloader.util.TimeUtil;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public abstract class AbstractDownloader implements Controlable {
@@ -31,7 +30,7 @@ public abstract class AbstractDownloader implements Controlable {
 
 	protected long mDownloadTime = 0;
 
-	protected int totalThreads = 1;
+	protected int downloadThreads = 1;
 
 	protected AbstractTaskInfo info;
 
@@ -39,7 +38,7 @@ public abstract class AbstractDownloader implements Controlable {
 
 	protected OnDownloadFinishListener onDownloadFinishListener;
 
-	protected OnDownloadListener onDownloadListener;
+	protected OnDownloadStartListener onDownloadListener;
 
 
 	/** The download states. */
@@ -152,8 +151,8 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public int getTotalThreads() {
-		return totalThreads;
+	public int getDownloadThreads() {
+		return downloadThreads;
 	}
 
 
@@ -178,16 +177,16 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public OnDownloadListener getOnDownloadListener() {
+	public OnDownloadStartListener getOnDownloadListener() {
 		return onDownloadListener;
 	}
 
 
-	interface OnDownloadListener {
-		void onDownload(AbstractDownloader d);
+	public interface OnDownloadStartListener {
+		void onDownloadStart(AbstractDownloader d);
 	}
 
-	interface OnDownloadFinishListener {
+	public interface OnDownloadFinishListener {
 		void onDownloadFinish(AbstractDownloader d);
 	}
 }

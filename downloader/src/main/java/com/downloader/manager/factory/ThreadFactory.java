@@ -18,6 +18,6 @@ public abstract class ThreadFactory {
 
 
 	public static Thread createThread(Runnable runnable) {
-		return createThread(StringUtil.nonceStr(THREAD_NAME_LEN), runnable, Thread.NORM_PRIORITY);
+		return createThread(/*StringUtil.nonceStr(THREAD_NAME_LEN)*/ runnable.toString(), runnable, Thread.NORM_PRIORITY);
 	}
 }

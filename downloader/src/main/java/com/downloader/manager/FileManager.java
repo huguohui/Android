@@ -89,6 +89,7 @@ public class FileManager extends AbstractFileManager {
 		return null;
 	}
 
+
 	/**
 	 * Delete a object.
 	 *
@@ -99,6 +100,7 @@ public class FileManager extends AbstractFileManager {
 	public boolean delete(DownloadTask obj) throws IOException {
 		return false;
 	}
+
 
 	/**
 	 * Delete a file or directory.
@@ -126,6 +128,7 @@ public class FileManager extends AbstractFileManager {
 
 		return !obj.exists() || obj.delete();
 	}
+
 
 	@Override
 	public synchronized boolean delete(int idx) throws IOException {

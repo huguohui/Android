@@ -22,7 +22,7 @@ public class HttpDownloadTask extends DownloadTask {
 
 
 	protected void init() {
-		downloader = info != null ? new HttpDownloader(info) : new HttpDownloader(descriptor.getUrl());
+		downloader = info != null ? new HttpDownloader(info) : new HttpDownloader(descriptor);
 	}
 
 
@@ -70,5 +70,26 @@ public class HttpDownloadTask extends DownloadTask {
 	@Override
 	public DownloadTaskInfo info() {
 		return (DownloadTaskInfo) downloader.getInfo();
+	}
+
+
+	/**
+	 * To do some work.
+	 */
+	@Override
+	public void work() throws Exception {
+
+	}
+
+
+	@Override
+	public void onDownloadStart(AbstractDownloader d) {
+
+	}
+
+
+	@Override
+	public void onDownloadFinish(AbstractDownloader d) {
+
 	}
 }

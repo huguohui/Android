@@ -1,12 +1,17 @@
 package com.downloader.engine;
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.engine.Controlable;
-
 /**
  * Interface of task.
  */
 public abstract class Task implements Controlable, Workable {
+
+	protected static int id = 0;
+
+	protected OnTaskFinishListener onFinishListener;
+
+	protected Task() {
+		id++;
+	}
 
 	public enum State {
 		unstart, waiting, initing, running, paused, resuming, stoped, finished
@@ -26,7 +31,18 @@ public abstract class Task implements Controlable, Workable {
 	}
 
 
-	interface OnFinishListener {
-		void onFinish(Task t);
+	public int getId() {
+		return id;
+	}
+
+
+	public Task setOnFinishListener(OnTaskFinishListener onFinishListener) {
+		this.onFinishListener = onFinishListener;
+		return this;
+	}
+
+
+	public interface OnTaskFinishListener {
+		void onTaskFinish(Task t);
 	}
 }

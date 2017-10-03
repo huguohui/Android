@@ -1,6 +1,5 @@
 package com.downloader.engine.downloader;
 
-import java.io.File;
 import java.net.URL;
 
 /**
@@ -16,18 +15,15 @@ public class DownloadTaskDescriptor extends AbstractDescriptor {
 	/** Number of max used for threads. */
 	protected int mMaxThread;
 
-	/** Task start time. */
-	protected int mStartTime;
-
-	protected File path;
+	protected String path;
 
 
-	public File getPath() {
+	public String getPath() {
 		return path;
 	}
 
 
-	public DownloadTaskDescriptor setPath(File path) {
+	public DownloadTaskDescriptor setPath(String path) {
 		this.path = path;
 		return this;
 	}
@@ -57,11 +53,41 @@ public class DownloadTaskDescriptor extends AbstractDescriptor {
 		this.mMaxThread = mMaxThread;
 	}
 
-	public int getStartTime() {
-		return mStartTime;
-	}
 
-	public void setStartTime(int mStartTime) {
-		this.mStartTime = mStartTime;
+	public static class Builder {
+		private DownloadTaskDescriptor descriptor;
+
+		public Builder() {
+			descriptor = new DownloadTaskDescriptor();
+		}
+
+
+		public Builder setUrl(URL mUrl) {
+			descriptor.mUrl = mUrl;
+			return this;
+		}
+
+
+		public Builder setPriority(int mPriority) {
+			descriptor.setPriority(mPriority);
+			return this;
+		}
+
+
+		public Builder setMaxThread(int mMaxThread) {
+			descriptor.setMaxThread(mMaxThread);
+			return this;
+		}
+
+
+		public Builder setPath(String path) {
+			descriptor.path = path;
+			return this;
+		}
+
+
+		public DownloadTaskDescriptor build() {
+			return descriptor;
+		}
 	}
 }

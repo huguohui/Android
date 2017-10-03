@@ -1,14 +1,11 @@
 package com.downloader.manager;
 
+import com.downloader.engine.Task;
 import com.downloader.engine.downloader.DownloadTask;
 import com.downloader.util.CollectionUtil;
-import com.downloader.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-
-import static android.R.attr.id;
 
 
 /**
@@ -18,18 +15,38 @@ import static android.R.attr.id;
 public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = null;
+	/** Max并行的任务数 */
+	public final static int MAX_PARALELL_TASK = 5;
 
-	protected int taskRunnable = 1;
+	protected int runningTasks = 0;
 
-	protected List<DownloadTask> runnableTasks = new ArrayList<>(taskRunnable);
-	
+	protected int allTasksNum = 0;
+
+	protected List<DownloadTask> finishedTasks = new ArrayList<>();
+
+	protected Operation startOperation = new Operation.StartOperation();
+
+	protected Operation pauseOperation = new Operation.PauseOperation();
+
+	protected Operation resumeOperation = new Operation.ResumeOperation();
+
+	protected Operation stopOperation = new Operation.StopOperation();
+
+	protected CollectionUtil.Filter unstartTaskFilter = new StateFilter.Unstart();
+
+	protected CollectionUtil.Filter runningTaskFilter = new StateFilter.Running();
+
+	protected CollectionUtil.Filter pausedTaskFilter = new StateFilter.Paused();
+
+	protected CollectionUtil.Filter stopedTaskFilter = new StateFilter.Stoped();
+
+	protected boolean isAutoStart = false;
+
 	
 	/**
 	 * Private constructor for singleton pattern.
 	 */
-	private DownloadTaskManager() {
-
-	}
+	private DownloadTaskManager() { }
 
 	
 	/**
@@ -39,13 +56,37 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	public final synchronized static DownloadTaskManager getInstance() {
 		if (mInstance == null)
 			mInstance = new DownloadTaskManager();
-		
+
 		return mInstance;
 	}
 
 
+	protected List<DownloadTask> getUnstartTask() {
+		return CollectionUtil.filter(mList, unstartTaskFilter);
+	}
+
+
+	protected void startRemainTask() {
+		List<DownloadTask> neededTasks = getUnstartTask();
+		CollectionUtil.forEach(neededTasks, new Operation.StartOperation());
+		runningTasks += neededTasks.size();
+	}
+
+
+	protected void startTask(DownloadTask t) {
+		if (isAutoStart && runningTasks < MAX_PARALELL_TASK) {
+			startOperation.doAction(t);
+			runningTasks++;
+		}
+	}
+
+
 	public boolean add(DownloadTask d) {
-		return super.add(d);
+		synchronized (mList) {
+			boolean ret = super.add(d);
+			startTask(d);
+			return ret;
+		}
 	}
 
 
@@ -53,9 +94,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task start.
 	 */
 	@Override
-	public void start() throws Exception {
-		synchronized (runnableTasks) {
-			CollectionUtil.forEach(runnableTasks, new Control(new Control.StartOperation()));
+	public void startAll() throws Exception {
+		synchronized (mList) {
+			startRemainTask();
 		}
 	}
 
@@ -64,9 +105,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task pause.
 	 */
 	@Override
-	public void pause() throws Exception {
-		synchronized (runnableTasks) {
-			CollectionUtil.forEach(runnableTasks, new Control(new Control.PauseOperation()));
+	public void pauseAll() throws Exception {
+		synchronized (mList) {
+			CollectionUtil.forEach(null, pauseOperation);
 		}
 	}
 
@@ -75,9 +116,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task resume.
 	 */
 	@Override
-	public void resume()  {
-		synchronized (runnableTasks) {
-			CollectionUtil.forEach(runnableTasks, new Control(new Control.ResumeOperation()));
+	public void resumeAll()  {
+		synchronized (mList) {
+			CollectionUtil.forEach(mList, resumeOperation);
 		}
 	}
 
@@ -86,9 +127,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop() {
-		synchronized (runnableTasks) {
-			CollectionUtil.forEach(runnableTasks, new Control(new Control.StopOperation()));
+	public void stopAll() {
+		synchronized (mList) {
+			CollectionUtil.forEach(mList, stopOperation);
 		}
 	}
 
@@ -98,80 +139,112 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 			if (mList.isEmpty())
 				return null;
 
-			return mList.get(id);
+			return mList.get(i);
 		}
 	}
 
 
 	@Override
 	public void start(int i) throws Exception {
-		new Control.StopOperation().exec(getTask(i));
+		startOperation.exec(getTask(i));
 	}
 
 
 	@Override
 	public void pause(int i) throws Exception {
-		new Control.PauseOperation().exec(getTask(i));
+		pauseOperation.exec(getTask(i));
 	}
 
 
 	@Override
 	public void resume(int i) throws Exception {
-		new Control.ResumeOperation().exec(getTask(i));
+		resumeOperation.exec(getTask(i));
 	}
 
 
 	@Override
 	public void stop(int i) throws Exception {
-		new Control.StopOperation().exec(getTask(i));
+		stopOperation.exec(getTask(i));
 	}
 
 
-	protected static class Control implements CollectionUtil.Callback<DownloadTask> {
-		Operation operation;
-		interface Operation {
-			void exec(DownloadTask d) throws Exception;
-		}
-
-		private Control(Operation o) {
-			operation = o;
-		}
-
-
-		@Override
-		public void callback(DownloadTask o) {
+	protected static abstract class Operation implements CollectionUtil.Action<DownloadTask> {
+		public void doAction(DownloadTask t) {
 			try {
-				operation.exec(o);
+				if (t != null) {
+					exec(t);
+				}
 			} catch (Exception e) {
-				Log.e(e);
+				e.printStackTrace();
 			}
 		}
 
-		static class StartOperation implements Operation {
-			@Override
+
+		public abstract void exec(DownloadTask t) throws Exception;
+
+
+		protected static class StartOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
 				d.start();
 			}
 		}
 
-		static class StopOperation implements Operation {
-			@Override
+
+		protected static class StopOperation extends Operation{
 			public void exec(DownloadTask d) throws Exception {
 				d.stop();
 			}
 		}
 
-		static class PauseOperation implements Operation {
-			@Override
+
+		protected static class PauseOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
 				d.pause();
 			}
 		}
 
-		static class ResumeOperation implements Operation {
-			@Override
+
+		protected static class ResumeOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
 				d.resume();
+			}
+		}
+	}
+
+
+	protected static abstract class StateFilter implements CollectionUtil.Filter<DownloadTask> {
+		public boolean filter(DownloadTask d) {
+			return check(d);
+		}
+
+
+		public abstract boolean check(DownloadTask d);
+
+
+		static class Unstart extends StateFilter {
+			public boolean check(DownloadTask d) {
+				return !Task.State.running.equals(d.getState()) && !Task.State.finished.equals(d.getState());
+			}
+		}
+
+
+		static class Running extends StateFilter {
+			public boolean check(DownloadTask d) {
+				return Task.State.running.equals(d.getState());
+			}
+		}
+
+
+		static class Paused extends StateFilter {
+			public boolean check(DownloadTask d) {
+				return Task.State.paused.equals(d.getState());
+			}
+		}
+
+
+		static class Stoped extends StateFilter {
+			public boolean check(DownloadTask d) {
+				return Task.State.stoped.equals(d.getState());
 			}
 		}
 	}

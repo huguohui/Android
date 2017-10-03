@@ -4,12 +4,12 @@ import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.AsyncWorker;
 import com.downloader.engine.ControlableWorker;
 import com.downloader.engine.Workable;
+import com.downloader.io.AbstractFileWriter;
 import com.downloader.io.ConcurrentFileWriter;
 import com.downloader.io.FileWritable;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractRequest;
 import com.downloader.net.Receiver;
-import com.downloader.net.Response;
 import com.downloader.net.http.Http;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.net.http.HttpRequest;
@@ -19,15 +19,16 @@ import com.downloader.util.StringUtil;
 import com.downloader.util.TimeUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+
+import static android.R.attr.data;
 
 /**
  * Downloads data based http protocol.
  */
 public class HttpDownloader extends AbstractDownloader implements Workable, Receiver.OnFinishedListener,
-		AbstractRequest.OnConnectedListener, AbstractRequest.OnSendListener, AbstractRequest.OnResponseListener,
 		Receiver.OnReceiveListener {
 	protected URL url;
 
@@ -43,7 +44,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected HttpReceiver[] httpReceivers;
 
-	protected ConcurrentFileWriter fileWriter;
+	protected AbstractFileWriter fileWriter;
 
 	protected ThreadManager threadManager;
 
@@ -51,11 +52,15 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected long blockSize;
 
+	protected int specialThreads = 0;
+
 	protected ControlableWorker worker;
 
 	protected boolean isChunked;
 
 	protected boolean isResumeFromInfo;
+
+	protected int perThreadExecInterval = 500;
 
 	protected DownloadTaskInfo info = new DownloadTaskInfo();
 
@@ -75,8 +80,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	public HttpDownloader(URL url) {
 		super();
-		this.url = url;
-		init();
+		init(url);
 	}
 
 
@@ -88,19 +92,42 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	public HttpDownloader(DownloadTaskInfo info) {
 		this(info.getUrl());
-		this.info = info;
-		mLength = info.getLength();
-		mDownloadedLength = info.getDownloadLength();
-		totalThreads = info.getTotalThreads();
-		mStartTime = info.getStartTime();
-		mDownloadTime = info.getUsedTime();
-		isResumeFromInfo = true;
+		initWithInfo(info);
 	}
 
 
-	protected void init() {
+	public HttpDownloader(DownloadTaskDescriptor desc) {
+		this(desc.getUrl());
+		initWithDescriptor(desc);
+	}
+
+
+	protected void initWithDescriptor(DownloadTaskDescriptor desc) {
+		specialThreads = desc.getMaxThread();
+		path = desc.getPath();
+
+		if (specialThreads != 0) {
+			downloadThreads = specialThreads;
+		}
+	}
+
+
+	protected void initWithInfo(DownloadTaskInfo info) {
+		this.info = info;
+		isResumeFromInfo = true;
+		mLength = info.getLength();
+		downloadThreads = info.getTotalThreads();
+		mStartTime = info.getStartTime();
+		mDownloadTime = info.getUsedTime();
+		mDownloadedLength = info.getDownloadLength();
+		path = info.getPath();
+	}
+
+
+	protected void init(URL url) {
+		this.url = url;
 		threadManager = ThreadManager.getInstance();
-		worker = new AsyncWorker(threadManager);
+		worker = new AsyncWorker(threadManager, perThreadExecInterval);
 		worker.add(this);
 	}
 
@@ -109,12 +136,6 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		HttpRequest hr = new HttpRequest();
 		hr.setUrl(url);
 		hr.setMethod(method);
-		if (hasLis) {
-			hr.setOnConnectedListener(this);
-			hr.setOnSendListener(this);
-			hr.setOnResponseListener(this);
-		}
-
 		hr.open();
 		return hr;
 	}
@@ -131,11 +152,12 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 			httpResponse = hr.response();
 		}
 
+		url = httpResponse.getURL();
 		mLength = httpResponse.getContentLength();
 		fileName = httpResponse.getFileName();
 		contentType = httpResponse.getContentType();
 		isChunked = httpResponse.isChunked();
-		url = httpResponse.getURL();
+
 		info.setLength(mLength);
 		info.setName(fileName);
 		info.setUrl(url);
@@ -144,50 +166,54 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected void prepare() throws IOException {
 		setState(State.preparing);
-		for (int i = 0; i < SIZE_LEVELS.length; i++) {
-			if (SIZE_LEVELS[i] > mLength) {
-				totalThreads = ALLOW_THREAD_LEVELS[i];
-				info.setTotalThreads(totalThreads);
-				break;
+		if (specialThreads == 0) {
+			for (int i = 0; i < SIZE_LEVELS.length; i++) {
+				if (SIZE_LEVELS[i] > mLength) {
+					downloadThreads = ALLOW_THREAD_LEVELS[i];
+					break;
+				}
 			}
 		}
 
-		blockSize = mLength / totalThreads;
-		httpRequests = new HttpRequest[totalThreads];
-		httpResponses = new HttpResponse[totalThreads];
-		httpReceivers = new HttpReceiver[totalThreads];
-		fileWriter = new ConcurrentFileWriter(new File(fileName), mLength);
+		blockSize = mLength / downloadThreads;
+		httpRequests = new HttpRequest[downloadThreads];
+		httpResponses = new HttpResponse[downloadThreads];
+		httpReceivers = new HttpReceiver[downloadThreads];
+		fileWriter = new ConcurrentFileWriter(new File(path, fileName), mLength);
+		info.setTotalThreads(downloadThreads);
 	}
 
 
-	protected void computeAlloc() {
+	protected void computeAndAlloc() {
 		if (isResumeFromInfo) {
 			return;
 		}
 
-		long[] partOffsetEnd = new long[totalThreads],
-				partOffsetStart = new long[totalThreads],
-				partLength = new long[totalThreads];
+		long[] partOffsetEnd = new long[downloadThreads],
+				partOffsetStart = new long[downloadThreads],
+				partLength = new long[downloadThreads],
+				partDownloadLen = new long[downloadThreads];
 
-		for (int i = 0; i < totalThreads; i++) {
+		for (int i = 0; i < downloadThreads; i++) {
 			partOffsetStart[i] = i * blockSize;
-			partOffsetEnd[i] = -~i == totalThreads ? mLength : ~-(-~i * blockSize);
+			partOffsetEnd[i] = -~i == downloadThreads ? mLength : ~-(-~i * blockSize);
 			partLength[i] = partOffsetEnd[i] - partOffsetStart[i];
 		}
 
+		Arrays.fill(partDownloadLen, 0);
 		info.setPartLength(partLength);
 		info.setPartOffsetStart(partOffsetStart);
-		info.setPartDownloadLength(new long[] { 0, 0, 0 });
+		info.setPartDownloadLength(partDownloadLen);
 	}
 
 
 	protected void download() throws Exception {
-		computeAlloc();
-		for (int i = 0; i < totalThreads; i++) {
+		computeAndAlloc();
+		for (int i = 0; i < downloadThreads; i++) {
 			httpRequests[i] = buildHttpRequest(url, Http.Method.GET, true);
 			if (!isChunked) {
 				httpRequests[i].setHeader(Http.RANGE, new AbstractRequest.Range(info.getPartOffsetStart()[i],
-						info.getPartLength()[i] - info.getPartDownloadLength()[i]).toString());
+						info.getPartOffsetStart()[i] + info.getPartLength()[i] - info.getPartDownloadLength()[i]).toString());
 			}
 
 			httpRequests[i].send();
@@ -195,7 +221,6 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 										info.getPartOffsetStart()[i] + info.getPartDownloadLength()[i]);
 			httpReceivers[i].setOnFinishedListener(this);
 			httpReceivers[i].receive();
-
 		}
 
 		setState(State.downloading);
@@ -210,13 +235,16 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 
 	protected boolean checkFinished() {
-		return ++finished == totalThreads && (mLength == 0 || mLength == mDownloadedLength);
+		return ++finished == downloadThreads && (mLength == 0 || mLength == mDownloadedLength);
 	}
 
 
 	public void start() throws IOException {
 		try {
-			info.setStartTime(info.getStartTime() != 0 ? info.getStartTime() : TimeUtil.getMillisTime());
+			if (!isResumeFromInfo) {
+				info.setStartTime(TimeUtil.getMillisTime());
+				mStartTime = info.getStartTime();
+			}
 			worker.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,20 +260,14 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	public void resume() throws IOException {
 		super.resume();
-		info = new DownloadInfoRecoder(new File(path, getFileName())).read();
+		info = DownloadTaskInfo.Factory.from(new File(path, getFileName()));
 		start();
 	}
 
 
 	public void stop() throws IOException {
-		new DownloadInfoRecoder((DownloadTaskInfo) getInfo()).write();
+		DownloadTaskInfo.Factory.save((DownloadTaskInfo) getInfo());
 		super.stop();
-	}
-
-
-	@Override
-	public void onReceive(byte[] data) {
-
 	}
 
 
@@ -255,8 +277,10 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		if (checkFinished()) {
 			mFinishedTime = System.currentTimeMillis();
 			mDownloadTime = mFinishedTime - mStartTime;
-			Log.println("Download time: " + StringUtil.decimal2Str(
-					(double) TimeUtil.getMillisTimeDiffInSec(mStartTime, mFinishedTime), 2));
+			Log.println("Download time: " + StringUtil.decimal2Str((double) mDownloadTime / 1000, 2));
+			if (isChunked) {
+				info.setProgress(1.0f);
+			}
 
 			try {
 				finishDownload();
@@ -279,31 +303,28 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	}
 
 
-	@Override
-	public void onResponse(Response r) {
-	}
-
-
-	@Override
-	public void onConnected(AbstractRequest r) {
-	}
-
-
-	@Override
-	public void onSend(AbstractRequest r) {
-	}
-
-
 	public AbstractTaskInfo getInfo() {
-		long[] receivedLength = new long[totalThreads];
-		mDownloadedLength = 0;
-		for (int i = 0; i < totalThreads; i++) {
-			receivedLength[i] = httpReceivers[i].getReceivedLength();
-			mDownloadedLength += receivedLength[i];
+		long length = 0;
+		long[] receivedLength = new long[downloadThreads];
+		if (State.downloading.equals(mState)) {
+			for (int i = 0; i < downloadThreads; i++) {
+				receivedLength[i] = httpReceivers[i].getReceivedLength();
+				length += receivedLength[i];
+			}
+			info.setPartDownloadLength(receivedLength);
+			info.setDownloadLength(length);
+			if (!isChunked) {
+				info.setProgress(length == 0 || mLength == 0 ? 0 : (float) length / mLength);
+			}
 		}
 
-		info.setDownloadLength(mDownloadedLength);
 		return info;
+	}
+
+
+	@Override
+	public synchronized void onReceive(Receiver r, byte[] data) {
+		Log.println(data.length);
 	}
 
 

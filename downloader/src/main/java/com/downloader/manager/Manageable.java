@@ -24,6 +24,24 @@ public interface Manageable<T> extends Iterable<T> {
 
 
 	/**
+	 * Set position in manager list.
+	 * @param o Object will change position.
+	 * @param i position will set.
+	 * @return true success else fail.
+	 */
+	void move(T o, int i);
+
+
+	/**
+	 * Replace position in manager list.
+	 * @param o First object.
+	 * @param e Second object.
+	 * @return true success else fail.
+	 */
+	void replace(T o, T e);
+
+
+	/**
 	 * Remove a managed object by index.
 	 * @param idx Index of managed object.
 	 * @return Removed object or null on remove failed.
@@ -53,7 +71,7 @@ public interface Manageable<T> extends Iterable<T> {
 		/**
 		 * Run doFilter on given data.
 		 * @param data Given data.
-		 * @return true on filte pass, false on fail.
+		 * @return true on filter pass, false on fail.
 		 */
 		boolean doFilter(T data);
 	}

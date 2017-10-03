@@ -10,7 +10,7 @@ public class DataWriter implements DataWritable, Closeable {
 	protected OutputStream mOutputStream;
 
 
-	public DataWriter(OutputStream os) {
+	public  DataWriter(OutputStream os) {
 		mOutputStream = os;
 	}
 

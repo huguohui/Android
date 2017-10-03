@@ -90,13 +90,14 @@ public abstract class AbstractWorker implements ControlableWorker {
 	protected void doWorks() {
 		Workable workable = null;
 		try {
-			doWork(mQueue.poll());
+			doWork(workable = mQueue.poll());
 			isPause = mQueue.isEmpty();
 		} catch (Exception e) {
-
 			e.printStackTrace();
 		} finally {
-
+			if (workable != null && mOnWorkDoneListener != null) {
+				mOnWorkDoneListener.onWorkDone(this);
+			}
 		}
 	}
 
@@ -122,7 +123,8 @@ public abstract class AbstractWorker implements ControlableWorker {
 		}
 	}
 
-	interface OnExceptionListener {
+
+	public interface OnExceptionListener {
 		void onException(Exception e);
 	}
 }
