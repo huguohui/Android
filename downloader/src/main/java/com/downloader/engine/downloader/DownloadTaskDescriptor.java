@@ -55,6 +55,7 @@ public class DownloadTaskDescriptor extends AbstractDescriptor {
 
 
 	public static class Builder {
+
 		private DownloadTaskDescriptor descriptor;
 
 		public Builder() {

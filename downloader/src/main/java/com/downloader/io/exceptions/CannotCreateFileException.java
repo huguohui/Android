@@ -1,4 +1,4 @@
-package com.downloader.io;
+package com.downloader.io.exceptions;
 
 import java.io.IOException;
 

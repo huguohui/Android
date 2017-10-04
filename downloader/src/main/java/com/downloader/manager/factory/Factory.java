@@ -4,10 +4,10 @@ package com.downloader.manager.factory;
 /**
  * Factory for creating object simply.
  */
-public abstract class Factory {
+public abstract class Factory<T> {
 	/**
 	 * To creating a object.
 	 * @return A object.
 	 */
-	public abstract Object create();
+	public abstract T create();
 }

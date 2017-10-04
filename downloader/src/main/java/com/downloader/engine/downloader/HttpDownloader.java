@@ -4,9 +4,8 @@ import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.AsyncWorker;
 import com.downloader.engine.ControlableWorker;
 import com.downloader.engine.Workable;
-import com.downloader.io.AbstractFileWriter;
-import com.downloader.io.ConcurrentFileWriter;
-import com.downloader.io.FileWritable;
+import com.downloader.io.writer.ConcurrentFileWriter;
+import com.downloader.io.writer.Writer;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractRequest;
 import com.downloader.net.Receiver;
@@ -22,8 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-
-import static android.R.attr.data;
 
 /**
  * Downloads data based http protocol.
@@ -44,7 +41,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected HttpReceiver[] httpReceivers;
 
-	protected AbstractFileWriter fileWriter;
+	protected Writer fileWriter;
 
 	protected ThreadManager threadManager;
 
@@ -363,7 +360,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	}
 
 
-	public FileWritable getFileWriter() {
+	public Writer getFileWriter() {
 		return fileWriter;
 	}
 

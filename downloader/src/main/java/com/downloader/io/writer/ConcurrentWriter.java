@@ -1,11 +1,11 @@
-package com.downloader.io;
+package com.downloader.io.writer;
 
 import java.io.IOException;
 
 /**
  * Interface of file writable.
  */
-public interface ConcurrentFileWritable extends FileWritable {
+public interface ConcurrentWriter extends Writer {
 	/**
 	 * To writing data from special offset.
 	 * @param offset Special offset.

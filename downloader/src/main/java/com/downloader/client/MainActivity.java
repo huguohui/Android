@@ -5,17 +5,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -27,10 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import butterknife.BindView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     Handler handler ;
     String savePath = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
     int i = 0;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

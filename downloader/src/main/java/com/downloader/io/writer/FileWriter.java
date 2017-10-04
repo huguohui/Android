@@ -1,20 +1,22 @@
-package com.downloader.io;
+package com.downloader.io.writer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 
 /**
  * File writer.
  */
-public class FileWriter extends AbstractFileWriter {
+public class FileWriter extends AbstractWriter {
 	/** Step for writing. */
 	protected int step = 0;
 
 	/** Random access file for writer. */
 	protected RandomAccessFile mWriter;
+
+	protected File mFile;
+
+	protected long mLength;
 
 
 	/**
@@ -24,7 +26,6 @@ public class FileWriter extends AbstractFileWriter {
 	 * @param size Size of file will to creating.
 	 */
 	public FileWriter(File file, long size) throws IOException {
-		super(file, size);
 		makeFile(mFile, mLength);
 	}
 
@@ -85,10 +86,6 @@ public class FileWriter extends AbstractFileWriter {
 	 */
 	@Override
 	public void makeFile(File file, long size) throws IOException {
-		if (file == null) {
-			throw new FileNotFoundException();
-		}
-
 		mWriter = new RandomAccessFile(file, "rw");
 		if (size > 0) {
 			mWriter.setLength(size);

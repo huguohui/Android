@@ -1,10 +1,10 @@
 package com.downloader.net.http;
 
 
-import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.engine.Worker;
-import com.downloader.io.ConcurrentFileWritable;
-import com.downloader.io.FileWritable;
+import com.downloader.engine.downloader.HttpDownloader;
+import com.downloader.io.writer.ConcurrentWriter;
+import com.downloader.io.writer.Writer;
 import com.downloader.net.AbstractReceiver;
 import com.downloader.net.Receiver;
 import com.downloader.net.SocketReceiver;
@@ -36,7 +36,7 @@ public class HttpReceiver extends SocketReceiver {
 
 	protected HttpResponse httpResponse;
 
-	protected ConcurrentFileWritable fileWriter;
+	protected ConcurrentWriter fileWriter;
 
 	protected long offsetDataBegin = -1;
 
@@ -56,14 +56,14 @@ public class HttpReceiver extends SocketReceiver {
 	 *  @param d A {@link HttpDownloader}.
 	 * @throws IOException If exception.
 	 */
-	public HttpReceiver(HttpResponse d, FileWritable w, Worker worker) throws IOException {
+	public HttpReceiver(HttpResponse d, Writer w, Worker worker) throws IOException {
 		this(d, w, worker, -1);
 	}
 
 
-	public HttpReceiver(HttpResponse d, FileWritable w, Worker worker, long offsetDataBegin) throws IOException {
+	public HttpReceiver(HttpResponse d, Writer w, Worker worker, long offsetDataBegin) throws IOException {
 		super(d.getInputStream(), w, worker);
-		fileWriter = (ConcurrentFileWritable) w;
+		fileWriter = (ConcurrentWriter) w;
 		httpResponse = d;
 		this.offsetDataBegin = offsetDataBegin;
 		isChunked = d.isChunked();
@@ -198,13 +198,13 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
-	public FileWritable getFileWriter() {
+	public Writer getFileWriter() {
 		return fileWriter;
 	}
 
 
-	public HttpReceiver setFileWriter(FileWritable fileWriter) {
-		this.fileWriter = (ConcurrentFileWritable) fileWriter;
+	public HttpReceiver setFileWriter(Writer fileWriter) {
+		this.fileWriter = (ConcurrentWriter) fileWriter;
 		return this;
 	}
 }

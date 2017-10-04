@@ -1,4 +1,4 @@
-package com.downloader.io;
+package com.downloader.io.writer;
 
 
 import java.io.Closeable;

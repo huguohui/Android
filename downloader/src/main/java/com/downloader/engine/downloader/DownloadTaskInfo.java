@@ -2,8 +2,8 @@ package com.downloader.engine.downloader;
 
 import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.FileFormatException;
-import com.downloader.io.DataReader;
-import com.downloader.io.DataWriter;
+import com.downloader.io.writer.DataReader;
+import com.downloader.io.writer.DataWriter;
 
 import java.io.File;
 import java.io.FileInputStream;

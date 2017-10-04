@@ -6,7 +6,6 @@ package com.downloader.engine.downloader;
 public abstract class AbstractDescriptor {
 	protected String name;
 
-
 	public String getName() {
 		return name;
 	}

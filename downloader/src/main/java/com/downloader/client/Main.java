@@ -5,13 +5,12 @@ import com.downloader.engine.downloader.DownloadTask;
 import com.downloader.engine.downloader.DownloadTaskDescriptor;
 import com.downloader.engine.downloader.HttpDownloadTask;
 import com.downloader.engine.downloader.HttpDownloader;
-import com.downloader.io.ConcurrentFileWriter;
+import com.downloader.io.writer.ConcurrentFileWriter;
 import com.downloader.manager.DownloadTaskManager;
 import com.downloader.manager.ThreadManager;
 import com.downloader.manager.factory.HttpDownloadTaskFactory;
 import com.downloader.net.http.Http;
 import com.downloader.net.http.HttpReceiver;
-import com.downloader.util.CollectionUtil;
 import com.downloader.util.Log;
 
 import java.io.File;
@@ -22,8 +21,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class Main {
 	static long length = 0;

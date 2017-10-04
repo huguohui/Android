@@ -1,45 +1,16 @@
-package com.downloader.io;
+package com.downloader.io.writer;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * File writer.
  */
-public abstract class AbstractFileWriter implements FileWritable, Closeable {
-	/** The file for writing. */
-	protected File mFile;
+public abstract class AbstractWriter implements Writer {
 
 	/** Offset of file writer. */
 	protected long mOffset = 0;
-
-	/** Size of file. */
-	protected long mLength = 0;
-
-
-	/**
-	 * Create a file with special name and size.
-	 * @param file File will to creating.
-	 * @param size Size of file will to creating.
-	 */
-	public AbstractFileWriter(File file, long size) throws IOException {
-		if (file == null)
-			throw new NullPointerException();
-
-		mFile = file;
-		mLength = Math.max(0, size);
-		makeFile(file, mLength);
-	}
-
-
-	/**
-	 * Create a file by file.
-	 * @param file File will to creating.
-	 */
-	public AbstractFileWriter(File file) throws IOException {
-		this(file, 0L);
-	}
 
 
 	/**
@@ -88,15 +59,4 @@ public abstract class AbstractFileWriter implements FileWritable, Closeable {
 	 */
 	@Override
 	public abstract void write(long offset, byte[] data, int start, int end) throws IOException;
-
-
-	/**
-	 * Make a file with special name and size.
-	 * @param file File object.
-	 * @param size File size.
-	 */
-	public abstract void makeFile(File file, long size) throws IOException;
-
-
-	public abstract void flush() throws IOException;
 }

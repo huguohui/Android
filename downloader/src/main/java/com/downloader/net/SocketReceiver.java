@@ -1,7 +1,7 @@
 package com.downloader.net;
 
 import com.downloader.engine.Worker;
-import com.downloader.io.FileWritable;
+import com.downloader.io.writer.Writer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +21,7 @@ public class SocketReceiver extends AbstractReceiver {
 	 *
 	 * @param is A {@link InputStream}.
 	 */
-	public SocketReceiver(InputStream is, FileWritable w, Worker worker) {
+	public SocketReceiver(InputStream is, Writer w, Worker worker) {
 		super(is, w, worker);
 	}
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Abstracts for manager of download task.
  */
-public abstract class AbstractFileManager extends AbstractManager<File>{
+public abstract class AbstractFileManager extends AbstractManager<File> {
 	/**
 	 * Create a download task by task descriptor.
 	 * @param desc Task descriptor.
