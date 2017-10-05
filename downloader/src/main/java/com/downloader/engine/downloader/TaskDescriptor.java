@@ -1,9 +1,10 @@
 package com.downloader.engine.downloader;
 
 /**
- * Abstract descriptor for some thing.
+ * @since 2017/10/5.
  */
-public abstract class AbstractDescriptor {
+public abstract class TaskDescriptor extends Descriptor {
+
 	protected String name;
 
 	public String getName() {
@@ -11,7 +12,7 @@ public abstract class AbstractDescriptor {
 	}
 
 
-	public AbstractDescriptor setName(String name) {
+	public Descriptor setName(String name) {
 		this.name = name;
 		return this;
 	}

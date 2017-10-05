@@ -5,8 +5,7 @@ import com.downloader.engine.Worker;
 import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.io.writer.ConcurrentWriter;
 import com.downloader.io.writer.Writer;
-import com.downloader.net.AbstractReceiver;
-import com.downloader.net.Receiver;
+import com.downloader.net.AbstractSocketReceiver;
 import com.downloader.net.SocketReceiver;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.io.InputStream;
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
-public class HttpReceiver extends SocketReceiver {
+public class HttpReceiver extends AbstractSocketReceiver {
 	/** Chunked of key value for http header Transfer-Encoding. */
 	public final static String CHUNKED = "chunked";
 
@@ -111,9 +110,9 @@ public class HttpReceiver extends SocketReceiver {
 	protected int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
-		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
+		byte[] buff = new byte[AbstractSocketReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
 
-		while(Receiver.END_OF_STREAM != (aByte = (byte)is.read())) {
+		while(SocketReceiver.END_OF_STREAM != (aByte = (byte)is.read())) {
 			if (aByte == crlf[matchCount]) {
 				if (++matchCount == 2) {
 					if (byteCount != 0)
@@ -135,6 +134,7 @@ public class HttpReceiver extends SocketReceiver {
 
 
 	protected void writeData(byte[] data) throws IOException {
+		if (data == null) return;
 		if (offsetDataBegin != -1) {
 			fileWriter.write(offsetDataBegin, mReceivedLength - data.length, data);
 			return;
@@ -193,7 +193,7 @@ public class HttpReceiver extends SocketReceiver {
 	}
 
 
-	public synchronized void Stop() throws IOException {
+	public synchronized void stop()  {
 		isStop = true;
 	}
 

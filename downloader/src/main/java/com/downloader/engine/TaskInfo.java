@@ -3,7 +3,7 @@ package com.downloader.engine;
 /**
  * Information for task.
  */
-public abstract class AbstractTaskInfo {
+public abstract class TaskInfo {
 	/** Name of task. */
 	protected String name;
 
@@ -21,7 +21,7 @@ public abstract class AbstractTaskInfo {
 	}
 
 
-	public AbstractTaskInfo setProgress(float progress) {
+	public TaskInfo setProgress(float progress) {
 		this.progress = progress;
 		return this;
 	}

@@ -12,6 +12,7 @@ final public class Log
 	public static String LOG_FILE_PATH = "/sdcard/" + LOG_FILE_NAME;
 
 	public final synchronized static void e(Throwable e) {
+		println(e.toString());
 /*
         FileWriter fw = null;
 		try {

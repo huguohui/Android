@@ -1,6 +1,10 @@
 package com.downloader.net.http;
 
-import com.downloader.net.Response;
+import com.downloader.net.SocketEntity;
+import com.downloader.net.SocketHeader;
+import com.downloader.net.SocketResponse;
+import com.downloader.net.SocketRequest;
+import com.downloader.util.Log;
 import com.downloader.util.StringUtil;
 import com.downloader.util.TimeUtil;
 import com.downloader.util.UrlUtil;
@@ -16,17 +20,17 @@ import java.util.Locale;
 /**
  * Http response.
  */
-public class HttpResponse extends Response {
+public class HttpResponse extends SocketResponse {
 
-	protected HttpRequest mHttpRequest;
+	protected HttpRequest httpRequest;
 
-	protected InputStream mInputStream;
+	protected InputStream inputStream;
 
-	protected Socket mSocket;
+	protected Socket socket;
 
-	protected HttpHeader mHeader;
+	protected SocketHeader header;
 
-	protected long mContentLength;
+	protected long contentLength;
 
 	protected String mTransferEncoding;
 
@@ -56,42 +60,37 @@ public class HttpResponse extends Response {
 	 *
 	 * @param r Request object.
 	 */
-	public HttpResponse(HttpRequest r) throws IOException, RedirectException {
+	public HttpResponse(SocketRequest r) throws IOException {
 		super(r);
-		mHttpRequest = r;
-
-		if (r.isConnect()) {
-			if (!r.isSend()) {
+		httpRequest = (HttpRequest) r;
+		if (r.connected()) {
+			if (!r.sent()) {
 				throw new ConnectException();
 			}
 
-			mSocket = r.getSocket();
-			mInputStream = mSocket.getInputStream();
-			mHeader = new HttpHeader();
-			mHeader.setContent(mInputStream);
-			mUrl = mHttpRequest.getUrl();
+			socket = r.socket();
+			inputStream = socket.getInputStream();
+			header = new HttpHeader(inputStream);
+			mUrl = httpRequest.getUrl();
+			entity = new HttpEntity(inputStream);
 			parseResponse();
 			checkRedirect();
 		}
 	}
 
 
-	public HttpHeader info() {
-		return mHeader;
-	}
-
-
 	protected void parseResponse() throws IOException {
-		mContentLength = StringUtil.str2Long(mHeader.get(Http.CONTENT_LENGTH), 0L);
-		mTransferEncoding = mHeader.get(Http.TRANSFER_ENCODING);
-		mFileName = UrlUtil.decode(UrlUtil.getFilename(mHttpRequest.getUrl()), "UTF-8");
-		mContentType = mHeader.get(Http.CONTENT_TYPE);
-		mHttpVersion = Float.parseFloat(mHeader.getVersion());
-		mCookies = HttpCookie.formString(mHeader.get(Http.SET_COOKIE));
-		mDate = TimeUtil.str2Date(mHeader.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
-		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(mHeader.get(Http.CONNECTION));
-		isSupportRange = mHeader.get(Http.CONTENT_RANGE) != null;
-		isChunked = Http.CHUNKED.equalsIgnoreCase(mHeader.get(Http.TRANSFER_ENCODING));
+		HttpHeader header = (HttpHeader) this.header;
+		contentLength = StringUtil.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
+		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
+		mFileName = UrlUtil.decode(UrlUtil.filename(httpRequest.getUrl()), "UTF-8");
+		mContentType = header.get(Http.CONTENT_TYPE);
+		mHttpVersion = Float.parseFloat(header.getVersion());
+		mCookies = HttpCookie.formString(header.get(Http.SET_COOKIE));
+		mDate = TimeUtil.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
+		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(header.get(Http.CONNECTION));
+		isSupportRange = header.get(Http.CONTENT_RANGE) != null;
+		isChunked = Http.CHUNKED.equalsIgnoreCase(header.get(Http.TRANSFER_ENCODING));
 		parseContentDisposition();
 	}
 	
@@ -101,7 +100,8 @@ public class HttpResponse extends Response {
 		String 	disp = "", type = "";
 		String[] arr = null;
 
-		if ((disp = getHeader().get(Http.CONTENT_DISPOSITION)) != null && disp.trim().length() != 0) {
+		HttpHeader header = (HttpHeader) this.header;
+		if ((disp = header.get(Http.CONTENT_DISPOSITION)) != null && disp.trim().length() != 0) {
 			if (disp.contains(";")) {
 				arr = disp.split(";");
 				mContentType = arr[0];
@@ -117,12 +117,13 @@ public class HttpResponse extends Response {
 
 	protected void checkRedirect() throws IOException, RedirectException {
 		String newUrl = "";
-		if ((newUrl = mHeader.get(Http.LOCATION)) != null) {
+		HttpHeader header = (HttpHeader) this.header;
+		if ((newUrl = header.get(Http.LOCATION)) != null) {
 			if (redirectTimes-- <= 0) {
 				throw new RedirectException();
 			}
-			mHttpRequest.setUrl(UrlUtil.getFullUrl(mUrl, newUrl));
-			mHttpRequest.reopen();
+			httpRequest.setUrl(UrlUtil.fullUrl(mUrl, newUrl));
+			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();
 		}
@@ -132,28 +133,33 @@ public class HttpResponse extends Response {
 
 	@Override
 	public void close() throws IOException {
-		mInputStream.close();
-		mHttpRequest.close();
+		inputStream.close();
+		httpRequest.close();
 	}
 
 
 	public String getHeader(String key) {
-		return mHeader.get(key);
+		return ((HttpHeader) header).get(key);
 	}
 
 
 	public InputStream getInputStream() {
-		return mInputStream;
+		return inputStream;
 	}
 
 
-	public HttpHeader getHeader() {
-		return mHeader;
+	public SocketHeader getHeader() {
+		return header;
+	}
+
+
+	public SocketEntity getEntity() {
+		return entity;
 	}
 
 
 	public long getContentLength() {
-		return mContentLength;
+		return contentLength;
 	}
 
 

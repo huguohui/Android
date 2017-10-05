@@ -23,7 +23,7 @@ public abstract class Task implements Controlable, Workable {
 	 * Get information of current task.
 	 * @return Information of current task.
 	 */
-	public abstract AbstractTaskInfo info();
+	public abstract TaskInfo info();
 
 
 	public State getState() {

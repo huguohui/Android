@@ -3,7 +3,7 @@ package com.downloader.engine;
 /**
  * Worker is running on child thread for do somthing.
  */
-public interface Worker extends Runnable {
+public interface Worker extends Runnable, Controlable {
 	/**
 	 * Add a workable to working.
 	 * @param workable For working.

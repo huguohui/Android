@@ -16,7 +16,7 @@ public abstract class TimeUtil {
 	 * Get current time in millis senconds.
 	 * @return Current time in millis seconds.
 	 */
-	public static long getMillisTime() {
+	public static long millisTime() {
 		return System.currentTimeMillis();
 	}
 
@@ -27,7 +27,7 @@ public abstract class TimeUtil {
 	 * @param te Second time.
 	 * @return Time in second of difference in two millis time.
 	 */
-	public static float getMillisTimeDiffInSec(long ts, long te) {
+	public static float millisTimeDiffInSec(long ts, long te) {
 		return te - ts == 0L ? 0F : ((float) (te - ts)) / 1000F;
 	}
 

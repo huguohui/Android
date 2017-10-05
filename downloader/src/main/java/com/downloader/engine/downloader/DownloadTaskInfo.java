@@ -1,7 +1,7 @@
 package com.downloader.engine.downloader;
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.engine.FileFormatException;
+import com.downloader.engine.TaskInfo;
+import com.downloader.io.exceptions.FileFormatException;
 import com.downloader.io.writer.DataReader;
 import com.downloader.io.writer.DataWriter;
 
@@ -15,7 +15,7 @@ import java.util.Arrays;
 /**
  * Information for download task.
  */
-public class DownloadTaskInfo extends AbstractTaskInfo {
+public class DownloadTaskInfo extends TaskInfo {
 	protected final static byte[] FILE_FORMAT_INFO = {'D', 'T', 'I'};
 
 	public final static int MAX_NAME_LEN = 0xff;
@@ -181,7 +181,7 @@ public class DownloadTaskInfo extends AbstractTaskInfo {
 
 		public static void save(DownloadTaskInfo _info) throws IOException {
 			info = _info;
-			dataWriter = new DataWriter(new FileOutputStream(new File(info.getPath(), info.getName())));
+			dataWriter = new DataWriter(new File(info.getPath(), info.getName()));
 			dataWriter.write(DownloadTaskInfo.FILE_FORMAT_INFO);
 			dataWriter.writeLong(info.getLength());
 			dataWriter.writeLong(info.getDownloadLength());

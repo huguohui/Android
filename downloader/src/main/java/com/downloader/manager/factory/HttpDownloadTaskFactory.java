@@ -1,7 +1,7 @@
 package com.downloader.manager.factory;
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.engine.downloader.AbstractDescriptor;
+import com.downloader.engine.TaskInfo;
+import com.downloader.engine.downloader.Descriptor;
 import com.downloader.engine.downloader.DownloadTask;
 import com.downloader.engine.downloader.DownloadTaskDescriptor;
 import com.downloader.engine.downloader.DownloadTaskInfo;
@@ -24,13 +24,13 @@ public class HttpDownloadTaskFactory extends DownloadTaskFactory {
 
 
 	@Override
-	public DownloadTask create(AbstractDescriptor d) {
+	public DownloadTask create(Descriptor d) {
 		return new HttpDownloadTask((DownloadTaskDescriptor) d);
 	}
 
 
 	@Override
-	public DownloadTask create(AbstractTaskInfo d) {
+	public DownloadTask create(TaskInfo d) {
 		return new HttpDownloadTask((DownloadTaskInfo) d);
 	}
 }

@@ -7,6 +7,7 @@ import com.downloader.util.TimeUtil;
 /**
  */
 public class AsyncWorker extends AbstractWorker {
+
 	protected ThreadManager threadManager;
 
 	protected long interval = 0;

@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Abstract
  */
-public abstract class AbstractWorker implements ControlableWorker {
+public abstract class AbstractWorker implements Worker {
 	/** Queue of workables. */
 	protected Queue<Workable> mQueue = new ConcurrentLinkedQueue<>();
 

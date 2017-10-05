@@ -1,13 +1,12 @@
 package com.downloader.engine.downloader;
 
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.engine.Controlable;
+import com.downloader.engine.TaskInfo;
 import com.downloader.util.TimeUtil;
 
 import java.io.IOException;
 
-public abstract class AbstractDownloader implements Controlable {
+public abstract class AbstractDownloader implements Downloader {
 	/** The length of data. */
 	protected long mLength = -1;
 
@@ -32,19 +31,13 @@ public abstract class AbstractDownloader implements Controlable {
 
 	protected int downloadThreads = 1;
 
-	protected AbstractTaskInfo info;
+	protected TaskInfo info;
 
 	protected String path = "";
 
 	protected OnDownloadFinishListener onDownloadFinishListener;
 
 	protected OnDownloadStartListener onDownloadListener;
-
-
-	/** The download states. */
-	public enum State {
-		unstart, initing, preparing, downloading, paused, stoped, finished, exceptional
-	}
 
 
 	public AbstractDownloader() {
@@ -57,7 +50,7 @@ public abstract class AbstractDownloader implements Controlable {
 	 * @throws IOException
 	 */
 	public synchronized void start() throws Exception {
-		mStartTime = TimeUtil.getMillisTime();
+		mStartTime = TimeUtil.millisTime();
 		setState(State.downloading);
 	}
 
@@ -156,7 +149,7 @@ public abstract class AbstractDownloader implements Controlable {
 	}
 
 
-	public AbstractTaskInfo getInfo() {
+	public TaskInfo getInfo() {
 		return info;
 	}
 
@@ -179,14 +172,5 @@ public abstract class AbstractDownloader implements Controlable {
 
 	public OnDownloadStartListener getOnDownloadListener() {
 		return onDownloadListener;
-	}
-
-
-	public interface OnDownloadStartListener {
-		void onDownloadStart(AbstractDownloader d);
-	}
-
-	public interface OnDownloadFinishListener {
-		void onDownloadFinish(AbstractDownloader d);
 	}
 }

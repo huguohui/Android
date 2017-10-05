@@ -1,12 +1,17 @@
 package com.downloader.net.http;
 
 
-import com.downloader.net.SocketRequest;
+import com.downloader.net.AbstractSocketRequest;
+import com.downloader.net.SocketHeader;
+import com.downloader.net.SocketResponse;
 import com.downloader.net.http.Http.Method;
+import com.downloader.util.Log;
 import com.downloader.util.UrlUtil;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 
 /**
@@ -14,7 +19,7 @@ import java.net.URL;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpRequest extends SocketRequest {
+public class HttpRequest extends AbstractSocketRequest {
 	/** Accept field. */
 	protected final String ACCEPT = "*/*";
 
@@ -45,12 +50,11 @@ public class HttpRequest extends SocketRequest {
      * @param method Special method of requesting.
      */
 	public HttpRequest(URL url, Method method) throws IOException {
-		super(UrlUtil.getSocketAddressByUrl(url));
+		super(UrlUtil.socketAddressByUrl(url));
 		if (method != null)
 			this.mMethod = method;
 
 		mUrl = url;
-		setHeader(getDefaultHeader());
 	}
 
 	
@@ -67,7 +71,6 @@ public class HttpRequest extends SocketRequest {
 	 * Default constructor.
 	 */
 	public HttpRequest() {
-		setHeader(getDefaultHeader());
 	}
 
 
@@ -83,8 +86,8 @@ public class HttpRequest extends SocketRequest {
 			  .set("User-Agent", USER_AGENT).set("Connecting", CONNECTING);
 
 		if (mUrl != null) {
-			header.setUrl(UrlUtil.getUrlFullPath(mUrl));
-			header.set("Host", UrlUtil.getDomainWithPort(mUrl));
+			header.setUrl(UrlUtil.urlFullPathParam(mUrl));
+			header.set("Host", UrlUtil.domainWithPort(mUrl));
 		}
 
 		return header;
@@ -98,8 +101,15 @@ public class HttpRequest extends SocketRequest {
     public synchronized void send() throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		bos.write(getHeader().toString().getBytes());
-		if (getBody() != null && getBody().getContent() != null) {
-			bos.write(getBody().getContent());
+		HttpEntity entity = (HttpEntity) getEntity();
+		if (entity != null && entity.getContent() != null) {
+			if (entity.getType() == HttpEntity.T_TEXT) {
+				bos.write(entity.getContent());
+			}
+			else {
+				entity.getContent(new BufferedOutputStream(mOutputStream));
+			}
+
 		}
 
 		send(bos.toByteArray());
@@ -119,6 +129,12 @@ public class HttpRequest extends SocketRequest {
 	}
 
 
+	@Override
+	public Socket socket() throws IOException {
+		return mSocket;
+	}
+
+
 	protected void receiveResponse() throws IOException {
 		mHttpResponse = new HttpResponse(this);
 		if (mOnResponseListener != null) {
@@ -134,7 +150,8 @@ public class HttpRequest extends SocketRequest {
 	public void open(URL url, Method method) throws IOException {
 		setUrl(url);
 		setMethod(method == null ? Method.GET : method);
-		open(UrlUtil.getSocketAddressByUrl(url));
+		setHeader(getDefaultHeader());
+		open(UrlUtil.socketAddressByUrl(url));
 	}
 	
 	
@@ -143,7 +160,7 @@ public class HttpRequest extends SocketRequest {
 	 * @throws IOException If exception.
 	 */
 	public void open(URL url) throws IOException {
-		open(url, null);
+		open(url, mMethod);
 	}
 
 
@@ -193,12 +210,10 @@ public class HttpRequest extends SocketRequest {
 			throw new NullPointerException("The special URL can't null!");
 
 		mUrl = url;
-		((HttpHeader)getHeader()).setUrl(UrlUtil.getUrlFullPath(mUrl));
-		getHeader().set("Host", UrlUtil.getDomainWithPort(mUrl));
 	}
 
 
-	public HttpResponse response() throws IOException {
+	public SocketResponse response() throws IOException {
 		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
 	}
 }

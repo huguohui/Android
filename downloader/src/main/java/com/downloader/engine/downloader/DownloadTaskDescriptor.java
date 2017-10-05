@@ -5,7 +5,7 @@ import java.net.URL;
 /**
  * Descriptor for downloading task.
  */
-public class DownloadTaskDescriptor extends AbstractDescriptor {
+public class DownloadTaskDescriptor extends Descriptor {
 	/** URL for downloading. */
 	protected URL mUrl;
 

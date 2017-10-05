@@ -26,6 +26,8 @@ public class FileWriter extends AbstractWriter {
 	 * @param size Size of file will to creating.
 	 */
 	public FileWriter(File file, long size) throws IOException {
+		mFile = file;
+		mLength = size;
 		makeFile(mFile, mLength);
 	}
 

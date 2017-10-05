@@ -1,7 +1,7 @@
 package com.downloader.manager.factory;
 
-import com.downloader.engine.AbstractTaskInfo;
-import com.downloader.engine.downloader.AbstractDescriptor;
+import com.downloader.engine.TaskInfo;
+import com.downloader.engine.downloader.Descriptor;
 import com.downloader.engine.downloader.DownloadTask;
 
 /**
@@ -17,8 +17,8 @@ public abstract class DownloadTaskFactory extends TaskFactory {
 	public abstract DownloadTask create();
 
 
-	public abstract DownloadTask create(AbstractDescriptor d);
+	public abstract DownloadTask create(Descriptor d);
 
 
-	public abstract DownloadTask create(AbstractTaskInfo d);
+	public abstract DownloadTask create(TaskInfo d);
 }

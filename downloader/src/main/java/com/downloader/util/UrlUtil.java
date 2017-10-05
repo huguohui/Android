@@ -23,12 +23,12 @@ final public class UrlUtil {
 	 * @param url Given url.
 	 * @return Top domain of url.
 	 */
-	public static String getTopDomain(URL url) {
+	public static String topDomain(URL url) {
 		if (url == null)
 			return null;
 
 		String host = url.getHost();
-		return "www." + host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
+		return /*"www." +*/ host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
 	}
 
 
@@ -38,7 +38,7 @@ final public class UrlUtil {
 	 * @return IP address of domain.
 	 * @throws UnknownHostException Can't parse domain.
 	 */
-	public static InetAddress getInetAddressByDomain(String domain) throws UnknownHostException {
+	public static InetAddress inetAddressByDomain(String domain) throws UnknownHostException {
 		return InetAddress.getByName(domain);
 	}
 
@@ -49,8 +49,8 @@ final public class UrlUtil {
 	 * @return Socket address.
 	 * @throws UnknownHostException
 	 */
-	public static InetSocketAddress getSocketAddressByUrl(URL url) throws UnknownHostException {
-		return new InetSocketAddress(getInetAddressByDomain(url.getHost()),
+	public static InetSocketAddress socketAddressByUrl(URL url) throws UnknownHostException {
+		return new InetSocketAddress(inetAddressByDomain(url.getHost()),
 				url.getPort() == -1 ? 80 : url.getPort());
 	}
 
@@ -60,7 +60,7 @@ final public class UrlUtil {
 	 * @param url Given url.
 	 * @return URL path and query string;
 	 */
-	public static String getUrlFullPath(URL url) {
+	public static String urlFullPathParam(URL url) {
 		if (url == null) return null;
 		return (url.getPath() == null || url.getPath().equals("") ?
 				"/" + url.getPath() : url.getPath())
@@ -74,7 +74,7 @@ final public class UrlUtil {
 	 * @param url Given url.
 	 * @return domain with port.
 	 */
-	public static String getDomainWithPort(URL url) {
+	public static String domainWithPort(URL url) {
 		if (url == null) return null;
 		return url.getHost() + ":" + (url.getPort() != -1 ? url.getPort() : Http.DEFAULT_PORT);
 	}
@@ -85,7 +85,7 @@ final public class UrlUtil {
 	 * @param url Given url.
 	 * @return Filename of url.
 	 */
-	public static String getFilename(URL url) {
+	public static String filename(URL url) {
 		if (url == null) return null;
 		String file = url.getFile();
 		String[] path = file.split("/");
@@ -110,9 +110,9 @@ final public class UrlUtil {
 	 * @param url URL object.
 	 * @return String url.	
 	 */
-	public static String getUrl(URL url) {
+	public static String toString(URL url) {
 		return url.getProtocol() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort())
-				+ getUrlFullPath(url);
+				+ urlFullPathParam(url);
 	}
 	
 	
@@ -121,7 +121,7 @@ final public class UrlUtil {
 	 * @param url URL object.
 	 * @reutrn String url without path.
 	 */
-	public static String getUrlWithoutPath(URL url) {
+	public static String urlWithoutPath(URL url) {
 		return url.getProtocol() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort());
 	}
 	
@@ -133,13 +133,13 @@ final public class UrlUtil {
 	 * @return 一个完整的URL。
 	 * @throws MalformedURLException 
 	 */
-	public static URL getFullUrl(URL baseUrl, String url) throws MalformedURLException {
+	public static URL fullUrl(URL baseUrl, String url) throws MalformedURLException {
 		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
 		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
 		if (pattern.matcher(url).matches())
 			return new URL(url);
 		
-		String baseUrlStr = getUrlWithoutPath(baseUrl), newPath = "", newUrl = "";
+		String baseUrlStr = urlWithoutPath(baseUrl), newPath = "", newUrl = "";
 		if (url.startsWith("/")) {
 			newUrl = baseUrlStr + url;
 		}
@@ -189,6 +189,6 @@ final public class UrlUtil {
 */
 
 
-		System.out.println(getFullUrl(new URL("http://baidu.com/dfa/a"), "../"));
+		System.out.println(fullUrl(new URL("http://baidu.com/dfa/a"), "../"));
 	}
 }

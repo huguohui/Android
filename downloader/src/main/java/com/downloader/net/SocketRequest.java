@@ -1,141 +1,127 @@
 package com.downloader.net;
 
-import com.downloader.util.TimeUtil;
-
+import java.io.Closeable;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
 /**
- * Socket request.
+ * Sender can send something to somewhere.
  */
-public class SocketRequest extends AbstractRequest {
+public interface SocketRequest extends Closeable {
 	/**
-	 * Constructor a request by socket address.
-	 * @param  socketAddress The requests address.
+	 * Open a request by speical internet address.
+	 * @param address Specials internet address.
 	 */
-	public SocketRequest(SocketAddress socketAddress) throws IOException {
-		setSocketAddress(socketAddress);
-		open(socketAddress, mTimeout);
-	}
+	void open(SocketAddress address) throws IOException;
 
 
 	/**
-	 * Empty constructor.
+	 * Open a request with a timeout by speical socket address.
+	 * @param address Specials socket address.
+	 * @param timeout Timeout in milliseconds.
 	 */
-	public SocketRequest() {
-	}
+	void open(SocketAddress address, int timeout) throws IOException;
 
 
-
-	/**
-	 * Open a connection and prepare to send request.
-	 *
-	 * @return If connect success, return true else false.
-	 */
-	public void open(SocketAddress address) throws IOException {
-		open(address, mTimeout);
-	}
+	void open() throws IOException;
 
 
-	/**
-	 * Open a connection with timeout and prepare to send request.
-	 * @param address The {@link SocketAddress} to describing a address.
-	 * @param timeout The timeout time of connection.
-	 */
-	public void open(SocketAddress address, int timeout)
-			throws IOException {
-		if (!mState.equals(State.closed) && !mState.equals(State.ready)) {
-			throw new ConnectException("Only open connection after request " +
-					"closed or requester don't connected!");
-		}
-
-		mStartTime = System.currentTimeMillis();
-		mSocket = new Socket();
-		mState = State.connecting;
-		mSocket.connect(address, timeout);
-		mState = State.connected;
-		isConnect = true;
-		mConnectionTime = TimeUtil.getMillisTime() - mStartTime;
-		mOutputStream = mSocket.getOutputStream();
-		if (mOnConnectedListener != null)
-			mOnConnectedListener.onConnected(this);
-	}
+	void reopen() throws IOException;
 
 
-	/**
-	 * Close connection.
-	 */
-	public void close() throws IOException {
-		mState = State.closed;
-		if (mSocket.isClosed() || !mSocket.isConnected())
-			throw new ConnectException("The socket don't connected!");
-
-		mSocket.shutdownInput();
-		mSocket.shutdownOutput();
-		mSocket.close();
-		isConnect = false;
-		isClose = true;
-	}
-
-
-	/**
-	 * Get response of this request.
-	 */
-	@Override
-	public Response response() throws Exception {
-		return null;
-	}
-
-
-	/**
-	 * Ensure connectioned.
-	 */
-	protected void ensureConnected() throws ConnectException {
-		if (!isConnect)
-			throw new ConnectException("Connection abort!");
-
-		if (isClose)
-			throw new ConnectException("Connection closed!");
-
-		if (mOutputStream == null)
-			throw new ConnectException("The OutputStream or data is null!");
-	}
+	void reopen(SocketAddress address) throws IOException;
 
 
 	/**
 	 * Request data to somewhere.
 	 *
+	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
-	@Override
-	public void send() throws IOException {
-		send(mData);
-	}
+	void send() throws IOException;
 
 
 	/**
 	 * Request data to somewhere.
 	 *
 	 * @param data The data.
+	 * @return If sent return true, else false.
 	 * @throws IOException If exception.
 	 */
-	@Override
-	public void send(byte[] data) throws IOException {
-		ensureConnected();
-		mOutputStream.write(data);
-		isSend = true;
-		if (mOnSendListener != null)
-			mOnSendListener.onSend(this);
+	void send(byte[] data) throws IOException;
+
+
+	Socket socket() throws IOException;
+
+
+	boolean connected();
+
+
+	boolean sent();
+
+
+	boolean closed();
+
+
+	/** Get response of this request. */
+	SocketResponse response() throws IOException;
+
+
+	/**
+	 * A range of data.
+	 */
+	final class Range {
+		/** Start offset. */
+		public long start;
+
+		/** End offset. */
+		public long end;
+
+		public Range(long s, long e) {
+			if (e > 0 && s > e || e == 0)
+				throw new IllegalArgumentException("The end must >= start and end must != 0!");
+
+			this.start = s;
+			this.end = e;
+		}
+
+		public Range(long s) {
+			this(s, -1);
+		}
+
+
+		public long getRange() {
+			return -~end - start;
+		}
+
+
+		public String toString() {
+			return end > 0 ? String.format("bytes=%d-%d", start, end)
+					: String.format("bytes=%d-", start);
+		}
+	}
+
+
+	interface RequestBuilder {
+		SocketRequest build();
 	}
 
 
 	/**
-	 * Reopen the request with last data.
+	 * AbstractSocketRequest state listener.
 	 */
-	@Override
-	public void reopen() throws IOException {
+	public interface OnConnectedListener {
+		void onConnected(AbstractSocketRequest r);
+	}
 
+
+	public interface OnSendListener {
+		void onSend(AbstractSocketRequest r);
+	}
+
+
+	public interface OnResponseListener {
+		void onResponse(SocketResponse r);
 	}
 }

@@ -1,15 +1,17 @@
 package com.downloader.net.http;
 
 
+import com.downloader.engine.Parser;
+import com.downloader.net.SocketHeader;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.downloader.net.AbstractHeader;
-import com.downloader.engine.Parser;
 
 /**
  * Describe a HTTP header. This header maybe 
@@ -18,7 +20,7 @@ import com.downloader.engine.Parser;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpHeader extends AbstractHeader {
+public class HttpHeader extends SocketHeader {
 	/** Http method of requesting. */
 	protected Http.Method mMethod;
 
@@ -37,6 +39,11 @@ public class HttpHeader extends AbstractHeader {
 	/** The parser of http header. */
 	protected HttpHeaderParser mParser;
 
+	/** The data of header. */
+	protected Map<String, String> mContent = new HashMap<>();
+
+	protected HttpCookie[] cookies;
+
 
 	/**
 	 * Default constructor.
@@ -45,34 +52,12 @@ public class HttpHeader extends AbstractHeader {
 
 
 	/**
-	 * Construct a header by string.
-	 *
-	 * @param header A string inArray header data.
-	 * @throws IOException 
-	 * @throws NullPointerException 
-	 */
-	public HttpHeader(String header) throws Exception {
-		super(header);
-	}
-
-
-	/**
 	 * Construct a header by hash map.
 	 *
 	 * @param header A string inArray header data.
 	 */
-	public HttpHeader(Map<String, String> header) {
-		super(header);
-	}
-
-
-	/**
-	 * Construct a header by hash map.
-	 *
-	 * @param header A string inArray header data.
-	 */
-	public HttpHeader(InputStream header) throws Exception {
-		super(header);
+	public HttpHeader(InputStream header) throws IOException {
+		parseContent(header);
 	}
 	
 	
@@ -82,89 +67,112 @@ public class HttpHeader extends AbstractHeader {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public HttpHeader(HttpHeader header) throws Exception {
-		super(header);
+	public HttpHeader(HttpHeader header) throws IOException {
+		parseContent(header);
 	}
-
 
 
 	/**
-	 * Construct a header by hash map.
-	 *
-	 * @param header A string inArray header data.
+	 * Construct a header by reader.
+	 * @param header A reader inArray header data.
 	 */
-	public HttpHeader(Reader header) throws Exception {
-		super(header);
+	public HttpHeader(Reader header) throws IOException {
+		parseContent(header);
 	}
-	
-	
+
+
 	/**
 	 * Set the parser.
 	 */
 	protected void initParser() {
-		if (mParser == null)
+		if (mParser == null) {
 			mParser = new HttpHeaderParser();
+		}
+	}
+
+
+	/**
+	 * Get header data by key.
+	 * @param key The key.
+	 */
+	public String get(String key) {
+		return mContent.get(key);
+	}
+
+
+	/**
+	 * Append all data to header.
+	 * @param data The data.
+	 */
+	public void addAll(Map<String, String> data) {
+		mContent.putAll(data);
+	}
+
+
+	/**
+	 * Remove a line from http header by a special key.
+	 * @param key The header key.
+	 * @return If removed return true, else false.
+	 */
+	public boolean remove(String key) {
+		return mContent.remove(key) != null;
 	}
 
 
 	/**
 	 * Set header content by string.
 	 *
-	 * @param data AbstractHeader content.
+	 * @param data SocketHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException 
 	 */
-	@Override
-	public void setContent(String data) throws NullPointerException, IOException {
+	protected void parseContent(String data) throws NullPointerException, IOException {
 		initParser();
-		setContent(mParser.parse(data.getBytes()));
+		parseContent(mParser.parse(data.getBytes()));
 	}
 
 
 	/**
 	 * Set header content by reader.
 	 *
-	 * @param data AbstractHeader content.
+	 * @param data SocketHeader content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException          If can't read content.
 	 */
-	@Override
-	public void setContent(Reader data) throws NullPointerException, IOException {
+	protected void parseContent(Reader data) throws NullPointerException, IOException {
 		initParser();
-		setContent(mParser.parse(data));
+		parseContent(mParser.parse(data));
 	}
 
 
 	/**
 	 * Set header content by input stream.
 	 *
-	 * @param data AbstractHeader content.
+	 * @param data SocketHeader content.
 	 * @throws IOException          If can't read content.
 	 * @throws NullPointerException If content is null.
 	 */
-	@Override
-	public void setContent(InputStream data) throws IOException, NullPointerException {
+	protected void parseContent(InputStream data) throws IOException, NullPointerException {
 		initParser();
-		setContent(mParser.parse(data));
+		parseContent(mParser.parse(data));
 	}
 	
 	
 	/**
 	 * Copy content from another header.
 	 */
-	@Override
-	public void setContent(AbstractHeader header) throws IOException, NullPointerException {
-		if (header == null)
-			throw new NullPointerException("The input header is null!");
-		
-		
+	protected void parseContent(SocketHeader header) throws IOException{
 		HttpHeader hr = (HttpHeader) header;
 		setVersion(hr.getVersion());
 		setMethod(hr.getMethod());
 		setUrl(hr.getUrl());
 		setStatusCode(hr.getStatusCode());
 		setStatusMsg(hr.getStatusMsg());
-		setContent(header.getContent());
+		setContent(hr.getContent());
+
+		if (hr.get(Http.SET_COOKIE) != null) {
+			cookies = HttpCookie.formString(hr.get(Http.SET_COOKIE));
+		}
 	}
 
 
@@ -174,9 +182,9 @@ public class HttpHeader extends AbstractHeader {
 	 * @return Stringify header content.
 	 */
 	@Override
-	public String toString() throws NullPointerException {
-		if (getContent() == null)
-			throw new NullPointerException("Header content is null!");
+	public String toString() {
+		if (mContent == null)
+			throw new NullPointerException("content is null!");
 
 		StringBuilder sb = new StringBuilder();
 		if (getMethod() != null && getUrl() != null && getVersion() != null) {
@@ -187,7 +195,7 @@ public class HttpHeader extends AbstractHeader {
 			  .append(mStatusCode).append(Http.SPACE).append(mStatusMsg).append(Http.CRLF);
 		}
 
-		for (Map.Entry<String, String> key : getContent().entrySet()) {
+		for (Map.Entry<String, String> key : mContent.entrySet()) {
 			if (key.getKey().length() == 0) {
 				sb.append(key.getValue());
 				continue;
@@ -203,10 +211,10 @@ public class HttpHeader extends AbstractHeader {
 
 	public HttpHeader set(String key, String val) {
 		if (Http.SET_COOKIE.equalsIgnoreCase(key)) {
-			getContent().put(key, getContent().containsKey(key) ?
-					getContent().get(key).concat(Http.CRLF).concat(val) : val);
+			mContent.put(key, mContent.containsKey(key) ?
+					mContent.get(key).concat(Http.CRLF).concat(val) : val);
 		} else {
-			super.set(key, val);
+			mContent.put(key, val);
 		}
 
 		return this;
@@ -230,6 +238,11 @@ public class HttpHeader extends AbstractHeader {
 
 	public void setVersion(String version) {
 		mVersion = version;
+	}
+
+
+	public HttpCookie[] getCookies() {
+		return cookies;
 	}
 
 
@@ -260,6 +273,16 @@ public class HttpHeader extends AbstractHeader {
 
 	public void setStatusMsg(String statusMsg) {
 		mStatusMsg = statusMsg;
+	}
+
+
+	public Map<String, String> getContent() {
+		return mContent;
+	}
+
+
+	public void setContent(Map<String,String> content) {
+		mContent = content;
 	}
 
 
@@ -350,15 +373,17 @@ public class HttpHeader extends AbstractHeader {
 		 */
 		@Override
 		public HttpHeader parse(InputStream data) throws IOException {
-			if (data == null)
+			if (data == null) {
 				throw new NullPointerException("The data can't null!");
+			}
 
 			byte buff;
 			byte[] searchStr = {'\r', '\n', '\r', '\n'};
 			byte searchedCount = 0;
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-			while(-1 != (buff = (byte)data.read())) {
+			//读取头部时，BufferedInputStream会有问题。
+			while(-1 != (buff = (byte) data.read())) {
 				if (buff == searchStr[searchedCount])
 					searchedCount++;
 				else

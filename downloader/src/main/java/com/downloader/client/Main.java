@@ -63,7 +63,7 @@ public class Main {
 
 		final DownloadTaskManager manager = DownloadTaskManager.getInstance();
 		manager.add(hdt);
-		manager.add(hdt2);
+		//manager.add(hdt2);
 		manager.startAll();
 
 		final ThreadManager tm = ThreadManager.getInstance();
@@ -86,14 +86,14 @@ public class Main {
 			}
 		}, 2000, 1000);
 
-		/*t.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				for (int i = 0; i < tm.list().size(); i++) {
-				//	Log.println(tm.get(i).getId() + "\t" + tm.get(i).getName() + "\t" + tm.get(i).getState().toString());
-				}
-			}
-		}, 3000, 1000);*/
+//		t.schedule(new TimerTask() {
+//			@Override
+//			public void run() {
+//				for (int i = 0; i < tm.list().size(); i++) {
+//					Log.println(tm.get(i).getId() + "\t" + tm.get(i).getName() + "\t" + tm.get(i).getState().toString());
+//				}
+//			}
+//		}, 3000, 1000);
 	}
 
 

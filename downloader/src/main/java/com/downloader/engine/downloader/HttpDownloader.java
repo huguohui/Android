@@ -1,15 +1,16 @@
 package com.downloader.engine.downloader;
 
-import com.downloader.engine.AbstractTaskInfo;
 import com.downloader.engine.AsyncWorker;
-import com.downloader.engine.ControlableWorker;
+import com.downloader.engine.TaskInfo;
 import com.downloader.engine.Workable;
+import com.downloader.engine.Worker;
 import com.downloader.io.writer.ConcurrentFileWriter;
 import com.downloader.io.writer.Writer;
 import com.downloader.manager.ThreadManager;
-import com.downloader.net.AbstractRequest;
-import com.downloader.net.Receiver;
+import com.downloader.net.AbstractSocketRequest;
+import com.downloader.net.SocketReceiver;
 import com.downloader.net.http.Http;
+import com.downloader.net.http.HttpHeader;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.net.http.HttpRequest;
 import com.downloader.net.http.HttpResponse;
@@ -21,12 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Downloads data based http protocol.
  */
-public class HttpDownloader extends AbstractDownloader implements Workable, Receiver.OnFinishedListener,
-		Receiver.OnReceiveListener {
+public class HttpDownloader extends AbstractDownloader implements Workable, SocketReceiver.OnFinishedListener,
+		SocketReceiver.OnReceiveListener {
 	protected URL url;
 
 	protected String fileName;
@@ -51,7 +53,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 	protected int specialThreads = 0;
 
-	protected ControlableWorker worker;
+	protected Worker worker;
 
 	protected boolean isChunked;
 
@@ -146,7 +148,8 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		if (httpResponse == null) {
 			HttpRequest hr = buildHttpRequest(url, Http.Method.HEAD, false);
 			hr.send();
-			httpResponse = hr.response();
+			httpResponse = (HttpResponse) hr.response();
+			hr.close();
 		}
 
 		url = httpResponse.getURL();
@@ -209,12 +212,14 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		for (int i = 0; i < downloadThreads; i++) {
 			httpRequests[i] = buildHttpRequest(url, Http.Method.GET, true);
 			if (!isChunked) {
-				httpRequests[i].setHeader(Http.RANGE, new AbstractRequest.Range(info.getPartOffsetStart()[i],
-						info.getPartOffsetStart()[i] + info.getPartLength()[i] - info.getPartDownloadLength()[i]).toString());
+				((HttpHeader) httpRequests[i].getHeader()).set(Http.RANGE,
+						new AbstractSocketRequest.Range(info.getPartOffsetStart()[i],
+								info.getPartOffsetStart()[i] + info.getPartLength()[i]
+										- info.getPartDownloadLength()[i]).toString());
 			}
 
 			httpRequests[i].send();
-			httpReceivers[i] = new HttpReceiver(httpRequests[i].response(), fileWriter, worker,
+			httpReceivers[i] = new HttpReceiver((HttpResponse) httpRequests[i].response(), fileWriter, worker,
 										info.getPartOffsetStart()[i] + info.getPartDownloadLength()[i]);
 			httpReceivers[i].setOnFinishedListener(this);
 			httpReceivers[i].receive();
@@ -228,6 +233,11 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 		setIsFinished(true);
 		fileWriter.close();
 		worker.stop();
+
+		List<Thread> list = threadManager.list();
+		for (int i = 0; i < list.size(); i++) {
+			Log.println(list.get(i).getId() + "\t" + list.get(i).getName() + "\t" + list.get(i).getState().toString());
+		}
 	}
 
 
@@ -239,7 +249,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	public void start() throws IOException {
 		try {
 			if (!isResumeFromInfo) {
-				info.setStartTime(TimeUtil.getMillisTime());
+				info.setStartTime(TimeUtil.millisTime());
 				mStartTime = info.getStartTime();
 			}
 			worker.start();
@@ -269,7 +279,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 
 	@Override
-	public synchronized void onFinished(Receiver r) {
+	public synchronized void onFinished(SocketReceiver r) {
 		mDownloadedLength += ((HttpReceiver) r).getReceivedLength();
 		if (checkFinished()) {
 			mFinishedTime = System.currentTimeMillis();
@@ -300,7 +310,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	}
 
 
-	public AbstractTaskInfo getInfo() {
+	public TaskInfo getInfo() {
 		long length = 0;
 		long[] receivedLength = new long[downloadThreads];
 		if (State.downloading.equals(mState)) {
@@ -320,7 +330,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 
 
 	@Override
-	public synchronized void onReceive(Receiver r, byte[] data) {
+	public synchronized void onReceive(SocketReceiver r, byte[] data) {
 		Log.println(data.length);
 	}
 
@@ -375,7 +385,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Rece
 	}
 
 
-	public ControlableWorker getWorker() {
+	public Worker getWorker() {
 		return worker;
 	}
 }
