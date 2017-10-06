@@ -4,10 +4,13 @@ import com.downloader.engine.TaskInfo;
 import com.downloader.io.exceptions.FileFormatException;
 import com.downloader.io.writer.DataReader;
 import com.downloader.io.writer.DataWriter;
+import com.downloader.net.SocketReceiver;
+import com.downloader.net.SocketRequest;
+import com.downloader.net.SocketResponse;
+import com.downloader.util.TimeUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -15,7 +18,8 @@ import java.util.Arrays;
 /**
  * Information for download task.
  */
-public class DownloadTaskInfo extends TaskInfo {
+public abstract class DownloadTaskInfo extends TaskInfo {
+
 	protected final static byte[] FILE_FORMAT_INFO = {'D', 'T', 'I'};
 
 	public final static int MAX_NAME_LEN = 0xff;
@@ -50,41 +54,74 @@ public class DownloadTaskInfo extends TaskInfo {
 	protected long[] partDownloadLength;
 
 
+	public DownloadTaskInfo(DownloadDescriptor d) {
+		url = d.getAddress().getUrl();
+		path = d.getPath();
+		priority = d.getPriority();
+		totalThreads = d.getMaxThread();
+		startTime = TimeUtil.millisTime();
+	}
+
+
+	public DownloadTaskInfo() { }
+
+
+	public abstract void update(SocketResponse r);
+
+
+	public abstract void update(SocketReceiver[] rs);
+
+
+	public abstract void update(SocketRequest[] rs);
+
+
+	public abstract Storage storage();
+
+
 	public long getStartTime() {
 		return startTime;
 	}
+
 
 	public void setStartTime(long mStartTime) {
 		startTime = mStartTime;
 	}
 
+
 	public long getFinishTime() {
 		return finishTime;
 	}
+
 
 	public void setFinishTime(long mFinishTime) {
 		finishTime = mFinishTime;
 	}
 
+
 	public long getUsedTime() {
 		return usedTime;
 	}
+
 
 	public void setUsedTime(long mUsedTime) {
 		usedTime = mUsedTime;
 	}
 
+
 	public long getLength() {
 		return length;
 	}
+
 
 	public void setLength(long mLength) {
 		length = mLength;
 	}
 
+
 	public URL getUrl() {
 		return url;
 	}
+
 
 	public void setUrl(URL mUrl) {
 		url = mUrl;
@@ -168,82 +205,13 @@ public class DownloadTaskInfo extends TaskInfo {
 	}
 
 
-	public static abstract class Factory {
-
-		public final static String DOWNLOAD_INFO_EXT = ".dti";
-
-		protected static DownloadTaskInfo info;
-
-		protected static DataWriter dataWriter;
-
-		protected static DataReader dataReader;
+	public interface Storage {
 
 
-		public static void save(DownloadTaskInfo _info) throws IOException {
-			info = _info;
-			dataWriter = new DataWriter(new File(info.getPath(), info.getName()));
-			dataWriter.write(DownloadTaskInfo.FILE_FORMAT_INFO);
-			dataWriter.writeLong(info.getLength());
-			dataWriter.writeLong(info.getDownloadLength());
-			dataWriter.writeLong(info.getStartTime());
-			dataWriter.writeLong(info.getUsedTime());
-			dataWriter.writeInt(info.getTotalThreads());
-
-			int parts = info.getTotalThreads();
-			for (int i = 0; i < parts; i++) {
-				dataWriter.writeLong(info.getPartOffsetStart()[i]);
-				dataWriter.writeLong(info.getPartLength()[i]);
-				dataWriter.writeLong(info.getPartDownloadLength()[i]);
-			}
-
-			close();
-		}
+		void read(byte[] data) throws IOException;
 
 
-		public static DownloadTaskInfo from(File file) throws IOException {
-			dataReader = new DataReader(new FileInputStream(file));
-			info.setPath(file.getPath());
-			info = new DownloadTaskInfo();
-			if (!Arrays.equals(dataReader.read(DownloadTaskInfo.FILE_FORMAT_INFO.length), DownloadTaskInfo.FILE_FORMAT_INFO)) {
-				throw new FileFormatException();
-			}
+		byte[] save() throws IOException;
 
-			info.setLength(dataReader.readLong());
-			info.setDownloadLength(dataReader.readLong());
-			info.setStartTime(dataReader.readLong());
-			info.setUsedTime(dataReader.readLong());
-			info.setTotalThreads(dataReader.readInt());
-
-			int parts = info.getTotalThreads();
-			long[]  partOffsetStarts = new long[parts],
-					partLengths = new long[parts],
-					partDownloadLengths = new long[parts];
-
-			for (int i = 0; i < parts; i++) {
-				partOffsetStarts[i] = dataReader.readLong();
-				partLengths[i] = dataReader.readLong();
-				partDownloadLengths[i] = dataReader.readLong();
-			}
-
-			info.setPartOffsetStart(partOffsetStarts);
-			info.setPartLength(partLengths);
-			info.setPartDownloadLength(partDownloadLengths);
-
-			close();
-			return info;
-		}
-
-
-		private static void close() throws IOException {
-			if (dataWriter != null) {
-				dataWriter.close();
-				dataWriter = null;
-			}
-
-			if (dataReader != null) {
-				dataReader.close();
-				dataReader = null;
-			}
-		}
 	}
 }

@@ -71,7 +71,7 @@ public interface SocketRequest extends Closeable {
 	/**
 	 * A range of data.
 	 */
-	final class Range {
+	class Range {
 		/** Start offset. */
 		public long start;
 
@@ -92,13 +92,12 @@ public interface SocketRequest extends Closeable {
 
 
 		public long getRange() {
-			return -~end - start;
+			return end - start;
 		}
 
 
 		public String toString() {
-			return end > 0 ? String.format("bytes=%d-%d", start, end)
-					: String.format("bytes=%d-", start);
+			return String.format("range: %d-%d", start, end);
 		}
 	}
 

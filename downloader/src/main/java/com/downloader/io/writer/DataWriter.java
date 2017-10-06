@@ -16,6 +16,11 @@ public class DataWriter extends AbstractWriter implements DataWritable {
 	protected File file;
 
 
+	public DataWriter(OutputStream os) {
+		mOutputStream = os;
+	}
+
+
 	public DataWriter(File file) throws IOException {
 		mOutputStream = new FileOutputStream(file);
 	}

@@ -4,19 +4,19 @@ package com.downloader.engine.downloader;
 import java.io.IOException;
 
 public class HttpDownloadTask extends DownloadTask {
-	protected DownloadTaskInfo info;
+	protected HttpDownloadTaskInfo info;
 
 	protected HttpDownloader downloader;
 
 
-	public HttpDownloadTask(DownloadTaskDescriptor d) {
+	public HttpDownloadTask(DownloadDescriptor d) {
 		super(d);
 		init();
 	}
 
 
-	public HttpDownloadTask(DownloadTaskInfo info) {
-		this((DownloadTaskDescriptor) null);
+	public HttpDownloadTask(HttpDownloadTaskInfo info) {
+		this((DownloadDescriptor) null);
 		this.info = info;
 	}
 
@@ -68,8 +68,8 @@ public class HttpDownloadTask extends DownloadTask {
 	 * @return Information of current task.
 	 */
 	@Override
-	public DownloadTaskInfo info() {
-		return (DownloadTaskInfo) downloader.getInfo();
+	public HttpDownloadTaskInfo info() {
+		return (HttpDownloadTaskInfo) downloader.getInfo();
 	}
 
 
@@ -78,18 +78,6 @@ public class HttpDownloadTask extends DownloadTask {
 	 */
 	@Override
 	public void work() throws Exception {
-
-	}
-
-
-	@Override
-	public void onDownloadStart(AbstractDownloader d) {
-
-	}
-
-
-	@Override
-	public void onDownloadFinish(AbstractDownloader d) {
 
 	}
 }

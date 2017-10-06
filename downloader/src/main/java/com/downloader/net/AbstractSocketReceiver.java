@@ -1,6 +1,6 @@
 package com.downloader.net;
 
-import com.downloader.engine.Worker;
+import com.downloader.engine.worker.Worker;
 import com.downloader.io.writer.Writer;
 
 import java.io.IOException;
@@ -27,8 +27,6 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	/** Received data length. */
 	protected volatile long mReceivedLength;
 
-	protected Worker mWorker;
-
 	/** Is stop receive? */
 	protected boolean isStop = false;
 
@@ -46,10 +44,9 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	 * Construct a downloader by requester.
 	 * @param is A {@link AbstractSocketRequest}.
 	 */
-	public AbstractSocketReceiver(InputStream is, Writer writable, Worker worker) {
+	public AbstractSocketReceiver(InputStream is, Writer writable) {
 		mInputStream = is;
 		mFileWriter = writable;
-		mWorker = worker;
 	}
 
 
@@ -194,21 +191,12 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	}
 
 
-	/**
-	 * To do some work.
-	 */
-	@Override
-	public void work() throws Exception {
-		receive();
-	}
-
-
 	public InputStream getInputStream() {
 		return mInputStream;
 	}
 
 
-	public synchronized long getReceivedLength() {
+	public long getReceivedLength() {
 		return mReceivedLength;
 	}
 
@@ -230,17 +218,6 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 
 	public AbstractSocketReceiver setFileWriter(Writer fileWriter) {
 		mFileWriter = fileWriter;
-		return this;
-	}
-
-
-	public Worker getWorker() {
-		return mWorker;
-	}
-
-
-	public AbstractSocketReceiver setWorker(Worker worker) {
-		mWorker = worker;
 		return this;
 	}
 

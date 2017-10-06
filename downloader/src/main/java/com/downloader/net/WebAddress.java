@@ -1,11 +1,7 @@
 package com.downloader.net;
 
-import com.downloader.util.UrlUtil;
-
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 /**
  * @since 2017/10/5 11:28.
@@ -14,10 +10,13 @@ public class WebAddress extends InetSocketAddress {
 
 	protected URL url;
 
+	protected String protocol;
+
 
 	public WebAddress(URL url) {
-		super(url.getHost(), url.getPort());
+		super(url.getHost(), url.getPort() != - 1 ? url.getPort() : 80);
 		this.url = url;
+		protocol = url.getProtocol();
 	}
 
 
@@ -29,5 +28,10 @@ public class WebAddress extends InetSocketAddress {
 	public WebAddress setUrl(URL url) {
 		this.url = url;
 		return this;
+	}
+
+
+	public String getProtocol() {
+		return protocol;
 	}
 }

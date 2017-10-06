@@ -1,4 +1,7 @@
-package com.downloader.engine;
+package com.downloader.engine.worker;
+
+import com.downloader.engine.Controlable;
+import com.downloader.util.Log;
 
 /**
  * Worker is running on child thread for do somthing.

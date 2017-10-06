@@ -3,7 +3,7 @@ package com.downloader.engine;
 /**
  * Information for task.
  */
-public abstract class TaskInfo {
+public abstract class TaskInfo/* implements Storageable, Resumeable*/ {
 	/** Name of task. */
 	protected String name;
 

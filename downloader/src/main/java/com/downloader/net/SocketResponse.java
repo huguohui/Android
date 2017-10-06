@@ -17,7 +17,7 @@ public abstract class SocketResponse implements Closeable {
 	 * Get response from request.
 	 * @param r SocketRequest object.
 	 */
-	public SocketResponse(SocketRequest r) {
+	protected SocketResponse(SocketRequest r) {
 
 	}
 

@@ -60,8 +60,11 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 
 	protected OnResponseListener mOnResponseListener;
 
+	protected SocketRequest.Range range;
 
-    /** AbstractSocketRequest states. */
+
+
+	/** AbstractSocketRequest states. */
     public enum State {
         ready,      // Ready to requesting.
         connecting, // Connecting...
@@ -208,6 +211,17 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	public void reopen(SocketAddress address) throws IOException {
 		setAddress(address);
 		reopen();
+	}
+
+
+	public Range getRange() {
+		return range;
+	}
+
+
+	public AbstractSocketRequest setRange(Range range) {
+		this.range = range;
+		return this;
 	}
 
 

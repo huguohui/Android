@@ -7,6 +7,20 @@ import java.util.List;
 
 public abstract class CollectionUtil {
 
+	public static <T> void forEach(T[] os, Callback<T> callbck) {
+		for (T o : os) {
+			callbck.callback(o);
+		}
+	}
+
+
+	public static <T> void forEach(T[] os, Action<T> callbck) {
+		for (T o : os) {
+			callbck.doAction(o);
+		}
+	}
+
+
 	public static <T> void forEach(Collection<T> c, Callback<T> callbck) {
 		for (Iterator<T> t = c.iterator(); t.hasNext(); ) {
 			callbck.callback(t.next());

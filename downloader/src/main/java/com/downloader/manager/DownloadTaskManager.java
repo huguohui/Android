@@ -107,7 +107,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	@Override
 	public void pauseAll() throws Exception {
 		synchronized (mList) {
-			CollectionUtil.forEach(null, pauseOperation);
+			CollectionUtil.forEach((DownloadTask[]) null, pauseOperation);
 		}
 	}
 

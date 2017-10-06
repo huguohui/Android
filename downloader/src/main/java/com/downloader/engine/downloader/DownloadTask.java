@@ -6,15 +6,15 @@ import com.downloader.engine.Task;
  * A task for downloading.
  * @since 2016/12/26 15:46
  */
-public abstract class DownloadTask extends Task implements AbstractDownloader.OnDownloadFinishListener, AbstractDownloader.OnDownloadStartListener {
+public abstract class DownloadTask extends Task {
 
-	protected DownloadTaskInfo info;
+	protected HttpDownloadTaskInfo info;
 
-	protected DownloadTaskDescriptor descriptor;
+	protected DownloadDescriptor descriptor;
 
 
-	public DownloadTask(DownloadTaskDescriptor d) {
+	public DownloadTask(DownloadDescriptor d) {
 		descriptor = d;
-		info = new DownloadTaskInfo();
 	}
+
 }

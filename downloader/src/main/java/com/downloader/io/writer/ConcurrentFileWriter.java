@@ -1,5 +1,7 @@
 package com.downloader.io.writer;
 
+import com.downloader.util.Log;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * File writer.
  */
-public class ConcurrentFileWriter extends FileWriter implements ConcurrentWriter {
+public class ConcurrentFileWriter extends SimpleFileWriter implements ConcurrentWriter {
 	/** Buffer size of writing. */
-	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 10;
+	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 1;
 
 	/** A data buffer. */
 	private class DataBuffer {

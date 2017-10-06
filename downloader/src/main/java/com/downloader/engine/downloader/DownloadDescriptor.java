@@ -1,13 +1,16 @@
 package com.downloader.engine.downloader;
 
+import com.downloader.net.WebAddress;
+
 import java.net.URL;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * Descriptor for downloading task.
  */
-public class DownloadTaskDescriptor extends Descriptor {
+public class DownloadDescriptor extends Descriptor {
 	/** URL for downloading. */
-	protected URL mUrl;
+	protected WebAddress mWebAddress;
 
 	/** Task priority. */
 	protected int mPriority;
@@ -23,18 +26,18 @@ public class DownloadTaskDescriptor extends Descriptor {
 	}
 
 
-	public DownloadTaskDescriptor setPath(String path) {
+	public DownloadDescriptor setPath(String path) {
 		this.path = path;
 		return this;
 	}
 
 
-	public URL getUrl() {
-		return mUrl;
+	public WebAddress getAddress() {
+		return mWebAddress;
 	}
 
-	public void setUrl(URL mUrl) {
-		this.mUrl = mUrl;
+	public void setAddress(WebAddress mUrl) {
+		this.mWebAddress = mUrl;
 	}
 
 	public int getPriority() {
@@ -56,15 +59,15 @@ public class DownloadTaskDescriptor extends Descriptor {
 
 	public static class Builder {
 
-		private DownloadTaskDescriptor descriptor;
+		private DownloadDescriptor descriptor;
 
 		public Builder() {
-			descriptor = new DownloadTaskDescriptor();
+			descriptor = new DownloadDescriptor();
 		}
 
 
-		public Builder setUrl(URL mUrl) {
-			descriptor.mUrl = mUrl;
+		public Builder setAddress(WebAddress address) {
+			descriptor.setAddress(address);
 			return this;
 		}
 
@@ -87,7 +90,7 @@ public class DownloadTaskDescriptor extends Descriptor {
 		}
 
 
-		public DownloadTaskDescriptor build() {
+		public DownloadDescriptor build() {
 			return descriptor;
 		}
 	}

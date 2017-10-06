@@ -1,5 +1,7 @@
 package com.downloader.engine;
 
+import com.downloader.engine.worker.Workable;
+
 /**
  * Interface of task.
  */

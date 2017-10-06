@@ -1,4 +1,6 @@
-package com.downloader.engine;
+package com.downloader.engine.worker;
+
+import com.downloader.util.Log;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -4,6 +4,7 @@ import com.downloader.net.SocketEntity;
 import com.downloader.net.SocketHeader;
 import com.downloader.net.SocketResponse;
 import com.downloader.net.SocketRequest;
+import com.downloader.net.WebAddress;
 import com.downloader.util.Log;
 import com.downloader.util.StringUtil;
 import com.downloader.util.TimeUtil;
@@ -60,7 +61,7 @@ public class HttpResponse extends SocketResponse {
 	 *
 	 * @param r Request object.
 	 */
-	public HttpResponse(SocketRequest r) throws IOException {
+	protected HttpResponse(SocketRequest r) throws IOException {
 		super(r);
 		httpRequest = (HttpRequest) r;
 		if (r.connected()) {
@@ -73,6 +74,7 @@ public class HttpResponse extends SocketResponse {
 			header = new HttpHeader(inputStream);
 			mUrl = httpRequest.getUrl();
 			entity = new HttpEntity(inputStream);
+
 			parseResponse();
 			checkRedirect();
 		}
@@ -122,7 +124,10 @@ public class HttpResponse extends SocketResponse {
 			if (redirectTimes-- <= 0) {
 				throw new RedirectException();
 			}
+
+			Log.println(newUrl);
 			httpRequest.setUrl(UrlUtil.fullUrl(mUrl, newUrl));
+			httpRequest.setAddress(new WebAddress(UrlUtil.fullUrl(mUrl, newUrl)));
 			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();
@@ -134,7 +139,6 @@ public class HttpResponse extends SocketResponse {
 	@Override
 	public void close() throws IOException {
 		inputStream.close();
-		httpRequest.close();
 	}
 
 

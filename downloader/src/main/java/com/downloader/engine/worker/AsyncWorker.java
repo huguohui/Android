@@ -1,8 +1,7 @@
-package com.downloader.engine;
+package com.downloader.engine.worker;
 
 import com.downloader.manager.ThreadManager;
 import com.downloader.util.Log;
-import com.downloader.util.TimeUtil;
 
 /**
  */
@@ -10,7 +9,7 @@ public class AsyncWorker extends AbstractWorker {
 
 	protected ThreadManager threadManager;
 
-	protected long interval = 0;
+	protected long interval = -1;
 
 	protected long prevWorkTime;
 
@@ -51,13 +50,15 @@ public class AsyncWorker extends AbstractWorker {
 
 	protected void waitTimes(long time) throws InterruptedException {
 		synchronized (waitLock) {
-			waitLock.wait(time);
+			if (time != 0) {
+				waitLock.wait(time);
+			}
 		}
 	}
 
 
 	protected void doWork(Workable workable) throws Exception {
-		if (workable == null || interval == 0) {
+		if (workable == null || interval == -1) {
 			return;
 		}
 

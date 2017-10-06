@@ -1,13 +1,14 @@
 package com.downloader.engine.downloader;
 
-import com.downloader.engine.AsyncWorker;
 import com.downloader.engine.TaskInfo;
-import com.downloader.engine.Workable;
-import com.downloader.engine.Worker;
+import com.downloader.engine.worker.AsyncWorker;
+import com.downloader.engine.worker.Workable;
+import com.downloader.engine.worker.Worker;
 import com.downloader.io.writer.ConcurrentFileWriter;
 import com.downloader.io.writer.Writer;
 import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractSocketRequest;
+import com.downloader.net.AsyncSocketReceiver;
 import com.downloader.net.SocketReceiver;
 import com.downloader.net.http.Http;
 import com.downloader.net.http.HttpHeader;
@@ -61,7 +62,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 	protected int perThreadExecInterval = 500;
 
-	protected DownloadTaskInfo info = new DownloadTaskInfo();
+	protected HttpDownloadTaskInfo info = new HttpDownloadTaskInfo();
 
 	final public static int MAX_THREAD = 10;
 
@@ -89,19 +90,19 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 	}
 
 
-	public HttpDownloader(DownloadTaskInfo info) {
+	public HttpDownloader(HttpDownloadTaskInfo info) {
 		this(info.getUrl());
 		initWithInfo(info);
 	}
 
 
-	public HttpDownloader(DownloadTaskDescriptor desc) {
-		this(desc.getUrl());
+	public HttpDownloader(DownloadDescriptor desc) {
+		this(desc.getAddress().getUrl());
 		initWithDescriptor(desc);
 	}
 
 
-	protected void initWithDescriptor(DownloadTaskDescriptor desc) {
+	protected void initWithDescriptor(DownloadDescriptor desc) {
 		specialThreads = desc.getMaxThread();
 		path = desc.getPath();
 
@@ -111,7 +112,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 	}
 
 
-	protected void initWithInfo(DownloadTaskInfo info) {
+	protected void initWithInfo(HttpDownloadTaskInfo info) {
 		this.info = info;
 		isResumeFromInfo = true;
 		mLength = info.getLength();
@@ -146,7 +147,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 		}
 
 		if (httpResponse == null) {
-			HttpRequest hr = buildHttpRequest(url, Http.Method.HEAD, false);
+			HttpRequest hr = buildHttpRequest(url, Http.Method.GET, false);
 			hr.send();
 			httpResponse = (HttpResponse) hr.response();
 			hr.close();
@@ -216,13 +217,15 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 						new AbstractSocketRequest.Range(info.getPartOffsetStart()[i],
 								info.getPartOffsetStart()[i] + info.getPartLength()[i]
 										- info.getPartDownloadLength()[i]).toString());
+				httpRequests[i].setRange(new AbstractSocketRequest.Range(info.getPartOffsetStart()[i],
+						info.getPartOffsetStart()[i] + info.getPartLength()[i]
+								- info.getPartDownloadLength()[i]));
 			}
 
 			httpRequests[i].send();
-			httpReceivers[i] = new HttpReceiver((HttpResponse) httpRequests[i].response(), fileWriter, worker,
-										info.getPartOffsetStart()[i] + info.getPartDownloadLength()[i]);
+			httpReceivers[i] = new HttpReceiver(httpRequests[i], fileWriter);
 			httpReceivers[i].setOnFinishedListener(this);
-			httpReceivers[i].receive();
+			new AsyncSocketReceiver(httpReceivers[i], worker).receive();
 		}
 
 		setState(State.downloading);
@@ -267,13 +270,13 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 	public void resume() throws IOException {
 		super.resume();
-		info = DownloadTaskInfo.Factory.from(new File(path, getFileName()));
+		//info = HttpDownloadTaskInfo.Factory.from(new File(path, getFileName()));
 		start();
 	}
 
 
 	public void stop() throws IOException {
-		DownloadTaskInfo.Factory.save((DownloadTaskInfo) getInfo());
+		//HttpDownloadTaskInfo.Factory.save((HttpDownloadTaskInfo) getInfo());
 		super.stop();
 	}
 
@@ -281,6 +284,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 	@Override
 	public synchronized void onFinished(SocketReceiver r) {
 		mDownloadedLength += ((HttpReceiver) r).getReceivedLength();
+		Log.println(mDownloadedLength);
 		if (checkFinished()) {
 			mFinishedTime = System.currentTimeMillis();
 			mDownloadTime = mFinishedTime - mStartTime;

@@ -1,4 +1,4 @@
-package com.downloader.engine;
+package com.downloader.engine.worker;
 
 /**
  * Interface for workable.

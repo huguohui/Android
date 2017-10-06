@@ -14,9 +14,9 @@ final public class Log
 	public final synchronized static void e(Throwable e) {
 		println(e.toString());
 /*
-        FileWriter fw = null;
+        SimpleFileWriter fw = null;
 		try {
-            fw = new FileWriter(LOG_FILE_PATH, true);
+            fw = new SimpleFileWriter(LOG_FILE_PATH, true);
 			File file = new File(LOG_FILE_PATH);
 			String date = new Date().toString();
 			String eMsg = null;

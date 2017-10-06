@@ -1,7 +1,7 @@
 package com.downloader.net;
 
 import com.downloader.engine.Stopable;
-import com.downloader.engine.Workable;
+import com.downloader.engine.worker.Workable;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
  *
  * @since 2015/11/29
  */
-public interface SocketReceiver extends Stopable, Workable {
+public interface SocketReceiver extends Stopable {
 	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
 

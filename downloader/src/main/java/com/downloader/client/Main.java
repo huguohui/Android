@@ -1,24 +1,33 @@
 package com.downloader.client;
 
-import com.downloader.engine.AbstractWorker;
+import com.downloader.engine.downloader.DownloadDescriptor;
 import com.downloader.engine.downloader.DownloadTask;
-import com.downloader.engine.downloader.DownloadTaskDescriptor;
+import com.downloader.engine.downloader.DownloadTaskInfo;
 import com.downloader.engine.downloader.HttpDownloadTask;
 import com.downloader.engine.downloader.HttpDownloader;
+import com.downloader.engine.downloader.InternetDownloader;
+import com.downloader.engine.downloader.ProtocolHandler;
+import com.downloader.engine.downloader.Protocols;
+import com.downloader.engine.downloader.factory.DownloadTaskInfoFactory;
+import com.downloader.engine.downloader.factory.HttpDownloadTaskInfoFactory;
+import com.downloader.engine.worker.AbstractWorker;
 import com.downloader.io.writer.ConcurrentFileWriter;
 import com.downloader.manager.DownloadTaskManager;
 import com.downloader.manager.ThreadManager;
 import com.downloader.manager.factory.HttpDownloadTaskFactory;
-import com.downloader.net.http.Http;
+import com.downloader.net.SocketFamilyFactory;
+import com.downloader.net.SocketResponse;
+import com.downloader.net.WebAddress;
+import com.downloader.net.http.HttpFamilyFactory;
 import com.downloader.net.http.HttpReceiver;
 import com.downloader.util.Log;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,33 +39,30 @@ public class Main {
 	ConcurrentFileWriter fw;
 	long time;
 	static String[] urls = {
-			"http://www.baidu.com",
+			//"http://www.baidu.com/s?",
 			"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe",
 			"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe"
 	};
 
 
 	public static void main(String[] args) throws Exception {
-		new SimpleDateFormat(Http.GMT_DATE_FORMAT[0], Locale.ENGLISH)
-				.parse("Mon, 16 Jul 2007 22:23:00 GMT");
 
 
+		new Main().test2();
 
-//		new Main().test2();
-
-		new Main().test1();
+//		new Main().test1();
 	}
 
 
 	void test1() throws Exception {
-		HttpDownloadTask hdt = (HttpDownloadTask) new HttpDownloadTaskFactory().create(new DownloadTaskDescriptor.Builder()
-				.setUrl(new URL(urls[2]))
+		HttpDownloadTask hdt = (HttpDownloadTask) new HttpDownloadTaskFactory().create(new DownloadDescriptor.Builder()
+				.setAddress(new WebAddress(new URL(urls[1])))
 				.setPath("d:/")
 				.build()
 		);
 
-		HttpDownloadTask hdt2 = (HttpDownloadTask) new HttpDownloadTaskFactory().create(new DownloadTaskDescriptor.Builder()
-				.setUrl(new URL(urls[0]))
+		HttpDownloadTask hdt2 = (HttpDownloadTask) new HttpDownloadTaskFactory().create(new DownloadDescriptor.Builder()
+				.setAddress(new WebAddress(new URL(urls[0])))
 				.setPath("d:/")
 				.build()
 		);
@@ -86,18 +92,45 @@ public class Main {
 			}
 		}, 2000, 1000);
 
-//		t.schedule(new TimerTask() {
-//			@Override
-//			public void run() {
-//				for (int i = 0; i < tm.list().size(); i++) {
-//					Log.println(tm.get(i).getId() + "\t" + tm.get(i).getName() + "\t" + tm.get(i).getState().toString());
-//				}
-//			}
-//		}, 3000, 1000);
+		t.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				for (int i = 0; i < tm.list().size(); i++) {
+					Log.println(tm.get(i).getId() + "\t" + tm.get(i).getName() + "\t" + tm.get(i).getState().toString());
+				}
+			}
+		}, 3000, 1000);
 	}
 
 
-	public void test2() throws Exception {
+	void test2() throws Exception {
+		InternetDownloader d = new InternetDownloader(null);
+		d.addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
+			@Override
+			public SocketFamilyFactory socketFamilyFactory() {
+				return new HttpFamilyFactory();
+			}
+
+
+			@Override
+			public DownloadTaskInfoFactory downloadTaskInfoFactory() {
+				return new HttpDownloadTaskInfoFactory();
+			}
+		});
+
+		d.createTask(new DownloadDescriptor.Builder()
+				.setAddress(new WebAddress(new URL(urls[1])))
+				.setPath("d:/")
+				.build()
+		);
+
+		d.start();
+
+
+	}
+
+
+	public void test3() throws Exception {
 		new File("E:\\MyCodes\\Android").list(new FilenameFilter() {
 			@Override
 			public boolean accept(File file, String s) {

@@ -2,8 +2,11 @@ package com.downloader.net.http;
 
 
 import com.downloader.net.AbstractSocketRequest;
+import com.downloader.net.SocketEntity;
 import com.downloader.net.SocketHeader;
+import com.downloader.net.SocketRequest;
 import com.downloader.net.SocketResponse;
+import com.downloader.net.WebAddress;
 import com.downloader.net.http.Http.Method;
 import com.downloader.util.Log;
 import com.downloader.util.UrlUtil;
@@ -12,7 +15,9 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
+import java.util.Scanner;
 
 /**
  * HTTP request class implement.
@@ -30,7 +35,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	protected final String ACCEPT_ENCODING = "identity";
 
 	/** Connection field. */
-	protected final String CONNECTING = "Close";
+	protected final String CONNECTING = "close";
 
 	/** The default http version. */
 	protected final String HTTP_VERSION = "1.1";
@@ -43,18 +48,20 @@ public class HttpRequest extends AbstractSocketRequest {
 
 	protected HttpResponse mHttpResponse;
 
-
 	/**
      * Construct a http request object.
      * @param url Special URL.
      * @param method Special method of requesting.
      */
-	public HttpRequest(URL url, Method method) throws IOException {
-		super(UrlUtil.socketAddressByUrl(url));
+	public HttpRequest(WebAddress address, Method method) throws IOException {
+		super(UrlUtil.socketAddressByUrl(address.getUrl()));
 		if (method != null)
 			this.mMethod = method;
 
-		mUrl = url;
+
+		mUrl = address.getUrl();
+		this.mAddress = address;
+		initHeader();
 	}
 
 	
@@ -62,8 +69,8 @@ public class HttpRequest extends AbstractSocketRequest {
      * Construct a http request object.
      * @param url Special URL.
      */
-	public HttpRequest(URL url) throws IOException {
-		this(url, null);
+	public HttpRequest(WebAddress address) throws IOException {
+		this(address, null);
 	}
 
 
@@ -71,6 +78,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	 * Default constructor.
 	 */
 	public HttpRequest() {
+		initHeader();
 	}
 
 
@@ -78,19 +86,21 @@ public class HttpRequest extends AbstractSocketRequest {
 	 * Build default http header.
 	 * @return Default header.
 	 */
-	protected HttpHeader getDefaultHeader() {
-		HttpHeader header = new HttpHeader();
-		header.setMethod(mMethod);
-		header.setVersion(HTTP_VERSION);
-		header.set("Accept", ACCEPT).set("Accept-Encoding", ACCEPT_ENCODING)
-			  .set("User-Agent", USER_AGENT).set("Connecting", CONNECTING);
+	protected void initHeader() {
+		HttpHeader mHeader = new HttpHeader();
+		mHeader.setVersion(HTTP_VERSION);
+		mHeader.set(Http.ACCEPT, ACCEPT).set(Http.ACCEPT_ENCODING, ACCEPT_ENCODING)
+			  .set(Http.USER_AGENT, USER_AGENT).set(Http.CONNECTION, CONNECTING);
 
-		if (mUrl != null) {
-			header.setUrl(UrlUtil.urlFullPathParam(mUrl));
-			header.set("Host", UrlUtil.domainWithPort(mUrl));
-		}
+		this.mHeader = mHeader;
+	}
 
-		return header;
+
+	protected void beforeSend() {
+		HttpHeader mHeader = (HttpHeader) this.mHeader;
+		mHeader.setUrl(mUrl.toString());
+		mHeader.setMethod(mMethod);
+		mHeader.set(Http.HOST, UrlUtil.domainWithPort(mUrl));
 	}
 
 
@@ -100,8 +110,10 @@ public class HttpRequest extends AbstractSocketRequest {
     @Override
     public synchronized void send() throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		bos.write(getHeader().toString().getBytes());
 		HttpEntity entity = (HttpEntity) getEntity();
+
+		beforeSend();
+		bos.write(getHeader().toString().getBytes());
 		if (entity != null && entity.getContent() != null) {
 			if (entity.getType() == HttpEntity.T_TEXT) {
 				bos.write(entity.getContent());
@@ -150,8 +162,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	public void open(URL url, Method method) throws IOException {
 		setUrl(url);
 		setMethod(method == null ? Method.GET : method);
-		setHeader(getDefaultHeader());
-		open(UrlUtil.socketAddressByUrl(url));
+		super.open(UrlUtil.socketAddressByUrl(url));
 	}
 	
 	
@@ -159,8 +170,9 @@ public class HttpRequest extends AbstractSocketRequest {
 	 * Open a url address.
 	 * @throws IOException If exception.
 	 */
-	public void open(URL url) throws IOException {
-		open(url, mMethod);
+	public void open(SocketAddress url) throws IOException {
+		WebAddress a = (WebAddress) url;
+		open(a.getUrl(), mMethod);
 	}
 
 
@@ -172,8 +184,9 @@ public class HttpRequest extends AbstractSocketRequest {
 	/**
 	 * Reopen a connection.
 	 */
-	public void reopen(URL url) throws IOException {
-    	mUrl = url;
+	public void reopen(SocketAddress url) throws IOException {
+		WebAddress address = (WebAddress) url;
+    	mUrl = address.getUrl();
     	reopen();
 	}
 	
@@ -187,13 +200,29 @@ public class HttpRequest extends AbstractSocketRequest {
 		}
     	
     	isSend = false;
-    	open(mUrl);
+    	open(mAddress);
+	}
+
+
+	public SocketResponse response() throws IOException {
+		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
+	}
+
+
+	public void setAddress(SocketAddress address) {
+		if (address == null) {
+			throw new NullPointerException("The requesting address is null!");
+		}
+
+		mAddress = address;
+		mUrl = ((WebAddress) address).getUrl();
 	}
 	
 
     public Method getMethod() {
         return mMethod;
     }
+
 
     public void setMethod(Method method) {
         this.mMethod = method;
@@ -213,7 +242,77 @@ public class HttpRequest extends AbstractSocketRequest {
 	}
 
 
-	public SocketResponse response() throws IOException {
-		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
+	public void setHeader(String key, String val) {
+		HttpHeader header = (HttpHeader) mHeader;
+		header.set(key, val);
+	}
+
+
+	public String getHeader(String key) {
+		return ((HttpHeader) mHeader).get(key);
+	}
+
+
+	public static class Range extends SocketRequest.Range {
+		public Range(long s, long e) {
+			super(s, e);
+		}
+
+
+		public Range(SocketRequest.Range r) {
+			super(r.start, r.end);
+		}
+
+
+		public String toString() {
+			return end > 0 ? String.format("bytes=%d-%d", start, end)
+					: String.format("bytes=%d-", start);
+		}
+	}
+
+
+	public static class Builder implements SocketRequest.RequestBuilder {
+
+		private HttpRequest request;
+
+		public Builder() {
+			request = new HttpRequest();
+		}
+
+
+		public Builder setAddress(WebAddress address) {
+			request.setAddress(address);
+			return this;
+		}
+
+
+		public Builder setMethod(Method method) {
+			request.setMethod(method);
+			return this;
+		}
+
+
+		public Builder setHeader(SocketHeader header) {
+			request.setHeader(header);
+			return this;
+		}
+
+
+		public Builder setTimeout(int t) {
+			request.setTimeout(t);
+			return this;
+		}
+
+
+		public Builder setEntity(SocketEntity t) {
+			request.setEntity(t);
+			return this;
+		}
+
+
+		@Override
+		public SocketRequest build() {
+			return request;
+		}
 	}
 }

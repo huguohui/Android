@@ -1,15 +1,16 @@
 package com.downloader.net.http;
 
 
-import com.downloader.engine.Worker;
-import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.io.writer.ConcurrentWriter;
 import com.downloader.io.writer.Writer;
 import com.downloader.net.AbstractSocketReceiver;
 import com.downloader.net.SocketReceiver;
+import com.downloader.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import static android.R.attr.start;
 
 /**
  * Download data from URL, based HTTP protocol.
@@ -40,33 +41,13 @@ public class HttpReceiver extends AbstractSocketReceiver {
 	protected long offsetDataBegin = -1;
 
 
-	/**
-	 * Construct a http downloader object.
-	 *  @param d A {@link HttpDownloader}.
-	 * @throws IOException If exception.
-	 */
-	public HttpReceiver(HttpResponse d) throws IOException {
-		this(d, null, null);
-	}
-
-
-	/**
-	 * Construct a http downloader object.
-	 *  @param d A {@link HttpDownloader}.
-	 * @throws IOException If exception.
-	 */
-	public HttpReceiver(HttpResponse d, Writer w, Worker worker) throws IOException {
-		this(d, w, worker, -1);
-	}
-
-
-	public HttpReceiver(HttpResponse d, Writer w, Worker worker, long offsetDataBegin) throws IOException {
-		super(d.getInputStream(), w, worker);
+	public HttpReceiver(HttpRequest d, Writer w) throws IOException {
+		super(d.socket().getInputStream(), w);
 		fileWriter = (ConcurrentWriter) w;
-		httpResponse = d;
-		this.offsetDataBegin = offsetDataBegin;
-		isChunked = d.isChunked();
-		mSizeWillReceive = isChunked ? -1 : d.getContentLength();
+		httpResponse = (HttpResponse) d.response();
+		isChunked = httpResponse.isChunked();
+		mSizeWillReceive = isChunked ? -1 : httpResponse.getContentLength();
+		this.offsetDataBegin = d.getRange() != null ? d.getRange().start : 0;
 	}
 
 
@@ -76,7 +57,8 @@ public class HttpReceiver extends AbstractSocketReceiver {
 	 */
 	protected void receiveChunked(long size) throws IOException {
 		if (size < 0) {
-			while(!isStop && mCurrentChunkedSize > 0 || (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
+			while(!isStop && mCurrentChunkedSize > 0
+					|| (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
 				receiveDataBySize(mCurrentChunkedSize);
 				mCurrentChunkedSize = 0;
 			}
@@ -137,6 +119,7 @@ public class HttpReceiver extends AbstractSocketReceiver {
 		if (data == null) return;
 		if (offsetDataBegin != -1) {
 			fileWriter.write(offsetDataBegin, mReceivedLength - data.length, data);
+			//Log.println(offsetDataBegin + " , " + mReceivedLength);
 			return;
 		}
 
@@ -174,17 +157,12 @@ public class HttpReceiver extends AbstractSocketReceiver {
 
 	public synchronized void receive(long size) throws IOException {
 		mSizeWillReceive = size > 0 ? size : mSizeWillReceive;
-		mWorker.add(this);
+		receiveData();
 	}
 
 
 	public synchronized void receive() throws IOException {
 		receive(-1);
-	}
-
-
-	public void work() throws IOException {
-		receiveData();
 	}
 
 
