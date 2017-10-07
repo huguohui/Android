@@ -5,7 +5,7 @@ import com.downloader.engine.worker.Workable;
 /**
  * Interface of task.
  */
-public abstract class Task implements Controlable, Workable {
+public abstract class Task implements Workable {
 
 	protected static int id = 0;
 

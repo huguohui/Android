@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	/** Instance of manager. */
-	private static DownloadTaskManager mInstance = null;
+	private static DownloadTaskManager mInstance = new DownloadTaskManager();
 	/** Max并行的任务数 */
 	public final static int MAX_PARALELL_TASK = 5;
 
@@ -54,9 +54,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	 * @return Instance of manager.
 	 */
 	public final synchronized static DownloadTaskManager getInstance() {
-		if (mInstance == null)
-			mInstance = new DownloadTaskManager();
-
 		return mInstance;
 	}
 

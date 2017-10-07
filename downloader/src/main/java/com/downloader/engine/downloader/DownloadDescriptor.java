@@ -32,6 +32,17 @@ public class DownloadDescriptor extends Descriptor {
 	}
 
 
+	public static DownloadDescriptor fromDownloadTaskInfo(DownloadTaskInfo info) {
+		DownloadDescriptor desc = new DownloadDescriptor.Builder()
+				.setAddress(info.getAddress())
+				.setMaxThread(info.getTotalThreads())
+				.setPriority(info.getPriority())
+				.setPath(info.getPath())
+				.build();
+		return desc;
+	}
+
+
 	public WebAddress getAddress() {
 		return mWebAddress;
 	}

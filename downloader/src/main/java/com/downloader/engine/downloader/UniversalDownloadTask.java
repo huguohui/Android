@@ -12,10 +12,8 @@ import com.downloader.net.SocketReceiver;
 import com.downloader.net.SocketRequest;
 import com.downloader.net.SocketResponse;
 import com.downloader.net.WebAddress;
-import com.downloader.net.http.HttpReceiver;
 import com.downloader.util.CollectionUtil;
 import com.downloader.util.Log;
-import com.downloader.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,13 +76,24 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	}
 
 
+	public UniversalDownloadTask(DownloadTaskInfo i, ProtocolHandler handler,
+				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+		this(DownloadDescriptor.fromDownloadTaskInfo(i), handler, policy);
+		info = i;
+	}
+
+
 	protected void init() throws IOException {
-		info = DownloadHelper.fetchTaskInfo(descriptor, handler);
+		if (info == null) {
+			info = DownloadHelper.fetchTaskInfo(descriptor, handler);
+		}
+
 		worker = new AsyncWorker(ThreadManager.getInstance());
 		writer = new ConcurrentFileWriter(new File(info.getPath(), info.getName()));
 		try {
 			worker.start();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -97,7 +106,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	}
 
 
-	protected void doTasks() throws IOException {
+	protected void doTask() throws IOException {
 		requests = factory.createRequest(info, policy);
 		receivers = new SocketReceiver[requests.length];
 		info.update(requests);
@@ -112,15 +121,14 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 
 
 	protected boolean checkFinished() {
-		return (info.getLength() == 0 || info.getLength() == info.getDownloadLength());
+		return (info.getLength() == 0 || info.getProgress() >= 1f);
 	}
 
 
 	@Override
 	public void onFinished(SocketReceiver r) {
 		info.update(receivers);
-		Log.println(info.getProgress());
-		if (info.getProgress() >= 1) {
+		if (checkFinished()) {
 			try {
 				worker.stop();
 				writer.close();
@@ -136,7 +144,8 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	 */
 	@Override
 	public void work() throws Exception {
-		doTasks();
+		state = State.running;
+		doTask();
 	}
 
 
@@ -145,6 +154,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	 */
 	@Override
 	public void start() throws Exception {
+		super.start();
 		worker.add(this);
 	}
 
@@ -154,6 +164,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	 */
 	@Override
 	public void pause() throws Exception {
+		super.pause();
 		CollectionUtil.forEach(receivers, new CollectionUtil.Action<SocketReceiver>() {
 			@Override
 			public void doAction(SocketReceiver o) {
@@ -168,7 +179,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	 */
 	@Override
 	public void resume() throws Exception {
-
+		super.resume();
 	}
 
 
@@ -177,6 +188,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	 */
 	@Override
 	public void stop() throws Exception {
+		super.stop();
 		CollectionUtil.forEach(receivers, new CollectionUtil.Action<SocketReceiver>() {
 			@Override
 			public void doAction(SocketReceiver o) {

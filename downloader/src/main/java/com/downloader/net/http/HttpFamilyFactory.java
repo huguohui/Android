@@ -1,6 +1,5 @@
 package com.downloader.net.http;
 
-import com.downloader.engine.TaskInfo;
 import com.downloader.engine.downloader.DownloadDescriptor;
 import com.downloader.engine.downloader.DownloadTaskInfo;
 import com.downloader.engine.downloader.HttpDownloadTaskInfo;
@@ -36,7 +35,7 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 	@Override
 	public SocketRequest createRequest(DownloadTaskInfo i) throws IOException {
 		HttpDownloadTaskInfo hti = (HttpDownloadTaskInfo) i;
-		WebAddress address = new WebAddress(((HttpDownloadTaskInfo) i).getUrl());
+		WebAddress address = hti.getAddress();
 		return createRequest(address);
 	}
 
@@ -51,11 +50,20 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 
 	@Override
 	public SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocPolicy policy) throws IOException {
-		int num = policy.alloc(i);
+		int  num = i.getTotalThreads() != 0 ? i.getTotalThreads() : policy.alloc(i);
 		long length = i.getLength(), blockSize = length / num;
 		SocketRequest[] requests = new SocketRequest[num];
+		long[] pStart = i.getPartOffsetStart(),
+				pLen = i.getPartLength(),
+				pDownLen = i.getPartDownloadLength();
 
 		for (int j = 0; j < num; j++) {
+			if (pStart != null && pLen != null && pDownLen != null) {
+				requests[j] = createRequest(i, new HttpRequest.Range(pStart[j] + pDownLen[j],
+						pLen[j] - pDownLen[j]));
+				continue;
+			}
+
 			requests[j] = createRequest(i, new HttpRequest.Range(j * blockSize,
 					num > -~j ? blockSize * -~j : length));
 		}

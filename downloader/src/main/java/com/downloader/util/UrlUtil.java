@@ -180,11 +180,11 @@ final public class UrlUtil {
 	
 	public static void main(String[] args) throws MalformedURLException {
 /*
-		String url = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
+		String address = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
 		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
 		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
-		if (pattern.matcher(url).matches()) {
-			System.out.println(url);
+		if (pattern.matcher(address).matches()) {
+			System.out.println(address);
 		}
 */
 

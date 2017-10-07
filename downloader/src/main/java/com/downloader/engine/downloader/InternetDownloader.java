@@ -1,7 +1,7 @@
 package com.downloader.engine.downloader;
 
 import com.downloader.client.Context;
-import com.downloader.engine.Task;
+import com.downloader.engine.Monitor;
 import com.downloader.engine.downloader.exception.UnsupportedProtocolException;
 import com.downloader.engine.downloader.factory.DownloadTaskFactory;
 import com.downloader.engine.worker.AsyncWorker;
@@ -14,9 +14,11 @@ import com.downloader.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 /**
  * Downloads data based http protocol.
@@ -33,7 +35,7 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected boolean isResumeFromInfo;
 
-	protected int specialThreads;
+	protected int parallelTaskNum = 1;
 
 	protected long blockSize;
 
@@ -48,7 +50,7 @@ public class InternetDownloader extends AbstractDownloader {
 	protected ThreadAllocPolicy policy = new ThreadAllocPolicy() {
 		@Override
 		public int alloc(DownloadTaskInfo info) {
-			long len = info.getLength();
+			long len = Math.max(info.getLength(), 1);
 			int i = 1;
 			while((len /= 1024) != 0) {
 				i++;
@@ -56,6 +58,8 @@ public class InternetDownloader extends AbstractDownloader {
 			return Math.min(MAX_THREAD, i);
 		}
 	};
+
+	protected List<Monitor> monitors = new Vector<>();
 
 	protected Timer monitorTimer = new Timer();
 
@@ -77,7 +81,7 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public void createTask(DownloadDescriptor desc) throws UnsupportedProtocolException, IOException {
+	public void newTask(DownloadDescriptor desc) throws UnsupportedProtocolException, IOException {
 		String strPtl = desc.getAddress().getProtocol();
 		if (!Protocols.isSupport(strPtl)) {
 			throw new UnsupportedProtocolException();
@@ -89,6 +93,40 @@ public class InternetDownloader extends AbstractDownloader {
 			throw new UnsupportedProtocolException();
 		}
 		taskManager.add(DownloadTaskFactory.create(desc, handler, policy));
+	}
+
+
+	@Override
+	public DownloadTask findTask(int id) {
+		return taskManager.get(id);
+	}
+
+
+	@Override
+	public void deleteTask(int id) {
+		taskManager.remove(id);
+	}
+
+
+	@Override
+	public void startTask(int id) {
+		try {
+			taskManager.start(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public List<DownloadTask> taskList() {
+		return taskManager.list();
+	}
+
+
+	@Override
+	public List<Thread> threadList() {
+		return threadManager.list();
 	}
 
 

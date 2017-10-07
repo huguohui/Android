@@ -1,19 +1,14 @@
 package com.downloader.engine.downloader;
 
 import com.downloader.engine.TaskInfo;
-import com.downloader.io.exceptions.FileFormatException;
-import com.downloader.io.writer.DataReader;
-import com.downloader.io.writer.DataWriter;
 import com.downloader.net.SocketReceiver;
 import com.downloader.net.SocketRequest;
 import com.downloader.net.SocketResponse;
+import com.downloader.net.WebAddress;
 import com.downloader.util.TimeUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Information for download task.
@@ -25,7 +20,7 @@ public abstract class DownloadTaskInfo extends TaskInfo {
 	public final static int MAX_NAME_LEN = 0xff;
 
 	/** Url of downloading. */
-	protected URL url;
+	protected WebAddress address;
 
 	protected String path;
 
@@ -55,7 +50,7 @@ public abstract class DownloadTaskInfo extends TaskInfo {
 
 
 	public DownloadTaskInfo(DownloadDescriptor d) {
-		url = d.getAddress().getUrl();
+		address = d.getAddress();
 		path = d.getPath();
 		priority = d.getPriority();
 		totalThreads = d.getMaxThread();
@@ -118,13 +113,13 @@ public abstract class DownloadTaskInfo extends TaskInfo {
 	}
 
 
-	public URL getUrl() {
-		return url;
+	public WebAddress getAddress() {
+		return address;
 	}
 
 
-	public void setUrl(URL mUrl) {
-		url = mUrl;
+	public void setAddress(WebAddress mUrl) {
+		address = mUrl;
 	}
 
 

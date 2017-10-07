@@ -2,7 +2,6 @@ package com.downloader.client;
 
 import com.downloader.engine.downloader.DownloadDescriptor;
 import com.downloader.engine.downloader.DownloadTask;
-import com.downloader.engine.downloader.DownloadTaskInfo;
 import com.downloader.engine.downloader.HttpDownloadTask;
 import com.downloader.engine.downloader.HttpDownloader;
 import com.downloader.engine.downloader.InternetDownloader;
@@ -16,7 +15,6 @@ import com.downloader.manager.DownloadTaskManager;
 import com.downloader.manager.ThreadManager;
 import com.downloader.manager.factory.HttpDownloadTaskFactory;
 import com.downloader.net.SocketFamilyFactory;
-import com.downloader.net.SocketResponse;
 import com.downloader.net.WebAddress;
 import com.downloader.net.http.HttpFamilyFactory;
 import com.downloader.net.http.HttpReceiver;
@@ -25,9 +23,7 @@ import com.downloader.util.Log;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,6 +47,33 @@ public class Main {
 		new Main().test2();
 
 //		new Main().test1();
+	}
+
+
+	void test2() throws Exception {
+		InternetDownloader d = new InternetDownloader(null);
+		d.addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
+			@Override
+			public SocketFamilyFactory socketFamilyFactory() {
+				return new HttpFamilyFactory();
+			}
+
+
+			@Override
+			public DownloadTaskInfoFactory downloadTaskInfoFactory() {
+				return new HttpDownloadTaskInfoFactory();
+			}
+		});
+
+		d.newTask(new DownloadDescriptor.Builder()
+				.setAddress(new WebAddress(new URL(urls[1])))
+				.setPath("d:/")
+				.build()
+		);
+
+		d.start();
+
+
 	}
 
 
@@ -100,33 +123,6 @@ public class Main {
 				}
 			}
 		}, 3000, 1000);
-	}
-
-
-	void test2() throws Exception {
-		InternetDownloader d = new InternetDownloader(null);
-		d.addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
-			@Override
-			public SocketFamilyFactory socketFamilyFactory() {
-				return new HttpFamilyFactory();
-			}
-
-
-			@Override
-			public DownloadTaskInfoFactory downloadTaskInfoFactory() {
-				return new HttpDownloadTaskInfoFactory();
-			}
-		});
-
-		d.createTask(new DownloadDescriptor.Builder()
-				.setAddress(new WebAddress(new URL(urls[1])))
-				.setPath("d:/")
-				.build()
-		);
-
-		d.start();
-
-
 	}
 
 

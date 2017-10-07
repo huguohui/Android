@@ -91,7 +91,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 
 	public HttpDownloader(HttpDownloadTaskInfo info) {
-		this(info.getUrl());
+		this(info.getAddress());
 		initWithInfo(info);
 	}
 
@@ -161,7 +161,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 		info.setLength(mLength);
 		info.setName(fileName);
-		info.setUrl(url);
+		info.setAddress(url);
 	}
 
 
@@ -391,5 +391,46 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 	public Worker getWorker() {
 		return worker;
+	}
+
+
+	/**
+	 * Create a new download task.
+	 *
+	 * @param desc Descriptor.
+	 */
+	@Override
+	public void newTask(DownloadDescriptor desc) throws Exception {
+
+	}
+
+
+	@Override
+	public DownloadTask findTask(int id) {
+		return null;
+	}
+
+
+	@Override
+	public void deleteTask(int id) {
+
+	}
+
+
+	@Override
+	public void startTask(int id) {
+
+	}
+
+
+	@Override
+	public List<DownloadTask> taskList() {
+		return null;
+	}
+
+
+	@Override
+	public List<Thread> threadList() {
+		return null;
 	}
 }

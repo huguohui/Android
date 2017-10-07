@@ -4,6 +4,8 @@ package com.downloader.io.writer;
 import java.io.IOException;
 
 public interface DataWritable extends Writable {
+
+
 	void writeInt(int i) throws IOException;
 
 
@@ -23,4 +25,6 @@ public interface DataWritable extends Writable {
 
 
 	void writeChars(char[] cs, int s, int e) throws IOException;
+
+
 }

@@ -43,7 +43,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	/** The method of requesting  */
 	protected Method mMethod = Method.GET;
 
-	/** Requested url. */
+	/** Requested address. */
 	protected URL mUrl;
 
 	protected HttpResponse mHttpResponse;
@@ -156,7 +156,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	
 	
 	/**
-	 * Open a url address.
+	 * Open a address address.
 	 * @throws IOException If exception.
 	 */
 	public void open(URL url, Method method) throws IOException {
@@ -167,7 +167,7 @@ public class HttpRequest extends AbstractSocketRequest {
 	
 	
 	/**
-	 * Open a url address.
+	 * Open a address address.
 	 * @throws IOException If exception.
 	 */
 	public void open(SocketAddress url) throws IOException {
