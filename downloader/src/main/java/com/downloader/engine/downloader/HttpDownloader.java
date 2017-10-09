@@ -10,6 +10,7 @@ import com.downloader.manager.ThreadManager;
 import com.downloader.net.AbstractSocketRequest;
 import com.downloader.net.AsyncSocketReceiver;
 import com.downloader.net.SocketReceiver;
+import com.downloader.net.WebAddress;
 import com.downloader.net.http.Http;
 import com.downloader.net.http.HttpHeader;
 import com.downloader.net.http.HttpReceiver;
@@ -91,7 +92,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 
 	public HttpDownloader(HttpDownloadTaskInfo info) {
-		this(info.getAddress());
+		this(info.getAddress().getUrl());
 		initWithInfo(info);
 	}
 
@@ -161,7 +162,7 @@ public class HttpDownloader extends AbstractDownloader implements Workable, Sock
 
 		info.setLength(mLength);
 		info.setName(fileName);
-		info.setAddress(url);
+		info.setAddress(new WebAddress(url));
 	}
 
 

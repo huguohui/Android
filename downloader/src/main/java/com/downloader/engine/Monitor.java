@@ -14,11 +14,7 @@ public interface Monitor {
 	Object collectedData();
 
 
-	interface OnMonitoredListener {
-
-		void OnMonitored(Object obj);
-
-	}
+	void addWatcher(MonitorWatcher w);
 
 
 }

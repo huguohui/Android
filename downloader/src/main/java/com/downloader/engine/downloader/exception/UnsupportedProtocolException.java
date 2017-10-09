@@ -7,4 +7,5 @@ import com.downloader.engine.downloader.exception.DownloadException;
  */
 
 public class UnsupportedProtocolException extends DownloadException {
+
 }

@@ -1,6 +1,7 @@
 package com.downloader.engine.downloader;
 
 import com.downloader.engine.Controlable;
+import com.downloader.engine.Monitor;
 
 import java.util.List;
 
@@ -34,6 +35,12 @@ public interface Downloader extends Controlable {
 
 
 	List<Thread> threadList();
+
+
+	State state();
+
+
+	void setMonitor(Monitor m);
 
 
 	interface OnDownloadStartListener {

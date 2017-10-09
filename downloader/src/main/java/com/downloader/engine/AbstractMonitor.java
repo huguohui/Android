@@ -1,5 +1,9 @@
 package com.downloader.engine;
 
+import com.downloader.engine.downloader.Downloader;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +13,8 @@ import java.util.TimerTask;
 
 public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
+	protected ThreadLocal<Downloader> localObj;
+
 	protected Object monitored;
 
 	protected int interval;
@@ -16,6 +22,8 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 	protected Object collectionData;
 
 	protected Timer monitorTimer = new Timer();
+
+	protected List<MonitorWatcher> watchers = new ArrayList<>();
 
 
 	public AbstractMonitor(int interval) {
@@ -30,9 +38,10 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 	}
 
 
-	protected void doMonitor() {
-		if (monitored == null) {
-			return;
+	public void doMonitor() {
+		localObj.set((Downloader) monitored);
+		for (int i = 0; i < watchers.size(); i++) {
+			watchers.get(i).watch(localObj.get());
 		}
 	}
 
@@ -41,6 +50,22 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 	 */
 	@Override
 	public void run() {
+		if (monitored == null) {
+			return;
+		}
+
 		doMonitor();
+	}
+
+
+	public void addWatcher(MonitorWatcher w) {
+		synchronized (watchers) {
+			watchers.add(w);
+		}
+	}
+
+
+	public Object collectedData() {
+		return localObj.get();
 	}
 }
