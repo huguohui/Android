@@ -17,7 +17,7 @@ public abstract class AbstractDownloader implements Downloader {
 	protected long mStartTime;
 
 	/** The download state. */
-	protected State mState = State.unstart;
+	protected DownloadState mState = DownloadState.unstart;
 
 	/** The download finished time. */
 	protected long mFinishedTime;
@@ -41,7 +41,7 @@ public abstract class AbstractDownloader implements Downloader {
 
 
 	public AbstractDownloader() {
-		mState = State.initing;
+		mState = DownloadState.initing;
 	}
 
 
@@ -51,7 +51,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 */
 	public synchronized void start() throws Exception {
 		mStartTime = TimeUtil.millisTime();
-		setState(State.downloading);
+		setState(DownloadState.downloading);
 	}
 
 
@@ -59,7 +59,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 * Pauses task of downloading.
 	 */
 	public synchronized void pause() throws Exception {
-		setState(State.paused);
+		setState(DownloadState.paused);
 	}
 
 
@@ -67,7 +67,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 * Resumes task of downloading.
 	 */
 	public synchronized void resume() throws IOException {
-		setState(State.downloading);
+		setState(DownloadState.downloading);
 	}
 
 
@@ -75,7 +75,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 * Stops to downloading.
 	 */
 	public synchronized void stop() throws IOException {
-		setState(State.stoped);
+		setState(DownloadState.stoped);
 		mIsStop = true;
 	}
 
@@ -104,12 +104,12 @@ public abstract class AbstractDownloader implements Downloader {
 	}
 
 
-	public State getState() {
+	public DownloadState getState() {
 		return mState;
 	}
 
 
-	public synchronized void setState(State mState) {
+	public synchronized void setState(DownloadState mState) {
 		this.mState = mState;
 	}
 

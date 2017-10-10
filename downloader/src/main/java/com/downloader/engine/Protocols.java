@@ -1,4 +1,4 @@
-package com.downloader.engine.downloader;
+package com.downloader.engine;
 
 /**
  * Common protocol. 

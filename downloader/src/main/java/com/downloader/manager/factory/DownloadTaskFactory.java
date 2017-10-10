@@ -1,7 +1,7 @@
 package com.downloader.manager.factory;
 
 import com.downloader.engine.TaskInfo;
-import com.downloader.engine.downloader.Descriptor;
+import com.downloader.engine.Descriptor;
 import com.downloader.engine.downloader.DownloadTask;
 
 /**

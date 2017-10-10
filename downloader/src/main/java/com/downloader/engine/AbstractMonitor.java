@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 /**
  * Created by skyrim on 2017/10/7.
  */
-
 public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
-	protected ThreadLocal<Downloader> localObj;
+	protected ThreadLocal<Object> localObj = new ThreadLocal<>();
 
 	protected Object monitored;
 
-	protected int interval;
+	protected long interval;
 
 	protected Object collectionData;
 
@@ -38,8 +38,8 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 	}
 
 
-	public void doMonitor() {
-		localObj.set((Downloader) monitored);
+	protected void doMonitor() {
+		localObj.set(monitored);
 		for (int i = 0; i < watchers.size(); i++) {
 			watchers.get(i).watch(localObj.get());
 		}
@@ -65,7 +65,35 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 	}
 
 
+	public void removeWatcher(MonitorWatcher m) {
+		synchronized (watchers) {
+			watchers.remove(m);
+		}
+	}
+
+
+	public long interval() {
+		return interval;
+	}
+
+
+	public void setInterval(long interval) {
+		this.interval = interval;
+	}
+
+
 	public Object collectedData() {
 		return localObj.get();
 	}
+
+
+	public List<MonitorWatcher> getWatchers() {
+		return this.watchers;
+	}
+
+
+	public void stop() {
+		monitorTimer.cancel();
+	}
+
 }

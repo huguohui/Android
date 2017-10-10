@@ -2,6 +2,8 @@ package com.downloader.engine.downloader;
 
 import com.downloader.client.Context;
 import com.downloader.engine.Monitor;
+import com.downloader.engine.MonitorWatcher;
+import com.downloader.engine.Protocols;
 import com.downloader.engine.downloader.exception.UnsupportedProtocolException;
 import com.downloader.engine.downloader.factory.DownloadTaskFactory;
 import com.downloader.engine.worker.AsyncWorker;
@@ -9,16 +11,11 @@ import com.downloader.engine.worker.Worker;
 import com.downloader.io.writer.Writer;
 import com.downloader.manager.DownloadTaskManager;
 import com.downloader.manager.ThreadManager;
-import com.downloader.util.CollectionUtil;
-import com.downloader.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
 /**
  * Downloads data based http protocol.
@@ -43,6 +40,8 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected Context context;
 
+	protected int monitorInterval = 1000;
+
 	protected DownloadTaskManager taskManager = DownloadTaskManager.getInstance();
 
 	protected Map<Protocols, ProtocolHandler> protocolHandlers = new HashMap<>();
@@ -59,25 +58,18 @@ public class InternetDownloader extends AbstractDownloader {
 		}
 	};
 
-	protected List<Monitor> monitors = new Vector<>();
-
-	protected Timer monitorTimer = new Timer();
-
-	protected TimerTask monitorTimerTask = new TimerTask() {
-		@Override
-		public void run() {
-			monitor();
-		}
-	};
+	protected Monitor monitor = new DownloadMonitor(1000);
 
 
 	public InternetDownloader(Context c) {
 		context = c;
+		init();
 	}
 
 
 	protected void init() {
 		worker = new AsyncWorker(threadManager);
+		monitor.monitor(this);
 	}
 
 
@@ -130,22 +122,21 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public void monitor() {
-		CollectionUtil.forEach(taskManager.list(), new CollectionUtil.Action<DownloadTask>() {
-			@Override
-			public void doAction(DownloadTask o) {
-				//Log.println(o.info().getProgress());
-			}
-		});
+	@Override
+	public DownloadState state() {
+		return mState;
+	}
 
-		monitorTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				for (int i = 0; i < threadManager.list().size(); i++) {
-					Log.println(threadManager.get(i).getId() + "\t" + threadManager.get(i).getName() + "\t" + threadManager.get(i).getState().toString());
-				}
-			}
-		}, 0, 1000);
+
+	@Override
+	public void addWatcher(MonitorWatcher w) {
+		monitor.addWatcher(w);
+	}
+
+
+	@Override
+	public Monitor getMonitor() {
+		return monitor;
 	}
 
 

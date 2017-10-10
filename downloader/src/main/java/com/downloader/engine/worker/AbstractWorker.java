@@ -115,7 +115,11 @@ public abstract class AbstractWorker implements Worker {
 
 	@Override
 	public void run() {
-		while(!isStop) {
+		for (;;) {
+			if (isStop) {
+				return;
+			}
+
 			if (isPause) {
 				pauseWorker();
 				continue;

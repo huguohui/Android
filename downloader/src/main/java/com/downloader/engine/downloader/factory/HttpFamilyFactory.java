@@ -1,4 +1,4 @@
-package com.downloader.net.http;
+package com.downloader.engine.downloader.factory;
 
 import com.downloader.engine.downloader.DownloadDescriptor;
 import com.downloader.engine.downloader.DownloadTaskInfo;
@@ -9,6 +9,9 @@ import com.downloader.net.SocketFamilyFactory;
 import com.downloader.net.SocketReceiver;
 import com.downloader.net.SocketRequest;
 import com.downloader.net.WebAddress;
+import com.downloader.net.http.Http;
+import com.downloader.net.http.HttpReceiver;
+import com.downloader.net.http.HttpRequest;
 
 import java.io.IOException;
 import java.net.SocketAddress;

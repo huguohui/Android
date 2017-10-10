@@ -1,11 +1,11 @@
 package com.downloader.engine;
 
-import com.downloader.engine.downloader.Downloader;
+import java.util.List;
 
 /**
  * Created by skyrim on 2017/10/7.
  */
-public interface Monitor {
+public interface Monitor extends Stopable {
 
 
 	void monitor(Object d);
@@ -16,5 +16,16 @@ public interface Monitor {
 
 	void addWatcher(MonitorWatcher w);
 
+
+	void removeWatcher(MonitorWatcher w);
+
+
+	long interval();
+
+
+	void setInterval(long i);
+
+
+	List<MonitorWatcher> getWatchers();
 
 }

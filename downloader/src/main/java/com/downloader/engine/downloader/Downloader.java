@@ -2,6 +2,8 @@ package com.downloader.engine.downloader;
 
 import com.downloader.engine.Controlable;
 import com.downloader.engine.Monitor;
+import com.downloader.engine.MonitorWatcher;
+import com.downloader.engine.Protocols;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface Downloader extends Controlable {
 	/** The download states. */
-	enum State {
+	enum DownloadState {
 		unstart, initing, preparing, downloading, paused, stoped, finished, exceptional
 	}
 
@@ -37,10 +39,16 @@ public interface Downloader extends Controlable {
 	List<Thread> threadList();
 
 
-	State state();
+	DownloadState state();
 
 
-	void setMonitor(Monitor m);
+	void addWatcher(MonitorWatcher w);
+
+
+	Monitor getMonitor();
+
+
+	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
 
 
 	interface OnDownloadStartListener {

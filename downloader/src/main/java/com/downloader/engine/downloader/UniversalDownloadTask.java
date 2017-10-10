@@ -1,5 +1,6 @@
 package com.downloader.engine.downloader;
 
+import com.downloader.engine.Protocols;
 import com.downloader.engine.TaskInfo;
 import com.downloader.engine.worker.AsyncWorker;
 import com.downloader.engine.worker.Worker;
@@ -13,7 +14,6 @@ import com.downloader.net.SocketRequest;
 import com.downloader.net.SocketResponse;
 import com.downloader.net.WebAddress;
 import com.downloader.util.CollectionUtil;
-import com.downloader.util.Log;
 
 import java.io.File;
 import java.io.IOException;

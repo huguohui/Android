@@ -1,9 +1,7 @@
 package com.downloader.engine.downloader;
 
+import com.downloader.engine.Descriptor;
 import com.downloader.net.WebAddress;
-
-import java.net.URL;
-import java.nio.channels.WritableByteChannel;
 
 /**
  * Descriptor for downloading task.
