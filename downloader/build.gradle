@@ -1,11 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'downloader'
+            keyPassword '123456'
+            storeFile file('E:/MyCodes/Android/tankwar.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
-
     defaultConfig {
-        applicationId "com.downloader"
+        applicationId "com.badsocket"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
@@ -27,7 +34,6 @@ dependencies {
     /* ButterKnife */
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.3.1'
 }
