@@ -1,11 +1,19 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 19
+    signingConfigs {
+        config {
+            keyAlias 'tankwar'
+            keyPassword '123456'
+            storeFile file('E:/MyCodes/Android/tankwar.jks')
+            storePassword '123456'
+        }
+    }
+    compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.tankwar"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 25
     }
     buildTypes {
         release {
