@@ -3,6 +3,7 @@ package com.badsocket.manager;
 import com.badsocket.engine.Task;
 import com.badsocket.engine.downloader.DownloadTask;
 import com.badsocket.util.CollectionUtil;
+import com.badsocket.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,17 +13,21 @@ import java.util.List;
  * Tool for management download task.
  * @since 2016/12/26 15:45
  */
-public class DownloadTaskManager extends AbstractDownloadTaskManager {
+public class DownloadTaskManager extends AbstractDownloadTaskManager implements Task.OnTaskFinishListener {
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = new DownloadTaskManager();
 	/** Max并行的任务数 */
 	public final static int MAX_PARALELL_TASK = 5;
 
-	protected int runningTasks = 0;
+	protected int runningTaskNum = 0;
 
 	protected int allTasksNum = 0;
 
+	protected int parallelTaskNum = MAX_PARALELL_TASK;
+
 	protected List<DownloadTask> finishedTasks = new ArrayList<>();
+
+	protected List<DownloadTask> runningTasks = new ArrayList<>();
 
 	protected Operation startOperation = new Operation.StartOperation();
 
@@ -32,7 +37,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 
 	protected Operation stopOperation = new Operation.StopOperation();
 
-	protected CollectionUtil.Filter unstartTaskFilter = new StateFilter.Unstart();
+	protected CollectionUtil.Filter runnableTaskFilter = new StateFilter.Runnable();
 
 	protected CollectionUtil.Filter runningTaskFilter = new StateFilter.Running();
 
@@ -58,22 +63,31 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	}
 
 
-	protected List<DownloadTask> getUnstartTask() {
-		return CollectionUtil.filter(mList, unstartTaskFilter);
+	protected List<DownloadTask> getRunnableTask() {
+		return CollectionUtil.filter(mList, runnableTaskFilter);
 	}
 
 
 	protected void startRemainTask() {
-		List<DownloadTask> neededTasks = getUnstartTask();
-		CollectionUtil.forEach(neededTasks, new Operation.StartOperation());
-		runningTasks += neededTasks.size();
+		int needStartTask = parallelTaskNum - runningTaskNum;
+		List<DownloadTask> tasks = null;
+		if (needStartTask > 0 && (tasks = getRunnableTask()).size() != 0) {
+			CollectionUtil.forEach(tasks.subList(0, needStartTask), new Operation.StartOperation());
+			runningTaskNum += needStartTask;
+		}
+		else {
+			//TODO: all done.
+		}
 	}
 
 
 	protected void startTask(DownloadTask t) {
-		if (isAutoStart && runningTasks < MAX_PARALELL_TASK) {
+		if (isAutoStart && runningTaskNum < parallelTaskNum) {
 			startOperation.doAction(t);
-			runningTasks++;
+			runningTaskNum++;
+		}
+		else {
+			t.setState(Task.State.waiting);
 		}
 	}
 
@@ -81,6 +95,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	public boolean add(DownloadTask d) {
 		synchronized (mList) {
 			boolean ret = super.add(d);
+			d.setOnFinishListener(this);
 			startTask(d);
 			return ret;
 		}
@@ -93,6 +108,13 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	@Override
 	public void startAll() throws Exception {
 		synchronized (mList) {
+			for (int i = 0; i < mList.size(); i++) {
+				Task t = mList.get(i);
+				if (t != null) {
+					t.setState(Task.State.waiting);
+				}
+			}
+
 			startRemainTask();
 		}
 	}
@@ -143,6 +165,18 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	}
 
 
+	@Override
+	public void setParallelTaskNum(int num) {
+		parallelTaskNum = num;
+	}
+
+
+	@Override
+	public int getParallelTaskNum() {
+		return parallelTaskNum;
+	}
+
+
 	protected DownloadTask getTask(int i) {
 		synchronized (mList) {
 			if (mList.isEmpty())
@@ -174,6 +208,21 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	@Override
 	public void stop(int i) throws Exception {
 		stopOperation.exec(getTask(i));
+	}
+
+
+	@Override
+	public void onTaskFinish(Task t) {
+		synchronized (mList) {
+			mList.remove(t);
+			runningTaskNum--;
+		}
+
+		synchronized (finishedTasks) {
+			finishedTasks.add((DownloadTask) t);
+		}
+
+		startRemainTask();
 	}
 
 
@@ -230,9 +279,9 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager {
 		public abstract boolean check(DownloadTask d);
 
 
-		static class Unstart extends StateFilter {
+		static class Runnable extends StateFilter {
 			public boolean check(DownloadTask d) {
-				return !Task.State.running.equals(d.getState()) && !Task.State.finished.equals(d.getState());
+				return Task.State.unstart.equals(d.getState()) || Task.State.waiting.equals(d.getState());
 			}
 		}
 

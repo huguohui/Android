@@ -5,7 +5,7 @@ import com.badsocket.engine.downloader.DownloadTask;
 /**
  * Abstracts for manager of download task.
  */
-public abstract class AbstractDownloadTaskManager extends AbstractManager<DownloadTask>  {
+public abstract class AbstractDownloadTaskManager extends AbstractManager<DownloadTask> {
 
 
 	public abstract void start(int i) throws Exception;
@@ -36,5 +36,14 @@ public abstract class AbstractDownloadTaskManager extends AbstractManager<Downlo
 
 
 	public abstract void setAutoStart(boolean is);
+
+
+	public abstract void setParallelTaskNum(int num);
+
+
+	public abstract int getParallelTaskNum();
+
+
+
 
 }

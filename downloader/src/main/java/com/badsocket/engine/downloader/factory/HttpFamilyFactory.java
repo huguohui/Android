@@ -11,6 +11,7 @@ import com.badsocket.net.SocketRequest;
 import com.badsocket.net.WebAddress;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
+import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.HttpRequest;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 	@Override
 	public SocketRequest createRequest(SocketAddress d) throws IOException {
 		WebAddress address = (WebAddress) d;
-		HttpRequest hr = new HttpRequest();
+		BaseHttpRequest hr = new BaseHttpRequest();
 		hr.setAddress(address);
 		return hr;
 	}
@@ -45,7 +46,7 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 
 	@Override
 	public SocketRequest createRequest(DownloadDescriptor d, SocketRequest.Range r) throws IOException {
-		HttpRequest hr = (HttpRequest) createRequest(d);
+		BaseHttpRequest hr = (BaseHttpRequest) createRequest(d);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
 		return hr;
@@ -62,8 +63,10 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 
 		for (int j = 0; j < num; j++) {
 			if (pStart != null && pLen != null && pDownLen != null) {
-				requests[j] = createRequest(i, new HttpRequest.Range(pStart[j] + pDownLen[j],
-						pLen[j] - pDownLen[j]));
+				if (pLen != pDownLen) {
+					requests[j] = createRequest(i, new HttpRequest.Range(pStart[j] + pDownLen[j],
+							pLen[j] - pDownLen[j]));
+				}
 				continue;
 			}
 
@@ -77,7 +80,7 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 
 	@Override
 	public SocketRequest createRequest(DownloadTaskInfo i, SocketRequest.Range r) throws IOException {
-		HttpRequest hr = (HttpRequest) createRequest(i);
+		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
 		return hr;
@@ -86,8 +89,8 @@ public class HttpFamilyFactory implements SocketFamilyFactory {
 
 	@Override
 	public SocketReceiver createReceiver(SocketRequest r, Writer w) throws IOException {
-		HttpRequest req = (HttpRequest) r;
-		HttpReceiver rec = new HttpReceiver((HttpRequest) r, w);
+		BaseHttpRequest req = (BaseHttpRequest) r;
+		HttpReceiver rec = new HttpReceiver((BaseHttpRequest) r, w);
 		return rec;
 	}
 }

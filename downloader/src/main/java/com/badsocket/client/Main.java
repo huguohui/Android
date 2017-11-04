@@ -36,12 +36,7 @@ public class Main {
 
 
 	public static void main(String[] args) throws Exception {
-
-		Log.println(ComputeUtils.getFriendlyUnitOfBytes(1024*1024+1024, 2));
-
-
-//		new Main().test2();
-
+		new Main().test2();
 	}
 
 
@@ -60,11 +55,12 @@ public class Main {
 			}
 		});
 
-		d.newTask(new DownloadDescriptor.Builder()
+		d.setParallelTaskNum(1);
+/*		d.newTask(new DownloadDescriptor.Builder()
 				.setAddress(new WebAddress(new URL(urls[1])))
 				.setPath("d:/")
 				.build()
-		);
+		);*/
 
 		d.newTask(new DownloadDescriptor.Builder()
 				.setAddress(new WebAddress(new URL(urls[0])))
@@ -81,15 +77,12 @@ public class Main {
 				List<DownloadTask> dts = d.taskList();
 				for (int i = 0; i < dts.size(); i++) {
 					DownloadTask dt = dts.get(i);
-					Log.println(dt.info().getName() + "\t" + dt.info().getProgress());
+					Log.println(dt.info().getName() + "\t" + dt.info().getProgress() + "\t" + dt.getState());
 				}
 			}
 		});
 
-
 	}
-
-
 
 	public static void println(Object args) {
 

@@ -13,10 +13,14 @@ import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.WebAddress;
+import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.util.CollectionUtil;
+import com.badsocket.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.badsocket.engine.downloader.DownloadHelper.fetchTaskInfo;
 
 /**
  * Created by skyrim on 2017/10/6.
@@ -40,6 +44,8 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	protected String downloadPath;
 
 	protected int priority;
+
+	protected boolean isResumeFromInfo;
 
 	protected DownloadTaskInfo info;
 
@@ -67,11 +73,10 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 		downloadPath = d.getPath();
 		priority = d.getPriority();
 		descriptor = d;
-
 		this.handler = handler;
 		this.policy = policy;
 		this.factory = handler.socketFamilyFactory();
-
+		this.info = handler.downloadTaskInfoFactory().create(descriptor);
 		init();
 	}
 
@@ -80,10 +85,12 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
 		this(DownloadDescriptor.fromDownloadTaskInfo(i), handler, policy);
 		info = i;
+		isResumeFromInfo = true;
 	}
 
 
 	protected void init() throws IOException {
+		state = State.unstart;
 		try {
 			worker = new AsyncWorker(ThreadManager.getInstance());
 			worker.start();
@@ -102,8 +109,8 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 
 
 	protected void doTask() throws IOException {
-		if (info == null) {
-			info = DownloadHelper.fetchTaskInfo(descriptor, handler);
+		if (!isResumeFromInfo) {
+			info.update(DownloadHelper.fetchTaskInfo(descriptor, handler));
 		}
 		writer = new ConcurrentFileWriter(new File(info.getPath(), info.getName()));
 		requests = factory.createRequest(info, policy);
@@ -125,7 +132,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 
 
 	@Override
-	public void onFinished(SocketReceiver r) {
+	public synchronized void onFinished(SocketReceiver r) {
 		info.update(receivers);
 		if (checkFinished()) {
 			try {
@@ -133,6 +140,10 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 				writer.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				if (onFinishListener != null) {
+					onFinishListener.onTaskFinish(this);
+				}
 			}
 		}
 	}

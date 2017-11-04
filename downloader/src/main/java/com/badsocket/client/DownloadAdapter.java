@@ -159,4 +159,16 @@ public class DownloadAdapter extends Binder implements Downloader {
 	public void addProtocolHandler(Protocols ptl, ProtocolHandler ph) {
 		downloader.addProtocolHandler(ptl, ph);
 	}
+
+
+	@Override
+	public void setParallelTaskNum(int num) {
+		downloader.setParallelTaskNum(num);
+	}
+
+
+	@Override
+	public int getParallelTaskNum() {
+		return downloader.getParallelTaskNum();
+	}
 }

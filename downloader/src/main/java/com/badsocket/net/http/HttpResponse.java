@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class HttpResponse extends SocketResponse {
 
-	protected HttpRequest httpRequest;
+	protected BaseHttpRequest httpRequest;
 
 	protected InputStream inputStream;
 
@@ -63,7 +63,7 @@ public class HttpResponse extends SocketResponse {
 	 */
 	protected HttpResponse(SocketRequest r) throws IOException {
 		super(r);
-		httpRequest = (HttpRequest) r;
+		httpRequest = (BaseHttpRequest) r;
 		if (r.connected()) {
 			if (!r.sent()) {
 				throw new ConnectException();

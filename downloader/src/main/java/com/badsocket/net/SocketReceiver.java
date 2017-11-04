@@ -30,6 +30,9 @@ public interface SocketReceiver extends Stopable {
 	void receive(long len) throws IOException;
 
 
+	long getReceivedLength();
+
+
 	interface OnFinishedListener {
 		void onFinished(SocketReceiver r);
 	}

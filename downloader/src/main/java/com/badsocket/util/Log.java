@@ -71,6 +71,11 @@ final public class Log
 	}
 
 
+	public final static void debug(String val) {
+		//android.util.Log.d("DEBUG", val);
+		println(val);
+	}
+
 
 	public final static void error(String key, String val) {
 		android.util.Log.e(key, val);

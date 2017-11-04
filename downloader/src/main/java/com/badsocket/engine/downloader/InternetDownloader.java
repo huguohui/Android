@@ -183,6 +183,18 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
+	@Override
+	public void setParallelTaskNum(int num) {
+		taskManager.setParallelTaskNum(num);
+	}
+
+
+	@Override
+	public int getParallelTaskNum() {
+		return taskManager.getParallelTaskNum();
+	}
+
+
 	public ProtocolHandler getProtocolHandler(Protocols p) {
 		return protocolHandlers.get(p);
 	}

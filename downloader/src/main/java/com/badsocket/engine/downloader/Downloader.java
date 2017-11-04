@@ -55,6 +55,12 @@ public interface Downloader extends Controlable {
 	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
 
 
+	void setParallelTaskNum(int num);
+
+
+	int getParallelTaskNum();
+
+
 	interface OnDownloadStartListener {
 		void onDownloadStart(AbstractDownloader d);
 	}

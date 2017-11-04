@@ -6,6 +6,7 @@ import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.WebAddress;
 import com.badsocket.util.TimeUtil;
+import com.badsocket.util.UrlUtil;
 
 import java.io.IOException;
 
@@ -54,6 +55,7 @@ public abstract class DownloadTaskInfo extends TaskInfo {
 		priority = d.getPriority();
 		totalThreads = d.getMaxThread();
 		startTime = TimeUtil.millisTime();
+		name = UrlUtil.filename(d.getAddress().getUrl());
 	}
 
 

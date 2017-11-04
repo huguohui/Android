@@ -38,7 +38,7 @@ public class HttpReceiver extends AbstractSocketReceiver {
 	protected long offsetDataBegin = -1;
 
 
-	public HttpReceiver(HttpRequest d, Writer w) throws IOException {
+	public HttpReceiver(BaseHttpRequest d, Writer w) throws IOException {
 		super(d.socket().getInputStream(), w);
 		fileWriter = (ConcurrentWriter) w;
 		httpResponse = (HttpResponse) d.response();

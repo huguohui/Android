@@ -7,7 +7,7 @@ import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.http.HttpReceiver;
-import com.badsocket.net.http.HttpRequest;
+import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
@@ -42,11 +42,14 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 	@Override
 	public void update(SocketRequest[] r) {
-		HttpRequest hr;
+		BaseHttpRequest hr;
 		long[] pStart = new long[r.length],
 				pLen = new long[r.length];
 		for (int i = 0; i < r.length; i++) {
-			hr = (HttpRequest) r[i];
+			if ((hr = (BaseHttpRequest) r[i]) == null) {
+				continue;
+			}
+
 			SocketRequest.Range rg = hr.getRange();
 			pStart[i] = rg != null ? rg.start : 0;
 			pLen[i] = rg != null ? rg.getRange() : 0;

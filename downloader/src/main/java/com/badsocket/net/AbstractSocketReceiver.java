@@ -137,7 +137,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 
 
 	protected void checkAvaliable(InputStream is) throws IOException {
-		int idle = 100, maxWaitMs = 50;
+		int idle = 1, maxWaitMs = 50;
 		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( Exception ex ) {
 			ex.printStackTrace();
 		}

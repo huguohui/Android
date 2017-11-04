@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.badsocket.R;
@@ -22,7 +21,7 @@ public class DownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-		android.support.v4.app.NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(DownloadService.this)
+		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
 				.setSmallIcon(R.mipmap.ic_launcher)
 				.setTicker("")
 				.setWhen(System.currentTimeMillis())

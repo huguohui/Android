@@ -17,7 +17,7 @@ public abstract class Task implements Workable {
 		unstart, waiting, initing, running, paused, resuming, stoped, finished
 	}
 
-	protected State state;
+	protected State state = State.unstart;
 
 
 	protected Task() {
@@ -38,6 +38,11 @@ public abstract class Task implements Workable {
 
 	public State getState() {
 		return state;
+	}
+
+
+	public void setState(State state) {
+		this.state = state;
 	}
 
 
