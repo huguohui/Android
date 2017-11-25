@@ -1,6 +1,6 @@
 package com.badsocket.engine.downloader;
 
-import com.badsocket.client.Context;
+import com.badsocket.engine.Context;
 import com.badsocket.engine.Monitor;
 import com.badsocket.engine.MonitorWatcher;
 import com.badsocket.engine.Protocols;
@@ -148,7 +148,6 @@ public class InternetDownloader extends AbstractDownloader {
 	public void start() {
 		try {
 			taskManager.startAll();
-//			monitorTimer.schedule(monitorTimerTask, 0, 1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

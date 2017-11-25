@@ -34,7 +34,7 @@ public abstract class PermissionChecker {
 
 	public static boolean checkPermisson(Activity activity, String permission) {
 		int permissionCheck = ContextCompat.checkSelfPermission(activity,
-				Manifest.permission.WRITE_CALENDAR);
+				permission);
 		return permissionCheck == PackageManager.PERMISSION_DENIED;
 	}
 

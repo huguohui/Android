@@ -31,7 +31,8 @@ public class Main {
 	static String[] urls = {
 			//"http://www.baidu.com/s?",
 			"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe",
-			"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe"
+			"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe",
+			"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"
 	};
 
 
@@ -63,7 +64,7 @@ public class Main {
 		);*/
 
 		d.newTask(new DownloadDescriptor.Builder()
-				.setAddress(new WebAddress(new URL(urls[0])))
+				.setAddress(new WebAddress(new URL(urls[2])))
 				.setPath("d:/")
 				.build()
 		);

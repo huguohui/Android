@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -104,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,13 +122,27 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
 		super.onStart();
 		Log.error("ERROR", "OnStart");
+		startService();
+	}
+
+
+	private void startService() {
 		if (!isServiceStarted) {
 			startService(new Intent(this, DownloadService.class));
-			isServiceStarted = true;
+//			isServiceStarted = true;
+//			if (!isServiceConnected) {
+//				bindService(new Intent(this, DownloadService.class), serviceConnection, BIND_AUTO_CREATE);
+//			}
 		}
+	}
 
-		if (!isServiceConnected) {
-			bindService(new Intent(this, DownloadService.class), serviceConnection, BIND_AUTO_CREATE);
+
+	private void stopService() {
+		if (isServiceStarted) {
+			stopService(new Intent(this, DownloadService.class));
+			if (isServiceConnected) {
+				unbindService(serviceConnection);
+			}
 		}
 	}
 
@@ -180,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 									}
 								}.start();
 							}
-                        })
+              			         })
                         .setNegativeButton("取消", null)
 						.show();
                 break;
@@ -207,25 +221,32 @@ public class MainActivity extends AppCompatActivity {
     public void onStop() {
 		super.onStop();
 		Log.error("ERROR", "OnStop");
-
-//		if (isServiceConnected) {
-//			unbindService(serviceConnection);
-//			isServiceConnected = false;
-//		}
 	}
 
 
     public void onDestroy() {
 		super.onDestroy();
 		Log.error("ERROR", "OnDestory");
+//		stopService();
 	}
 
 
-	public void onBackPressed() {
-		Intent intent = new Intent(Intent.ACTION_MAIN, null);
-		intent.addCategory(Intent.CATEGORY_HOME);
-		startActivity(intent);
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Log.error("back button", "back button");
+			moveTaskToBack(false);
+			return false;
+		}
+
+		return super.onKeyDown(keyCode, event);
 	}
+
+
+//	public void onBackPressed() {
+//		Intent intent = new Intent(Intent.ACTION_MAIN, null);
+//		intent.addCategory(Intent.CATEGORY_HOME);
+//		startActivity(intent);
+//	}
 
 
 

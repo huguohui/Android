@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.badsocket.R;
+import com.badsocket.engine.Context;
 import com.badsocket.engine.downloader.InternetDownloader;
 
 /**
@@ -21,14 +22,14 @@ public class DownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setTicker("")
-				.setWhen(System.currentTimeMillis())
-				.setContentTitle(getString(R.string.app_name))
-				.setContentText("asdfasdf");
-		Notification notification = mNotifyBuilder.build();
-		this.startForeground(1111, notification);
+//		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
+//				.setSmallIcon(R.mipmap.ic_launcher)
+//				.setTicker("")
+//				.setWhen(System.currentTimeMillis())
+//				.setContentTitle(getString(R.string.app_name))
+//				.setContentText("asdfasdf");
+//		Notification notification = mNotifyBuilder.build();
+//		this.startForeground(1111, notification);
 		Log.e(TAG, "onCreate() executed");
 	}
 
@@ -47,11 +48,13 @@ public class DownloadService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.e(TAG, "onBind() executed");
 		return new DownloadAdapter(new InternetDownloader(new Context() {}));
 	}
 
 
 	public boolean onUnbind(Intent intent) {
+		Log.e(TAG, "onUnbind() executed");
 		super.onUnbind(intent);
 		return false;
 	}
