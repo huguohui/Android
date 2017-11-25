@@ -27,12 +27,14 @@ public abstract class PermissionChecker {
 
 	public static void requestPermissons(Activity activity) {
 		for (String permission : permissions) {
-			checkPermisson(activity, permission);
+			if (isPermissonDenied(activity, permission)) {
+				requestPermission(activity, permission);
+			}
 		}
 	}
 
 
-	public static boolean checkPermisson(Activity activity, String permission) {
+	public static boolean isPermissonDenied(Activity activity, String permission) {
 		int permissionCheck = ContextCompat.checkSelfPermission(activity,
 				permission);
 		return permissionCheck == PackageManager.PERMISSION_DENIED;
