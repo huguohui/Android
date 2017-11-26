@@ -1,7 +1,6 @@
 package com.badsocket.client;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -13,31 +12,21 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badsocket.R;
 import com.badsocket.engine.MonitorWatcher;
 import com.badsocket.engine.downloader.DownloadDescriptor;
 import com.badsocket.engine.downloader.DownloadTask;
-import com.badsocket.engine.downloader.DownloadTaskInfo;
 import com.badsocket.engine.downloader.Downloader;
 import com.badsocket.net.WebAddress;
-import com.badsocket.util.ComputeUtils;
 import com.badsocket.util.Log;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +35,7 @@ import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
+
 	@BindView(R.id.listView2)
 	protected ListView listView;
 
@@ -129,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
 	private void startService() {
 		if (!isServiceStarted) {
 			startService(new Intent(this, DownloadService.class));
-//			isServiceStarted = true;
-//			if (!isServiceConnected) {
-//				bindService(new Intent(this, DownloadService.class), serviceConnection, BIND_AUTO_CREATE);
-//			}
+			isServiceStarted = true;
+			if (!isServiceConnected) {
+				bindService(new Intent(this, DownloadService.class), serviceConnection, BIND_AUTO_CREATE);
+			}
 		}
 	}
 
@@ -194,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 									}
 								}.start();
 							}
-              			         })
+						})
                         .setNegativeButton("取消", null)
 						.show();
                 break;
@@ -227,10 +217,10 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
 		super.onDestroy();
 		Log.error("ERROR", "OnDestory");
-//		stopService();
+		stopService();
 	}
 
-
+/*
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			Log.error("back button", "back button");
@@ -240,82 +230,14 @@ public class MainActivity extends AppCompatActivity {
 
 		return super.onKeyDown(keyCode, event);
 	}
+*/
 
 
-//	public void onBackPressed() {
-//		Intent intent = new Intent(Intent.ACTION_MAIN, null);
-//		intent.addCategory(Intent.CATEGORY_HOME);
-//		startActivity(intent);
-//	}
-
-
-
-	class MyAdspter extends BaseAdapter {
-		private List<DownloadTask> data;
-		private LayoutInflater layoutInflater;
-		private Context context;
-		public MyAdspter(Context context,List<DownloadTask> data){
-			this.context=context;
-			this.data=data;
-			this.layoutInflater= LayoutInflater.from(context);
-		}
-
-		@Override
-		public int getCount() {
-			return data.size();
-		}
-		/**
-		 * 获得某一位置的数据
-		 */
-		@Override
-		public Object getItem(int position) {
-			return data.get(position);
-		}
-		/**
-		 * 获得唯一标识
-		 */
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-
-		@Override
-		public View getView(int position, View cv, ViewGroup parent) {
-			cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
-			ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
-			TextView fileName = (TextView) cv.findViewById(R.id.file_name);
-			TextView progressText = (TextView) cv.findViewById(R.id.progress_text);
-			TextView progressPercent = (TextView) cv.findViewById(R.id.progress_percent);
-			Button controlButton = (Button) cv.findViewById(R.id.control_button);
-			DownloadTask task = data.get(position);
-			DownloadTaskInfo info = (DownloadTaskInfo) task.info();
-
-			if (info != null) {
-				fileName.setText(info.getName());
-				pb.setProgress((int) (info.getProgress() * 100));
-				progressText.setText(ComputeUtils.getFriendlyUnitOfBytes(info.getDownloadLength(), 2)
-						+ "/" + ComputeUtils.getFriendlyUnitOfBytes(info.getLength(), 2));
-				progressPercent.setText(new DecimalFormat("##0.00").format(info.getProgress() * 100) + "%");
-
-				int resourceId = R.drawable.stoped;
-				switch (task.getState()) {
-					case running:
-						resourceId = R.drawable.downloading;
-						break;
-
-					case paused:
-						resourceId = R.drawable.paused;
-						break;
-
-					case stoped:
-						resourceId = R.drawable.stoped;
-				}
-				controlButton.setBackgroundResource(resourceId);
-			}
-
-			return cv;
-		}
+	public void onBackPressed() {
+		Intent intent = new Intent(Intent.ACTION_MAIN, null);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		startActivity(intent);
 	}
+
 }
 

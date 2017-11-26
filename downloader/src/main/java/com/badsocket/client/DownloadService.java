@@ -22,14 +22,14 @@ public class DownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-//		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
-//				.setSmallIcon(R.mipmap.ic_launcher)
-//				.setTicker("")
-//				.setWhen(System.currentTimeMillis())
-//				.setContentTitle(getString(R.string.app_name))
-//				.setContentText("asdfasdf");
-//		Notification notification = mNotifyBuilder.build();
-//		this.startForeground(1111, notification);
+		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
+				.setSmallIcon(R.mipmap.ic_launcher)
+				.setTicker("这是什么东西？")
+				.setWhen(System.currentTimeMillis())
+				.setContentTitle(getString(R.string.app_name))
+				.setContentText("下载任务进行中");
+		Notification notification = mNotifyBuilder.build();
+		this.startForeground(0xffff, notification);
 		Log.e(TAG, "onCreate() executed");
 	}
 

@@ -9,6 +9,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:gameContext=".MainActivity" >
 
+
+    <Button
+        android:id="@+id/btnExit"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="#000"
+        android:text="退出游戏"
+        android:textColor="#fff"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        />
+    <Button
+        android:id="@+id/option"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="#000"
+        android:layout_above="@id/btnExit"
+        android:layout_centerHorizontal="true"
+        android:text="游戏选项"
+        android:textColor="#fff"/>
+
     <ImageView
         android:id="@+id/imvSpalsh"
         android:layout_width="fill_parent"
@@ -18,7 +39,35 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
+    <Button
+        android:id="@+id/_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="#000"
+        android:layout_above="@id/option"
+        android:layout_centerHorizontal="true"
+        android:text="继续游戏"
+        android:textColor="#fff"/>
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:background="#000"
+        android:layout_above="@id/_continue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="开始游戏"
+        android:textColor="#fff"/>
+
+
+
+
+
+
+
     <RadioGroup
+        android:visibility="gone"
         android:id="@+id/rdgGameMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,10 +90,7 @@
             android:layout_height="wrap_content"
             android:text="双人游戏"
             android:textColor="#fff"
-            android:textSize="18sp" />
-    </RadioGroup>
-
-    <CheckBox
+            android:textSize="18sp" />    <CheckBox
         android:id="@+id/ckbCustomMap"
         android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
@@ -54,34 +100,17 @@
         android:text="自定义地图？"
         android:textColor="#fff" />
 
-    <CheckBox
-        android:id="@+id/ckbMusicCase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ckbCustomMap"
-        android:layout_centerHorizontal="true"
-        android:checked="true"
-        android:text="是否打开声音？"
-        android:textColor="#fff" />
+        <CheckBox
+            android:id="@+id/ckbMusicCase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ckbCustomMap"
+            android:layout_centerHorizontal="true"
+            android:checked="true"
+            android:text="是否打开声音？"
+            android:textColor="#fff" />
+    </RadioGroup>
 
-    <Button
-        android:id="@+id/btnExit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="#000"
-        android:text="退出游戏"
-        android:textColor="#fff" />
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="#000"
-        android:text="开始游戏"
-        android:textColor="#fff" />
 
 </RelativeLayout>

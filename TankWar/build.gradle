@@ -4,7 +4,7 @@ android {
         config {
             keyAlias 'tankwar'
             keyPassword '123456'
-            storeFile file('E:/MyCodes/Android/tankwar.jks')
+            storeFile file('D:/Android/tankwar.jks')
             storePassword '123456'
         }
     }
@@ -24,8 +24,6 @@ android {
     productFlavors {
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 

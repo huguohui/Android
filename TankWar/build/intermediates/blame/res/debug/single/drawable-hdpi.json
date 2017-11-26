@@ -1,10 +1,10 @@
 [
     {
-        "merged": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\splash.png",
-        "source": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
+        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ico.png",
+        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
     },
     {
-        "merged": "E:\\MyCodes\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ico.png",
-        "source": "E:\\MyCodes\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
+        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\splash.png",
+        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
     }
 ]
