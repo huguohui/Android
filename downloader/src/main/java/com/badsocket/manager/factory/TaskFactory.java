@@ -1,7 +1,7 @@
 package com.badsocket.manager.factory;
 
 
-import com.badsocket.engine.Task;
+import com.badsocket.core.Task;
 
 public abstract class TaskFactory extends Factory {
 	/**

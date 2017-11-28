@@ -1,10 +1,10 @@
 package com.badsocket.manager;
 
-import com.badsocket.engine.downloader.DownloadTask;
+import com.badsocket.core.downloader.DownloadTask;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * File manager is manager based directory, managed files is under special directory.
@@ -12,8 +12,8 @@ import java.io.IOException;
  * @since 2015/12/15
  */
 public class FileManager extends AbstractFileManager {
-	/** The home directory. */
-	private String mHomeDirectory = "/";
+	/** The default home directory. */
+	private final static String DEFAULT_HOME_DIR = "/";
 
 	/** The special directory. */
 	private String mManagedDir = "";
@@ -24,18 +24,19 @@ public class FileManager extends AbstractFileManager {
 
 	/**
 	 * Constructor a file manager instance by a special directory,
-	 * if the directory is not exists, file manager will be create
+	 * if the directory is not exists, file manager will be createDirectory
 	 * it. If directory inArray some files, file manager will be
 	 * load them to a list so that it can manage files.
 	 *
 	 * @param directory The special directory to managing.
 	 */
 	public FileManager(String directory) throws IOException {
+		super();
 		if (directory == null)
 			throw new IllegalArgumentException("The special directory can't null!");
 
 		mManagedDir = directory;
-		loadFiles(mManagedDir);
+		loadDirectory(mManagedDir);
 	}
 
 
@@ -43,7 +44,7 @@ public class FileManager extends AbstractFileManager {
 	 * Constructor a file manager instance by default directory setting.
 	 */
 	public FileManager() throws IOException {
-		loadFiles(mHomeDirectory);
+		this(DEFAULT_HOME_DIR);
 	}
 
 
@@ -69,23 +70,14 @@ public class FileManager extends AbstractFileManager {
 	/**
 	 * Load all files to list.
 	 */
-	public void loadFiles(String dir) throws IOException {
+	public void loadDirectory(String dir) throws IOException {
 		checkDirectory(dir);
-		for (File file : new File(dir).listFiles()) {
-			mList.add(file);
-		}
+		mList.add((File) Arrays.asList(new File(dir).listFiles()));
 	}
 
 
-	/**
-	 * Create a download task by task descriptor.
-	 *
-	 * @param desc Task descriptor.
-	 * @return Download task instance.
-	 * @throws Throwable When exception occured.
-	 */
 	@Override
-	public DownloadTask create(FileDescriptor desc) throws Throwable {
+	public DownloadTask createDirectory(File parent, String name) throws IOException {
 		return null;
 	}
 
@@ -142,20 +134,8 @@ public class FileManager extends AbstractFileManager {
 	 * @return If deleted true else false.
 	 */
 	@Override
-	public void deleteAll() throws Throwable {
+	public void deleteAll() throws IOException {
 
-	}
-
-
-	/**
-	 * Make dir(s) by passed parameter.
-	 * @param path The directory's path.
-	 */
-	public boolean makeDir(String path) {
-		if (path == null || path.length() == 0)
-			return false;
-
-		return new File(path).mkdirs();
 	}
 
 

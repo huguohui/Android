@@ -1,6 +1,6 @@
 package com.badsocket.net;
 
-import com.badsocket.engine.Stopable;
+import com.badsocket.core.Stopable;
 
 import java.io.IOException;
 

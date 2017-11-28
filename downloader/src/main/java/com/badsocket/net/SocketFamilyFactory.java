@@ -1,9 +1,9 @@
 package com.badsocket.net;
 
 
-import com.badsocket.engine.downloader.DownloadDescriptor;
-import com.badsocket.engine.downloader.DownloadTaskInfo;
-import com.badsocket.engine.downloader.InternetDownloader;
+import com.badsocket.core.downloader.DownloadDescriptor;
+import com.badsocket.core.downloader.DownloadTaskInfo;
+import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;

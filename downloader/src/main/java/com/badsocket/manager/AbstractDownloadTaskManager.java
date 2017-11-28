@@ -1,6 +1,6 @@
 package com.badsocket.manager;
 
-import com.badsocket.engine.downloader.DownloadTask;
+import com.badsocket.core.downloader.DownloadTask;
 
 /**
  * Abstracts for manager of download task.

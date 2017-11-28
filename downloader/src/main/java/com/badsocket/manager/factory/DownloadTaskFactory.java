@@ -1,8 +1,8 @@
 package com.badsocket.manager.factory;
 
-import com.badsocket.engine.TaskInfo;
-import com.badsocket.engine.Descriptor;
-import com.badsocket.engine.downloader.DownloadTask;
+import com.badsocket.core.TaskInfo;
+import com.badsocket.core.downloader.Descriptor;
+import com.badsocket.core.downloader.DownloadTask;
 
 /**
  * @since 2017/10/3.

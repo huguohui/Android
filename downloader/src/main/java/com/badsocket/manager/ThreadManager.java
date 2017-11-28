@@ -10,6 +10,7 @@ public class ThreadManager extends AbstractThreadManager {
 	private static ThreadManager mManager = null;
 
 	protected ThreadManager() {
+
 	}
 
 
@@ -18,7 +19,13 @@ public class ThreadManager extends AbstractThreadManager {
 	 * @return Instance of ThreadManager.
 	 */
 	public synchronized static ThreadManager getInstance() {
-		return mManager == null ? mManager = new ThreadManager() : mManager;
+		synchronized (ThreadManager.class) {
+			if (mManager == null) {
+				mManager = new ThreadManager();
+			}
+
+			return mManager;
+		}
 	}
 
 
@@ -51,5 +58,11 @@ public class ThreadManager extends AbstractThreadManager {
 		}
 
 		return th;
+	}
+
+
+	public final static void release() {
+		mManager.list().clear();
+		mManager = null;
 	}
 }

@@ -1,9 +1,8 @@
 package com.badsocket.manager;
 
-import com.badsocket.engine.Task;
-import com.badsocket.engine.downloader.DownloadTask;
+import com.badsocket.core.Task;
+import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.util.CollectionUtil;
-import com.badsocket.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.badsocket.net.http;
 
 
-import com.badsocket.engine.Parser;
+import com.badsocket.core.Parser;
 import com.badsocket.net.SocketHeader;
 
 import java.io.BufferedReader;

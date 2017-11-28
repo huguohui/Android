@@ -1,7 +1,7 @@
 package com.badsocket.net;
 
-import com.badsocket.engine.worker.Workable;
-import com.badsocket.engine.worker.Worker;
+import com.badsocket.worker.Workable;
+import com.badsocket.worker.Worker;
 import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;
@@ -59,6 +59,12 @@ public class AsyncSocketReceiver extends AbstractSocketReceiver implements Worka
 	@Override
 	public synchronized void stop() {
 		receiver.stop();
+	}
+
+
+	@Override
+	public boolean isStoped() {
+		return false;
 	}
 
 

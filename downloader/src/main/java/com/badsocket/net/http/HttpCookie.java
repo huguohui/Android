@@ -1,6 +1,6 @@
 package com.badsocket.net.http;
 
-import com.badsocket.engine.Parser;
+import com.badsocket.core.Parser;
 
 import java.io.IOException;
 import java.io.InputStream;

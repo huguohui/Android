@@ -7,6 +7,7 @@ import java.net.Socket;
  */
 public interface SocketRequestGroup {
 
+
 	void addRequest(SocketRequest req);
 
 
