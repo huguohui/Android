@@ -9,7 +9,13 @@ import java.util.Locale;
 /**
  * Date And Time utility.
  */
-public abstract class TimeUtil {
+public abstract class TimeUtils {
+
+	public final static String FORMAT_YMD = "YYYY-MM-dd";
+
+	public final static String FORMAT_YMD_HMS = "YYYY-MM-dd HH:mm:ss";
+
+
 	/**
 	 * Get current time in millis senconds.
 	 * @return Current time in millis seconds.
@@ -44,5 +50,17 @@ public abstract class TimeUtil {
 
 	public static Date str2Date(String date, String format) {
 		return str2Date(date, format, Locale.CHINESE);
+	}
+
+
+	public static String getStrDateByFormat(String format, Locale locale) {
+		try {
+			return new SimpleDateFormat(format, locale).format(new Date());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 }

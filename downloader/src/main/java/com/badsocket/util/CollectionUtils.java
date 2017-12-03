@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class CollectionUtil {
+public abstract class CollectionUtils {
 
 	public static <T> void forEach(T[] os, Callback<T> callbck) {
 		for (T o : os) {
@@ -48,17 +48,18 @@ public abstract class CollectionUtil {
 	}
 
 
+	@FunctionalInterface
 	public interface Action<T> {
 		void doAction(T o);
 	}
 
-
-	public interface Callback<T> {
+	@FunctionalInterface
+	public static interface Callback<T> {
 		void callback(T o);
 	}
 
-
-	public interface Filter<T> {
+	@FunctionalInterface
+	public static interface Filter<T> {
 		boolean filter(T o);
 	}
 }

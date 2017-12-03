@@ -17,7 +17,7 @@ import com.badsocket.net.http.Http;
  * Utility for url.
  * @since 2017/01/15 16:19
  */
-final public class UrlUtil {
+final public class UrlUtils {
 	/**
 	 * Get the top domain of url.
 	 * @param url Given url.
