@@ -1,6 +1,6 @@
 package com.badsocket.newthink;
 
-import com.badsocket.util.TimeUtil;
+import com.badsocket.util.TimeUtils;
 
 import java.net.URL;
 
@@ -28,7 +28,7 @@ public class HTTPDownloadTask extends AbstractDownloadTask {
 
 	@Override
 	public void onStart() {
-		startTime = TimeUtil.millisTime();
+		startTime = TimeUtils.millisTime();
 	}
 
 

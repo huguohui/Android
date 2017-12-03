@@ -14,7 +14,7 @@ import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.WebAddress;
-import com.badsocket.util.CollectionUtil;
+import com.badsocket.util.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +61,10 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	protected Worker worker;
 
 	protected int perThreadExecInterval = 500;
+
+	private CollectionUtils.Action<SocketReceiver> stopAction = (rec) -> {
+		rec.stop();
+	};
 
 
 	public UniversalDownloadTask(DownloadDescriptor d, ProtocolHandler handler,
@@ -176,12 +180,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	@Override
 	public void pause() throws Exception {
 		super.pause();
-		CollectionUtil.forEach(receivers, new CollectionUtil.Action<SocketReceiver>() {
-			@Override
-			public void doAction(SocketReceiver o) {
-				o.stop();
-			}
-		});
+		CollectionUtils.forEach(receivers, stopAction);
 	}
 
 
@@ -200,12 +199,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 	@Override
 	public void stop() throws Exception {
 		super.stop();
-		CollectionUtil.forEach(receivers, new CollectionUtil.Action<SocketReceiver>() {
-			@Override
-			public void doAction(SocketReceiver o) {
-				o.stop();
-			}
-		});
+		CollectionUtils.forEach(receivers, stopAction);
 	}
 
 

@@ -2,7 +2,7 @@ package com.badsocket.manager;
 
 import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloadTask;
-import com.badsocket.util.CollectionUtil;
+import com.badsocket.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +36,13 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 
 	protected Operation stopOperation = new Operation.StopOperation();
 
-	protected CollectionUtil.Filter runnableTaskFilter = new StateFilter.Runnable();
+	protected CollectionUtils.Filter runnableTaskFilter = new StateFilter.Runnable();
 
-	protected CollectionUtil.Filter runningTaskFilter = new StateFilter.Running();
+	protected CollectionUtils.Filter runningTaskFilter = new StateFilter.Running();
 
-	protected CollectionUtil.Filter pausedTaskFilter = new StateFilter.Paused();
+	protected CollectionUtils.Filter pausedTaskFilter = new StateFilter.Paused();
 
-	protected CollectionUtil.Filter stopedTaskFilter = new StateFilter.Stoped();
+	protected CollectionUtils.Filter stopedTaskFilter = new StateFilter.Stoped();
 
 	protected boolean isAutoStart = false;
 
@@ -63,7 +63,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 
 
 	protected List<DownloadTask> getRunnableTask() {
-		return CollectionUtil.filter(mList, runnableTaskFilter);
+		return CollectionUtils.filter(mList, runnableTaskFilter);
 	}
 
 
@@ -71,7 +71,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 		int needStartTask = parallelTaskNum - runningTaskNum;
 		List<DownloadTask> tasks = null;
 		if (needStartTask > 0 && (tasks = getRunnableTask()).size() != 0) {
-			CollectionUtil.forEach(tasks.subList(0, needStartTask), new Operation.StartOperation());
+			CollectionUtils.forEach(tasks.subList(0, needStartTask), new Operation.StartOperation());
 			runningTaskNum += needStartTask;
 		}
 		else {
@@ -125,7 +125,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	@Override
 	public void pauseAll() throws Exception {
 		synchronized (mList) {
-			CollectionUtil.forEach((DownloadTask[]) null, pauseOperation);
+			CollectionUtils.forEach((DownloadTask[]) null, pauseOperation);
 		}
 	}
 
@@ -136,7 +136,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	@Override
 	public void resumeAll()  {
 		synchronized (mList) {
-			CollectionUtil.forEach(mList, resumeOperation);
+			CollectionUtils.forEach(mList, resumeOperation);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	@Override
 	public void stopAll() {
 		synchronized (mList) {
-			CollectionUtil.forEach(mList, stopOperation);
+			CollectionUtils.forEach(mList, stopOperation);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	}
 
 
-	protected static abstract class Operation implements CollectionUtil.Action<DownloadTask> {
+	protected static abstract class Operation implements CollectionUtils.Action<DownloadTask> {
 		public void doAction(DownloadTask t) {
 			try {
 				if (t != null) {
@@ -269,7 +269,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	}
 
 
-	protected static abstract class StateFilter implements CollectionUtil.Filter<DownloadTask> {
+	protected static abstract class StateFilter implements CollectionUtils.Filter<DownloadTask> {
 		public boolean filter(DownloadTask d) {
 			return check(d);
 		}

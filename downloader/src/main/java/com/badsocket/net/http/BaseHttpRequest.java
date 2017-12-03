@@ -9,7 +9,7 @@ import com.badsocket.net.SocketResponse;
 import com.badsocket.net.WebAddress;
 import com.badsocket.net.http.Http.Method;
 import com.badsocket.util.Log;
-import com.badsocket.util.UrlUtil;
+import com.badsocket.util.UrlUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -53,7 +53,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
      * @param method Special method of requesting.
      */
 	public BaseHttpRequest(WebAddress address, Method method) throws IOException {
-		super(UrlUtil.socketAddressByUrl(address.getUrl()));
+		super(UrlUtils.socketAddressByUrl(address.getUrl()));
 		if (method != null)
 			this.mMethod = method;
 
@@ -99,7 +99,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		HttpHeader mHeader = (HttpHeader) this.mHeader;
 		mHeader.setUrl(mUrl.toString());
 		mHeader.setMethod(mMethod);
-		mHeader.set(Http.HOST, UrlUtil.domainWithPort(mUrl));
+		mHeader.set(Http.HOST, UrlUtils.domainWithPort(mUrl));
 	}
 
 
@@ -167,7 +167,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	public void open(SocketAddress url, Method method) throws IOException {
 		setAddress(url);
 		setMethod(method == null ? Method.GET : method);
-		super.open(UrlUtil.socketAddressByUrl(((WebAddress) url).getUrl()));
+		super.open(UrlUtils.socketAddressByUrl(((WebAddress) url).getUrl()));
 		Log.debug("Open a connection with url : " + ((WebAddress) url).getUrl().toExternalForm());
 	}
 	

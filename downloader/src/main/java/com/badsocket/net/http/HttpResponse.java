@@ -7,8 +7,8 @@ import com.badsocket.net.SocketRequest;
 import com.badsocket.net.WebAddress;
 import com.badsocket.util.Log;
 import com.badsocket.util.StringUtil;
-import com.badsocket.util.TimeUtil;
-import com.badsocket.util.UrlUtil;
+import com.badsocket.util.TimeUtils;
+import com.badsocket.util.UrlUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,11 +85,11 @@ public class HttpResponse extends SocketResponse {
 		HttpHeader header = (HttpHeader) this.header;
 		contentLength = StringUtil.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
-		mFileName = UrlUtil.decode(UrlUtil.filename(httpRequest.getUrl()), "UTF-8");
+		mFileName = UrlUtils.decode(UrlUtils.filename(httpRequest.getUrl()), "UTF-8");
 		mContentType = header.get(Http.CONTENT_TYPE);
 		mHttpVersion = Float.parseFloat(header.getVersion());
 		mCookies = HttpCookie.formString(header.get(Http.SET_COOKIE));
-		mDate = TimeUtil.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
+		mDate = TimeUtils.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
 		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(header.get(Http.CONNECTION));
 		isSupportRange = header.get(Http.CONTENT_RANGE) != null;
 		isChunked = Http.CHUNKED.equalsIgnoreCase(header.get(Http.TRANSFER_ENCODING));
@@ -108,7 +108,7 @@ public class HttpResponse extends SocketResponse {
 				arr = disp.split(";");
 				mContentType = arr[0];
 				if ((off = arr[1].indexOf("filename")) != -1) {
-					mFileName = UrlUtil.decode(arr[1].substring(off + 9), "UTF-8");
+					mFileName = UrlUtils.decode(arr[1].substring(off + 9), "UTF-8");
 				}
 			}
 		} else {
@@ -126,8 +126,8 @@ public class HttpResponse extends SocketResponse {
 			}
 
 			Log.println(newUrl);
-			httpRequest.setUrl(UrlUtil.fullUrl(mUrl, newUrl));
-			httpRequest.setAddress(new WebAddress(UrlUtil.fullUrl(mUrl, newUrl)));
+			httpRequest.setUrl(UrlUtils.fullUrl(mUrl, newUrl));
+			httpRequest.setAddress(new WebAddress(UrlUtils.fullUrl(mUrl, newUrl)));
 			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();

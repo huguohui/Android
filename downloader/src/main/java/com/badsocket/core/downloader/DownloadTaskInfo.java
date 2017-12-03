@@ -5,8 +5,8 @@ import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.WebAddress;
-import com.badsocket.util.TimeUtil;
-import com.badsocket.util.UrlUtil;
+import com.badsocket.util.TimeUtils;
+import com.badsocket.util.UrlUtils;
 
 import java.io.IOException;
 
@@ -54,8 +54,8 @@ public abstract class DownloadTaskInfo extends TaskInfo {
 		path = d.getPath();
 		priority = d.getPriority();
 		totalThreads = d.getMaxThread();
-		startTime = TimeUtil.millisTime();
-		name = UrlUtil.filename(d.getAddress().getUrl());
+		startTime = TimeUtils.millisTime();
+		name = UrlUtils.filename(d.getAddress().getUrl());
 	}
 
 

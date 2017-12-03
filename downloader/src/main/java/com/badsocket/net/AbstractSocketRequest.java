@@ -1,7 +1,7 @@
 package com.badsocket.net;
 
 
-import com.badsocket.util.TimeUtil;
+import com.badsocket.util.TimeUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -124,7 +124,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 		mSocket.connect(address, timeout);
 		mState = State.connected;
 		isConnect = true;
-		mConnectionTime = TimeUtil.millisTime() - mStartTime;
+		mConnectionTime = TimeUtils.millisTime() - mStartTime;
 		mOutputStream = mSocket.getOutputStream();
 
 		if (mOnConnectedListener != null) {

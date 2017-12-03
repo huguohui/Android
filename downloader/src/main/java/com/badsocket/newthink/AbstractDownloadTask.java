@@ -31,7 +31,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public AbstractDownloadTask(URL url) {
-		this(url, null);
+		this(url, "");
 	}
 
 

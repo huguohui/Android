@@ -2,7 +2,7 @@ package com.badsocket.core.downloader;
 
 
 import com.badsocket.core.TaskInfo;
-import com.badsocket.util.TimeUtil;
+import com.badsocket.util.TimeUtils;
 
 import java.io.IOException;
 
@@ -50,7 +50,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 * @throws IOException
 	 */
 	public synchronized void start() throws Exception {
-		mStartTime = TimeUtil.millisTime();
+		mStartTime = TimeUtils.millisTime();
 		mIsRunning = true;
 	}
 
