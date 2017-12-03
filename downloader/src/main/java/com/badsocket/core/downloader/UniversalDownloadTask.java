@@ -137,9 +137,11 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 			try {
 				worker.stop();
 				writer.close();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				e.printStackTrace();
-			} finally {
+			}
+			finally {
 				if (onFinishListener != null) {
 					onFinishListener.onTaskFinish(this);
 				}

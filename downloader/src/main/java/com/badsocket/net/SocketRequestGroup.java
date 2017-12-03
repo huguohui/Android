@@ -1,5 +1,6 @@
 package com.badsocket.net;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -20,8 +21,15 @@ public interface SocketRequestGroup {
 	SocketRequest getRequest(int idx);
 
 
-	void closeAll();
+	SocketRequestGroup getParent();
 
 
+	int activeCount();
+
+
+	void closeAll() throws IOException;
+
+
+	boolean isRoot();
 
 }

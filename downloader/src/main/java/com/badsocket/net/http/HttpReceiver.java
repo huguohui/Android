@@ -173,6 +173,12 @@ public class HttpReceiver extends AbstractSocketReceiver {
 	}
 
 
+	@Override
+	public boolean isStoped() {
+		return false;
+	}
+
+
 	public Writer getFileWriter() {
 		return fileWriter;
 	}

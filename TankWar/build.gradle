@@ -11,6 +11,9 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
+        jackOptions {
+            enabled true
+        }
         applicationId "com.tankwar"
         minSdkVersion 14
         targetSdkVersion 25
@@ -24,6 +27,8 @@ android {
     productFlavors {
     }
     compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
