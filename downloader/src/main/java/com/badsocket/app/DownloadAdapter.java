@@ -4,16 +4,17 @@ import android.os.Binder;
 
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
+import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.downloader.DownloadDescriptor;
 import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.Downloader;
-import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpDownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpFamilyFactory;
-import com.badsocket.net.SocketFamilyFactory;
+import com.badsocket.net.SocketComponentFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 		this.downloader = downloader;
 		addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
 			@Override
-			public SocketFamilyFactory socketFamilyFactory() {
+			public SocketComponentFactory socketFamilyFactory() {
 				return new HttpFamilyFactory();
 			}
 
@@ -84,7 +85,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 	 * @param desc Descriptor.
 	 */
 	@Override
-	public DownloadTask newTask(final DownloadDescriptor desc) throws Exception {
+	public DownloadTask newTask(final DownloadDescriptor desc) throws IOException {
 		return downloader.newTask(desc);
 	}
 

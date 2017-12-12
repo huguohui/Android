@@ -21,7 +21,7 @@ public abstract class ComputeUtils {
 			i++;
 		}
 
-		return StringUtil.decimal2Str(val, 2) + STORAGE_UNITS[i];
+		return StringUtils.decimal2Str(val, 2) + STORAGE_UNITS[i];
 	}
 
 }

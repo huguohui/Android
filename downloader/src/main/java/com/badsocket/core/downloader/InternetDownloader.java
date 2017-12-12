@@ -5,6 +5,7 @@ import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
+import com.badsocket.core.downloader.exception.DownloadException;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.core.downloader.factory.DownloadTaskFactory;
 import com.badsocket.worker.AsyncWorker;
@@ -75,7 +76,7 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public DownloadTask newTask(DownloadDescriptor desc) throws UnsupportedProtocolException, IOException {
+	public DownloadTask newTask(DownloadDescriptor desc) throws IOException {
 		String strPtl = desc.getAddress().getProtocol();
 		if (!Protocols.isSupport(strPtl)) {
 			throw new UnsupportedProtocolException();

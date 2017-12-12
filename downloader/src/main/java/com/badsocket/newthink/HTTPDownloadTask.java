@@ -8,7 +8,9 @@ import java.net.URL;
  * Created by skyrim on 2017/11/28.
  */
 
-public class HTTPDownloadTask extends AbstractDownloadTask {
+public class HTTPDownloadTask
+		extends AbstractDownloadTask
+{
 
 	public HTTPDownloadTask(URL url) {
 		super(url);

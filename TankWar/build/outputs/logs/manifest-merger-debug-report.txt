@@ -1,6 +1,12 @@
 -- Merging decision tree log ---
 manifest
 ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
 	package
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:3:5-26
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
@@ -9,14 +15,18 @@ ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:1-39:12
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:5:5-30
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:4:5-28
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
-	xmlns:android
-		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
 ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:7:5-9:41
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:7:5-9:41
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:7:5-9:41
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:7:5-9:41
+INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml:7:5-9:41
 	android:targetSdkVersion
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:9:9-38
 		INJECTED from D:\Android\TankWar\src\main\AndroidManifest.xml
@@ -57,10 +67,10 @@ application
 ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:19:5-37:19
 	android:label
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:20:9-41
-	android:allowBackup
-		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:19:18-44
 	android:icon
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:19:45-73
+	android:allowBackup
+		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:19:18-44
 	android:theme
 		ADDED from D:\Android\TankWar\src\main\AndroidManifest.xml:20:42-73
 	android:name

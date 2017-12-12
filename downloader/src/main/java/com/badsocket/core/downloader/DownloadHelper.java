@@ -1,7 +1,7 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.net.SocketFamilyFactory;
+import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
 
@@ -14,7 +14,7 @@ import java.io.IOException;
 public abstract class DownloadHelper {
 
 	public static SocketResponse fetchTaskInfo(DownloadDescriptor desc, ProtocolHandler handler) throws IOException {
-		SocketFamilyFactory factory = handler.socketFamilyFactory();
+		SocketComponentFactory factory = handler.socketFamilyFactory();
 		SocketRequest req = factory.createRequest(desc);
 		SocketResponse rep = null;
 		req.open(desc.getAddress());
@@ -27,25 +27,23 @@ public abstract class DownloadHelper {
 
 	public static void fetchTaskInfo(final DownloadDescriptor desc, ProtocolHandler handler,
 				final OnFetchTaskInfoListener listener) throws IOException {
-		final SocketFamilyFactory factory = handler.socketFamilyFactory();
+		final SocketComponentFactory factory = handler.socketFamilyFactory();
 		final SocketRequest req = factory.createRequest(desc);
 		final DownloadTaskInfo info = handler.downloadTaskInfoFactory().create(desc);
 
-		new Thread() {
-			public void run() {
-				SocketResponse rep = null;
-				try {
-					req.open(desc.getAddress());
-					req.send();
-					rep = req.response();
-					req.close();
-					info.update(rep);
-					listener.onFetchTaskInfo(info);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		/*new Thread(() -> {
+			SocketResponse rep = null;
+			try {
+				req.open(desc.getAddress());
+				req.send();
+				rep = req.response();
+				req.close();
+				info.update(rep);
+				listener.onFetchTaskInfo(info);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		}.start();
+		}).start();*/
 	}
 
 

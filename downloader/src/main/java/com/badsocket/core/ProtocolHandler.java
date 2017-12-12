@@ -1,7 +1,7 @@
 package com.badsocket.core;
 
 import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
-import com.badsocket.net.SocketFamilyFactory;
+import com.badsocket.net.SocketComponentFactory;
 
 /**
  * Created by skyrim on 2017/10/6.
@@ -10,7 +10,7 @@ import com.badsocket.net.SocketFamilyFactory;
 public interface ProtocolHandler {
 
 
-	SocketFamilyFactory socketFamilyFactory();
+	SocketComponentFactory socketFamilyFactory();
 
 
 	DownloadTaskInfoFactory downloadTaskInfoFactory();

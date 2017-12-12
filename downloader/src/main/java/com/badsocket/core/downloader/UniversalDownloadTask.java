@@ -9,7 +9,7 @@ import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.net.AsyncSocketReceiver;
-import com.badsocket.net.SocketFamilyFactory;
+import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
@@ -24,7 +24,10 @@ import static com.badsocket.core.downloader.DownloadHelper.fetchTaskInfo;
 /**
  * Created by skyrim on 2017/10/6.
  */
-public class UniversalDownloadTask extends DownloadTask implements SocketReceiver.OnFinishedListener {
+public class UniversalDownloadTask
+	extends DownloadTask
+	implements SocketReceiver.OnFinishedListener
+{
 
 	protected WebAddress address;
 
@@ -48,7 +51,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 
 	protected DownloadTaskInfo info;
 
-	protected SocketFamilyFactory factory;
+	protected SocketComponentFactory factory;
 
 	protected DownloadDescriptor descriptor;
 
@@ -115,6 +118,7 @@ public class UniversalDownloadTask extends DownloadTask implements SocketReceive
 		if (!isResumeFromInfo) {
 			info.update(DownloadHelper.fetchTaskInfo(descriptor, handler));
 		}
+
 		writer = new ConcurrentFileWriter(new File(info.getPath(), info.getName()));
 		requests = factory.createRequest(info, policy);
 		receivers = new SocketReceiver[requests.length];

@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\splash.png",
+        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
+    },
+    {
+        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4\\ico.png",
+        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
+    }
+]

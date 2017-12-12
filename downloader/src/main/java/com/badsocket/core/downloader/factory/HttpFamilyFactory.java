@@ -5,7 +5,7 @@ import com.badsocket.core.downloader.DownloadTaskInfo;
 import com.badsocket.core.downloader.HttpDownloadTaskInfo;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
-import com.badsocket.net.SocketFamilyFactory;
+import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.WebAddress;
@@ -20,7 +20,7 @@ import java.net.SocketAddress;
 /**
  * Created by skyrim on 2017/10/6.
  */
-public class HttpFamilyFactory implements SocketFamilyFactory {
+public class HttpFamilyFactory implements SocketComponentFactory {
 	@Override
 	public SocketRequest createRequest(SocketAddress d) throws IOException {
 		WebAddress address = (WebAddress) d;

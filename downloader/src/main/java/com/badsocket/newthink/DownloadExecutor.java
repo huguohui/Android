@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
  * Created by skyrim on 2017/12/2.
  */
 
-public class DownloadExecutor extends ScheduledThreadPoolExecutor{
+public class DownloadExecutor extends ScheduledThreadPoolExecutor {
 
 	/**
 	 * Creates a new {@code ScheduledThreadPoolExecutor} with the

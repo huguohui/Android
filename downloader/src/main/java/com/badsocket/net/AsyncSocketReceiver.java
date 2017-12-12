@@ -11,7 +11,10 @@ import java.io.InputStream;
  * Created by skyrim on 2017/10/6.
  */
 
-public class AsyncSocketReceiver extends AbstractSocketReceiver implements Workable {
+public class AsyncSocketReceiver
+		extends AbstractSocketReceiver
+		implements Workable
+{
 
 	protected AbstractSocketReceiver receiver;
 

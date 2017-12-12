@@ -2,12 +2,30 @@
 <items version="2" >
 
     <item
+        is-multidex="false"
+        jar="C:\Users\skyrim\sdk\.android\build-cache\f9ae275c3243dd7700ff8cff961ea65fcdd458a3\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="6a2bcb61342d09fe9acf55c9daf63961c8866cc0">
+        <dex dex="D:\Android\downloader\build\intermediates\pre-dexed\debug\classes_b03cd4990551365c59c0a3127cc465cbaa084572.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\skyrim\sdk\.android\build-cache\f9ae275c3243dd7700ff8cff961ea65fcdd458a3\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.0"
+        sha1="6a2bcb61342d09fe9acf55c9daf63961c8866cc0">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\dex\debug\folders\1000\10\classes_b03cd4990551365c59c0a3127cc465cbaa084572\classes.dex" />
+    </item>
+    <item
         is-multidex="true"
         jar="D:\Android\downloader\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.0"
-        sha1="d389ebf5f71fe5b9ec9dd37dd7b99093fa36d56f">
+        sha1="8852d3804db037979519e7a9eac9ee0424f70623">
         <dex dex="D:\Android\downloader\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_a42a0bdb32aa7ac34f834347dee774538c255c07\classes.dex" />
     </item>
     <item

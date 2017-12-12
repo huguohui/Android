@@ -6,7 +6,9 @@ import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
+import com.badsocket.core.downloader.exception.DownloadException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ public interface Downloader extends Controlable {
 	 * Create a new download task.
 	 * @param desc Descriptor.
 	 */
-	DownloadTask newTask(DownloadDescriptor desc) throws Exception;
+	DownloadTask newTask(DownloadDescriptor desc) throws IOException;
 
 
 	DownloadTask findTask(int id);

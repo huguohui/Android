@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\f9ae275c3243dd7700ff8cff961ea65fcdd458a3\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="6a2bcb61342d09fe9acf55c9daf63961c8866cc0">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-b03cd4990551365c59c0a3127cc465cbaa084572.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\ed111d151d61d0fcb4a93868573d9f9cefa858fc\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="052f5f840f21174a3ecf6544130194e2652cbb73">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-203170b0efbd65062401be7c39e59efa8a1cd62d.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\ef0e5e3b20a0933d7fcfec8702c2bd828f006d1a\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="efb8cb62d47d157c29d1521daac7eefd4cb881ee">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-b94f7195bdd5d388d85fcdf28e788052b431a5d9.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\37697c9bac7ec8609e8bd0c737aba61e6a0ef73c\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="45f697922e6f072daa12f8a2995dc77ab03c11da">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-24338b1080aae469e44010f6162524e829327847.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\f21de57bfed3ba1c54a177ae36b5b2d40acf95b3\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="da27a32db6af8954ee8061537c7d476fcb1df46f">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-3573cd0e7c72eb27597dbe926e7c81e1764f56df.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\722295cc9291ad81ad8693a65321617c84002dd7\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="150252b33b00274cc868578ade018fda0d43a3eb">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-f60f6c5b18f4c992c10c6f96f649f8845728904f.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\d781a4e0c0fe60746e78af4feb7a48c893aabea7\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="47635644d0d5c103c1dd8360549eb9ba3225c7d3">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-64ac651ec745bec0e630d0acdc7d8f592c824b05.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\0cbea98ff50bbec7ed0634b65772a5c4c579a4d8\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-6b3923a7af070ad3869dd51f7f7b6c78709ef04b.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\26865277c2d5948c7a255fdda56ba27e5e4a2076\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="6ef31f1555bb4cc513ec8d52711365a8b89f3600">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-38bd7fdb6694cc3b369892c68abf668964cd00b6.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\extras\android\m2repository\com\android\support\support-annotations\25.3.1\support-annotations-25.3.1.jar"
+        revision="25.0.0"
+        sha1="bf8841d29fa39e077730e7a91222c2ce269fa7c9">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\support-annotations-25.3.1-b7f1bc7f46b605a7fa2342488b599113eececb2b.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\sdk\.android\build-cache\aa075b664e4849e12775fd2a4d3d8ed79a51d864\output\jars\classes.jar"
+        revision="25.0.0"
+        sha1="4a26a1154d053ab11aaf4c3967c42a4d66390991">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\classes-5244747a1f67e054f7447628b5984f053fea3a50.jar" />
+    </item>
+    <item
+        jar="C:\Users\skyrim\.gradle\caches\modules-2\files-2.1\com.jakewharton\butterknife-annotations\8.8.1\bc373fb6bc7bca3035041b924f158fd2b946ee8d\butterknife-annotations-8.8.1.jar"
+        revision="25.0.0"
+        sha1="bc373fb6bc7bca3035041b924f158fd2b946ee8d">
+        <dex dex="D:\Android\downloader\build\intermediates\transforms\preJackPackagedLibraries\debug\jars\8000\1f\butterknife-annotations-8.8.1-8234a94ac5fee8db36cde290cd8e1c9b8547b39f.jar" />
+    </item>
+
+</items>

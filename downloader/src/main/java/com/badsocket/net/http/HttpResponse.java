@@ -6,7 +6,7 @@ import com.badsocket.net.SocketResponse;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.WebAddress;
 import com.badsocket.util.Log;
-import com.badsocket.util.StringUtil;
+import com.badsocket.util.StringUtils;
 import com.badsocket.util.TimeUtils;
 import com.badsocket.util.UrlUtils;
 
@@ -83,7 +83,7 @@ public class HttpResponse extends SocketResponse {
 
 	protected void parseResponse() throws IOException {
 		HttpHeader header = (HttpHeader) this.header;
-		contentLength = StringUtil.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
+		contentLength = StringUtils.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
 		mFileName = UrlUtils.decode(UrlUtils.filename(httpRequest.getUrl()), "UTF-8");
 		mContentType = header.get(Http.CONTENT_TYPE);

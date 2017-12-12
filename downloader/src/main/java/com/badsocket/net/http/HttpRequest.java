@@ -10,7 +10,7 @@ import java.net.SocketAddress;
  * Created by skyrim on 2017/11/4.
  */
 
-public interface HttpRequest {
+public interface HttpRequest extends SocketRequest {
 
 	void open(SocketAddress address, Http.Method method) throws IOException;
 
