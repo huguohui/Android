@@ -7,7 +7,7 @@ import java.util.List;
  * List, delete, set, modify etc.
  * @since 2015/12/14
  */
-public interface Manageable<T> extends Iterable<T> {
+public interface Manager<T> extends Iterable<T> {
 	/**
 	 * Get a managed object by index.
 	 * @param idx Index of object.

@@ -4,7 +4,7 @@ import com.badsocket.core.downloader.DownloadDescriptor;
 import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.downloader.UniversalDownloadTask;
+import com.badsocket.core.downloader.GenericDownloadTask;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public abstract class DownloadTaskFactory  {
 
 	public static DownloadTask create(DownloadDescriptor d, ProtocolHandler handler,
 				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
-		return new UniversalDownloadTask(d, handler, policy);
+		return new GenericDownloadTask(d, handler, policy);
 	}
 
 

@@ -12,7 +12,7 @@ import static java.util.Arrays.binarySearch;
  * To defining a generic manager, base class for file manager, resource manger etc.
  * @since 2015/12/14
  */
-public abstract class AbstractManager<T> implements Manageable<T> {
+public abstract class AbstractManager<T> implements Manager<T> {
 	/**
      * List of managed objects.
      */

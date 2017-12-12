@@ -24,7 +24,7 @@ import static com.badsocket.core.downloader.DownloadHelper.fetchTaskInfo;
 /**
  * Created by skyrim on 2017/10/6.
  */
-public class UniversalDownloadTask
+public class GenericDownloadTask
 	extends DownloadTask
 	implements SocketReceiver.OnFinishedListener
 {
@@ -70,8 +70,8 @@ public class UniversalDownloadTask
 	};
 
 
-	public UniversalDownloadTask(DownloadDescriptor d, ProtocolHandler handler,
-				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+	public GenericDownloadTask(DownloadDescriptor d, ProtocolHandler handler,
+							   InternetDownloader.ThreadAllocPolicy policy) throws IOException {
 		super(d);
 		address = d.getAddress();
 		protocol = Protocols.getProtocol(address.getProtocol());
@@ -87,8 +87,8 @@ public class UniversalDownloadTask
 	}
 
 
-	public UniversalDownloadTask(DownloadTaskInfo i, ProtocolHandler handler,
-				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+	public GenericDownloadTask(DownloadTaskInfo i, ProtocolHandler handler,
+							   InternetDownloader.ThreadAllocPolicy policy) throws IOException {
 		this(DownloadDescriptor.fromDownloadTaskInfo(i), handler, policy);
 		info = i;
 		isResumeFromInfo = true;
