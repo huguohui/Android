@@ -59,7 +59,7 @@ public class GenericDownloadTask
 
 	protected FileWriter writer;
 
-	protected InternetDownloader.ThreadAllocPolicy policy;
+	protected InternetDownloader.ThreadAllocStategy policy;
 
 	protected Worker worker;
 
@@ -71,7 +71,7 @@ public class GenericDownloadTask
 
 
 	public GenericDownloadTask(DownloadDescriptor d, ProtocolHandler handler,
-							   InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+				InternetDownloader.ThreadAllocStategy policy) throws IOException {
 		super(d);
 		address = d.getAddress();
 		protocol = Protocols.getProtocol(address.getProtocol());
@@ -88,7 +88,7 @@ public class GenericDownloadTask
 
 
 	public GenericDownloadTask(DownloadTaskInfo i, ProtocolHandler handler,
-							   InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+				InternetDownloader.ThreadAllocStategy policy) throws IOException {
 		this(DownloadDescriptor.fromDownloadTaskInfo(i), handler, policy);
 		info = i;
 		isResumeFromInfo = true;

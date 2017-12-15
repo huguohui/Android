@@ -16,7 +16,7 @@ public abstract class DownloadTaskFactory  {
 
 
 	public static DownloadTask create(DownloadDescriptor d, ProtocolHandler handler,
-				InternetDownloader.ThreadAllocPolicy policy) throws IOException {
+				InternetDownloader.ThreadAllocStategy policy) throws IOException {
 		return new GenericDownloadTask(d, handler, policy);
 	}
 

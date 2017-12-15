@@ -7,8 +7,10 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.badsocket.R;
+import com.badsocket.core.Config;
 import com.badsocket.core.Context;
 import com.badsocket.core.downloader.InternetDownloader;
+import com.badsocket.manager.Manager;
 
 /**
  * Created by skyrim on 2017/10/10.
@@ -50,7 +52,30 @@ public class DownloadService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.e(TAG, "onBind() executed");
-		return new DownloadAdapter(new InternetDownloader(new Context() {}));
+		return new DownloadAdapter(new InternetDownloader(new Context(null) {
+			@Override
+			public Manager getThreadManager() {
+				return null;
+			}
+
+
+			@Override
+			public Manager getFileManager() {
+				return null;
+			}
+
+
+			@Override
+			public Manager getResouceManager() {
+				return null;
+			}
+
+
+			@Override
+			public Config getConfig() {
+				return null;
+			}
+		}));
 	}
 
 

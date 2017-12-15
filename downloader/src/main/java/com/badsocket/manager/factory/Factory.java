@@ -4,7 +4,7 @@ package com.badsocket.manager.factory;
 /**
  * Factory for creating object simply.
  */
-public abstract class Factory<T> {
+public interface Factory<T> {
 	/**
 	 * To creating a object.
 	 * @return A object.

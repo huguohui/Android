@@ -17,14 +17,14 @@ import com.badsocket.util.ComputeUtils;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class MyAdspter extends BaseAdapter {
+public class SimpleAdspter extends BaseAdapter {
 
 	private List<DownloadTask> data;
 	private LayoutInflater layoutInflater;
 	private Context context;
 
 
-	public MyAdspter(Context context, List<DownloadTask> data) {
+	public SimpleAdspter(Context context, List<DownloadTask> data) {
 		this.context = context;
 		this.data = data;
 		this.layoutInflater = LayoutInflater.from(context);

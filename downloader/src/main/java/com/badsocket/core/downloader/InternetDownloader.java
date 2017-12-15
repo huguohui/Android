@@ -1,11 +1,9 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
-import com.badsocket.core.downloader.exception.DownloadException;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.core.downloader.factory.DownloadTaskFactory;
 import com.badsocket.worker.AsyncWorker;
@@ -40,7 +38,7 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected DownloadTaskInfo info;
 
-	protected Context context;
+	protected android.content.Context androidContext;
 
 	protected int monitorInterval = 1000;
 
@@ -48,24 +46,25 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected Map<Protocols, ProtocolHandler> protocolHandlers = new HashMap<>();
 
-	protected ThreadAllocPolicy policy = new ThreadAllocPolicy() {
-		@Override
-		public int alloc(DownloadTaskInfo info) {
-			long len = Math.max(info.getLength(), 1);
-			int i = 1;
-			while((len /= 1024) != 0) {
-				i++;
-			}
-			return Math.min(MAX_THREAD, i);
+	protected ThreadAllocStategy policy = (info) -> {
+		long len = Math.max(info.getLength(), 1);
+		int i = 1;
+		for (; (len /= 1024) != 0; i++) {
 		}
+		return Math.min(MAX_THREAD, i);
 	};
 
 	protected Monitor monitor = new DownloadMonitor(1000);
 
 
-	public InternetDownloader(Context c) {
-		context = c;
+	public InternetDownloader(android.content.Context context) {
+		androidContext = context;
 		init();
+	}
+
+
+	protected void initBase() {
+
 	}
 
 
@@ -201,7 +200,7 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public interface ThreadAllocPolicy {
+	public interface ThreadAllocStategy {
 
 		int alloc(DownloadTaskInfo info);
 

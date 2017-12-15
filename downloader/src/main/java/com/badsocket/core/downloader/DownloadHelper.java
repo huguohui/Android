@@ -1,6 +1,8 @@
 package com.badsocket.core.downloader;
 
+import com.badsocket.core.Context;
 import com.badsocket.core.ProtocolHandler;
+import com.badsocket.manager.factory.ThreadFactory;
 import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
@@ -12,6 +14,8 @@ import java.io.IOException;
  */
 
 public abstract class DownloadHelper {
+
+	private static final Context context = null;
 
 	public static SocketResponse fetchTaskInfo(DownloadDescriptor desc, ProtocolHandler handler) throws IOException {
 		SocketComponentFactory factory = handler.socketFamilyFactory();
@@ -31,7 +35,7 @@ public abstract class DownloadHelper {
 		final SocketRequest req = factory.createRequest(desc);
 		final DownloadTaskInfo info = handler.downloadTaskInfoFactory().create(desc);
 
-		/*new Thread(() -> {
+		context.getThreadFactory().createThread(() -> {
 			SocketResponse rep = null;
 			try {
 				req.open(desc.getAddress());
@@ -43,7 +47,7 @@ public abstract class DownloadHelper {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}).start();*/
+		}).start();
 	}
 
 

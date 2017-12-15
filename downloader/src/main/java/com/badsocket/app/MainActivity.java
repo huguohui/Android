@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 	protected MonitorWatcher watcher;
 
-	protected MyAdspter adapter;
+	protected SimpleAdspter adapter;
 
 	protected ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 		PermissionChecker.requestPermissons(this);
 
 		handler = new MessageHanlder();
-		adapter = new MyAdspter(this, tasks);
+		adapter = new SimpleAdspter(this, tasks);
 		watcher = new DownloadTaskWatcher(handler);
 		listView.setAdapter(adapter);
     }

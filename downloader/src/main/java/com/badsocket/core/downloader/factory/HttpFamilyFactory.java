@@ -53,8 +53,8 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 	}
 
 	@Override
-	public SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocPolicy policy) throws IOException {
-		int  num = i.getTotalThreads() != 0 ? i.getTotalThreads() : policy.alloc(i);
+	public SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocStategy stategy) throws IOException {
+		int  num = i.getTotalThreads() != 0 ? i.getTotalThreads() : stategy.alloc(i);
 		long length = i.getLength(), blockSize = length / num;
 		SocketRequest[] requests = new SocketRequest[num];
 		long[] pStart = i.getPartOffsetStart(),

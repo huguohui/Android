@@ -1,5 +1,6 @@
 package com.badsocket.manager;
 
+import com.badsocket.manager.factory.BaseThreadFactory;
 import com.badsocket.manager.factory.ThreadFactory;
 
 /**
@@ -8,6 +9,8 @@ import com.badsocket.manager.factory.ThreadFactory;
 public class ThreadManager extends AbstractThreadManager {
 	/** Single instance of ThreadManager. */
 	private static ThreadManager mManager = null;
+
+	private ThreadFactory factory = new BaseThreadFactory();
 
 	protected ThreadManager() {
 
@@ -39,7 +42,7 @@ public class ThreadManager extends AbstractThreadManager {
 				if (r[i] == null)
 					continue;
 
-				threads[i] = ThreadFactory.createThread(r[i]);
+				threads[i] = factory.createThread(r[i]);
 				threads[i].setUncaughtExceptionHandler(this);
 				mList.add(threads[i]);
 			}
@@ -51,7 +54,7 @@ public class ThreadManager extends AbstractThreadManager {
 
 	@Override
 	public Thread alloc(Runnable r) {
-		Thread th = ThreadFactory.createThread(r);
+		Thread th = factory.createThread(r);
 		th.setUncaughtExceptionHandler(this);
 		synchronized (mList) {
 			mList.add(th);

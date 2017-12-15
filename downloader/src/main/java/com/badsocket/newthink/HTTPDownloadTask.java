@@ -9,7 +9,8 @@ import java.net.URL;
  */
 
 public class HTTPDownloadTask
-		extends AbstractDownloadTask
+		extends
+		AbstractDownloadTask
 {
 
 	public HTTPDownloadTask(URL url) {
@@ -60,5 +61,11 @@ public class HTTPDownloadTask
 	@Override
 	public void run() {
 
+	}
+
+
+	@Override
+	public Task call() throws Exception {
+		return null;
 	}
 }

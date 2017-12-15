@@ -1,13 +1,12 @@
 package com.badsocket.newthink;
 
-import com.badsocket.core.Stopable;
-
 import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 /**
  * Created by skyrim on 2017/11/28.
  */
-public interface Task extends Runnable, Serializable {
+public interface Task extends Runnable, Serializable, Callable<Task> {
 
 	/**
 	 * Gets unique id of task.

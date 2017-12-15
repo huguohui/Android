@@ -27,7 +27,7 @@ public interface SocketComponentFactory {
 	SocketRequest createRequest(DownloadTaskInfo i, SocketRequest.Range r) throws IOException;
 
 
-	SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocPolicy policy) throws IOException;
+	SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocStategy policy) throws IOException;
 
 
 	SocketReceiver createReceiver(SocketRequest r, Writer w) throws IOException;
