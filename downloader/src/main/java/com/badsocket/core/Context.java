@@ -1,13 +1,14 @@
 package com.badsocket.core;
 
 
+import com.badsocket.core.config.Config;
 import com.badsocket.io.writer.FileWriter;
+import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
 import com.badsocket.manager.factory.ThreadFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Context for downloader.
@@ -18,7 +19,7 @@ public abstract class Context {
 	public abstract Manager getThreadManager();
 
 
-	public abstract Manager getFileManager();
+	public abstract FileManager getFileManager();
 
 
 	public abstract Config getConfig();
@@ -37,6 +38,9 @@ public abstract class Context {
 
 
 	public abstract FileWriter getFileWriter(File path, long size) throws IOException;
+
+
+	public abstract android.content.Context getAndroidContext();
 
 
 }

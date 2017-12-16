@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.badsocket.R;
-import com.badsocket.core.Config;
+import com.badsocket.core.config.Config;
 import com.badsocket.core.Context;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.manager.Manager;

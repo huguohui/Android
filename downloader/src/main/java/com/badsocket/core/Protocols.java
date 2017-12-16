@@ -4,6 +4,7 @@ package com.badsocket.core;
  * Common protocol. 
  */
 public enum Protocols {
+
 	/** HyperText Transfer Protocols. */
 	HTTP,
 

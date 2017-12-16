@@ -156,7 +156,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		if (mOnResponseListener != null) {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}
-		Log.debug("Response with header: " + mHttpResponse.getHeader().toString());
+		Log.debug("Response with header: \n" + mHttpResponse.getHeader().toString());
 	}
 	
 	

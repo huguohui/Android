@@ -1,7 +1,0 @@
-{
-    "global" : {
-        "max_threads" : 10,
-        "max_connections" : 100,
-        "max_tasks" : 3
-    }
-}
