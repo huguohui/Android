@@ -1,13 +1,11 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
-import com.badsocket.core.DownloaderContext;
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
-import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
-import com.badsocket.core.downloader.factory.DownloadTaskFactory;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
@@ -38,7 +36,7 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected long blockSize;
 
-	protected DownloadTaskInfo info;
+	protected DownloadTask info;
 
 	protected android.content.Context androidContext;
 
@@ -52,26 +50,25 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected ThreadAllocStategy policy = (info) -> {
 		long len = Math.max(info.getLength(), 1);
-		int i = 1;
-		for (; (len /= 1024) != 0; i++) {
+		int num = 3;
+		if (len < 3) {
+			num = 1;
 		}
-		return Math.min(MAX_THREAD, i);
+		else if (len > 1024 * 1024 * 100) {
+			num = 5;
+		}
+		else if (len > 1024 * 1024 * 10) {
+			num = 10;
+		}
+		return num;
 	};
 
 	protected Monitor monitor = new DownloadMonitor(1000);
 
 
-
-
-	public InternetDownloader(android.content.Context context) {
-		androidContext = context;
-		initAll();
-	}
-
-
-	protected void initAll() {
-		context = new DownloaderContext(androidContext);
-		context.getConfig();
+	public InternetDownloader(Context context) {
+		this.context = context;
+		androidContext = context.getAndroidContext();
 	}
 
 
@@ -82,22 +79,15 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
+	protected void loadUnfinishedTasks() {
+
+	}
+
+
 	public DownloadTask newTask(DownloadDescriptor desc) throws IOException {
 		String strPtl = desc.getAddress().getProtocol();
-		if (!Protocols.isSupport(strPtl)) {
-			throw new UnsupportedProtocolException();
-		}
 
-		Protocols protocol = Protocols.getProtocol(strPtl);
-		ProtocolHandler handler = protocolHandlers.get(protocol);
-		if (handler == null) {
-			throw new UnsupportedProtocolException();
-		}
-
-		DownloadTask dt = DownloadTaskFactory.create(desc, handler, policy);
-		taskManager.add(dt);
-		monitor.monitor(this);
-		return dt;
+		return null;
 	}
 
 
@@ -209,7 +199,7 @@ public class InternetDownloader extends AbstractDownloader {
 
 	public interface ThreadAllocStategy {
 
-		int alloc(DownloadTaskInfo info);
+		int alloc(DownloadTask info);
 
 	}
 }

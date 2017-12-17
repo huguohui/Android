@@ -72,7 +72,7 @@ public class DownloadService extends Service {
 
 
 			@Override
-			public Config getConfig() {
+			public Config getDownloadConfig() {
 				return null;
 			}
 		}));

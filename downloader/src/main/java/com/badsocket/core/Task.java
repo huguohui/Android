@@ -1,73 +1,120 @@
 package com.badsocket.core;
 
-import com.badsocket.worker.Workable;
+import java.io.Serializable;
+import java.util.concurrent.Callable;
 
 /**
- * Interface of task.
+ * Created by skyrim on 2017/11/28.
  */
-public abstract class Task implements Workable {
-
-	protected static int GLOBAL_ID = 0;
-
-	protected int id;
-
-	protected String name;
-
-	protected OnTaskFinishListener onFinishListener;
-
-	public enum State {
-		unstart, waiting, initing, running, paused, resuming, stoped, finished
-	}
-
-	protected State state = State.unstart;
-
-
-	protected Task() {
-		synchronized (this) {
-			id = GLOBAL_ID++;
-		}
-	}
-
-
-	protected Task(String name) {
-		this();
-		this.name = name;
-	}
+public interface Task extends Runnable, Serializable, Callable<Task> {
 
 	/**
-	 * Get information of current task.
-	 * @return Information of current task.
+	 * Gets unique id of task.
+	 * @return unique id of task.
 	 */
-	public abstract TaskInfo info();
+	int getId();
 
 
-	public State getState() {
-		return state;
+	/**
+	 * Gets name of task.
+	 * @return name of task.
+	 */
+	String getName();
+
+
+	void setName(String name);
+
+
+	/**
+	 * Gets start time of task in milliseconds.
+	 * @return start time of task in milliseconds.
+	 */
+	long getStartTime();
+
+
+	/**
+	 * Gets progress in precent of task.
+	 * @return progress in precent of task.
+	 */
+	float getProgress();
+
+
+	/**
+	 * Gets used time of task that from start to finish in milliseconds.
+	 * @return used time of task in milliseconds.
+	 */
+	long getUsedTime();
+
+
+	/**
+	 * Gets finish time of task.
+	 * @return finsih time of task.
+	 */
+	long getFinishTime();
+
+
+	int getPriority();
+
+
+	void setPriority(int priority);
+
+
+	boolean isStoped();
+
+
+	boolean isRunning();
+
+
+	boolean isFinished();
+
+
+	void onCreate();
+
+
+	void onStart();
+
+
+	void onStop();
+
+
+	void onFinish();
+
+
+	TaskStatus getStatus();
+
+
+	abstract class TaskStatus {
+
+		protected String description;
+
+		protected int code;
+
+
+		public String getDescription() {
+			return description;
+		}
+
+
+		protected void setDescription(String description) {
+			this.description = description;
+		}
+
+
+		public int getCode() {
+			return code;
+		}
+
+
+		protected void setCode(int code) {
+			this.code = code;
+		}
+
+
+		public TaskStatus(int code, String desc) {
+			this.code = code;
+			description = desc;
+		}
+
 	}
 
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-
-	public int getId() {
-		return id;
-	}
-
-
-	public String getName() {
-		return name;
-	}
-
-
-	public Task setOnFinishListener(OnTaskFinishListener onFinishListener) {
-		this.onFinishListener = onFinishListener;
-		return this;
-	}
-
-
-	public interface OnTaskFinishListener {
-		void onTaskFinish(Task t);
-	}
 }

@@ -10,22 +10,12 @@ import java.io.IOException;
  */
 
 public interface FileManager extends Manager<File> {
-	/**
-	 * Create a download task by task descriptor.
-	 * @param desc Task descriptor.
-	 * @return Download task instance.
-	 * @throws Throwable When exception occured.
-	 */
-	public abstract DownloadTask createDirectory(File parent, String name) throws IOException;
 
 
-	/**
-	 * Delete a object.
-	 *
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
-	public abstract boolean delete(DownloadTask obj) throws IOException;
+	public abstract void createDirectory(File parent, String name) throws IOException;
+
+
+	public abstract void createDirectory(File dir) throws IOException;
 
 
 	/**

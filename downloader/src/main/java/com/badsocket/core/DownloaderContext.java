@@ -1,6 +1,10 @@
 package com.badsocket.core;
 
+import android.content.pm.PermissionInfo;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Environment;
+import android.os.StatFs;
 
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
@@ -13,6 +17,7 @@ import com.badsocket.manager.SimpleFileManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.manager.factory.BaseThreadFactory;
 import com.badsocket.manager.factory.ThreadFactory;
+import com.badsocket.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +29,12 @@ import java.io.IOException;
 public class DownloaderContext extends Context {
 
 	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+	public static final String DS = "/";
+
+	public static final String CONFIG_DIR = "config";
+
+	public static final String ICON_DIR = "icon";
 
 	public static String HOME_DIRECTORY;
 
@@ -37,16 +48,18 @@ public class DownloaderContext extends Context {
 
 	private Config config;
 
+	private NetworkInfo networkInfo;
+
+	private boolean isNetworkAvailable;
+
+	private StatFs pathStat;
+
+	private NetworkType networkType;
 
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
-
-		try {
-			init();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		HOME_DIRECTORY = ROOT_PATH + DS + androidContext.getApplicationInfo().packageName;
+		init();
 	}
 
 
@@ -55,11 +68,27 @@ public class DownloaderContext extends Context {
 	}
 
 
-	protected void init() throws Exception {
+	protected void init() {
 		threadManager = ThreadManager.getInstance();
 		threadFactory = new BaseThreadFactory();
-		fileManger = SimpleFileManager.getInstance();
-		config = new PropertiesConfigReader(new File(DownloadConfig.GLOBAL_DOWNLAOD_PATH)).read();
+		networkInfo = (NetworkInfo) androidContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+
+		try {
+			fileManger = SimpleFileManager.getInstance();
+			fileManger.createDirectory(new File(HOME_DIRECTORY));
+			config = new PropertiesConfigReader(
+					new File(ROOT_PATH, DownloadConfig.CONFIG_FILE)).read();
+		}
+		catch(Exception e) {
+			Log.e(e);
+		}
+	}
+
+
+	protected void checkEnvironment() {
+		isNetworkAvailable = networkInfo.isConnected() && networkInfo.isAvailable();
+		pathStat = new StatFs(HOME_DIRECTORY);
+
 	}
 
 
@@ -76,7 +105,7 @@ public class DownloaderContext extends Context {
 
 
 	@Override
-	public Config getConfig() {
+	public Config getDownloadConfig() {
 		return config;
 	}
 
@@ -113,6 +142,30 @@ public class DownloaderContext extends Context {
 
 	@Override
 	public android.content.Context getAndroidContext() {
+		return null;
+	}
+
+
+	@Override
+	public NetworkInfo getNetworkInfo() {
+		return null;
+	}
+
+
+	@Override
+	public boolean isNetworkAvailable() {
+		return isNetworkAvailable;
+	}
+
+
+	@Override
+	public long getAvailableSpaceSize(File path) {
+		return pathStat.getFreeBytes();
+	}
+
+
+	@Override
+	public NetworkType getNetworkType() {
 		return null;
 	}
 }

@@ -1,6 +1,8 @@
 package com.badsocket.core;
 
 
+import android.net.NetworkInfo;
+
 import com.badsocket.core.config.Config;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
@@ -22,7 +24,7 @@ public abstract class Context {
 	public abstract FileManager getFileManager();
 
 
-	public abstract Config getConfig();
+	public abstract Config getDownloadConfig();
 
 
 	public abstract ThreadFactory getThreadFactory();
@@ -41,6 +43,19 @@ public abstract class Context {
 
 
 	public abstract android.content.Context getAndroidContext();
+
+
+	public abstract NetworkInfo getNetworkInfo();
+
+
+	public abstract boolean isNetworkAvailable();
+
+
+	public abstract long getAvailableSpaceSize(File path);
+
+
+	public abstract NetworkType getNetworkType();
+
 
 
 }

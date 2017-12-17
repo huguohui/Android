@@ -2,11 +2,11 @@ package com.badsocket.core.downloader;
 
 
 import com.badsocket.core.Controlable;
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
-import com.badsocket.core.downloader.exception.DownloadException;
 
 import java.io.IOException;
 import java.util.List;

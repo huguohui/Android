@@ -4,6 +4,7 @@ import com.badsocket.core.downloader.DownloadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 
 /**
@@ -79,20 +80,23 @@ public class SimpleFileManager extends AbstractFileManager {
 
 
 	@Override
-	public DownloadTask createDirectory(File parent, String name) throws IOException {
-		return null;
+	public void createDirectory(File parent, String name) throws IOException {
+		File file = new File(parent, name);
+		if (file.exists()) {
+			throw new FileAlreadyExistsException(file.getAbsolutePath());
+		}
+
+		file.mkdirs();
 	}
 
 
-	/**
-	 * Delete a object.
-	 *
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
 	@Override
-	public boolean delete(DownloadTask obj) throws IOException {
-		return false;
+	public void createDirectory(File dir) throws IOException {
+		if (dir.exists()) {
+			throw new FileAlreadyExistsException(dir.getAbsolutePath());
+		}
+
+		dir.mkdirs();
 	}
 
 

@@ -1,8 +1,10 @@
 package com.badsocket.core.downloader.factory;
 
+import com.badsocket.core.DownloadTask;
+import com.badsocket.core.HTTPDownloadTask;
 import com.badsocket.core.downloader.DownloadDescriptor;
-import com.badsocket.core.downloader.DownloadTaskInfo;
-import com.badsocket.core.downloader.HttpDownloadTaskInfo;
+import com.badsocket.core.downloader.DownloadTask;
+import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.net.SocketComponentFactory;
@@ -37,9 +39,9 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 
 
 	@Override
-	public SocketRequest createRequest(DownloadTaskInfo i) throws IOException {
-		HttpDownloadTaskInfo hti = (HttpDownloadTaskInfo) i;
-		WebAddress address = hti.getAddress();
+	public SocketRequest createRequest(DownloadTask i) throws IOException {
+		HTTPDownloadTask hti = (HTTPDownloadTask) i;
+		WebAddress address = new WebAddress(hti.getURL());
 		return createRequest(address);
 	}
 
@@ -53,24 +55,24 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 	}
 
 	@Override
-	public SocketRequest[] createRequest(DownloadTaskInfo i, InternetDownloader.ThreadAllocStategy stategy) throws IOException {
-		int  num = i.getTotalThreads() != 0 ? i.getTotalThreads() : stategy.alloc(i);
-		long length = i.getLength(), blockSize = length / num;
+	public SocketRequest[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy) throws IOException {
+		int  num = task.getSections().length != 0 ? task.getSections().length : stategy.alloc(task);
+		long length = task.getLength(), blockSize = length / num;
 		SocketRequest[] requests = new SocketRequest[num];
-		long[] pStart = i.getPartOffsetStart(),
-				pLen = i.getPartLength(),
-				pDownLen = i.getPartDownloadLength();
+		long[] pStart = task.getPartOffsetStart(),
+				pLen = task.getPartLength(),
+				pDownLen = task.getPartDownloadLength();
 
 		for (int j = 0; j < num; j++) {
 			if (pStart != null && pLen != null && pDownLen != null) {
 				if (pLen != pDownLen) {
-					requests[j] = createRequest(i, new HttpRequest.Range(pStart[j] + pDownLen[j],
+					requests[j] = createRequest(task, new HttpRequest.Range(pStart[j] + pDownLen[j],
 							pLen[j] - pDownLen[j]));
 				}
 				continue;
 			}
 
-			requests[j] = createRequest(i, new HttpRequest.Range(j * blockSize,
+			requests[j] = createRequest(task, new HttpRequest.Range(j * blockSize,
 					num > -~j ? blockSize * -~j : length));
 		}
 
@@ -79,7 +81,7 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 
 
 	@Override
-	public SocketRequest createRequest(DownloadTaskInfo i, SocketRequest.Range r) throws IOException {
+	public SocketRequest createRequest(DownloadTask i, SocketRequest.Range r) throws IOException {
 		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
@@ -92,5 +94,11 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 		BaseHttpRequest req = (BaseHttpRequest) r;
 		HttpReceiver rec = new HttpReceiver((BaseHttpRequest) r, w);
 		return rec;
+	}
+
+
+	@Override
+	public DownloadTask creatTask(DownloadDescriptor ds) throws Exception {
+		return new HTTPDownloadTask(null);
 	}
 }

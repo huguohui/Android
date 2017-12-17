@@ -71,7 +71,7 @@ public interface Manager<T> extends Iterable<T> {
 		/**
 		 * Run doFilter on given data.
 		 * @param data Given data.
-		 * @return true on filter pass, false on fail.
+		 * @return true on doFrontCheck pass, false on fail.
 		 */
 		boolean doFilter(T data);
 	}

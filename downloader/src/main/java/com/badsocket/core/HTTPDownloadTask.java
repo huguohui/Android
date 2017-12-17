@@ -1,5 +1,6 @@
-package com.badsocket.newthink;
+package com.badsocket.core;
 
+import com.badsocket.core.AbstractDownloadTask;
 import com.badsocket.util.TimeUtils;
 
 import java.net.URL;

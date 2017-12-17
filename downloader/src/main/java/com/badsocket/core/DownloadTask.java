@@ -1,6 +1,4 @@
-package com.badsocket.newthink;
-
-import com.badsocket.net.SocketRequest;
+package com.badsocket.core;
 
 import java.io.File;
 import java.net.URL;

@@ -1,3 +1,4 @@
+/*
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.ProtocolHandler;
@@ -21,9 +22,11 @@ import java.io.IOException;
 
 import static com.badsocket.core.downloader.DownloadHelper.fetchTaskInfo;
 
+*/
 /**
  * Created by skyrim on 2017/10/6.
- */
+ *//*
+
 public class GenericDownloadTask
 	extends DownloadTask
 	implements SocketReceiver.OnFinishedListener
@@ -158,9 +161,11 @@ public class GenericDownloadTask
 	}
 
 
-	/**
+	*/
+/**
 	 * To do some work.
-	 */
+	 *//*
+
 	@Override
 	public void work() throws Exception {
 		state = State.running;
@@ -168,9 +173,11 @@ public class GenericDownloadTask
 	}
 
 
-	/**
+	*/
+/**
 	 * Controls the task start.
-	 */
+	 *//*
+
 	@Override
 	public void start() throws Exception {
 		super.start();
@@ -178,9 +185,11 @@ public class GenericDownloadTask
 	}
 
 
-	/**
+	*/
+/**
 	 * Controls the task pause.
-	 */
+	 *//*
+
 	@Override
 	public void pause() throws Exception {
 		super.pause();
@@ -188,18 +197,22 @@ public class GenericDownloadTask
 	}
 
 
-	/**
+	*/
+/**
 	 * Controls the task resume.
-	 */
+	 *//*
+
 	@Override
 	public void resume() throws Exception {
 		super.resume();
 	}
 
 
-	/**
+	*/
+/**
 	 * Controls the task stop.
-	 */
+	 *//*
+
 	@Override
 	public void stop() throws Exception {
 		super.stop();
@@ -207,11 +220,13 @@ public class GenericDownloadTask
 	}
 
 
-	/**
+	*/
+/**
 	 * Get information of current task.
 	 *
 	 * @return Information of current task.
-	 */
+	 *//*
+
 	@Override
 	public TaskInfo info() {
 		if (receivers != null) {
@@ -221,3 +236,4 @@ public class GenericDownloadTask
 		return info;
 	}
 }
+*/
