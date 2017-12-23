@@ -3,17 +3,15 @@ package com.badsocket.core.downloader.factory;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.HTTPDownloadTask;
 import com.badsocket.core.downloader.DownloadDescriptor;
-import com.badsocket.core.downloader.DownloadTask;
-import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.WebAddress;
+import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
-import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.HttpRequest;
 
 import java.io.IOException;
@@ -59,16 +57,18 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 		int  num = task.getSections().length != 0 ? task.getSections().length : stategy.alloc(task);
 		long length = task.getLength(), blockSize = length / num;
 		SocketRequest[] requests = new SocketRequest[num];
-		long[] pStart = task.getPartOffsetStart(),
-				pLen = task.getPartLength(),
-				pDownLen = task.getPartDownloadLength();
+		DownloadTask.DownloadSection[] sections = task.getSections();
+		DownloadTask.DownloadSection section = null;
 
 		for (int j = 0; j < num; j++) {
-			if (pStart != null && pLen != null && pDownLen != null) {
-				if (pLen != pDownLen) {
-					requests[j] = createRequest(task, new HttpRequest.Range(pStart[j] + pDownLen[j],
-							pLen[j] - pDownLen[j]));
+			section = sections[j];
+			if (section != null) {
+				if (section.getDownloadedLength() != section.getLength()) {
+					requests[j] = createRequest(task,
+							new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
+									section.getLength() - section.getDownloadedLength()));
 				}
+
 				continue;
 			}
 

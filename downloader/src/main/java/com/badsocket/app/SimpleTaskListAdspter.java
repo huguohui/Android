@@ -10,21 +10,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.badsocket.R;
-import com.badsocket.core.downloader.DownloadTask;
-import com.badsocket.core.downloader.DownloadTaskInfo;
+import com.badsocket.core.DownloadTask;
 import com.badsocket.util.ComputeUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class SimpleAdspter extends BaseAdapter {
+public class SimpleTaskListAdspter extends BaseAdapter {
 
 	private List<DownloadTask> data;
 	private LayoutInflater layoutInflater;
 	private Context context;
 
 
-	public SimpleAdspter(Context context, List<DownloadTask> data) {
+	public SimpleTaskListAdspter(Context context, List<DownloadTask> data) {
 		this.context = context;
 		this.data = data;
 		this.layoutInflater = LayoutInflater.from(context);
@@ -58,32 +57,31 @@ public class SimpleAdspter extends BaseAdapter {
 	@Override
 	public View getView(int position, View cv, ViewGroup parent) {
 		cv = cv == null ? layoutInflater.inflate(R.layout.list, null) : cv;
-		ProgressBar pb = (ProgressBar) cv.findViewById(R.id.progress_bar);
-		TextView fileName = (TextView) cv.findViewById(R.id.file_name);
-		TextView progressText = (TextView) cv.findViewById(R.id.progress_text);
-		TextView progressPercent = (TextView) cv.findViewById(R.id.progress_percent);
-		Button controlButton = (Button) cv.findViewById(R.id.control_button);
+		ProgressBar pb = cv.findViewById(R.id.progress_bar);
+		TextView fileName = cv.findViewById(R.id.file_name);
+		TextView progressText = cv.findViewById(R.id.progress_text);
+		TextView progressPercent = cv.findViewById(R.id.progress_percent);
+		Button controlButton = cv.findViewById(R.id.control_button);
 		DownloadTask task = data.get(position);
-		DownloadTaskInfo info = (DownloadTaskInfo) task.info();
 
-		if (info != null) {
-			fileName.setText(info.getName());
-			pb.setProgress((int) (info.getProgress() * 100));
-			progressText.setText(ComputeUtils.getFriendlyUnitOfBytes(info.getDownloadLength(), 2)
-					+ "/" + ComputeUtils.getFriendlyUnitOfBytes(info.getLength(), 2));
-			progressPercent.setText(new DecimalFormat("##0.00").format(info.getProgress() * 100) + "%");
+		if (task != null) {
+			fileName.setText(task.getName());
+			pb.setProgress((int) (task.getProgress() * 100));
+			progressText.setText(ComputeUtils.getFriendlyUnitOfBytes(task.getDownloadedLength(), 2)
+					+ "/" + ComputeUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
+			progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");
 
 			int resourceId = R.drawable.stoped;
-			switch (task.getState()) {
-				case running:
+			switch (task.getStatus().getCode()) {
+				case 0:
 					resourceId = R.drawable.downloading;
 					break;
 
-				case paused:
+				case 1:
 					resourceId = R.drawable.paused;
 					break;
 
-				case stoped:
+				case 2:
 					resourceId = R.drawable.stoped;
 			}
 			controlButton.setBackgroundResource(resourceId);

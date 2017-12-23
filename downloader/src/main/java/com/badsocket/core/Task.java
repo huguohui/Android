@@ -83,37 +83,14 @@ public interface Task extends Runnable, Serializable, Callable<Task> {
 	TaskStatus getStatus();
 
 
-	abstract class TaskStatus {
-
-		protected String description;
-
-		protected int code;
+	interface TaskStatus {
 
 
-		public String getDescription() {
-			return description;
-		}
+		public String getDescription();
 
 
-		protected void setDescription(String description) {
-			this.description = description;
-		}
+		public int getCode();
 
-
-		public int getCode() {
-			return code;
-		}
-
-
-		protected void setCode(int code) {
-			this.code = code;
-		}
-
-
-		public TaskStatus(int code, String desc) {
-			this.code = code;
-			description = desc;
-		}
 
 	}
 

@@ -69,14 +69,16 @@ public class Bootstrap extends Application {
 
 		try {
 			for (String file : assetManager.list(".")) {
-				FileUtils.copyTo(assetManager.open(file), rootPath);
+				try {
+					FileUtils.copyTo(assetManager.open(file), rootPath);
+				}
+				finally {
+					assetManager.close();
+				}
 			}
 		}
 		catch (IOException e) {
 			Log.e(e);
-		}
-		finally {
-			assetManager.close();
 		}
 	}
 

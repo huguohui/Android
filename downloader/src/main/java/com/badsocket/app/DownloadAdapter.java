@@ -2,12 +2,12 @@ package com.badsocket.app;
 
 import android.os.Binder;
 
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.downloader.DownloadDescriptor;
-import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpDownloadTaskInfoFactory;
@@ -94,6 +94,8 @@ public class DownloadAdapter extends Binder implements Downloader {
 	public DownloadTask findTask(int id) {
 		return downloader.findTask(id);
 	}
+
+
 
 
 	@Override

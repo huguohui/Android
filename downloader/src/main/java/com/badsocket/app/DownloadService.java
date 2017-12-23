@@ -52,30 +52,7 @@ public class DownloadService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.e(TAG, "onBind() executed");
-		return new DownloadAdapter(new InternetDownloader(new Context(null) {
-			@Override
-			public Manager getThreadManager() {
-				return null;
-			}
-
-
-			@Override
-			public Manager getFileManager() {
-				return null;
-			}
-
-
-			@Override
-			public Manager getResouceManager() {
-				return null;
-			}
-
-
-			@Override
-			public Config getDownloadConfig() {
-				return null;
-			}
-		}));
+		return new DownloadAdapter(new InternetDownloader(null));
 	}
 
 

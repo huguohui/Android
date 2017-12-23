@@ -18,9 +18,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.badsocket.R;
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.downloader.DownloadDescriptor;
-import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.net.WebAddress;
 import com.badsocket.util.Log;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 	protected MonitorWatcher watcher;
 
-	protected SimpleAdspter adapter;
+	protected SimpleTaskListAdspter adapter;
 
 	protected ServiceConnection serviceConnection = new ServiceConnection() {
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 		PermissionChecker.requestPermissons(this);
 
 		handler = new MessageHanlder();
-		adapter = new SimpleAdspter(this, tasks);
+		adapter = new SimpleTaskListAdspter(this, tasks);
 		watcher = new DownloadTaskWatcher(handler);
 		listView.setAdapter(adapter);
     }
@@ -167,15 +167,17 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 final String url = ev.getText().toString();
+
 								new Thread() {
 									public void run() {
 										try {
-											downloader.newTask(new DownloadDescriptor.Builder()
+											downloader.newTask(new DownloadDescriptor
+													.Builder()
 													.setAddress(new WebAddress(new URL(url)))
 													.setPath(savePath)
-												.build()
-											);
-										} catch (Exception e) {
+													.build());
+										}
+										catch (Exception e) {
 											Looper.prepare();
 											showToast(Log.getStackTraceString(e));
 											Log.e(e);
