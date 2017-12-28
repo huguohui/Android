@@ -2,11 +2,11 @@ package com.badsocket.net.http;
 
 
 import com.badsocket.net.AbstractSocketRequest;
+import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.SocketEntity;
 import com.badsocket.net.SocketHeader;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
-import com.badsocket.net.WebAddress;
 import com.badsocket.net.http.Http.Method;
 import com.badsocket.util.Log;
 import com.badsocket.util.UrlUtils;
@@ -52,7 +52,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
      * @param url Special URL.
      * @param method Special method of requesting.
      */
-	public BaseHttpRequest(WebAddress address, Method method) throws IOException {
+	public BaseHttpRequest(DownloadAddress address, Method method) throws IOException {
 		super(UrlUtils.socketAddressByUrl(address.getUrl()));
 		if (method != null)
 			this.mMethod = method;
@@ -68,7 +68,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
      * Construct a http request object.
      * @param url Special URL.
      */
-	public BaseHttpRequest(WebAddress address) throws IOException {
+	public BaseHttpRequest(DownloadAddress address) throws IOException {
 		this(address, null);
 	}
 
@@ -167,8 +167,8 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	public void open(SocketAddress url, Method method) throws IOException {
 		setAddress(url);
 		setMethod(method == null ? Method.GET : method);
-		super.open(UrlUtils.socketAddressByUrl(((WebAddress) url).getUrl()));
-		Log.debug("Open a connection with url : " + ((WebAddress) url).getUrl().toExternalForm());
+		super.open(UrlUtils.socketAddressByUrl(((DownloadAddress) url).getUrl()));
+		Log.debug("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
 	}
 	
 	
@@ -177,7 +177,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	 * @throws IOException If exception.
 	 */
 	public void open(SocketAddress url) throws IOException {
-		WebAddress adr = (WebAddress) url;
+		DownloadAddress adr = (DownloadAddress) url;
 		open(adr, mMethod);
 	}
 
@@ -191,7 +191,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	 * Reopen a connection.
 	 */
 	public void reopen(SocketAddress url) throws IOException {
-		WebAddress address = (WebAddress) url;
+		DownloadAddress address = (DownloadAddress) url;
     	mUrl = address.getUrl();
     	reopen();
 	}
@@ -221,7 +221,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		}
 
 		mAddress = address;
-		mUrl = ((WebAddress) address).getUrl();
+		mUrl = ((DownloadAddress) address).getUrl();
 	}
 	
 
@@ -268,7 +268,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		}
 
 
-		public Builder setAddress(WebAddress address) {
+		public Builder setAddress(DownloadAddress address) {
 			request.setAddress(address);
 			return this;
 		}

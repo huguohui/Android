@@ -1,13 +1,14 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.net.WebAddress;
+import com.badsocket.core.DownloadTask;
+import com.badsocket.net.DownloadAddress;
 
 /**
  * Descriptor for downloading task.
  */
 public class DownloadDescriptor extends Descriptor {
 	/** URL for downloading. */
-	protected WebAddress mWebAddress;
+	protected DownloadAddress mWebAddress;
 
 	/** Task priority. */
 	protected int mPriority;
@@ -29,22 +30,22 @@ public class DownloadDescriptor extends Descriptor {
 	}
 
 
-	public static DownloadDescriptor fromDownloadTaskInfo(DownloadTaskInfo info) {
+	public static DownloadDescriptor fromDownloadTaskInfo(DownloadTask info) {
 		DownloadDescriptor desc = new DownloadDescriptor.Builder()
-				.setAddress(info.getAddress())
-				.setMaxThread(info.getTotalThreads())
+				.setAddress(new DownloadAddress(info.getURL()))
+				.setMaxThread(info.getSectionNumber())
 				.setPriority(info.getPriority())
-				.setPath(info.getPath())
+				.setPath(info.getDownloadPath().getAbsolutePath())
 				.build();
 		return desc;
 	}
 
 
-	public WebAddress getAddress() {
+	public DownloadAddress getAddress() {
 		return mWebAddress;
 	}
 
-	public void setAddress(WebAddress mUrl) {
+	public void setAddress(DownloadAddress mUrl) {
 		this.mWebAddress = mUrl;
 	}
 
@@ -74,7 +75,7 @@ public class DownloadDescriptor extends Descriptor {
 		}
 
 
-		public Builder setAddress(WebAddress address) {
+		public Builder setAddress(DownloadAddress address) {
 			descriptor.setAddress(address);
 			return this;
 		}

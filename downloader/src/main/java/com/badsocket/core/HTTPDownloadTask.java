@@ -1,8 +1,10 @@
 package com.badsocket.core;
 
-import com.badsocket.core.AbstractDownloadTask;
+import com.badsocket.io.writer.FileWriter;
 import com.badsocket.util.TimeUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -13,6 +15,13 @@ public class HTTPDownloadTask
 		extends
 		AbstractDownloadTask
 {
+
+	protected Context context;
+
+	protected FileWriter fileWriter;
+
+	protected DownloadTaskExtraInfo extraInfo;
+
 
 	public HTTPDownloadTask(URL url) {
 		super(url);
@@ -25,14 +34,22 @@ public class HTTPDownloadTask
 
 
 	@Override
-	public void onCreate() {
-
+	public void onCreate(Context context, TaskExtraInfo info) {
+		this.context = context;
+		this.extraInfo = (DownloadTaskExtraInfo) info;
 	}
 
 
 	@Override
 	public void onStart() {
 		startTime = TimeUtils.millisTime();
+		isRunning = true;
+		try {
+			fileWriter = this.context.getFileWriter(new File(getDownloadPath(), getName()), 0);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -43,7 +60,24 @@ public class HTTPDownloadTask
 
 
 	@Override
-	public void onFinish() {
+	public void onDestory() {
+
+	}
+
+
+	@Override
+	public void onPause() {
+
+	}
+
+
+	@Override
+	public void onResume() {
+
+	}
+
+
+	protected void prepare() {
 
 	}
 
@@ -59,14 +93,25 @@ public class HTTPDownloadTask
 	 *
 	 * @see Thread#run()
 	 */
-	@Override
 	public void run() {
-
+		try {
+			call();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
 	@Override
 	public Task call() throws Exception {
 		return null;
+	}
+
+
+	interface DownloadTaskExtraInfo extends TaskExtraInfo {
+
+
+
 	}
 }

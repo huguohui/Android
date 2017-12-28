@@ -6,17 +6,25 @@ import java.net.URL;
 /**
  * @since 2017/10/5 11:28.
  */
-public class WebAddress extends InetSocketAddress {
+public class DownloadAddress extends InetSocketAddress {
 
 	protected URL url;
 
 	protected String protocol;
 
+	protected String address;
 
-	public WebAddress(URL url) {
+
+	public DownloadAddress(URL url) {
 		super(url.getHost(), url.getPort() != - 1 ? url.getPort() : 80);
 		this.url = url;
 		protocol = url.getProtocol();
+	}
+
+
+	public DownloadAddress(String address) {
+		super("", 80);
+		this.address = address;
 	}
 
 
@@ -25,7 +33,7 @@ public class WebAddress extends InetSocketAddress {
 	}
 
 
-	public WebAddress setUrl(URL url) {
+	public DownloadAddress setUrl(URL url) {
 		this.url = url;
 		return this;
 	}

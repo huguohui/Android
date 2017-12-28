@@ -22,7 +22,7 @@ import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.downloader.DownloadDescriptor;
 import com.badsocket.core.downloader.Downloader;
-import com.badsocket.net.WebAddress;
+import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
 
 import java.net.URL;
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 										try {
 											downloader.newTask(new DownloadDescriptor
 													.Builder()
-													.setAddress(new WebAddress(new URL(url)))
+													.setAddress(new DownloadAddress(new URL(url)))
 													.setPath(savePath)
 													.build());
 										}

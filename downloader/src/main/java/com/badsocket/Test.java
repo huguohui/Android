@@ -12,13 +12,12 @@ import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpDownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpFamilyFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
+import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.SocketComponentFactory;
-import com.badsocket.net.WebAddress;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.util.Log;
 import com.badsocket.worker.AbstractWorker;
 
-import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -63,13 +62,13 @@ public class Test {
 
 		d.setParallelTaskNum(3);
 		d.newTask(new DownloadDescriptor.Builder()
-				.setAddress(new WebAddress(new URL(urls[1])))
+				.setAddress(new DownloadAddress(new URL(urls[1])))
 				.setPath("d:/")
 				.build()
 		);
 
 		d.newTask(new DownloadDescriptor.Builder()
-				.setAddress(new WebAddress(new URL(urls[2])))
+				.setAddress(new DownloadAddress(new URL(urls[2])))
 				.setPath("d:/")
 				.build()
 		);

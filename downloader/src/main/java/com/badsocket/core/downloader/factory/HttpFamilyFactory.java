@@ -8,7 +8,7 @@ import com.badsocket.io.writer.Writer;
 import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketReceiver;
 import com.badsocket.net.SocketRequest;
-import com.badsocket.net.WebAddress;
+import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
@@ -23,7 +23,7 @@ import java.net.SocketAddress;
 public class HttpFamilyFactory implements SocketComponentFactory {
 	@Override
 	public SocketRequest createRequest(SocketAddress d) throws IOException {
-		WebAddress address = (WebAddress) d;
+		DownloadAddress address = (DownloadAddress) d;
 		BaseHttpRequest hr = new BaseHttpRequest();
 		hr.setAddress(address);
 		return hr;
@@ -39,7 +39,7 @@ public class HttpFamilyFactory implements SocketComponentFactory {
 	@Override
 	public SocketRequest createRequest(DownloadTask i) throws IOException {
 		HTTPDownloadTask hti = (HTTPDownloadTask) i;
-		WebAddress address = new WebAddress(hti.getURL());
+		DownloadAddress address = new DownloadAddress(hti.getURL());
 		return createRequest(address);
 	}
 

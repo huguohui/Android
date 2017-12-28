@@ -7,7 +7,7 @@ import java.net.URL;
  * Created by skyrim on 2017/11/28.
  */
 
-public interface DownloadTask extends Task {
+public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
 	int getSpeedPerSecond();
 

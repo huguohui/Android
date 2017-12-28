@@ -27,6 +27,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected int speedLimited;
 
+	protected boolean isPaused;
+
 	protected DownloadSection[] downloadSections;
 
 

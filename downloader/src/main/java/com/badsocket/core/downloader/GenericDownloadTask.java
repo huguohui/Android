@@ -32,7 +32,7 @@ public class GenericDownloadTask
 	implements SocketReceiver.OnFinishedListener
 {
 
-	protected WebAddress address;
+	protected DownloadAddress address;
 
 	protected SocketResponse response;
 

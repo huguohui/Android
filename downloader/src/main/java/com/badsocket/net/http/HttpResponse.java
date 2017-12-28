@@ -4,7 +4,7 @@ import com.badsocket.net.SocketEntity;
 import com.badsocket.net.SocketHeader;
 import com.badsocket.net.SocketResponse;
 import com.badsocket.net.SocketRequest;
-import com.badsocket.net.WebAddress;
+import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
 import com.badsocket.util.StringUtils;
 import com.badsocket.util.TimeUtils;
@@ -127,7 +127,7 @@ public class HttpResponse extends SocketResponse {
 
 			Log.println(newUrl);
 			httpRequest.setUrl(UrlUtils.fullUrl(mUrl, newUrl));
-			httpRequest.setAddress(new WebAddress(UrlUtils.fullUrl(mUrl, newUrl)));
+			httpRequest.setAddress(new DownloadAddress(UrlUtils.fullUrl(mUrl, newUrl)));
 			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();

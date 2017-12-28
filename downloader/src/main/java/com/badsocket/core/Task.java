@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by skyrim on 2017/11/28.
  */
-public interface Task extends Runnable, Serializable, Callable<Task> {
+public interface Task extends Runnable, Serializable, Callable<Task>, TaskLifecycle {
 
 	/**
 	 * Gets unique id of task.
@@ -68,19 +68,8 @@ public interface Task extends Runnable, Serializable, Callable<Task> {
 	boolean isFinished();
 
 
-	void onCreate();
-
-
-	void onStart();
-
-
-	void onStop();
-
-
-	void onFinish();
-
-
 	TaskStatus getStatus();
+
 
 
 	interface TaskStatus {
@@ -94,4 +83,12 @@ public interface Task extends Runnable, Serializable, Callable<Task> {
 
 	}
 
+
+	interface TaskExtraInfo {
+
+
+
+	}
+
 }
+
