@@ -1,6 +1,7 @@
 package com.badsocket.core;
 
 
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.badsocket.core.config.Config;
@@ -56,6 +57,8 @@ public abstract class Context {
 
 	public abstract NetworkType getNetworkType();
 
+
+	public abstract ConnectivityManager getConnectivityManager();
 
 
 }

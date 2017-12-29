@@ -1,6 +1,7 @@
 package com.badsocket.core;
 
 import android.content.pm.PermissionInfo;
+import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -56,6 +57,8 @@ public class DownloaderContext extends Context {
 
 	private NetworkType networkType;
 
+	private ConnectivityManager connectivityManager;
+
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
 		HOME_DIRECTORY = ROOT_PATH + DS + androidContext.getApplicationInfo().packageName;
@@ -71,7 +74,9 @@ public class DownloaderContext extends Context {
 	protected void init() {
 		threadManager = ThreadManager.getInstance();
 		threadFactory = new BaseThreadFactory();
-		networkInfo = (NetworkInfo) androidContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+		connectivityManager = (ConnectivityManager) androidContext.getSystemService(
+				android.content.Context.CONNECTIVITY_SERVICE);
+		networkInfo = connectivityManager.getActiveNetworkInfo();
 
 		try {
 			fileManger = SimpleFileManager.getInstance();
@@ -87,8 +92,6 @@ public class DownloaderContext extends Context {
 
 	protected void checkEnvironment() {
 		isNetworkAvailable = networkInfo.isConnected() && networkInfo.isAvailable();
-		pathStat = new StatFs(HOME_DIRECTORY);
-
 	}
 
 
@@ -142,13 +145,13 @@ public class DownloaderContext extends Context {
 
 	@Override
 	public android.content.Context getAndroidContext() {
-		return null;
+		return androidContext;
 	}
 
 
 	@Override
 	public NetworkInfo getNetworkInfo() {
-		return null;
+		return networkInfo;
 	}
 
 
@@ -166,6 +169,12 @@ public class DownloaderContext extends Context {
 
 	@Override
 	public NetworkType getNetworkType() {
-		return null;
+		return networkType;
+	}
+
+
+	@Override
+	public ConnectivityManager getConnectivityManager() {
+		return connectivityManager;
 	}
 }

@@ -4,7 +4,7 @@ package com.badsocket.util;
  * Created by skyrim on 2017/10/15.
  */
 
-public abstract class ComputeUtils {
+public abstract class CalculationUtils {
 
 	public final static String[] STORAGE_UNITS = {
 		"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"

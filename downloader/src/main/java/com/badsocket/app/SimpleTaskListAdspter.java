@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.badsocket.R;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.util.ComputeUtils;
+import com.badsocket.util.CalculationUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -67,8 +67,8 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 		if (task != null) {
 			fileName.setText(task.getName());
 			pb.setProgress((int) (task.getProgress() * 100));
-			progressText.setText(ComputeUtils.getFriendlyUnitOfBytes(task.getDownloadedLength(), 2)
-					+ "/" + ComputeUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
+			progressText.setText(CalculationUtils.getFriendlyUnitOfBytes(task.getDownloadedLength(), 2)
+					+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
 			progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");
 
 			int resourceId = R.drawable.stoped;
