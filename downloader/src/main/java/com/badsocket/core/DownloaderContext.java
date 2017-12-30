@@ -1,8 +1,6 @@
 package com.badsocket.core;
 
-import android.content.pm.PermissionInfo;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
@@ -10,14 +8,14 @@ import android.os.StatFs;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
+import com.badsocket.core.downloader.factory.BaseThreadFactory;
+import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
 import com.badsocket.manager.SimpleFileManager;
 import com.badsocket.manager.ThreadManager;
-import com.badsocket.manager.factory.BaseThreadFactory;
-import com.badsocket.manager.factory.ThreadFactory;
 import com.badsocket.util.Log;
 
 import java.io.File;

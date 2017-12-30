@@ -1,4 +1,4 @@
-package com.badsocket.manager.factory;
+package com.badsocket.core.downloader.factory;
 
 public interface ThreadFactory extends Factory<Thread>, java.util.concurrent.ThreadFactory {
 

@@ -2,7 +2,6 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.manager.factory.ThreadFactory;
 import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.SocketRequest;
 import com.badsocket.net.SocketResponse;
@@ -33,7 +32,6 @@ public abstract class DownloadHelper {
 				final OnFetchTaskInfoListener listener) throws IOException {
 		final SocketComponentFactory factory = handler.socketFamilyFactory();
 		final SocketRequest req = factory.createRequest(desc);
-		final DownloadTaskInfo info = handler.downloadTaskInfoFactory().create(desc);
 
 		context.getThreadFactory().createThread(() -> {
 			SocketResponse rep = null;
@@ -42,8 +40,8 @@ public abstract class DownloadHelper {
 				req.send();
 				rep = req.response();
 				req.close();
-				info.update(rep);
-				listener.onFetchTaskInfo(info);
+//				info.update(rep);
+//				listener.onFetchTaskInfo(info);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -53,7 +51,7 @@ public abstract class DownloadHelper {
 
 	public interface OnFetchTaskInfoListener {
 
-		void onFetchTaskInfo(DownloadTaskInfo info);
+		void onFetchTaskInfo(Object info);
 
 	}
 }

@@ -3,8 +3,8 @@ package com.badsocket.app;
 import android.os.Handler;
 import android.os.Message;
 
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.Downloader;
 
 import java.util.List;

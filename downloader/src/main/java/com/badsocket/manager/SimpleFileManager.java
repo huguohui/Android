@@ -1,7 +1,5 @@
 package com.badsocket.manager;
 
-import com.badsocket.core.downloader.DownloadTask;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

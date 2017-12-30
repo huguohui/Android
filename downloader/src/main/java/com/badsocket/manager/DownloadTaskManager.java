@@ -1,7 +1,7 @@
 package com.badsocket.manager;
 
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Task;
-import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
  * Tool for management download task.
  * @since 2016/12/26 15:45
  */
-public class DownloadTaskManager extends AbstractDownloadTaskManager implements Task.OnTaskFinishListener {
+public class DownloadTaskManager extends AbstractDownloadTaskManager {
 	/** Instance of manager. */
 	private static DownloadTaskManager mInstance = new DownloadTaskManager();
 	/** Max并行的任务数 */
@@ -86,7 +86,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 			runningTaskNum++;
 		}
 		else {
-			t.setState(Task.State.waiting);
+//			t.setState(Task.State.waiting);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	public boolean add(DownloadTask d) {
 		synchronized (mList) {
 			boolean ret = super.add(d);
-			d.setOnFinishListener(this);
+//			d.setOnFinishListener(this);
 			startTask(d);
 			return ret;
 		}
@@ -110,7 +110,7 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 			for (int i = 0; i < mList.size(); i++) {
 				Task t = mList.get(i);
 				if (t != null) {
-					t.setState(Task.State.waiting);
+//					t.setState(Task.State.waiting);
 				}
 			}
 
@@ -210,7 +210,6 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 	}
 
 
-	@Override
 	public void onTaskFinish(Task t) {
 		synchronized (mList) {
 			mList.remove(t);
@@ -242,28 +241,28 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 
 		protected static class StartOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
-				d.start();
+//				d.start();
 			}
 		}
 
 
 		protected static class StopOperation extends Operation{
 			public void exec(DownloadTask d) throws Exception {
-				d.stop();
+//				d.stop();
 			}
 		}
 
 
 		protected static class PauseOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
-				d.pause();
+//				d.pause();
 			}
 		}
 
 
 		protected static class ResumeOperation extends Operation {
 			public void exec(DownloadTask d) throws Exception {
-				d.resume();
+//				d.resume();
 			}
 		}
 	}
@@ -280,28 +279,28 @@ public class DownloadTaskManager extends AbstractDownloadTaskManager implements 
 
 		static class Runnable extends StateFilter {
 			public boolean check(DownloadTask d) {
-				return Task.State.unstart.equals(d.getState()) || Task.State.waiting.equals(d.getState());
+				return true; //Task.State.unstart.equals(d.getState()) || Task.State.waiting.equals(d.getState());
 			}
 		}
 
 
 		static class Running extends StateFilter {
 			public boolean check(DownloadTask d) {
-				return Task.State.running.equals(d.getState());
+				return false; //Task.State.running.equals(d.getState());
 			}
 		}
 
 
 		static class Paused extends StateFilter {
 			public boolean check(DownloadTask d) {
-				return Task.State.paused.equals(d.getState());
+				return false;// Task.State.paused.equals(d.getState());
 			}
 		}
 
 
 		static class Stoped extends StateFilter {
 			public boolean check(DownloadTask d) {
-				return Task.State.stoped.equals(d.getState());
+				return true; //Task.State.stoped.equals(d.getState());
 			}
 		}
 	}

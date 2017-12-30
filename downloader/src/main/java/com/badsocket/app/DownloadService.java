@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.badsocket.R;
+import com.badsocket.core.DownloaderContext;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.Context;
 import com.badsocket.core.downloader.InternetDownloader;
@@ -52,7 +53,7 @@ public class DownloadService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.e(TAG, "onBind() executed");
-		return new DownloadAdapter(new InternetDownloader(null));
+		return new DownloadAdapter(new InternetDownloader(new DownloaderContext(this)));
 	}
 
 

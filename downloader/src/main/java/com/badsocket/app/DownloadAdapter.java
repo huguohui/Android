@@ -9,8 +9,6 @@ import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.downloader.DownloadDescriptor;
 import com.badsocket.core.downloader.Downloader;
-import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
-import com.badsocket.core.downloader.factory.HttpDownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpFamilyFactory;
 import com.badsocket.net.SocketComponentFactory;
 
@@ -34,11 +32,6 @@ public class DownloadAdapter extends Binder implements Downloader {
 				return new HttpFamilyFactory();
 			}
 
-
-			@Override
-			public DownloadTaskInfoFactory downloadTaskInfoFactory() {
-				return new HttpDownloadTaskInfoFactory();
-			}
 		});
 	}
 

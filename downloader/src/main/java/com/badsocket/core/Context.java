@@ -8,7 +8,7 @@ import com.badsocket.core.config.Config;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
-import com.badsocket.manager.factory.ThreadFactory;
+import com.badsocket.core.downloader.factory.ThreadFactory;
 
 import java.io.File;
 import java.io.IOException;

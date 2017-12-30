@@ -1,21 +1,18 @@
 package com.badsocket;
 
 
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.downloader.DownloadDescriptor;
-import com.badsocket.core.downloader.DownloadTask;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
-import com.badsocket.core.downloader.factory.DownloadTaskInfoFactory;
-import com.badsocket.core.downloader.factory.HttpDownloadTaskInfoFactory;
 import com.badsocket.core.downloader.factory.HttpFamilyFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.SocketComponentFactory;
 import com.badsocket.net.http.HttpReceiver;
-import com.badsocket.util.Log;
 import com.badsocket.worker.AbstractWorker;
 
 import java.net.URL;
@@ -52,12 +49,6 @@ public class Test {
 			public SocketComponentFactory socketFamilyFactory() {
 				return new HttpFamilyFactory();
 			}
-
-
-			@Override
-			public DownloadTaskInfoFactory downloadTaskInfoFactory() {
-				return new HttpDownloadTaskInfoFactory();
-			}
 		});
 
 		d.setParallelTaskNum(3);
@@ -82,7 +73,7 @@ public class Test {
 				List<DownloadTask> dts = d.taskList();
 				for (int i = 0; i < dts.size(); i++) {
 					DownloadTask dt = dts.get(i);
-					Log.println(dt.info().getName() + "\t" + dt.info().getProgress() + "\t" + dt.getState());
+//					Log.println(dt.info().getName() + "\t" + dt.info().getProgress() + "\t" + dt.getState());
 				}
 			}
 		});

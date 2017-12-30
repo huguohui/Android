@@ -1,3 +1,4 @@
+/*
 package com.badsocket.core.downloader;
 
 import com.badsocket.io.exceptions.FileFormatException;
@@ -16,9 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+*/
 /**
  * Information for download task.
- */
+ *//*
+
 public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 	public final static int MAX_NAME_LEN = 0xff;
@@ -167,3 +170,4 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 		}
 	}
 }
+*/

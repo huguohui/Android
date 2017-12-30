@@ -1,4 +1,4 @@
-package com.badsocket.manager.factory;
+package com.badsocket.core.downloader.factory;
 
 import android.support.annotation.NonNull;
 

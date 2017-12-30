@@ -1,7 +1,7 @@
 package com.badsocket.manager;
 
-import com.badsocket.manager.factory.BaseThreadFactory;
-import com.badsocket.manager.factory.ThreadFactory;
+import com.badsocket.core.downloader.factory.BaseThreadFactory;
+import com.badsocket.core.downloader.factory.ThreadFactory;
 
 /**
  * Thread manager.
