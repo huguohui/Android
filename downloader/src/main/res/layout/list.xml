@@ -115,7 +115,7 @@
                 android:id="@+id/control_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/downloading"
+                android:background="@drawable/stoped"
                 />
         </LinearLayout>
 
