@@ -4,6 +4,7 @@
     android:id="@+id/list_item"
     android:background="#fff"
     android:padding="5dp"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <LinearLayout
