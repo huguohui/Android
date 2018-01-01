@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by skyrim on 2017/11/28.
  */
-public interface Task extends Runnable, Serializable, Callable<Task>, TaskLifecycle {
+public interface Task extends Runnable, Serializable, Callable<Task>, TaskLifecycle, Updatable {
 
 	/**
 	 * Gets unique id of task.
@@ -68,26 +68,55 @@ public interface Task extends Runnable, Serializable, Callable<Task>, TaskLifecy
 	boolean isFinished();
 
 
-	TaskStatus getStatus();
+	int getState();
 
 
-
-	interface TaskStatus {
-
-
-		public String getDescription();
+	TaskExtraInfo getExtraInfo();
 
 
-		public int getCode();
+	void addOnTaskFinishListener(OnTaskFinishListener listener);
+
+
+	void addOnTaskStopListener(OnTaskStopListener listener);
+
+
+	void addOnTaskStartListener(OnTaskStartListener listener);
+
+
+	void addOnTaskCreateListener(OnTaskCreateListener listener);
+
+
+	interface TaskState {
+		int UNSTART = 0,
+			RUNNING = 1,
+			STOPED = 2,
+			FINISHED = 3;
+	}
+
+
+	public static abstract class TaskExtraInfo {
 
 
 	}
 
 
-	interface TaskExtraInfo {
+	interface OnTaskCreateListener {
+		void onTaskCreate(Task t);
+	}
 
 
+	interface OnTaskStartListener {
+		void onTaskStart(Task t);
+	}
 
+
+	interface OnTaskFinishListener {
+		void onTaskFinish(Task t);
+	}
+
+
+	interface OnTaskStopListener {
+		void onTaskStop(Task t);
 	}
 
 }

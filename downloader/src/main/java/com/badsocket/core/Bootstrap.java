@@ -2,9 +2,8 @@ package com.badsocket.core;
 
 import android.app.Application;
 import android.content.res.AssetManager;
+import android.os.Environment;
 
-import com.badsocket.core.Context;
-import com.badsocket.core.DownloaderContext;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.ConfigReader;
 import com.badsocket.manager.FileManager;
@@ -34,6 +33,14 @@ public class Bootstrap extends Application {
 
 	private String packageName;
 
+	public static final String DS = "/";
+
+	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+
+	public static final String[] ASSETS_DIRS = {
+			"configs"
+	};
 
 	public void onCreate() {
 		androidContext = this;
@@ -43,12 +50,17 @@ public class Bootstrap extends Application {
 
 
 	public void initAll() {
-		initEnvironment();
-		initContext();
+		try {
+			initEnvironment();
+			initContext();
+		}
+		catch (Exception e) {
+			Log.e(e);
+		}
 	}
 
 
-	public void initEnvironment() {
+	public void initEnvironment() throws IOException {
 		packageName = androidContext.getApplicationInfo().packageName;
 		assetManager = androidContext.getAssets();
 		extractAssets();
@@ -57,29 +69,31 @@ public class Bootstrap extends Application {
 
 	public void extractAssets() {
 		File rootPath = new File(DownloaderContext.ROOT_PATH, packageName);
+		if (!rootPath.exists()) {
+			rootPath.mkdirs();
+		}
 
 		if (!rootPath.isDirectory()) {
-			Log.error("", "The path: " + rootPath.getAbsolutePath() + " isn't directory!");
+			Log.debug("The path: " + rootPath.getAbsolutePath() + " isn't directory!");
 			return;
 		}
 		if (!rootPath.canRead() || !rootPath.canWrite()) {
-			Log.error("", "The path: " + rootPath.getAbsolutePath() + " can't read or write!");
+			Log.debug("The path: " + rootPath.getAbsolutePath() + " can't read or write!");
 			return;
 		}
 
-		try {
-			for (String file : assetManager.list(".")) {
-				Log.error("", file);
-				try {
-					//FileUtils.copyTo(assetManager.open(file), rootPath);
+		for (String assetsDir : ASSETS_DIRS) {
+			try {
+				for (String file : assetManager.list(assetsDir)) {
+					File extractDir = new File(rootPath + DS + assetsDir);
+					if (!extractDir.exists()) {
+						extractDir.mkdirs();
+					}
+					FileUtils.copyTo(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
 				}
-				finally {
-					assetManager.close();
-				}
+			} catch (Exception e) {
+				Log.e(e);
 			}
-		}
-		catch (IOException e) {
-			Log.e(e);
 		}
 	}
 
@@ -87,8 +101,6 @@ public class Bootstrap extends Application {
 	public void initContext() {
 		context = new DownloaderContext(androidContext);
 	}
-
-
 
 
 

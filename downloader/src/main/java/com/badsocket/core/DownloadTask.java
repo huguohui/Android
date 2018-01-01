@@ -1,5 +1,7 @@
 package com.badsocket.core;
 
+import com.badsocket.net.DownloadAddress;
+
 import java.io.File;
 import java.net.URL;
 
@@ -24,10 +26,10 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	int getSpeedLimited();
 
 
-	URL getURL();
+	DownloadAddress getDownloadAddress();
 
 
-	void setURL(URL url);
+	void setDownloadAddress(DownloadAddress url);
 
 
 	long getLength();
@@ -51,7 +53,13 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	DownloadSection[] getSections();
 
 
-	abstract class DownloadSection {
+	void addOnDownloadTaskPauseListener(OnDownloadTaskPauseListener listener);
+
+
+	void addOnDownloadTaskResumeListener(OnDownloadTaskResumeListener listener);
+
+
+	public static class DownloadSection {
 
 		protected int index;
 
@@ -93,5 +101,21 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 			return index;
 		}
 
+	}
+
+
+	interface DownloadTaskState extends TaskState {
+		int PAUSED = 4,
+			PREPARING = 5;
+	}
+
+
+	interface OnDownloadTaskPauseListener {
+		void onDownloadTaskPause(DownloadTask t);
+	}
+
+
+	interface OnDownloadTaskResumeListener {
+		void onDownloadTaskResume(DownloadTask t);
 	}
 }

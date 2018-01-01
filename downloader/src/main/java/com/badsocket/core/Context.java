@@ -5,13 +5,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.badsocket.core.config.Config;
+import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
-import com.badsocket.core.downloader.factory.ThreadFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Context for downloader.
@@ -59,6 +61,15 @@ public abstract class Context {
 
 
 	public abstract ConnectivityManager getConnectivityManager();
+
+
+	public abstract ExecutorService getThreadExecutor();
+
+
+	public abstract ExecutorService getDownloadTaskExecutor();
+
+
+
 
 
 }

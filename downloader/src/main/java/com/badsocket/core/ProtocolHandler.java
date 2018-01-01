@@ -1,7 +1,5 @@
 package com.badsocket.core;
 
-import com.badsocket.net.SocketComponentFactory;
-
 /**
  * Created by skyrim on 2017/10/6.
  */
@@ -9,7 +7,13 @@ import com.badsocket.net.SocketComponentFactory;
 public interface ProtocolHandler {
 
 
-	SocketComponentFactory socketFamilyFactory();
+	Protocol getProtocol();
+
+
+	DownloadComponentFactory downloadComponentFactory();
+
+
+	boolean isSupport(Protocol protocol);
 
 
 }

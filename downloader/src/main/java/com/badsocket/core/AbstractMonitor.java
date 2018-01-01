@@ -14,7 +14,7 @@ import java.util.TimerTask;
  */
 public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
-	protected ThreadLocal<Object> localObj = new ThreadLocal<>();
+	protected static ThreadLocal<Object> localObj = new ThreadLocal<>();
 
 	protected Object monitored;
 

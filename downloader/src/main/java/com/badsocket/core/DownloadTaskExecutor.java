@@ -13,5 +13,6 @@ public interface DownloadTaskExecutor extends TaskExecutor {
 	void resume(Task t);
 
 
+	void stop(Task t);
 
 }

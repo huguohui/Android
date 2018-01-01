@@ -20,6 +20,8 @@ import com.badsocket.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by skyrim on 2017/12/15.
@@ -31,7 +33,7 @@ public class DownloaderContext extends Context {
 
 	public static final String DS = "/";
 
-	public static final String CONFIG_DIR = "config";
+	public static final String CONFIG_DIR = "configs";
 
 	public static final String ICON_DIR = "icon";
 
@@ -57,10 +59,21 @@ public class DownloaderContext extends Context {
 
 	private ConnectivityManager connectivityManager;
 
+	private ExecutorService threadExecutor;
+
+	private ExecutorService downloadTaskExecutor;
+
+
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
 		HOME_DIRECTORY = ROOT_PATH + DS + androidContext.getApplicationInfo().packageName;
-		init();
+
+		try {
+			init();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -69,22 +82,19 @@ public class DownloaderContext extends Context {
 	}
 
 
-	protected void init() {
+	protected void init() throws IOException {
 		threadManager = ThreadManager.getInstance();
 		threadFactory = new BaseThreadFactory();
 		connectivityManager = (ConnectivityManager) androidContext.getSystemService(
 				android.content.Context.CONNECTIVITY_SERVICE);
 		networkInfo = connectivityManager.getActiveNetworkInfo();
-
-		try {
-			fileManger = SimpleFileManager.getInstance();
-			fileManger.createDirectory(new File(HOME_DIRECTORY));
-			config = new PropertiesConfigReader(
-					new File(ROOT_PATH, DownloadConfig.CONFIG_FILE)).read();
-		}
-		catch(Exception e) {
-			Log.e(e);
-		}
+		config = new PropertiesConfigReader(
+				new File(HOME_DIRECTORY + DS + CONFIG_DIR, DownloadConfig.CONFIG_FILE)).read();
+		threadExecutor = new ThreadExecutor(
+				config.getInteger(DownloadConfig.GLOBAL_MAX_DOWNLOAD_THREADS)
+						* config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
+		downloadTaskExecutor = new GenericDownloadTaskExecutor(
+				config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
 	}
 
 
@@ -174,5 +184,17 @@ public class DownloaderContext extends Context {
 	@Override
 	public ConnectivityManager getConnectivityManager() {
 		return connectivityManager;
+	}
+
+
+	@Override
+	public ExecutorService getThreadExecutor() {
+		return threadExecutor;
+	}
+
+
+	@Override
+	public ExecutorService getDownloadTaskExecutor() {
+		return downloadTaskExecutor;
 	}
 }

@@ -13,4 +13,10 @@ public interface DownloadTaskLifecycle extends TaskLifecycle {
 	void onResume();
 
 
+	void onStore();
+
+
+	void onRestore();
+
+
 }

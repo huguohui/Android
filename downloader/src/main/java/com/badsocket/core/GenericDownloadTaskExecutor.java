@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadFactory;
  */
 public class GenericDownloadTaskExecutor extends AbstractDownloadTaskExecutor{
 
+
 	public GenericDownloadTaskExecutor(int corePoolSize) {
 		super(corePoolSize);
 	}

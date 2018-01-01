@@ -1,5 +1,7 @@
 package com.badsocket.core;
 
+import java.io.IOException;
+
 /**
  * Created by skyrim on 2017/12/28.
  */
@@ -8,16 +10,13 @@ package com.badsocket.core;
 interface TaskLifecycle {
 
 
-	void onCreate(Context context, Task.TaskExtraInfo info);
+	void onCreate(Task.TaskExtraInfo info) throws Exception;
 
 
 	void onStart();
 
 
 	void onStop();
-
-
-	void onDestory();
 
 
 }

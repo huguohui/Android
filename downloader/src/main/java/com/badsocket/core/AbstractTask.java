@@ -26,8 +26,6 @@ public abstract class AbstractTask implements Task {
 
 	protected boolean isFinished;
 
-	protected TaskStatus taskStatus;
-
 	private static int UNIQUE_ID = 0;
 
 
@@ -126,12 +124,6 @@ public abstract class AbstractTask implements Task {
 	@Override
 	public void setPriority(int priority) {
 		this.priority = priority;
-	}
-
-
-	@Override
-	public TaskStatus getStatus() {
-		return null;
 	}
 
 
