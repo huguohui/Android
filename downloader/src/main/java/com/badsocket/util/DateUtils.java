@@ -9,7 +9,7 @@ import java.util.Locale;
 /**
  * Date And Time utility.
  */
-public abstract class TimeUtils {
+public abstract class DateUtils {
 
 	public final static String FORMAT_YMD = "YYYY-MM-dd";
 

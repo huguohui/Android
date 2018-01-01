@@ -2,26 +2,27 @@ package com.badsocket.net;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
 /**
  * Sender can send something to somewhere.
  */
-public interface SocketRequest extends Closeable {
+public interface Request extends Closeable {
 	/**
-	 * Open a request by speical internet address.
-	 * @param address Specials internet address.
+	 * Open a request by speical internet downloadAddress.
+	 * @param address Specials internet downloadAddress.
 	 */
-	void open(SocketAddress address) throws IOException;
+	void open(InetSocketAddress address) throws IOException;
 
 
 	/**
-	 * Open a request with a timeout by speical socket address.
-	 * @param address Specials socket address.
+	 * Open a request with a timeout by speical socket downloadAddress.
+	 * @param address Specials socket downloadAddress.
 	 * @param timeout Timeout in milliseconds.
 	 */
-	void open(SocketAddress address, int timeout) throws IOException;
+	void open(InetSocketAddress address, int timeout) throws IOException;
 
 
 	void open() throws IOException;
@@ -30,7 +31,7 @@ public interface SocketRequest extends Closeable {
 	void reopen() throws IOException;
 
 
-	void reopen(SocketAddress address) throws IOException;
+	void reopen(InetSocketAddress address) throws IOException;
 
 
 	/**
@@ -65,7 +66,7 @@ public interface SocketRequest extends Closeable {
 
 
 	/** Get response of this request. */
-	SocketResponse response() throws IOException;
+	Response response() throws IOException;
 
 
 	/**
@@ -103,24 +104,24 @@ public interface SocketRequest extends Closeable {
 
 
 	interface RequestBuilder {
-		SocketRequest build();
+		Request build();
 	}
 
 
 	/**
-	 * AbstractSocketRequest state listener.
+	 * AbstractRequest state listener.
 	 */
 	public interface OnConnectedListener {
-		void onConnected(AbstractSocketRequest r);
+		void onConnected(AbstractRequest r);
 	}
 
 
 	public interface OnSendListener {
-		void onSend(AbstractSocketRequest r);
+		void onSend(AbstractRequest r);
 	}
 
 
 	public interface OnResponseListener {
-		void onResponse(SocketResponse r);
+		void onResponse(Response r);
 	}
 }

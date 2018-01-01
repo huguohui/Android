@@ -6,53 +6,35 @@ import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 /**
  * Created by skyrim on 2017/10/6.
  */
 
-public class AsyncSocketReceiver
-		extends AbstractSocketReceiver
-		implements Workable
+public class AsyncReceiver
+		extends AbstractReceiver
+		implements Callable<Long>
 {
 
-	protected AbstractSocketReceiver receiver;
+	protected AbstractReceiver receiver;
 
-	protected Worker worker;
 
 	protected long size;
 
 
-	public AsyncSocketReceiver(SocketReceiver rec, Worker w) {
-		receiver = (AbstractSocketReceiver) rec;
-		worker = w;
+	public AsyncReceiver(Receiver rec) {
+		receiver = (AbstractReceiver) rec;
 	}
 
 
 	public void receive() throws IOException {
-	//	receiver.receive();
-		worker.add(this);
+		receiver.receive();
 	}
 
 
 	public void receive(long size) {
 		this.size = size;
-		worker.add(this);
-	}
-
-
-
-	/**
-	 * To do some work.
-	 */
-	@Override
-	public void work() throws Exception {
-		if (size != 0) {
-			receiver.receive(size);
-		}
-		else {
-			receiver.receive();
-		}
 	}
 
 
@@ -96,7 +78,7 @@ public class AsyncSocketReceiver
 	}
 
 
-	public AbstractSocketReceiver setFileWriter(Writer fileWriter) {
+	public AbstractReceiver setFileWriter(Writer fileWriter) {
 		receiver.setFileWriter(fileWriter);
 		return this;
 	}
@@ -112,8 +94,25 @@ public class AsyncSocketReceiver
 	}
 
 
-	public AbstractSocketReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+	public AbstractReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		receiver.setOnReceiveListener(onReceiveListener);
 		return this;
+	}
+
+
+	/**
+	 * Computes a result, or throws an exception if unable to do so.
+	 *
+	 * @return computed result
+	 * @throws Exception if unable to compute a result
+	 */
+	@Override
+	public Long call() throws Exception {
+		if (size != 0) {
+			receiver.receive(size);
+		} else {
+			receiver.receive();
+		}
+		return receiver.getReceivedLength();
 	}
 }

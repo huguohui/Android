@@ -1,6 +1,7 @@
 package com.badsocket.net;
 
 import com.badsocket.io.writer.Writer;
+import com.badsocket.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.util.Arrays;
 /**
  * Download some data form a place.
  */
-public abstract class AbstractSocketReceiver implements SocketReceiver {
+public abstract class AbstractReceiver implements Receiver {
 	/** Default buffer size. */
 	public final static int BUFFER_SIZE = 1024 << 3;
 
@@ -41,15 +42,15 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	
 	/**
 	 * Construct a downloader by requester.
-	 * @param is A {@link AbstractSocketRequest}.
+	 * @param is A {@link AbstractRequest}.
 	 */
-	public AbstractSocketReceiver(InputStream is, Writer writable) {
+	public AbstractReceiver(InputStream is, Writer writable) {
 		mInputStream = is;
 		mFileWriter = writable;
 	}
 
 
-	protected AbstractSocketReceiver() {
+	protected AbstractReceiver() {
 	}
 
 
@@ -62,6 +63,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	 */
 	@Override
 	public void receive() throws IOException {
+		Log.debug("Start receive data...");
 		byte[] data = null;
 		while(!isStop && null != (data = receiveBySize(BUFFER_SIZE))) {
 			writeData(data);
@@ -105,6 +107,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 		isFinished = !isStop;
 		invokeListener();
 		mInputStream.close();
+		Log.debug("Finish received length " + mReceivedLength + "of data.");
 	}
 
 
@@ -137,7 +140,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 
 
 	protected void checkAvaliable(InputStream is) throws IOException {
-		int idle = 1, maxWaitMs = 50;
+		int idle = 1, maxWaitMs = 5;
 		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( Exception ex ) {
 			ex.printStackTrace();
 		}
@@ -215,7 +218,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	}
 
 
-	public AbstractSocketReceiver setFileWriter(Writer fileWriter) {
+	public AbstractReceiver setFileWriter(Writer fileWriter) {
 		mFileWriter = fileWriter;
 		return this;
 	}
@@ -231,7 +234,7 @@ public abstract class AbstractSocketReceiver implements SocketReceiver {
 	}
 
 
-	public AbstractSocketReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+	public AbstractReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		this.onReceiveListener = onReceiveListener;
 		return this;
 	}

@@ -1,13 +1,13 @@
 package com.badsocket.net;
 
 
-import com.badsocket.util.TimeUtils;
+import com.badsocket.util.DateUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 
 /**
  * Describes a request.
@@ -15,9 +15,9 @@ import java.net.SocketAddress;
  * @author HGH
  * @since 2015/11/04
  */
-public abstract class AbstractSocketRequest implements SocketRequest {
-    /** The requests address. */
-    protected SocketAddress mAddress;
+public abstract class AbstractRequest implements Request {
+    /** The requests downloadAddress. */
+    protected InetSocketAddress mAddress;
 
     /** The socket of requester. */
     protected Socket mSocket;
@@ -29,10 +29,10 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	protected long mConnectionTime;
 
     /** Http header. */
-    protected SocketHeader mHeader;
+    protected Header mHeader;
 
     /** Http body. */
-    protected SocketEntity mEntity;
+    protected Entity mEntity;
 
     /** The state of requester. */
     protected State mState = State.ready;
@@ -40,7 +40,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	/** The requester start time. */
 	protected long mStartTime = 0;
 	
-	/** State of connection by boolean. */
+	/** TaskState of connection by boolean. */
 	protected boolean isConnect = false;
 
 	protected boolean isClose = false;
@@ -59,11 +59,11 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 
 	protected OnResponseListener mOnResponseListener;
 
-	protected SocketRequest.Range range;
+	protected Request.Range range;
 
 
 
-	/** AbstractSocketRequest states. */
+	/** AbstractRequest states. */
     public enum State {
         ready,      // Ready to requesting.
         connecting, // Connecting...
@@ -75,7 +75,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 
 
 
-	public AbstractSocketRequest(SocketAddress socketAddress) throws IOException {
+	public AbstractRequest(InetSocketAddress socketAddress) throws IOException {
 		setAddress(socketAddress);
 		open(socketAddress, mTimeout);
 	}
@@ -84,7 +84,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	/**
 	 * Empty constructor.
 	 */
-	public AbstractSocketRequest() {}
+	public AbstractRequest() {}
 
 
     /**
@@ -101,17 +101,17 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	 *
 	 * @return If connect success, return true else false.
 	 */
-	public void open(SocketAddress address) throws IOException {
+	public void open(InetSocketAddress address) throws IOException {
 		open(address, mTimeout);
 	}
 
 
 	/**
 	 * Open a connection with timeout and prepare to send request.
-	 * @param address The {@link SocketAddress} to describing a address.
+	 * @param address The {@link InetSocketAddress} to describing a downloadAddress.
 	 * @param timeout The timeout time of connection.
 	 */
-	public void open(SocketAddress address, int timeout)
+	public void open(InetSocketAddress address, int timeout)
 			throws IOException {
 		if (!mState.equals(State.closed) && !mState.equals(State.ready)) {
 			throw new ConnectException("Only open connection after request " +
@@ -124,7 +124,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 		mSocket.connect(address, timeout);
 		mState = State.connected;
 		isConnect = true;
-		mConnectionTime = TimeUtils.millisTime() - mStartTime;
+		mConnectionTime = DateUtils.millisTime() - mStartTime;
 		mOutputStream = mSocket.getOutputStream();
 
 		if (mOnConnectedListener != null) {
@@ -154,7 +154,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	 * Get response of this request.
 	 */
 	@Override
-	public SocketResponse response() throws IOException {
+	public Response response() throws IOException {
 		return null;
 	}
 
@@ -207,7 +207,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	 * Reopen the request with last data.
 	 */
 	@Override
-	public void reopen(SocketAddress address) throws IOException {
+	public void reopen(InetSocketAddress address) throws IOException {
 		setAddress(address);
 		reopen();
 	}
@@ -218,7 +218,7 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	}
 
 
-	public AbstractSocketRequest setRange(Range range) {
+	public AbstractRequest setRange(Range range) {
 		this.range = range;
 		return this;
 	}
@@ -239,14 +239,14 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	}
     
 
-    public SocketAddress getAddress() {
+    public InetSocketAddress getAddress() {
         return mAddress;
     }
     
 
-    public void setAddress(SocketAddress address) {
+    public void setAddress(InetSocketAddress address) {
         if (address == null) {
-			throw new NullPointerException("The requesting address is null!");
+			throw new NullPointerException("The requesting downloadAddress is null!");
 		}
 
         mAddress = address;
@@ -273,22 +273,22 @@ public abstract class AbstractSocketRequest implements SocketRequest {
     }
 
 
-    public SocketHeader getHeader() {
+    public Header getHeader() {
         return mHeader;
     }
 
 
-    public void setHeader(SocketHeader header) {
+    public void setHeader(Header header) {
         mHeader = header;
     }
 
 
-    public SocketEntity getEntity() {
+    public Entity getEntity() {
         return mEntity;
     }
 
 
-    public void setEntity(SocketEntity entity) {
+    public void setEntity(Entity entity) {
         mEntity = entity;
     }
 
@@ -313,20 +313,20 @@ public abstract class AbstractSocketRequest implements SocketRequest {
 	}
 
 
-	public AbstractSocketRequest setOnConnectedListener(OnConnectedListener onConnectedListener) {
+	public AbstractRequest setOnConnectedListener(OnConnectedListener onConnectedListener) {
 		mOnConnectedListener = onConnectedListener;
 		return this;
 	}
 
 
-	public AbstractSocketRequest setOnSendListener(OnSendListener onSendListener) {
+	public AbstractRequest setOnSendListener(OnSendListener onSendListener) {
 		mOnSendListener = onSendListener;
 		return this;
 	}
 
 
 
-	public AbstractSocketRequest setOnResponseListener(OnResponseListener onResponseListener) {
+	public AbstractRequest setOnResponseListener(OnResponseListener onResponseListener) {
 		mOnResponseListener = onResponseListener;
 		return this;
 	}

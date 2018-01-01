@@ -1,8 +1,9 @@
 package com.badsocket.manager;
 
+import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 
 /**
@@ -64,7 +65,9 @@ public class SimpleFileManager extends AbstractFileManager {
 			msg = String.format("The directory %s can't be read!", dir.getAbsoluteFile());
 		}
 
-		throw new IOException(msg);
+		if (msg.length() != 0) {
+			throw new IOException(msg);
+		}
 	}
 
 
@@ -73,7 +76,7 @@ public class SimpleFileManager extends AbstractFileManager {
 	 */
 	public void loadDirectory(String dir) throws IOException {
 		checkDirectory(dir);
-		mList.add((File) Arrays.asList(new File(dir).listFiles()));
+		mList.addAll(Arrays.asList(new File(dir).listFiles()));
 	}
 
 

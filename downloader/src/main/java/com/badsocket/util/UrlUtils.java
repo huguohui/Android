@@ -33,9 +33,9 @@ final public class UrlUtils {
 
 
 	/**
-	 * Get IP address by top domain.
+	 * Get IP downloadAddress by top domain.
 	 * @param domain Top domain.
-	 * @return IP address of domain.
+	 * @return IP downloadAddress of domain.
 	 * @throws UnknownHostException Can't parse domain.
 	 */
 	public static InetAddress inetAddressByDomain(String domain) throws UnknownHostException {
@@ -44,9 +44,9 @@ final public class UrlUtils {
 
 
 	/**
-	 * Get socket address by URL.
+	 * Get socket downloadAddress by URL.
 	 * @param url The URL.
-	 * @return Socket address.
+	 * @return Socket downloadAddress.
 	 * @throws UnknownHostException
 	 */
 	public static InetSocketAddress socketAddressByUrl(URL url) throws UnknownHostException {
@@ -180,11 +180,11 @@ final public class UrlUtils {
 	
 	public static void main(String[] args) throws MalformedURLException {
 /*
-		String address = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
+		String downloadAddress = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
 		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
 		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
-		if (pattern.matcher(address).matches()) {
-			System.out.println(address);
+		if (pattern.matcher(downloadAddress).matches()) {
+			System.out.println(downloadAddress);
 		}
 */
 

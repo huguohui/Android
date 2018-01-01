@@ -20,7 +20,7 @@ public interface Manager<T> extends Iterable<T> {
 	 * Add a object for management.
 	 * @param obj Object what will to managing.
 	 */
-	boolean add(T obj);
+	boolean add(T obj) throws Exception;
 
 
 	/**

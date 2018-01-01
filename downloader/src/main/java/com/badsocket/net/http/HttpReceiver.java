@@ -3,8 +3,8 @@ package com.badsocket.net.http;
 
 import com.badsocket.io.writer.ConcurrentWriter;
 import com.badsocket.io.writer.Writer;
-import com.badsocket.net.AbstractSocketReceiver;
-import com.badsocket.net.SocketReceiver;
+import com.badsocket.net.AbstractReceiver;
+import com.badsocket.net.Receiver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.io.InputStream;
  * Download data from URL, based HTTP protocol.
  * @since 2015/11/29
  */
-public class HttpReceiver extends AbstractSocketReceiver {
+public class HttpReceiver extends AbstractReceiver {
 	/** Chunked of key value for http header Transfer-Encoding. */
 	public final static String CHUNKED = "chunked";
 
@@ -89,9 +89,9 @@ public class HttpReceiver extends AbstractSocketReceiver {
 	protected int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
-		byte[] buff = new byte[AbstractSocketReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
+		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
 
-		while(SocketReceiver.END_OF_STREAM != (aByte = (byte)is.read())) {
+		while(Receiver.END_OF_STREAM != (aByte = (byte)is.read())) {
 			if (aByte == crlf[matchCount]) {
 				if (++matchCount == 2) {
 					if (byteCount != 0)

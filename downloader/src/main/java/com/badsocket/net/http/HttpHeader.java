@@ -2,7 +2,7 @@ package com.badsocket.net.http;
 
 
 import com.badsocket.core.Parser;
-import com.badsocket.net.SocketHeader;
+import com.badsocket.net.Header;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +19,7 @@ import java.util.Map;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpHeader extends SocketHeader {
+public class HttpHeader extends Header {
 	/** Http method of requesting. */
 	protected Http.Method mMethod;
 
@@ -121,7 +121,7 @@ public class HttpHeader extends SocketHeader {
 	/**
 	 * Set header content by string.
 	 *
-	 * @param data SocketHeader content.
+	 * @param data Header content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException 
 	 */
@@ -134,7 +134,7 @@ public class HttpHeader extends SocketHeader {
 	/**
 	 * Set header content by reader.
 	 *
-	 * @param data SocketHeader content.
+	 * @param data Header content.
 	 * @throws NullPointerException If content is null.
 	 * @throws IOException          If can't read content.
 	 */
@@ -147,7 +147,7 @@ public class HttpHeader extends SocketHeader {
 	/**
 	 * Set header content by input stream.
 	 *
-	 * @param data SocketHeader content.
+	 * @param data Header content.
 	 * @throws IOException          If can't read content.
 	 * @throws NullPointerException If content is null.
 	 */
@@ -160,7 +160,7 @@ public class HttpHeader extends SocketHeader {
 	/**
 	 * Copy content from another header.
 	 */
-	protected void parseContent(SocketHeader header) throws IOException{
+	protected void parseContent(Header header) throws IOException{
 		HttpHeader hr = (HttpHeader) header;
 		setVersion(hr.getVersion());
 		setMethod(hr.getMethod());

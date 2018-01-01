@@ -4,14 +4,13 @@ package com.badsocket;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.Protocols;
-import com.badsocket.core.downloader.DownloadDescriptor;
+import com.badsocket.core.Protocol;
+import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
-import com.badsocket.core.downloader.factory.HttpFamilyFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.net.DownloadAddress;
-import com.badsocket.net.SocketComponentFactory;
+import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.worker.AbstractWorker;
 
@@ -44,21 +43,21 @@ public class Test {
 
 	void test2() throws Exception {
 		Downloader d = new InternetDownloader(null);
-		d.addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
+	/*	d.addProtocolHandler(Protocol.HTTP, new ProtocolHandler() {
 			@Override
-			public SocketComponentFactory socketFamilyFactory() {
+			public DownloadComponentFactory socketFamilyFactory() {
 				return new HttpFamilyFactory();
 			}
-		});
+		});*/
 
 		d.setParallelTaskNum(3);
-		d.newTask(new DownloadDescriptor.Builder()
+		d.newTask(new DownloadTaskDescriptor.Builder()
 				.setAddress(new DownloadAddress(new URL(urls[1])))
 				.setPath("d:/")
 				.build()
 		);
 
-		d.newTask(new DownloadDescriptor.Builder()
+		d.newTask(new DownloadTaskDescriptor.Builder()
 				.setAddress(new DownloadAddress(new URL(urls[2])))
 				.setPath("d:/")
 				.build()
@@ -73,7 +72,7 @@ public class Test {
 				List<DownloadTask> dts = d.taskList();
 				for (int i = 0; i < dts.size(); i++) {
 					DownloadTask dt = dts.get(i);
-//					Log.println(dt.info().getName() + "\t" + dt.info().getProgress() + "\t" + dt.getState());
+//					Log.println(dt.taskExtraInfo().getName() + "\t" + dt.taskExtraInfo().getProgress() + "\t" + dt.getState());
 				}
 			}
 		});

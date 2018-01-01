@@ -1,13 +1,13 @@
 package com.badsocket.net.http;
 
-import com.badsocket.net.SocketEntity;
-import com.badsocket.net.SocketHeader;
-import com.badsocket.net.SocketResponse;
-import com.badsocket.net.SocketRequest;
+import com.badsocket.net.Entity;
+import com.badsocket.net.Header;
+import com.badsocket.net.Request;
+import com.badsocket.net.Response;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
 import com.badsocket.util.StringUtils;
-import com.badsocket.util.TimeUtils;
+import com.badsocket.util.DateUtils;
 import com.badsocket.util.UrlUtils;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * Http response.
  */
-public class HttpResponse extends SocketResponse {
+public class HttpResponse extends Response {
 
 	protected BaseHttpRequest httpRequest;
 
@@ -29,7 +29,7 @@ public class HttpResponse extends SocketResponse {
 
 	protected Socket socket;
 
-	protected SocketHeader header;
+	protected Header header;
 
 	protected long contentLength;
 
@@ -61,7 +61,7 @@ public class HttpResponse extends SocketResponse {
 	 *
 	 * @param r Request object.
 	 */
-	protected HttpResponse(SocketRequest r) throws IOException {
+	protected HttpResponse(Request r) throws IOException {
 		super(r);
 		httpRequest = (BaseHttpRequest) r;
 		if (r.connected()) {
@@ -89,7 +89,7 @@ public class HttpResponse extends SocketResponse {
 		mContentType = header.get(Http.CONTENT_TYPE);
 		mHttpVersion = Float.parseFloat(header.getVersion());
 		mCookies = HttpCookie.formString(header.get(Http.SET_COOKIE));
-		mDate = TimeUtils.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
+		mDate = DateUtils.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
 		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(header.get(Http.CONNECTION));
 		isSupportRange = header.get(Http.CONTENT_RANGE) != null;
 		isChunked = Http.CHUNKED.equalsIgnoreCase(header.get(Http.TRANSFER_ENCODING));
@@ -125,7 +125,7 @@ public class HttpResponse extends SocketResponse {
 				throw new RedirectException();
 			}
 
-			Log.println(newUrl);
+			Log.debug("连接被重定向到" + newUrl);
 			httpRequest.setUrl(UrlUtils.fullUrl(mUrl, newUrl));
 			httpRequest.setAddress(new DownloadAddress(UrlUtils.fullUrl(mUrl, newUrl)));
 			httpRequest.reopen();
@@ -152,12 +152,12 @@ public class HttpResponse extends SocketResponse {
 	}
 
 
-	public SocketHeader getHeader() {
+	public Header getHeader() {
 		return header;
 	}
 
 
-	public SocketEntity getEntity() {
+	public Entity getEntity() {
 		return entity;
 	}
 

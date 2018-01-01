@@ -5,11 +5,11 @@ import com.badsocket.core.Stopable;
 import java.io.IOException;
 
 /**
- * SocketReceiver can receive some data form somewhere.
+ * Receiver can receive some data form somewhere.
  *
  * @since 2015/11/29
  */
-public interface SocketReceiver extends Stopable {
+public interface Receiver extends Stopable {
 	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
 
@@ -34,16 +34,16 @@ public interface SocketReceiver extends Stopable {
 
 
 	interface OnFinishedListener {
-		void onFinished(SocketReceiver r);
+		void onFinished(Receiver r);
 	}
 
 
 	interface OnStopListener {
-		void onStop(SocketReceiver r);
+		void onStop(Receiver r);
 	}
 
 
 	interface OnReceiveListener {
-		void onReceive(SocketReceiver r, byte[] data);
+		void onReceive(Receiver r, byte[] data);
 	}
 }

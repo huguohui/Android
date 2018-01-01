@@ -51,7 +51,7 @@ public abstract class AbstractManager<T> implements Manager<T> {
      * @param obj Object what will to managing.
      */
     @Override
-    public synchronized boolean add(T obj) {
+    public synchronized boolean add(T obj) throws Exception {
         return mList.add(obj);
     }
 

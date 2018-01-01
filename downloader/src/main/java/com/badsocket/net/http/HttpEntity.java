@@ -1,7 +1,7 @@
 package com.badsocket.net.http;
 
 
-import com.badsocket.net.SocketEntity;
+import com.badsocket.net.Entity;
 
 import java.io.File;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author HGH
  * @since 2015/11/05
  */
-public class HttpEntity extends SocketEntity {
+public class HttpEntity extends Entity {
 	/**
 	 * content of text.
 	 */

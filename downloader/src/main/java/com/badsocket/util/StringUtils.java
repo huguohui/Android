@@ -221,6 +221,6 @@ final public class StringUtils {
 
 
 	public static void main(String[] args) {
-		Log.println(nonceStr(10));
+		Log.debug(nonceStr(10));
 	}
 }

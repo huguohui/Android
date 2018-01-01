@@ -5,4 +5,4 @@ package com.badsocket.net;
  * @author HGH
  * @since 2015/11/05
  */
-public abstract class SocketEntity {}
+public abstract class Entity {}

@@ -1,12 +1,12 @@
 package com.badsocket.net.http;
 
 
-import com.badsocket.net.AbstractSocketRequest;
+import com.badsocket.net.AbstractRequest;
 import com.badsocket.net.DownloadAddress;
-import com.badsocket.net.SocketEntity;
-import com.badsocket.net.SocketHeader;
-import com.badsocket.net.SocketRequest;
-import com.badsocket.net.SocketResponse;
+import com.badsocket.net.Entity;
+import com.badsocket.net.Header;
+import com.badsocket.net.Request;
+import com.badsocket.net.Response;
 import com.badsocket.net.http.Http.Method;
 import com.badsocket.util.Log;
 import com.badsocket.util.UrlUtils;
@@ -14,8 +14,8 @@ import com.badsocket.util.UrlUtils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.URL;
 
 /**
@@ -23,7 +23,7 @@ import java.net.URL;
  * @author HGH
  * @since 2015/11/05
  */
-public class BaseHttpRequest extends AbstractSocketRequest implements HttpRequest {
+public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 	/** Accept field. */
 	protected final String ACCEPT = "*/*";
 
@@ -42,7 +42,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	/** The method of requesting  */
 	protected Method mMethod = Method.GET;
 
-	/** Requested address. */
+	/** Requested downloadAddress. */
 	protected URL mUrl;
 
 	protected HttpResponse mHttpResponse;
@@ -104,7 +104,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 
 
 	protected void afterSend() {
-		Log.debug("Sent request data.");
+		Log.d("Sent request data.");
 	}
 
 
@@ -156,27 +156,27 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		if (mOnResponseListener != null) {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}
-		Log.debug("Response with header: \n" + mHttpResponse.getHeader().toString());
+		Log.d("Response with header: \n" + mHttpResponse.getHeader().toString());
 	}
 	
 	
 	/**
-	 * Open a address address.
+	 * Open a downloadAddress downloadAddress.
 	 * @throws IOException If exception.
 	 */
-	public void open(SocketAddress url, Method method) throws IOException {
+	public void open(InetSocketAddress url, Method method) throws IOException {
 		setAddress(url);
 		setMethod(method == null ? Method.GET : method);
 		super.open(UrlUtils.socketAddressByUrl(((DownloadAddress) url).getUrl()));
-		Log.debug("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
+		Log.d("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
 	}
 	
 	
 	/**
-	 * Open a address address.
+	 * Open a downloadAddress downloadAddress.
 	 * @throws IOException If exception.
 	 */
-	public void open(SocketAddress url) throws IOException {
+	public void open(InetSocketAddress url) throws IOException {
 		DownloadAddress adr = (DownloadAddress) url;
 		open(adr, mMethod);
 	}
@@ -190,7 +190,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	/**
 	 * Reopen a connection.
 	 */
-	public void reopen(SocketAddress url) throws IOException {
+	public void reopen(InetSocketAddress url) throws IOException {
 		DownloadAddress address = (DownloadAddress) url;
     	mUrl = address.getUrl();
     	reopen();
@@ -210,14 +210,14 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	}
 
 
-	public SocketResponse response() throws IOException {
+	public Response response() throws IOException {
 		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
 	}
 
 
-	public void setAddress(SocketAddress address) {
+	public void setAddress(InetSocketAddress address) {
 		if (address == null) {
-			throw new NullPointerException("The requesting address is null!");
+			throw new NullPointerException("The requesting downloadAddress is null!");
 		}
 
 		mAddress = address;
@@ -259,7 +259,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 	}
 
 
-	public static class Builder implements SocketRequest.RequestBuilder {
+	public static class Builder implements Request.RequestBuilder {
 
 		private BaseHttpRequest request;
 
@@ -280,7 +280,7 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		}
 
 
-		public Builder setHeader(SocketHeader header) {
+		public Builder setHeader(Header header) {
 			request.setHeader(header);
 			return this;
 		}
@@ -292,14 +292,14 @@ public class BaseHttpRequest extends AbstractSocketRequest implements HttpReques
 		}
 
 
-		public Builder setEntity(SocketEntity t) {
+		public Builder setEntity(Entity t) {
 			request.setEntity(t);
 			return this;
 		}
 
 
 		@Override
-		public SocketRequest build() {
+		public Request build() {
 			return request;
 		}
 	}

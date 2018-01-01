@@ -1,5 +1,7 @@
 package com.badsocket.util;
 
+import com.badsocket.io.writer.SimpleFileWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,40 +11,39 @@ import java.util.Date;
 final public class Log
 {
 	public static String LOG_FILE_NAME = "game.log";
+
 	public static String LOG_FILE_PATH = "/sdcard/" + LOG_FILE_NAME;
 
-	public final synchronized static void eF(Throwable e) {
-		println(e.toString());
-/*
-        SimpleFileWriter fw = null;
+	public static boolean isDebugMode = true;
+
+
+	public final synchronized static void log(Throwable e) {
+		FileWriter fw = null;
 		try {
-            fw = new SimpleFileWriter(LOG_FILE_PATH, true);
+			fw = new FileWriter(LOG_FILE_PATH, true);
 			File file = new File(LOG_FILE_PATH);
 			String date = new Date().toString();
-			String eMsg = null;
-
+			String eMsg = getStackTraceString(e);
             if (file.length() > 1024 * 100) {
 				file.delete();
 				file.createNewFile();
 			}
 
-
 			fw.append(eMsg);
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-            android.util.Log.e("error", err.getMessage());
+            android.util.Log.e("e", err.getMessage());
 		}finally{
             if (fw != null) {
                 try {
                     fw.flush();
                     fw.close();
                 } catch (IOException e1) {
-                    android.util.Log.e("error", e1.getMessage());
+                    android.util.Log.e("e", e1.getMessage());
                 }
             }
         }
-*/
 	}
 
 
@@ -61,41 +62,46 @@ final public class Log
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-            android.util.Log.e("error", err.getMessage());
+            android.util.Log.e("e", err.getMessage());
 		}
 	}
 
 
-	public final static void debug(String key, String val) {
+	public final static void d(String key, String val) {
 		android.util.Log.d(key, val);
 	}
 
 
-	public final static void debug(String val) {
-		//android.util.Log.d("DEBUG", val);
-		println(val);
+	public final static void d(String val) {
+		android.util.Log.d("DEBUG", val);
 	}
 
 
-	public final static void error(String key, String val) {
+	public final static void e(String key, String val) {
 		android.util.Log.e(key, val);
 	}
 
 
+	public final static void e(String val) {
+		android.util.Log.e("ERROR", val);
+	}
+
+
 	public final static void e(Throwable e) {
-		android.util.Log.e("StrackTrace", getStackTraceString(e));
+		android.util.Log.e("", "", e);
 	}
 
 
 	public static String getStackTraceString(Throwable e) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Messages: ").append(e.getMessage())
-				.append("\nException: ").append(e.getClass()).append("\n");
+		sb.append(e.getClass().getName())
+				.append(": ").append(e.getMessage())
+				.append("\n");
 		for (StackTraceElement st : e.getStackTrace()) {
-			sb.append("\tFile: ").append(st.getFileName()).append("\n\t\t")
-					.append("Class\t: ").append(st.getClassName()).append("\n\t\t")
-					.append("Line\t: ").append(st.getLineNumber()).append("\n\t\t")
-					.append("Method\t: ").append(st.getMethodName()).append("\n");
+			sb.append("at: ")
+					.append(st.getClassName()).append(".").append(st.getMethodName())
+					.append("(").append(st.getLineNumber()).append(").")
+					.append("\n");
 		}
 
 		sb.insert(0, new Date().toString() + "\n").append("\n");
@@ -103,15 +109,21 @@ final public class Log
 	}
 
 
-	public static void println(Object obj) {
-		System.out.println("[**] " + obj);
-		//android.util.Log.e("ERROR", obj.toString());
+	public static void debug(Object obj) {
+		if (!isDebugMode) {
+			return;
+		}
+		System.out.println("  " + obj);
 	}
 
 
-	public static void print(Object obj) {
-		System.out.print("[**] " + obj + "\t");
-		//android.util.Log.e("ERROR", obj.toString());
+	public static void setDebugMode(boolean debug) {
+		isDebugMode = debug;
+	}
+
+
+	public static boolean isDebugMode() {
+		return isDebugMode;
 	}
 }
 

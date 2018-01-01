@@ -132,7 +132,7 @@ public class DataWriter extends AbstractWriter implements DataWritable {
 	 * Flushes this stream by writing any buffered output to the underlying
 	 * stream.
 	 *
-	 * @throws IOException If an I/O error occurs
+	 * @throws IOException If an I/O e occurs
 	 */
 	@Override
 	public void flush() throws IOException {
