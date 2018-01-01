@@ -104,6 +104,11 @@ public class RequestGroup {
 	}
 
 
+	public void clear() {
+		requests.clear();
+	}
+
+
 	boolean isRoot() {
 		return parent == null;
 	}

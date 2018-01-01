@@ -1,5 +1,7 @@
 package com.badsocket.core;
 
+import java.io.IOException;
+
 /**
  * Created by skyrim on 2017/12/28.
  */
@@ -7,10 +9,10 @@ package com.badsocket.core;
 public interface DownloadTaskLifecycle extends TaskLifecycle {
 
 
-	void onPause();
+	void onPause() throws IOException, Exception;
 
 
-	void onResume();
+	void onResume() throws Exception;
 
 
 	void onStore();

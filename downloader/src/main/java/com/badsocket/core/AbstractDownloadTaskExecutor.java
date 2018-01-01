@@ -81,7 +81,7 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 
 
 	@Override
-	public void pause(Task t) {
+	public void pause(Task t) throws Exception {
 		DownloadTask task = (DownloadTask) t;
 		task.onPause();
 		cancel(t);
@@ -89,7 +89,7 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 
 
 	@Override
-	public void resume(Task t) {
+	public void resume(Task t) throws Exception {
 		DownloadTask task = (DownloadTask) t;
 		task.onResume();
 		Future<Task> future = futureMap.get(t);
@@ -97,7 +97,7 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	}
 
 	@Override
-	public void stop(Task t) {
+	public void stop(Task t) throws Exception {
 		DownloadTask task = (DownloadTask) t;
 		task.onStop();
 		cancel(t);

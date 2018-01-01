@@ -35,6 +35,15 @@ public interface Downloader extends Controlable {
 	void startTask(int id);
 
 
+	void stopTask(int id);
+
+
+	void pauseTask(int id);
+
+
+	void resumeTask(int id);
+
+
 	List<DownloadTask> taskList();
 
 

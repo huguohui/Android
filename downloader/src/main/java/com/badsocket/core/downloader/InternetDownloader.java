@@ -162,6 +162,36 @@ public class InternetDownloader extends AbstractDownloader {
 
 
 	@Override
+	public void stopTask(int id) {
+		try {
+			taskManager.stop(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public void pauseTask(int id) {
+		try {
+			taskManager.pause(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
+	public void resumeTask(int id) {
+		try {
+			taskManager.resume(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@Override
 	public List<DownloadTask> taskList() {
 		return taskManager.list();
 	}

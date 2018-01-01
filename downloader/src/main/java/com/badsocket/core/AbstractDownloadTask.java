@@ -4,8 +4,8 @@ import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.net.DownloadAddress;
-import com.badsocket.net.Request;
 import com.badsocket.net.Response;
+import com.badsocket.util.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,15 +107,13 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected void fetchInfo() throws IOException {
 		if (response == null) {
-			fetchResponse(openRequest());
+			prefetchResponse();
 		}
+		fetchInfoFromResponse();
 	}
 
 
-	protected abstract Request openRequest() throws IOException;
-
-
-	protected abstract void fetchResponse(Request r) throws IOException;
+	protected abstract void prefetchResponse() throws IOException;
 
 
 	protected abstract void fetchInfoFromResponse();
@@ -164,6 +162,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public void onFinish() {
+		state = DownloadTaskState.FINISHED;
 		if (onTaskFinishListeners != null) {
 			for (OnTaskFinishListener listener : onTaskFinishListeners) {
 				listener.onTaskFinish(this);
@@ -173,6 +172,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public void onCreate(TaskExtraInfo info) throws Exception {
+		state = DownloadTaskState.PREPARING;
 		if (onTaskCreateListeners != null) {
 			for (OnTaskCreateListener listener : onTaskCreateListeners) {
 				listener.onTaskCreate(this);
@@ -182,6 +182,9 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public void onStart() {
+		isRunning = true;
+		state = DownloadTaskState.RUNNING;
+		startTime = DateUtils.millisTime();
 		if (onTaskStartListeners != null) {
 			for (OnTaskStartListener listener : onTaskStartListeners) {
 				listener.onTaskStart(this);
@@ -190,7 +193,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
-	public void onStop() {
+	public void onStop() throws Exception {
+		state = DownloadTaskState.STOPED;
 		if (onTaskStopListeners != null) {
 			for (OnTaskStopListener listener : onTaskStopListeners) {
 				listener.onTaskStop(this);
@@ -199,7 +203,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
-	public void onPause() {
+	public void onPause() throws Exception {
+		state = DownloadTaskState.PAUSED;
 		if (onDownloadTaskPauseListeners != null) {
 			for (OnDownloadTaskPauseListener listener : onDownloadTaskPauseListeners) {
 				listener.onDownloadTaskPause(this);
@@ -208,7 +213,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
-	public void onResume() {
+	public void onResume() throws Exception {
+		state = DownloadTaskState.RUNNING;
 		if (onDownloadTaskResumeListeners != null) {
 			for (OnTaskFinishListener listener : onTaskFinishListeners) {
 				listener.onTaskFinish(this);

@@ -16,7 +16,7 @@ interface TaskLifecycle {
 	void onStart();
 
 
-	void onStop();
+	void onStop() throws Exception;
 
 
 }

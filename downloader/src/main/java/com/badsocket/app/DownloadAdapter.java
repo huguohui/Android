@@ -122,6 +122,24 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 	@Override
+	public void stopTask(int id) {
+		downloader.stopTask(id);
+	}
+
+
+	@Override
+	public void pauseTask(int id) {
+		downloader.pauseTask(id);
+	}
+
+
+	@Override
+	public void resumeTask(int id) {
+		downloader.resumeTask(id);
+	}
+
+
+	@Override
 	public List<DownloadTask> taskList() {
 		return downloader.taskList();
 	}

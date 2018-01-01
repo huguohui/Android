@@ -13,6 +13,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -34,10 +37,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity
+		extends AppCompatActivity
+		implements View.OnClickListener, ListView.OnItemClickListener
+{
 
 	@BindView(R.id.listView)
 	protected ListView listView;
+
+	@BindView(R.id.button_add)
+	protected Button btnAdd;
 
 	protected Downloader downloader;
 
@@ -87,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
 	};
 
-
 	class MessageHanlder extends Handler {
 
 		public void handleMessage(Message msg) {
@@ -110,10 +118,47 @@ public class MainActivity extends AppCompatActivity {
 		adapter = new SimpleTaskListAdspter(this, tasks);
 		watcher = new DownloadTaskListWatcher(handler);
 		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(this);
+		btnAdd.setOnClickListener(this);
     }
 
 
-    public void onStart() {
+	/**
+	 * Called when a view has been clicked.
+	 *
+	 * @param v The view that was clicked.
+	 */
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.button_add:
+				showToast("你点击了？？？");
+				break;
+		}
+	}
+
+
+	/**
+	 * Callback method to be invoked when an item in this AdapterView has
+	 * been clicked.
+	 * <p>
+	 * Implementers can call getItemAtPosition(position) if they need
+	 * to access the data associated with the selected item.
+	 *
+	 * @param parent   The AdapterView where the click happened.
+	 * @param view     The view within the AdapterView that was clicked (this
+	 *                 will be a view provided by the adapter)
+	 * @param position The position of the view in the adapter.
+	 * @param id       The row id of the item that was clicked.
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		showToast(view.getClass().getCanonicalName() + "," + position + "," + id);
+	}
+
+
+
+	public void onStart() {
 		super.onStart();
 		startService();
 	}

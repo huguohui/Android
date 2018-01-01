@@ -95,17 +95,17 @@ public class DefaultDownloadTaskManager
 	}
 
 
-	protected void pauseTask(DownloadTask task) {
+	protected void pauseTask(DownloadTask task) throws Exception {
 		taskExecutor.pause(task);
 	}
 
 
-	protected void resumeTask(DownloadTask task) {
+	protected void resumeTask(DownloadTask task) throws Exception {
 		taskExecutor.resume(task);
 	}
 
 
-	protected void stopTask(DownloadTask task) {
+	protected void stopTask(DownloadTask task) throws Exception {
 		taskExecutor.stop(task);
 	}
 

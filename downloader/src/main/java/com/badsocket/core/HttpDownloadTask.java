@@ -10,8 +10,6 @@ import com.badsocket.net.Request;
 import com.badsocket.net.RequestGroup;
 import com.badsocket.net.Response;
 import com.badsocket.net.http.HttpResponse;
-import com.badsocket.util.DateUtils;
-import com.badsocket.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,8 +24,7 @@ import java.util.concurrent.Future;
  */
 
 public class HttpDownloadTask
-		extends
-		AbstractDownloadTask
+		extends AbstractDownloadTask
 {
 
 	transient protected RequestGroup requestGroup;
@@ -78,9 +75,6 @@ public class HttpDownloadTask
 	@Override
 	public void onStart() {
 		super.onStart();
-		startTime = DateUtils.millisTime();
-		isRunning = true;
-		state = DownloadTaskState.RUNNING;
 
 		try {
 			fileWriter = context.getFileWriter(new File(getDownloadPath(), getName()), 0);
@@ -92,37 +86,38 @@ public class HttpDownloadTask
 
 
 	@Override
-	public void onStop() {
+	public void onStop() throws Exception {
 		super.onStop();
+		stopDownload();
 	}
 
 
 	@Override
-	public void onPause() {
+	public void onPause() throws Exception {
 		super.onPause();
+		stopDownload();
 	}
 
 
 	@Override
-	public void onResume() {
+	public void onResume() throws Exception {
 		super.onResume();
+		downloadData();
 	}
 
 
 	@Override
 	public void onStore() {
-
 	}
 
 
 	@Override
 	public void onRestore() {
-
 	}
 
 
 	@Override
-	protected Request openRequest() throws IOException {
+	protected void prefetchResponse() throws IOException {
 		Request req = null;
 		if (taskDescriptor != null) {
 			req = downloadComponentFactory.createRequest(taskDescriptor);
@@ -131,19 +126,13 @@ public class HttpDownloadTask
 			req = downloadComponentFactory.createRequest(downloadAddress);
 		}
 
-		return req;
-	}
-
-
-	@Override
-	protected void fetchResponse(Request r) throws IOException {
-		if (!r.connected()) {
-			throw new ConnectException();
+		if (!req.connected()) {
+			throw new ConnectException("");
 		}
 
-		r.send();
-		response = r.response();
-		r.closed();
+		req.send();
+		response = req.response();
+		req.closed();
 	}
 
 
@@ -155,38 +144,63 @@ public class HttpDownloadTask
 	}
 
 
-	protected void createRequests() throws IOException {
+	protected void createDownloadRequests() throws IOException {
 		Request[] reqs = downloadComponentFactory.createRequest(this, downloader.getThreadAllocStategy());
 		Receiver recs[] = new Receiver[reqs.length];
 		requestGroup = new RequestGroup();
-		receiverGroup = new ReceiverGroup();
 		requestGroup.addRequests(reqs);
 		requestGroup.openRequests();
 		requestGroup.sendRequests();
 	}
 
 
-	protected void receiveDataFromResponse() throws IOException {
+	protected void createDownloadReceiver() throws IOException {
 		Response reps[] = requestGroup.getResponses();
-		ThreadExecutor executor = (ThreadExecutor) context.getThreadExecutor();
-
+		receiverGroup = new ReceiverGroup();
 		AsyncReceiver asyncReceiver = null;
 		for (int i = 0; i < reps.length; i++) {
 			receiverGroup.addReceiver(downloadComponentFactory.createReceiver(requestGroup.getRequest(i), fileWriter));
+		}
+	}
+
+
+	protected void downloadDataByReceiver() {
+		AsyncReceiver asyncReceiver = null;
+		Receiver[] receivers = receiverGroup.getReceivers();
+		ThreadExecutor executor = (ThreadExecutor) context.getThreadExecutor();
+		for (int i = 0; i < receivers.length; i++) {
 			asyncReceiver = new AsyncReceiver(receiverGroup.getReceiver(i));
-			//asyncReceiver.setOnFinishedListener(this);
 			receiverFutures.add(executor.submit(asyncReceiver));
 		}
 	}
 
 
-	protected void startDownloadTask() throws IOException {
-		createRequests();
-		receiveDataFromResponse();
+	protected void downloadData() throws IOException {
+		createDownloadRequests();
+		createDownloadReceiver();
+		downloadDataByReceiver();
 	}
 
 
-	private void waitReceiveDone() throws ExecutionException, InterruptedException {
+	protected void resetRequests() throws Exception {
+		requestGroup.closeAll();
+		requestGroup.clear();
+	}
+
+
+	protected void resetReceivers() throws Exception {
+		receiverGroup.stopAll();
+		receiverGroup.clear();
+	}
+
+
+	protected void stopDownload() throws Exception {
+		resetRequests();
+		resetReceivers();
+	}
+
+
+	protected void waitReceiveDone() throws ExecutionException, InterruptedException {
 		for (Future<Long> future : receiverFutures) {
 			downloadedLength += future.get();
 			progress = (float) downloadedLength / (float) length;
@@ -215,7 +229,7 @@ public class HttpDownloadTask
 	@Override
 	public Task call() throws Exception {
 		try {
-			startDownloadTask();
+			downloadData();
 			waitReceiveDone();
 		}
 		catch (Exception e) {
@@ -229,6 +243,10 @@ public class HttpDownloadTask
 	@Override
 	public void update() {
 		synchronized (this) {
+			if (receiverGroup == null) {
+				return;
+			}
+
 			downloadedLength = receiverGroup.getTotalReceivedLength();
 			progress = (float) downloadedLength / (float) length;
 		}
