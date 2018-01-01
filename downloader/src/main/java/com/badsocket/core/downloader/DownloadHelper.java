@@ -1,10 +1,11 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
+import com.badsocket.core.DownloadTask;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.net.SocketComponentFactory;
-import com.badsocket.net.SocketRequest;
-import com.badsocket.net.SocketResponse;
+import com.badsocket.core.DownloadComponentFactory;
+import com.badsocket.net.Request;
+import com.badsocket.net.Response;
 
 import java.io.IOException;
 
@@ -14,34 +15,33 @@ import java.io.IOException;
 
 public abstract class DownloadHelper {
 
-	private static final Context context = null;
-
-	public static SocketResponse fetchTaskInfo(DownloadDescriptor desc, ProtocolHandler handler) throws IOException {
-		SocketComponentFactory factory = handler.socketFamilyFactory();
-		SocketRequest req = factory.createRequest(desc);
-		SocketResponse rep = null;
+	public static Response fetchResponseByDescriptor(Downloader c, DownloadTaskDescriptor desc, ProtocolHandler handler) throws IOException {
+		DownloadComponentFactory factory = handler.downloadComponentFactory();
+		Request req = factory.createRequest(desc);
+		Response rep = null;
 		req.open(desc.getAddress());
 		req.send();
 		rep = req.response();
 		req.close();
+
 		return rep;
 	}
 
 
-	public static void fetchTaskInfo(final DownloadDescriptor desc, ProtocolHandler handler,
-				final OnFetchTaskInfoListener listener) throws IOException {
-		final SocketComponentFactory factory = handler.socketFamilyFactory();
-		final SocketRequest req = factory.createRequest(desc);
+	public static void fetchTaskInfoAsync(Context context, final DownloadTaskDescriptor desc,
+				ProtocolHandler handler, final OnFetchTaskInfoListener listener) throws IOException {
+		final DownloadComponentFactory factory = handler.downloadComponentFactory();
+		final Request req = factory.createRequest(desc);
 
 		context.getThreadFactory().createThread(() -> {
-			SocketResponse rep = null;
+			Response rep = null;
 			try {
 				req.open(desc.getAddress());
 				req.send();
 				rep = req.response();
 				req.close();
-//				info.update(rep);
-//				listener.onFetchTaskInfo(info);
+//				taskExtraInfo.update(rep);
+//				listener.onFetchTaskInfo(taskExtraInfo);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

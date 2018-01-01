@@ -5,5 +5,7 @@ package com.badsocket.core.downloader.exception;
  */
 
 public class UnsupportedProtocolException extends DownloadException {
-
+	public UnsupportedProtocolException(String msg) {
+		super(msg);
+	}
 }

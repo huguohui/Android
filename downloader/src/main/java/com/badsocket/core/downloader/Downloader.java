@@ -1,12 +1,13 @@
 package com.badsocket.core.downloader;
 
 
+import com.badsocket.core.Context;
 import com.badsocket.core.Controlable;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
+import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.Protocols;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,13 +20,13 @@ public interface Downloader extends Controlable {
 	 * Create a new download task.
 	 * @param desc Descriptor.
 	 */
-	DownloadTask newTask(DownloadDescriptor desc) throws IOException;
+	DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception;
 
 
 	DownloadTask findTask(int id);
 
 
-	void addTask(DownloadTask t);
+	void addTask(DownloadTask t) throws Exception;
 
 
 	void deleteTask(int id);
@@ -55,13 +56,25 @@ public interface Downloader extends Controlable {
 	Monitor getMonitor();
 
 
-	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
+	void addProtocolHandler(Protocol ptl, ProtocolHandler ph);
+
+
+	ProtocolHandler getProtocolHandler(Protocol ptl);
 
 
 	void setParallelTaskNum(int num);
 
 
 	int getParallelTaskNum();
+
+
+	Context getDownloaderContext();
+
+
+	InternetDownloader.ThreadAllocStategy getThreadAllocStategy();
+
+
+	void setThreadAllocStategy(InternetDownloader.ThreadAllocStategy stategy);
 
 
 	interface OnDownloadStartListener {

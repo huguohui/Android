@@ -10,16 +10,25 @@ import java.util.Set;
 public interface Config {
 
 
-	<T> T get(String key);
+	String get(String key);
 
 
-	<T> void set(String key, T val);
+	void set(String key, String val);
+
+
+	Integer getInteger(String key);
+
+
+	Float getFloat(String key);
+
+
+	Double getDouble(String key);
 
 
 	Set<String> keySet();
 
 
-	Collection<Object> values();
+	Collection<String> values();
 
 
 	void merge(Config config);

@@ -27,7 +27,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 	public final static int MAX_NAME_LEN = 0xff;
 
 
-	public HttpDownloadTaskInfo(DownloadDescriptor r) {
+	public HttpDownloadTaskInfo(DownloadTaskDescriptor r) {
 		super(r);
 	}
 
@@ -36,7 +36,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 
 	@Override
-	public void update(SocketResponse r) {
+	public void update(Response r) {
 		HttpResponse rep = (HttpResponse) r;
 		length = rep.getContentLength();
 		name = rep.getFileName();
@@ -44,7 +44,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 
 	@Override
-	public void update(SocketRequest[] r) {
+	public void update(Request[] r) {
 		BaseHttpRequest hr;
 		long[] pStart = new long[r.length],
 				pLen = new long[r.length];
@@ -53,7 +53,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 				continue;
 			}
 
-			SocketRequest.Range rg = hr.getRange();
+			Request.Range rg = hr.getRange();
 			pStart[i] = rg != null ? rg.start : 0;
 			pLen[i] = rg != null ? rg.getRange() : 0;
 		}
@@ -64,7 +64,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 
 	@Override
-	public void update(SocketReceiver[] rs) {
+	public void update(Receiver[] rs) {
 		HttpReceiver hr;
 		long[] pDownLen = new long[rs.length];
 		long downloadLen = 0;
@@ -106,7 +106,7 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 	protected static class Storage implements DownloadTaskInfo.Storage {
 
-		protected HttpDownloadTaskInfo info;
+		protected HttpDownloadTaskInfo taskExtraInfo;
 
 		protected ByteArrayOutputStream data = new ByteArrayOutputStream();
 
@@ -114,25 +114,25 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 		protected DataReader dataReader;
 
-		public Storage(HttpDownloadTaskInfo info) {
-			this.info = info;
+		public Storage(HttpDownloadTaskInfo taskExtraInfo) {
+			this.taskExtraInfo = taskExtraInfo;
 		}
 
 
 		public byte[] save() throws IOException {
-			dataWriter = new DataWriter(new File(info.getPath(), info.getName()));
+			dataWriter = new DataWriter(new File(taskExtraInfo.getPath(), taskExtraInfo.getName()));
 			dataWriter.write(HttpDownloadTaskInfo.FILE_FORMAT_INFO);
-			dataWriter.writeLong(info.getLength());
-			dataWriter.writeLong(info.getDownloadLength());
-			dataWriter.writeLong(info.getStartTime());
-			dataWriter.writeLong(info.getUsedTime());
-			dataWriter.writeInt(info.getTotalThreads());
+			dataWriter.writeLong(taskExtraInfo.getLength());
+			dataWriter.writeLong(taskExtraInfo.getDownloadLength());
+			dataWriter.writeLong(taskExtraInfo.getStartTime());
+			dataWriter.writeLong(taskExtraInfo.getUsedTime());
+			dataWriter.writeInt(taskExtraInfo.getTotalThreads());
 
-			int parts = info.getTotalThreads();
+			int parts = taskExtraInfo.getTotalThreads();
 			for (int i = 0; i < parts; i++) {
-				dataWriter.writeLong(info.getPartOffsetStart()[i]);
-				dataWriter.writeLong(info.getPartLength()[i]);
-				dataWriter.writeLong(info.getPartDownloadLength()[i]);
+				dataWriter.writeLong(taskExtraInfo.getPartOffsetStart()[i]);
+				dataWriter.writeLong(taskExtraInfo.getPartLength()[i]);
+				dataWriter.writeLong(taskExtraInfo.getPartDownloadLength()[i]);
 			}
 
 			return data.toByteArray();
@@ -141,19 +141,19 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 
 		public void read(byte[] data) throws IOException {
 			dataReader = new DataReader(new ByteArrayInputStream(data));
-			info = new HttpDownloadTaskInfo();
+			taskExtraInfo = new HttpDownloadTaskInfo();
 			if (!Arrays.equals(dataReader.read(HttpDownloadTaskInfo.FILE_FORMAT_INFO.length),
 						HttpDownloadTaskInfo.FILE_FORMAT_INFO)) {
 				throw new FileFormatException();
 			}
 
-			info.setLength(dataReader.readLong());
-			info.setDownloadLength(dataReader.readLong());
-			info.setStartTime(dataReader.readLong());
-			info.setUsedTime(dataReader.readLong());
-			info.setTotalThreads(dataReader.readInt());
+			taskExtraInfo.setLength(dataReader.readLong());
+			taskExtraInfo.setDownloadLength(dataReader.readLong());
+			taskExtraInfo.setStartTime(dataReader.readLong());
+			taskExtraInfo.setUsedTime(dataReader.readLong());
+			taskExtraInfo.setTotalThreads(dataReader.readInt());
 
-			int parts = info.getTotalThreads();
+			int parts = taskExtraInfo.getTotalThreads();
 			long[]  partOffsetStarts = new long[parts],
 					partLengths = new long[parts],
 					partDownloadLengths = new long[parts];
@@ -164,9 +164,9 @@ public class HttpDownloadTaskInfo extends DownloadTaskInfo {
 				partDownloadLengths[i] = dataReader.readLong();
 			}
 
-			info.setPartOffsetStart(partOffsetStarts);
-			info.setPartLength(partLengths);
-			info.setPartDownloadLength(partDownloadLengths);
+			taskExtraInfo.setPartOffsetStart(partOffsetStarts);
+			taskExtraInfo.setPartLength(partLengths);
+			taskExtraInfo.setPartDownloadLength(partDownloadLengths);
 		}
 	}
 }

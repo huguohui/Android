@@ -12,13 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DownloadConfig implements Config {
 
-	public static final String GLOBAL_MAX_DOWNLOAD_THREADS = "gloabl.max_download_threads";
+	public static final String GLOBAL_MAX_DOWNLOAD_THREADS = "global.max_download_threads";
 
-	public static final String GLOBAL_MAX_PARALLEL_TASKS = "gloabl.max_parallel_tasks";
+	public static final String GLOBAL_MAX_PARALLEL_TASKS = "global.max_parallel_tasks";
 
-	public static final String GLOBAL_MAX_CONNECTIONS = "gloabl.max_connections";
+	public static final String GLOBAL_MAX_CONNECTIONS = "global.max_connections";
 
-	public static final String GLOBAL_DOWNLAOD_PATH = "gloabl.max_download_path";
+	public static final String GLOBAL_DOWNLAOD_PATH = "global.default_download_path";
 
 	public static final String CONFIG_FILE_NAME = "config";
 
@@ -27,7 +27,7 @@ public class DownloadConfig implements Config {
 	public static final String CONFIG_FILE = CONFIG_FILE_NAME + CONFIG_FILE_EXT;
 
 
-	private Map<String, Object> configMap = new ConcurrentHashMap<>();
+	private Map<String, String> configMap = new ConcurrentHashMap<>();
 
 	private File location;
 
@@ -43,14 +43,50 @@ public class DownloadConfig implements Config {
 
 
 	@Override
-	public <T> T get(String key) {
-		return (T) configMap.get(key);
+	public String get(String key) {
+		return configMap.get(key);
 	}
 
 
 	@Override
-	public <T> void set(String key, T val) {
+	public void set(String key, String val) {
 		configMap.put(key, val);
+	}
+
+
+	@Override
+	public Integer getInteger(String key) {
+		Integer integer = null;
+		try {
+			integer = Integer.parseInt(configMap.get(key));
+		}
+		catch (Exception e) {}
+
+		return integer;
+	}
+
+
+	@Override
+	public Float getFloat(String key) {
+		Float value = null;
+		try {
+			value = Float.parseFloat(configMap.get(key));
+		}
+		catch (Exception e) {}
+
+		return value;
+	}
+
+
+	@Override
+	public Double getDouble(String key) {
+		Double value = null;
+		try {
+			value = Double.parseDouble(configMap.get(key));
+		}
+		catch (Exception e) {}
+
+		return value;
 	}
 
 
@@ -61,7 +97,7 @@ public class DownloadConfig implements Config {
 
 
 	@Override
-	public Collection<Object> values() {
+	public Collection<String> values() {
 		return configMap.values();
 	}
 

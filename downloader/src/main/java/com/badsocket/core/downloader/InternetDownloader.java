@@ -2,17 +2,25 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
+import com.badsocket.core.DownloadTaskExecutor;
+import com.badsocket.core.DownloaderContext;
+import com.badsocket.core.DownloaderWatcher;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
+import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.Protocols;
+import com.badsocket.core.config.Config;
+import com.badsocket.core.config.DownloadConfig;
+import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
+import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.io.writer.Writer;
+import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +30,7 @@ import java.util.Map;
  */
 public class InternetDownloader extends AbstractDownloader {
 
-	final public static int MAX_THREAD = 10;
+	public static int MAX_PARALLEL_TASKS = 10;
 
 	protected Writer fileWriter;
 
@@ -42,24 +50,31 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected int monitorInterval = 1000;
 
-	protected DownloadTaskManager taskManager = DownloadTaskManager.getInstance();
+	protected DownloadTaskManager taskManager;
 
-	protected Map<Protocols, ProtocolHandler> protocolHandlers = new HashMap<>();
+	protected Map<Protocol, ProtocolHandler> protocolHandlers = new HashMap<>();
 
 	protected Context context;
 
-	protected ThreadAllocStategy policy = (info) -> {
+	protected Config config;
+
+	protected DownloadTaskExecutor downloadTaskExecutor;
+
+	protected String defaultDownloadPath;
+
+
+	protected ThreadAllocStategy stategy = (info) -> {
 		long len = Math.max(info.getLength(), 1);
 		int num = 3;
+
 		if (len < 3) {
 			num = 1;
 		}
-		else if (len > 1024 * 1024 * 100) {
-			num = 5;
-		}
-		else if (len > 1024 * 1024 * 10) {
+
+		if (len > 1024 * 1024 * 1) {
 			num = 10;
 		}
+
 		return num;
 	};
 
@@ -69,13 +84,21 @@ public class InternetDownloader extends AbstractDownloader {
 	public InternetDownloader(Context context) {
 		this.context = context;
 		androidContext = context.getAndroidContext();
+		init();
 	}
 
 
 	protected void init() {
 		worker = new AsyncWorker(threadManager);
+		taskManager = DefaultDownloadTaskManager.getInstance(this);
+		config = context.getDownloadConfig();
+		downloadTaskExecutor = (DownloadTaskExecutor) context.getDownloadTaskExecutor();
+		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
+		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
+				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
 		monitor.monitor(this);
 		taskManager.setAutoStart(true);
+		monitor.addWatcher(new DownloaderWatcher());
 	}
 
 
@@ -84,10 +107,29 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public DownloadTask newTask(DownloadDescriptor desc) throws IOException {
-		String strPtl = desc.getAddress().getProtocol();
+	public DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception {
+		String protocolName = desc.getAddress().getProtocol();
+		Protocol protocol = null;
+		ProtocolHandler protocolHandler = null;
+		DownloadTask task = null;
+		if ((protocol = Protocol.getProtocol(protocolName)) == null
+				|| (protocolHandler = protocolHandlers.get(protocol)) == null) {
+			throw new UnsupportedProtocolException("暂不支持此下载协议:" + protocolName.toUpperCase() + "！");
+		}
+		if (desc.getPath() == null || desc.getPath().length() == 0) {
+			desc.setPath(defaultDownloadPath);
+		}
 
-		return null;
+		task = protocolHandler.downloadComponentFactory().creatDownloadTask(
+				this, desc, DownloadHelper.fetchResponseByDescriptor(this, desc, protocolHandler));
+		File downloadFile = new File(task.getDownloadPath(), task.getName());
+		if (downloadFile.exists()) {
+			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
+		}
+
+		task.onCreate(desc.getTaskExtraInfo());
+		taskManager.add(task);
+		return task;
 	}
 
 
@@ -98,7 +140,7 @@ public class InternetDownloader extends AbstractDownloader {
 
 
 	@Override
-	public void addTask(DownloadTask t) {
+	public void addTask(DownloadTask t) throws Exception {
 		taskManager.add(t);
 	}
 
@@ -171,11 +213,16 @@ public class InternetDownloader extends AbstractDownloader {
 
 
 	public void resume() {
-		taskManager.resumeAll();
+		try {
+			taskManager.resumeAll();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
-	public void addProtocolHandler(Protocols protocol, ProtocolHandler handler) {
+	public void addProtocolHandler(Protocol protocol, ProtocolHandler handler) {
 		protocolHandlers.put(protocol, handler);
 	}
 
@@ -192,7 +239,25 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	public ProtocolHandler getProtocolHandler(Protocols p) {
+	@Override
+	public Context getDownloaderContext() {
+		return context;
+	}
+
+
+	@Override
+	public ThreadAllocStategy getThreadAllocStategy() {
+		return this.stategy;
+	}
+
+
+	@Override
+	public void setThreadAllocStategy(ThreadAllocStategy stategy) {
+		this.stategy = stategy;
+	}
+
+
+	public ProtocolHandler getProtocolHandler(Protocol p) {
 		return protocolHandlers.get(p);
 	}
 

@@ -29,20 +29,20 @@ import static com.badsocket.core.downloader.DownloadHelper.fetchTaskInfo;
 
 public class GenericDownloadTask
 	extends DownloadTask
-	implements SocketReceiver.OnFinishedListener
+	implements Receiver.OnFinishedListener
 {
 
-	protected DownloadAddress address;
+	protected DownloadAddress downloadAddress;
 
-	protected SocketResponse response;
+	protected Response response;
 
-	protected SocketRequest[] requests;
+	protected Request[] requests;
 
-	protected SocketResponse[] responses;
+	protected Response[] responses;
 
-	protected SocketReceiver[] receivers;
+	protected Receiver[] receivers;
 
-	protected Protocols protocol;
+	protected Protocol protocol;
 
 	protected int threadNum;
 
@@ -52,54 +52,54 @@ public class GenericDownloadTask
 
 	protected boolean isResumeFromInfo;
 
-	protected DownloadTaskInfo info;
+	protected DownloadTaskInfo taskExtraInfo;
 
-	protected SocketComponentFactory factory;
+	protected DownloadComponentFactory factory;
 
-	protected DownloadDescriptor descriptor;
+	protected DownloadTaskDescriptor descriptor;
 
 	protected ProtocolHandler handler;
 
 	protected FileWriter writer;
 
-	protected InternetDownloader.ThreadAllocStategy policy;
+	protected InternetDownloader.ThreadAllocStategy stategy;
 
 	protected Worker worker;
 
 	protected int perThreadExecInterval = 500;
 
-	private CollectionUtils.Action<SocketReceiver> stopAction = (rec) -> {
+	private CollectionUtils.Action<Receiver> stopAction = (rec) -> {
 		rec.stop();
 	};
 
 
-	public GenericDownloadTask(DownloadDescriptor d, ProtocolHandler handler,
-				InternetDownloader.ThreadAllocStategy policy) throws IOException {
+	public GenericDownloadTask(DownloadTaskDescriptor d, ProtocolHandler handler,
+				InternetDownloader.ThreadAllocStategy stategy) throws IOException {
 		super(d);
-		address = d.getAddress();
-		protocol = Protocols.getProtocol(address.getProtocol());
+		downloadAddress = d.getAddress();
+		protocol = Protocol.getProtocol(downloadAddress.getProtocol());
 		threadNum = d.getMaxThread();
 		downloadPath = d.getPath();
 		priority = d.getPriority();
 		descriptor = d;
 		this.handler = handler;
-		this.policy = policy;
+		this.stategy = stategy;
 		this.factory = handler.socketFamilyFactory();
-		this.info = handler.downloadTaskInfoFactory().create(descriptor);
+		this.taskExtraInfo = handler.downloadTaskInfoFactory().create(descriptor);
 		init();
 	}
 
 
 	public GenericDownloadTask(DownloadTaskInfo i, ProtocolHandler handler,
-				InternetDownloader.ThreadAllocStategy policy) throws IOException {
-		this(DownloadDescriptor.fromDownloadTaskInfo(i), handler, policy);
-		info = i;
+				InternetDownloader.ThreadAllocStategy stategy) throws IOException {
+		this(DownloadTaskDescriptor.fromDownloadTaskInfo(i), handler, stategy);
+		taskExtraInfo = i;
 		isResumeFromInfo = true;
 	}
 
 
 	protected void init() throws IOException {
-		state = State.unstart;
+		state = TaskState.unstart;
 		try {
 			worker = new AsyncWorker(ThreadManager.getInstance());
 			worker.start();
@@ -110,8 +110,8 @@ public class GenericDownloadTask
 	}
 
 
-	protected SocketReceiver wrapAsyncReceiver(SocketReceiver re) {
-		AsyncSocketReceiver ac = new AsyncSocketReceiver(re, worker);
+	protected Receiver wrapAsyncReceiver(Receiver re) {
+		AsyncReceiver ac = new AsyncReceiver(re, worker);
 		ac.setOnFinishedListener(this);
 		return ac;
 	}
@@ -119,15 +119,15 @@ public class GenericDownloadTask
 
 	protected void doTask() throws IOException {
 		if (!isResumeFromInfo) {
-			info.update(DownloadHelper.fetchTaskInfo(descriptor, handler));
+			taskExtraInfo.update(DownloadHelper.fetchResponseByDescriptor(descriptor, handler));
 		}
 
-		writer = new ConcurrentFileWriter(new File(info.getPath(), info.getName()));
-		requests = factory.createRequest(info, policy);
-		receivers = new SocketReceiver[requests.length];
-		info.update(requests);
+		writer = new ConcurrentFileWriter(new File(taskExtraInfo.getPath(), taskExtraInfo.getName()));
+		requests = factory.createRequest(taskExtraInfo, stategy);
+		receivers = new Receiver[requests.length];
+		taskExtraInfo.update(requests);
 		for (int i = 0; i < requests.length; i++) {
-			SocketRequest req = requests[i];
+			Request req = requests[i];
 			req.open();
 			req.send();
 			receivers[i] = factory.createReceiver(req, writer);
@@ -137,13 +137,13 @@ public class GenericDownloadTask
 
 
 	protected boolean checkFinished() {
-		return (info.getLength() == 0 || info.getProgress() >= 1f);
+		return (taskExtraInfo.getLength() == 0 || taskExtraInfo.getProgress() >= 1f);
 	}
 
 
 	@Override
-	public synchronized void onFinished(SocketReceiver r) {
-		info.update(receivers);
+	public synchronized void onFinished(Receiver r) {
+		taskExtraInfo.update(receivers);
 		if (checkFinished()) {
 			try {
 				worker.stop();
@@ -168,7 +168,7 @@ public class GenericDownloadTask
 
 	@Override
 	public void work() throws Exception {
-		state = State.running;
+		state = TaskState.running;
 		doTask();
 	}
 
@@ -228,12 +228,12 @@ public class GenericDownloadTask
 	 *//*
 
 	@Override
-	public TaskInfo info() {
+	public TaskInfo taskExtraInfo() {
 		if (receivers != null) {
-			info.update(receivers);
+			taskExtraInfo.update(receivers);
 		}
 
-		return info;
+		return taskExtraInfo;
 	}
 }
 */

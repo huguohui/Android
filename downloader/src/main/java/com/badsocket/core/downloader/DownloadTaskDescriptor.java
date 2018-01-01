@@ -1,14 +1,15 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
+import com.badsocket.core.Task;
 import com.badsocket.net.DownloadAddress;
 
 /**
  * Descriptor for downloading task.
  */
-public class DownloadDescriptor extends Descriptor {
+public class DownloadTaskDescriptor extends Descriptor {
 	/** URL for downloading. */
-	protected DownloadAddress mWebAddress;
+	protected DownloadAddress mAddress;
 
 	/** Task priority. */
 	protected int mPriority;
@@ -18,35 +19,62 @@ public class DownloadDescriptor extends Descriptor {
 
 	protected String path;
 
+	protected Task.TaskExtraInfo taskExtraInfo;
+
+	protected String taskName;
+
+
+	public DownloadTaskDescriptor() {
+
+	}
+
+
+	public DownloadTaskDescriptor(DownloadTask task) {
+		this.setAddress(task.getDownloadAddress());
+		this.setMaxThread(task.getSectionNumber());
+		this.setPriority(task.getPriority());
+		this.setPath(task.getDownloadPath().getAbsolutePath());
+	}
+
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+
+	public DownloadTaskDescriptor setTaskName(String taskName) {
+		this.taskName = taskName;
+		return this;
+	}
+
 
 	public String getPath() {
 		return path;
 	}
 
 
-	public DownloadDescriptor setPath(String path) {
+	public DownloadTaskDescriptor setPath(String path) {
 		this.path = path;
 		return this;
 	}
 
+	public Task.TaskExtraInfo getTaskExtraInfo() {
+		return taskExtraInfo;
+	}
 
-	public static DownloadDescriptor fromDownloadTaskInfo(DownloadTask info) {
-		DownloadDescriptor desc = new DownloadDescriptor.Builder()
-				.setAddress(new DownloadAddress(info.getURL()))
-				.setMaxThread(info.getSectionNumber())
-				.setPriority(info.getPriority())
-				.setPath(info.getDownloadPath().getAbsolutePath())
-				.build();
-		return desc;
+
+	public DownloadTaskDescriptor setTaskExtraInfo(Task.TaskExtraInfo taskExtraInfo) {
+		this.taskExtraInfo = taskExtraInfo;
+		return this;
 	}
 
 
 	public DownloadAddress getAddress() {
-		return mWebAddress;
+		return mAddress;
 	}
 
 	public void setAddress(DownloadAddress mUrl) {
-		this.mWebAddress = mUrl;
+		this.mAddress = mUrl;
 	}
 
 	public int getPriority() {
@@ -68,10 +96,10 @@ public class DownloadDescriptor extends Descriptor {
 
 	public static class Builder {
 
-		private DownloadDescriptor descriptor;
+		private DownloadTaskDescriptor descriptor;
 
 		public Builder() {
-			descriptor = new DownloadDescriptor();
+			descriptor = new DownloadTaskDescriptor();
 		}
 
 
@@ -99,7 +127,13 @@ public class DownloadDescriptor extends Descriptor {
 		}
 
 
-		public DownloadDescriptor build() {
+		public Builder setExtraInfo(Task.TaskExtraInfo info) {
+			descriptor.setTaskExtraInfo(info);
+			return this;
+		}
+
+
+		public DownloadTaskDescriptor build() {
 			return descriptor;
 		}
 	}

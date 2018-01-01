@@ -1,8 +1,7 @@
 package com.badsocket.core.downloader;
 
 
-import com.badsocket.core.TaskInfo;
-import com.badsocket.util.TimeUtils;
+import com.badsocket.util.DateUtils;
 
 import java.io.IOException;
 
@@ -32,8 +31,6 @@ public abstract class AbstractDownloader implements Downloader {
 
 	protected int downloadThreads = 1;
 
-	protected TaskInfo info;
-
 	protected String path = "";
 
 	protected OnDownloadFinishListener onDownloadFinishListener;
@@ -50,7 +47,7 @@ public abstract class AbstractDownloader implements Downloader {
 	 * @throws IOException
 	 */
 	public synchronized void start() throws Exception {
-		mStartTime = TimeUtils.millisTime();
+		mStartTime = DateUtils.millisTime();
 		mIsRunning = true;
 	}
 
@@ -149,11 +146,6 @@ public abstract class AbstractDownloader implements Downloader {
 
 	public int getDownloadThreads() {
 		return downloadThreads;
-	}
-
-
-	public TaskInfo getInfo() {
-		return info;
 	}
 
 

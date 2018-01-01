@@ -5,4 +5,7 @@ package com.badsocket.core.downloader.exception;
  */
 
 public class InvalidNetworkException extends DownloadException {
+	public InvalidNetworkException(String msg) {
+		super(msg);
+	}
 }
