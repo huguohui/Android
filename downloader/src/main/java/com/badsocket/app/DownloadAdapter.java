@@ -2,17 +2,18 @@ package com.badsocket.app;
 
 import android.os.Binder;
 
+import com.badsocket.core.Context;
+import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
+import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.Protocols;
-import com.badsocket.core.downloader.DownloadDescriptor;
+import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
-import com.badsocket.core.downloader.factory.HttpFamilyFactory;
-import com.badsocket.net.SocketComponentFactory;
+import com.badsocket.core.downloader.InternetDownloader;
+import com.badsocket.core.downloader.factory.HttpDownloadComponentFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,12 +27,23 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 	public DownloadAdapter(Downloader downloader) {
 		this.downloader = downloader;
-		addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
+		addProtocolHandler(Protocol.HTTP, new ProtocolHandler() {
 			@Override
-			public SocketComponentFactory socketFamilyFactory() {
-				return new HttpFamilyFactory();
+			public Protocol getProtocol() {
+				return Protocol.HTTP;
 			}
 
+
+			@Override
+			public DownloadComponentFactory downloadComponentFactory() {
+				return new HttpDownloadComponentFactory();
+			}
+
+
+			@Override
+			public boolean isSupport(Protocol protocol) {
+				return protocol.equals(Protocol.HTTP);
+			}
 		});
 	}
 
@@ -78,7 +90,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 	 * @param desc Descriptor.
 	 */
 	@Override
-	public DownloadTask newTask(final DownloadDescriptor desc) throws IOException {
+	public DownloadTask newTask(final DownloadTaskDescriptor desc) throws Exception {
 		return downloader.newTask(desc);
 	}
 
@@ -92,7 +104,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 	@Override
-	public void addTask(DownloadTask t) {
+	public void addTask(DownloadTask t) throws Exception {
 		downloader.addTask(t);
 	}
 
@@ -152,8 +164,14 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 	@Override
-	public void addProtocolHandler(Protocols ptl, ProtocolHandler ph) {
+	public void addProtocolHandler(Protocol ptl, ProtocolHandler ph) {
 		downloader.addProtocolHandler(ptl, ph);
+	}
+
+
+	@Override
+	public ProtocolHandler getProtocolHandler(Protocol ptl) {
+		return downloader.getProtocolHandler(ptl);
 	}
 
 
@@ -166,5 +184,23 @@ public class DownloadAdapter extends Binder implements Downloader {
 	@Override
 	public int getParallelTaskNum() {
 		return downloader.getParallelTaskNum();
+	}
+
+
+	@Override
+	public Context getDownloaderContext() {
+		return downloader.getDownloaderContext();
+	}
+
+
+	@Override
+	public InternetDownloader.ThreadAllocStategy getThreadAllocStategy() {
+		return downloader.getThreadAllocStategy();
+	}
+
+
+	@Override
+	public void setThreadAllocStategy(InternetDownloader.ThreadAllocStategy stategy) {
+		downloader.setThreadAllocStategy(stategy);
 	}
 }

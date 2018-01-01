@@ -18,9 +18,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.badsocket.R;
+import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.downloader.DownloadDescriptor;
+import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 	protected ListView listView;
 
 	protected Downloader downloader;
+
+	protected Context downloaderContext;
 
 	protected IBinder binder;
 
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 			isServiceConnected = true;
 			downloader = (Downloader) service;
 			downloader.addWatcher(watcher);
+			downloaderContext = downloader.getDownloaderContext();
 
 			try {
 				downloader.start();
@@ -104,14 +108,13 @@ public class MainActivity extends AppCompatActivity {
 
 		handler = new MessageHanlder();
 		adapter = new SimpleTaskListAdspter(this, tasks);
-		watcher = new DownloadTaskWatcher(handler);
+		watcher = new DownloadTaskListWatcher(handler);
 		listView.setAdapter(adapter);
     }
 
 
     public void onStart() {
 		super.onStart();
-		Log.error("ERROR", "OnStart");
 		startService();
 	}
 
@@ -139,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
 	public void onPause() {
 		super.onPause();
-		Log.error("ERROR", "OnPause");
 	}
 
 
@@ -157,7 +159,11 @@ public class MainActivity extends AppCompatActivity {
         switch(id) {
             case R.id.action_new_task:
                 final EditText ev = new EditText(this);
-                ev.setText("http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip");
+                ev.setText(
+					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" +
+					"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
+					"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"
+				);
 
                 new AlertDialog.Builder(this)
 						.setTitle("请输入")
@@ -171,15 +177,14 @@ public class MainActivity extends AppCompatActivity {
 								new Thread() {
 									public void run() {
 										try {
-											downloader.newTask(new DownloadDescriptor
+											downloader.newTask(new DownloadTaskDescriptor
 													.Builder()
 													.setAddress(new DownloadAddress(new URL(url)))
-													.setPath(savePath)
 													.build());
 										}
 										catch (Exception e) {
 											Looper.prepare();
-											showToast(Log.getStackTraceString(e));
+											showToast(Log.getStackTraceString(e), Toast.LENGTH_LONG);
 											Log.e(e);
 											looper.loop();
 										}
@@ -191,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 						.show();
                 break;
             default:
-                Log.error("ERROR", "你点击了" + item.getTitle() + "!");
+                Log.e("ERROR", "你点击了" + item.getTitle() + "!");
                 break;
         }
 
@@ -204,28 +209,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+	public void showToast(String msg, int duration) {
+		Toast.makeText(this, msg, duration).show();
+	}
+
+
     public void onRestart() {
 		super.onRestart();
-		Log.error("ERROR", "OnRestart");
 	}
 
 
     public void onStop() {
 		super.onStop();
-		Log.error("ERROR", "OnStop");
 	}
 
 
     public void onDestroy() {
 		super.onDestroy();
-		Log.error("ERROR", "OnDestory");
 		stopService();
 	}
 
 /*
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Log.error("back button", "back button");
+			Log.e("back button", "back button");
 			moveTaskToBack(false);
 			return false;
 		}

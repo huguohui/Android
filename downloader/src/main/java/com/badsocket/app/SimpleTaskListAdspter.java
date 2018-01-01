@@ -1,6 +1,9 @@
 package com.badsocket.app;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.badsocket.R;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.util.CalculationUtils;
+import com.badsocket.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -71,19 +75,21 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 					+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
 			progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");
 
-			int resourceId = R.drawable.stoped;
-			switch (task.getStatus().getCode()) {
-				case 0:
+			int resourceId = R.drawable.downloading;
+			switch (task.getState()) {
+				case DownloadTask.DownloadTaskState.RUNNING:
 					resourceId = R.drawable.downloading;
 					break;
 
-				case 1:
+				case DownloadTask.DownloadTaskState.PAUSED:
 					resourceId = R.drawable.paused;
 					break;
 
-				case 2:
+				case DownloadTask.DownloadTaskState.STOPED:
 					resourceId = R.drawable.stoped;
+					break;
 			}
+
 			controlButton.setBackgroundResource(resourceId);
 		}
 

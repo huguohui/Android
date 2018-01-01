@@ -13,11 +13,11 @@ import java.util.List;
  * Created by skyrim on 2017/10/15.
  */
 
-public class DownloadTaskWatcher implements MonitorWatcher {
+public class DownloadTaskListWatcher implements MonitorWatcher {
 
 	protected Handler handler;
 
-	public DownloadTaskWatcher(Handler handler) {
+	public DownloadTaskListWatcher(Handler handler) {
 		this.handler = handler;
 	}
 
