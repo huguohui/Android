@@ -64,7 +64,7 @@ public abstract class AbstractDownloader implements Downloader {
 	/**
 	 * Resumes task of downloading.
 	 */
-	public synchronized void resume() throws IOException {
+	public synchronized void resume() throws Exception {
 		mIsRunning = true;
 		mIsPaused = false;
 	}
@@ -73,7 +73,7 @@ public abstract class AbstractDownloader implements Downloader {
 	/**
 	 * Stops to downloading.
 	 */
-	public synchronized void stop() throws IOException {
+	public synchronized void stop() throws Exception {
 		mIsStoped = true;
 		mIsRunning = false;
 	}

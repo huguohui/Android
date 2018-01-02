@@ -134,6 +134,20 @@ public class MainActivity
 			case R.id.button_add:
 				showToast("你点击了？？？");
 				break;
+			case R.id.control_button:
+				DownloadTask task = (DownloadTask) v.getTag();
+				showToast( "button , " + task.getName() + " , " + task.getState());
+				downloaderContext.getThreadFactory().createThread(() -> {
+					try {
+						if (task.getState() == DownloadTask.DownloadTaskState.RUNNING)
+							downloader.pauseTask(task);
+						else
+							downloader.resumeTask(task);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}).start();
+				break;
 		}
 	}
 
@@ -205,9 +219,9 @@ public class MainActivity
             case R.id.action_new_task:
                 final EditText ev = new EditText(this);
                 ev.setText(
-					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" +
+					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" /*+
 					"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
-					"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"
+					"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
 				);
 
                 new AlertDialog.Builder(this)

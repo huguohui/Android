@@ -104,7 +104,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 
 
 	protected void afterSend() {
-		Log.d("Sent request data.");
+		Log.debug("Sent request data.");
 	}
 
 
@@ -156,7 +156,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		if (mOnResponseListener != null) {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}
-		Log.d("Response with header: \n" + mHttpResponse.getHeader().toString());
+		Log.debug("Response with header: \n" + mHttpResponse.getHeader().toString());
 	}
 	
 	
@@ -168,7 +168,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		setAddress(url);
 		setMethod(method == null ? Method.GET : method);
 		super.open(UrlUtils.socketAddressByUrl(((DownloadAddress) url).getUrl()));
-		Log.d("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
+		Log.debug("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
 	}
 	
 	
@@ -210,7 +210,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 	}
 
 
-	public Response response() throws IOException {
+	public synchronized Response response() throws IOException {
 		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
 	}
 

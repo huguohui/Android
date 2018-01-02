@@ -53,6 +53,9 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	DownloadSection[] getSections();
 
 
+	void setSections(DownloadSection[] sections);
+
+
 	void addOnDownloadTaskPauseListener(OnDownloadTaskPauseListener listener);
 
 
@@ -74,6 +77,36 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
 		public DownloadSection(int index) {
 			this.index = index;
+		}
+
+
+		public DownloadSection setIndex(int index) {
+			this.index = index;
+			return this;
+		}
+
+
+		public DownloadSection setOffsetBegin(long offsetBegin) {
+			this.offsetBegin = offsetBegin;
+			return this;
+		}
+
+
+		public DownloadSection setOffsetEnd(long offsetEnd) {
+			this.offsetEnd = offsetEnd;
+			return this;
+		}
+
+
+		public DownloadSection setLength(long length) {
+			this.length = length;
+			return this;
+		}
+
+
+		public DownloadSection setDownloadedLength(long downloadedLength) {
+			this.downloadedLength = downloadedLength;
+			return this;
 		}
 
 

@@ -30,6 +30,12 @@ public interface Receiver extends Stopable {
 	void receive(long len) throws IOException;
 
 
+	long dataOffsetBegin();
+
+
+	long dataOffsetEnd();
+
+
 	long getReceivedLength();
 
 

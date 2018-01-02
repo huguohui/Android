@@ -213,7 +213,19 @@ public class DefaultDownloadTaskManager
 	}
 
 
-	protected DownloadTask getTask(int i) {
+	@Override
+	public boolean hasTask(Task task) {
+		return mList.contains(task);
+	}
+
+
+	@Override
+	public boolean deleteTask(Task task) {
+		return mList.remove(task);
+	}
+
+
+	public DownloadTask getTask(int i) {
 		synchronized (mList) {
 			if (mList.isEmpty())
 				return null;
@@ -224,8 +236,25 @@ public class DefaultDownloadTaskManager
 
 
 	@Override
+	public DownloadTask getTaskById(int id) {
+		for (DownloadTask task : mList) {
+			if (task != null && task.getId() == id) {
+				return task;
+			}
+		}
+		return null;
+	}
+
+
+	@Override
 	public void start(int i) throws Exception {
 		startTask(getTask(i));
+	}
+
+
+	@Override
+	public void start(DownloadTask task) throws Exception {
+		startTask(task);
 	}
 
 
@@ -236,14 +265,32 @@ public class DefaultDownloadTaskManager
 
 
 	@Override
+	public void pause(DownloadTask task) throws Exception {
+		pauseTask(task);
+	}
+
+
+	@Override
 	public void resume(int i) throws Exception {
 		resumeTask(getTask(i));
 	}
 
 
 	@Override
+	public void resume(DownloadTask task) throws Exception {
+		resumeTask(task);
+	}
+
+
+	@Override
 	public void stop(int i) throws Exception {
 		stopTask(getTask(i));
+	}
+
+
+	@Override
+	public void stop(DownloadTask task) throws Exception {
+		stopTask(task);
 	}
 
 

@@ -9,6 +9,7 @@ import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
+import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
@@ -84,6 +85,12 @@ public class DownloadAdapter extends Binder implements Downloader {
 	}
 
 
+	@Override
+	public boolean isTaskExists(Task task) {
+		return downloader.isTaskExists(task);
+	}
+
+
 	/**
 	 * Create a new download task.
 	 *
@@ -101,6 +108,10 @@ public class DownloadAdapter extends Binder implements Downloader {
 	}
 
 
+	@Override
+	public DownloadTask findTaskByTaskId(int idx) {
+		return downloader.findTaskByTaskId(idx);
+	}
 
 
 	@Override
@@ -116,26 +127,56 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 	@Override
-	public void startTask(int id) {
+	public void deleteTask(DownloadTask task) {
+		downloader.deleteTask(task);
+	}
+
+
+	@Override
+	public void startTask(int id) throws Exception {
 		downloader.startTask(id);
 	}
 
 
 	@Override
-	public void stopTask(int id) {
+	public void startTask(DownloadTask task) throws Exception {
+		downloader.startTask(task);
+	}
+
+
+	@Override
+	public void stopTask(int id) throws Exception {
 		downloader.stopTask(id);
 	}
 
 
 	@Override
-	public void pauseTask(int id) {
+	public void stopTask(DownloadTask task) throws Exception {
+		downloader.stopTask(task);
+	}
+
+
+	@Override
+	public void pauseTask(int id) throws Exception {
 		downloader.pauseTask(id);
 	}
 
 
 	@Override
-	public void resumeTask(int id) {
+	public void pauseTask(DownloadTask task) throws Exception {
+		downloader.pauseTask(task);
+	}
+
+
+	@Override
+	public void resumeTask(int id) throws Exception {
 		downloader.resumeTask(id);
+	}
+
+
+	@Override
+	public void resumeTask(DownloadTask task) throws Exception {
+		downloader.resumeTask(task);
 	}
 
 

@@ -9,6 +9,7 @@ import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
+import com.badsocket.core.Task;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
@@ -107,6 +108,12 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
+	@Override
+	public boolean isTaskExists(Task task) {
+		return taskManager.hasTask(task);
+	}
+
+
 	public DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception {
 		String protocolName = desc.getAddress().getProtocol();
 		Protocol protocol = null;
@@ -123,9 +130,9 @@ public class InternetDownloader extends AbstractDownloader {
 		task = protocolHandler.downloadComponentFactory().creatDownloadTask(
 				this, desc, DownloadHelper.fetchResponseByDescriptor(this, desc, protocolHandler));
 		File downloadFile = new File(task.getDownloadPath(), task.getName());
-		if (downloadFile.exists()) {
-			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
-		}
+//		if (downloadFile.exists()) {
+//			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
+//		}
 
 		task.onCreate(desc.getTaskExtraInfo());
 		taskManager.add(task);
@@ -136,6 +143,32 @@ public class InternetDownloader extends AbstractDownloader {
 	@Override
 	public DownloadTask findTask(int id) {
 		return taskManager.get(id);
+	}
+
+
+	@Override
+	public DownloadTask findTaskByTaskId(int idx) {
+		return taskManager.getTaskById(idx);
+	}
+
+
+	public void start() throws Exception {
+		taskManager.startAll();
+	}
+
+
+	public void stop() throws Exception {
+		taskManager.startAll();
+	}
+
+
+	public void pause() throws Exception {
+		taskManager.pauseAll();
+	}
+
+
+	public void resume() throws Exception {
+		taskManager.resumeAll();
 	}
 
 
@@ -152,42 +185,56 @@ public class InternetDownloader extends AbstractDownloader {
 
 
 	@Override
-	public void startTask(int id) {
-		try {
-			taskManager.start(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void deleteTask(DownloadTask task) {
+		taskManager.deleteTask(task);
 	}
 
 
 	@Override
-	public void stopTask(int id) {
-		try {
-			taskManager.stop(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void startTask(int id) throws Exception {
+		taskManager.start(id);
 	}
 
 
 	@Override
-	public void pauseTask(int id) {
-		try {
-			taskManager.pause(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void startTask(DownloadTask task) throws Exception {
+		taskManager.start(task);
 	}
 
 
 	@Override
-	public void resumeTask(int id) {
-		try {
-			taskManager.resume(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void stopTask(int id) throws Exception {
+		taskManager.stop(id);
+	}
+
+
+	@Override
+	public void stopTask(DownloadTask task) throws Exception {
+		taskManager.stop(task);
+	}
+
+
+	@Override
+	public void pauseTask(int id) throws Exception {
+		taskManager.pause(id);
+	}
+
+
+	@Override
+	public void pauseTask(DownloadTask task) throws Exception {
+		taskManager.pause(task);
+	}
+
+
+	@Override
+	public void resumeTask(int id) throws Exception {
+		taskManager.resume(id);
+	}
+
+
+	@Override
+	public void resumeTask(DownloadTask task) throws Exception {
+		taskManager.resume(task);
 	}
 
 
@@ -212,43 +259,6 @@ public class InternetDownloader extends AbstractDownloader {
 	@Override
 	public Monitor getMonitor() {
 		return monitor;
-	}
-
-
-	public void start() {
-		try {
-			taskManager.startAll();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	public void stop() {
-		try {
-			taskManager.startAll();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	public void pause() {
-		try {
-			taskManager.pauseAll();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-	public void resume() {
-		try {
-			taskManager.resumeAll();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 

@@ -119,9 +119,14 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	protected abstract void fetchInfoFromResponse();
 
 
-	protected void prepare() throws IOException {
+	protected void prepare() throws Exception {
 		state = DownloadTaskState.PREPARING;
 		fetchInfo();
+	}
+
+
+	public void setSections(DownloadSection[] sections) {
+		this.downloadSections = sections;
 	}
 
 
@@ -181,7 +186,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
-	public void onStart() {
+	public void onStart() throws IOException {
 		isRunning = true;
 		state = DownloadTaskState.RUNNING;
 		startTime = DateUtils.millisTime();
@@ -216,8 +221,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	public void onResume() throws Exception {
 		state = DownloadTaskState.RUNNING;
 		if (onDownloadTaskResumeListeners != null) {
-			for (OnTaskFinishListener listener : onTaskFinishListeners) {
-				listener.onTaskFinish(this);
+			for (OnDownloadTaskResumeListener listener : onDownloadTaskResumeListeners) {
+				listener.onDownloadTaskResume(this);
 			}
 		}
 	}
@@ -310,6 +315,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public int getState() {
-		return DownloadTaskState.PAUSED;
+		return state;
 	}
 }

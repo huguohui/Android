@@ -59,31 +59,46 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		return hr;
 	}
 
+
 	@Override
-	public Request[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy) throws IOException {
-		int  num = task.getSections() != null && task.getSections().length != 0 ? task.getSections().length : stategy.alloc(task);
-		long length = task.getLength(), blockSize = length / num;
+	public Request[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy)
+			throws IOException {
+
+		DownloadTask.DownloadSection[] oldSections = task.getSections();
+		int  num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
+		long length = task.getLength(), blockSize = length / num, curBlockSize = 0;
+
 		Request[] requests = new Request[num];
-		DownloadTask.DownloadSection[] sections = task.getSections();
 		DownloadTask.DownloadSection section = null;
+		DownloadTask.DownloadSection[] sections = new DownloadTask.DownloadSection[num];
 
 		for (int j = 0; j < num; j++) {
-			if (sections != null && sections.length - 1 >= j) {
-				section = sections[j];
-			}
-
-			if (section != null) {
-				if (section.getDownloadedLength() != section.getLength()) {
-					requests[j] = createRequest(task,
-							new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
-									section.getLength() - section.getDownloadedLength()));
+			if (oldSections != null) {
+				if (oldSections.length - 1 >= j) {
+					section = oldSections[j];
 				}
 
-				continue;
+				if (section != null) {
+					if (section.getDownloadedLength() != section.getLength()) {
+						requests[j] = createRequest(task,
+								new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
+										section.getLength() - section.getDownloadedLength()));
+					}
+				}
 			}
+			else {
+				curBlockSize = num > -~j ? blockSize : length - blockSize * -~j;
+				requests[j] = createRequest(task, new HttpRequest.Range(j * blockSize,
+						num > -~j ? blockSize * -~j : length));
+				sections[j] = new DownloadTask.DownloadSection(j)
+						.setLength(curBlockSize)
+						.setOffsetEnd(j * blockSize)
+						.setOffsetEnd(j * blockSize + curBlockSize);
+			}
+		}
 
-			requests[j] = createRequest(task, new HttpRequest.Range(j * blockSize,
-					num > -~j ? blockSize * -~j : length));
+		if (oldSections == null) {
+			task.setSections(sections);
 		}
 
 		return requests;

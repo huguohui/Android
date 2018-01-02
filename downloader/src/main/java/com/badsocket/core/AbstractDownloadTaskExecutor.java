@@ -43,9 +43,9 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	@Override
 	public Future<Task> execute(Task task, long delay) throws Exception {
 		DownloadTask dt = (DownloadTask) task;
-		dt.onStart();
 		Future<Task> future = super.schedule((Callable<Task>) task, delay, TimeUnit.MILLISECONDS);
 		futureMap.put(task, future);
+		dt.onStart();
 		return future;
 	}
 
@@ -53,15 +53,15 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	@Override
 	public void execute(Task task, long delay, long interval) throws Exception {
 		DownloadTask dt = (DownloadTask) task;
-		dt.onStart();
 		super.scheduleWithFixedDelay(task, delay, interval, TimeUnit.MILLISECONDS);
+		dt.onStart();
 	}
 
 
 	@Override
 	public boolean isDone(Task t) {
 		Future<Task> future = futureMap.get(t);
-		return future != null && future.isDone();
+		return future.isDone();
 	}
 
 
@@ -91,9 +91,9 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	@Override
 	public void resume(Task t) throws Exception {
 		DownloadTask task = (DownloadTask) t;
-		task.onResume();
 		Future<Task> future = futureMap.get(t);
 		future.cancel(false);
+		task.onResume();
 	}
 
 	@Override

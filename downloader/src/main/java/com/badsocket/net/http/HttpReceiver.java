@@ -35,7 +35,6 @@ public class HttpReceiver extends AbstractReceiver {
 
 	protected ConcurrentWriter fileWriter;
 
-	protected long offsetDataBegin = -1;
 
 
 	public HttpReceiver(BaseHttpRequest d, Writer w) throws IOException {
@@ -44,7 +43,8 @@ public class HttpReceiver extends AbstractReceiver {
 		httpResponse = (HttpResponse) d.response();
 		isChunked = httpResponse.isChunked();
 		mSizeWillReceive = isChunked ? -1 : httpResponse.getContentLength();
-		this.offsetDataBegin = d.getRange() != null ? d.getRange().start : 0;
+		dataOffsetBegin = d.getRange() != null ? d.getRange().start : 0;
+		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange();
 	}
 
 
@@ -113,10 +113,11 @@ public class HttpReceiver extends AbstractReceiver {
 
 
 	protected void writeData(byte[] data) throws IOException {
-		if (data == null) return;
-		if (offsetDataBegin != -1) {
-			fileWriter.write(offsetDataBegin, mReceivedLength - data.length, data);
-			//Log.println(offsetDataBegin + " , " + mReceivedLength);
+		if (data == null) {
+			return;
+		}
+		if (dataOffsetBegin != -1) {
+			fileWriter.write(dataOffsetBegin, mReceivedLength - data.length, data);
 			return;
 		}
 
@@ -152,13 +153,13 @@ public class HttpReceiver extends AbstractReceiver {
 	}
 
 
-	public synchronized void receive(long size) throws IOException {
+	public void receive(long size) throws IOException {
 		mSizeWillReceive = size > 0 ? size : mSizeWillReceive;
 		receiveData();
 	}
 
 
-	public synchronized void receive() throws IOException {
+	public void receive() throws IOException {
 		receive(-1);
 	}
 

@@ -8,14 +8,19 @@ import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
+import com.badsocket.core.Task;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * @since 2017/10/5 11:03.
  */
 public interface Downloader extends Controlable {
+
+
+	boolean isTaskExists(Task task);
+
+
 	/**
 	 * Create a new download task.
 	 * @param desc Descriptor.
@@ -23,7 +28,10 @@ public interface Downloader extends Controlable {
 	DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception;
 
 
-	DownloadTask findTask(int id);
+	DownloadTask findTask(int idx);
+
+
+	DownloadTask findTaskByTaskId(int idx);
 
 
 	void addTask(DownloadTask t) throws Exception;
@@ -32,16 +40,31 @@ public interface Downloader extends Controlable {
 	void deleteTask(int id);
 
 
-	void startTask(int id);
+	void deleteTask(DownloadTask task);
 
 
-	void stopTask(int id);
+	void startTask(int id) throws Exception;
 
 
-	void pauseTask(int id);
+	void startTask(DownloadTask task) throws Exception;
 
 
-	void resumeTask(int id);
+	void stopTask(int id) throws Exception;
+
+
+	void stopTask(DownloadTask task) throws Exception;
+
+
+	void pauseTask(int id) throws Exception;
+
+
+	void pauseTask(DownloadTask task) throws Exception;
+
+
+	void resumeTask(int id) throws Exception;
+
+
+	void resumeTask(DownloadTask task) throws Exception;
 
 
 	List<DownloadTask> taskList();

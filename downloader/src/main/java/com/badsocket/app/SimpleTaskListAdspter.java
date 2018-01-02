@@ -1,9 +1,6 @@
 package com.badsocket.app;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,6 @@ import android.widget.TextView;
 import com.badsocket.R;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.util.CalculationUtils;
-import com.badsocket.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -91,6 +87,8 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 			}
 
 			controlButton.setBackgroundResource(resourceId);
+			controlButton.setTag(task);
+			controlButton.setOnClickListener((View.OnClickListener) context);
 		}
 
 		return cv;

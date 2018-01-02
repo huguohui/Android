@@ -3,14 +3,11 @@ package com.badsocket;
 
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.ProtocolHandler;
-import com.badsocket.core.Protocol;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.net.DownloadAddress;
-import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.worker.AbstractWorker;
 
@@ -37,7 +34,37 @@ public class Test {
 
 
 	public static void main(String[] args) throws Exception {
-//		new Test().test2();
+		int i = 0;
+		System.out.println(i += 10);
+//		new Test().lockTest();
+	}
+
+
+	class A {
+		int val = 0;
+	}
+
+
+	void lockTest() {
+		final A a = new A();
+		new Thread(() -> {
+			synchronized (a) {
+				a.val = 100;
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println(Thread.currentThread().getName() + "," + a.val);
+			}
+		}).start();
+
+		new Thread(() -> {
+			synchronized (a) {
+				a.val = 200;
+				System.out.println(Thread.currentThread().getName() + "," + a.val);
+			}
+		}).start();
 	}
 
 

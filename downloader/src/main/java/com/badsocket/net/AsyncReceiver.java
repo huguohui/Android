@@ -42,7 +42,7 @@ public class AsyncReceiver
 	 * stop the object of managment.
 	 */
 	@Override
-	public synchronized void stop() {
+	public void stop() {
 		receiver.stop();
 	}
 
@@ -58,7 +58,7 @@ public class AsyncReceiver
 	}
 
 
-	public synchronized long getReceivedLength() {
+	public long getReceivedLength() {
 		return receiver.getReceivedLength();
 	}
 

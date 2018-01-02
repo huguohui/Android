@@ -33,6 +33,10 @@ public abstract class AbstractReceiver implements Receiver {
 	/** Size for next downloading. */
 	protected long mSizeWillReceive = 0;
 
+	protected long dataOffsetBegin;
+
+	protected long dataOffsetEnd;
+
 	protected OnFinishedListener onFinishedListener;
 
 	protected OnStopListener onStopListener;
@@ -106,7 +110,6 @@ public abstract class AbstractReceiver implements Receiver {
 	protected void finishReceive() throws IOException {
 		isFinished = !isStop;
 		invokeListener();
-		mInputStream.close();
 		Log.debug("Finish received length " + mReceivedLength + "of data.");
 	}
 
@@ -122,7 +125,7 @@ public abstract class AbstractReceiver implements Receiver {
 		byte[] chunk = new byte[size], buff;
 		int count = 0, read = 0, freeLoop = 0;
 
-		while(count < size) {
+		while(!isStop && count < size) {
 			checkAvaliable(mInputStream);
 			if (null == (buff = receiveFromStream(mInputStream,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
@@ -150,14 +153,28 @@ public abstract class AbstractReceiver implements Receiver {
 	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
 		int read = 0;
 		byte[] buff = new byte[size];
-		if (END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
-			return null;
+		synchronized (this) {
+			if (isStop || END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
+				return null;
+			}
 		}
 
 		buff = Arrays.copyOf(buff, read);
 		onReceive(buff);
 
 		return buff;
+	}
+
+
+	@Override
+	public long dataOffsetBegin() {
+		return dataOffsetBegin;
+	}
+
+
+	@Override
+	public long dataOffsetEnd() {
+		return dataOffsetEnd;
 	}
 
 
@@ -188,7 +205,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 * stop the object of managment.
 	 */
 	@Override
-	public synchronized void stop() {
+	public void stop() {
 		isStop = true;
 	}
 
