@@ -30,7 +30,9 @@ public class ReceiverGroup {
 
 	public void addReceivers(Receiver[] rs) {
 		for (int i = 0; i < rs.length; i++) {
-			receivers.add(rs[i]);
+			if (rs[i] != null) {
+				receivers.add(rs[i]);
+			}
 		}
 	}
 
@@ -72,7 +74,7 @@ public class ReceiverGroup {
 
 	public void stopAll() throws IOException {
 		for (Receiver r : receivers) {
-			if (!r.isStoped()) {
+			if (r != null && !r.isStoped()) {
 				r.stop();
 			}
 		}
@@ -82,7 +84,7 @@ public class ReceiverGroup {
 	public int activeCount() {
 		int activeCount = receivers.size();
 		for (Receiver r : receivers) {
-			if (r.isStoped()) {
+			if (r != null && r.isStoped()) {
 				--activeCount;
 			}
 		}
@@ -93,7 +95,7 @@ public class ReceiverGroup {
 	public long getTotalReceivedLength() {
 		long length = 0;
 		for (Receiver r : receivers) {
-			if (r != null) {
+			if (r != null && r != null) {
 				length += r.getReceivedLength();
 			}
 		}

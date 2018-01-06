@@ -15,4 +15,7 @@ public interface DownloadTaskExecutor extends TaskExecutor {
 
 	void stop(Task t) throws Exception;
 
+
+
+
 }

@@ -45,11 +45,23 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
 
 	protected void doMonitor() {
-		localObj.set(monitored);
+		Object obj = null;
+		if ((obj = localObj.get()) == null) {
+			localObj.set(monitored);
+		}
+
 		for (int i = 0; i < watchers.size(); i++) {
-			watchers.get(i).watch(localObj.get());
+			invokeWatcher(watchers.get(i), obj == null ? localObj.get() : obj);
 		}
 	}
+
+
+	protected void invokeWatcher(MonitorWatcher w, Object o) {
+		if (w != null) {
+			w.watch(o);
+		}
+	}
+
 
 	/**
 	 * The action to be performed by this timer task.

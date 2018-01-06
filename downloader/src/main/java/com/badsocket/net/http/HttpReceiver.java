@@ -44,7 +44,7 @@ public class HttpReceiver extends AbstractReceiver {
 		isChunked = httpResponse.isChunked();
 		mSizeWillReceive = isChunked ? -1 : httpResponse.getContentLength();
 		dataOffsetBegin = d.getRange() != null ? d.getRange().start : 0;
-		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange();
+		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange() + 1;
 	}
 
 
@@ -56,7 +56,7 @@ public class HttpReceiver extends AbstractReceiver {
 		if (size < 0) {
 			while(!isStop && mCurrentChunkedSize > 0
 					|| (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
-				receiveDataBySize(mCurrentChunkedSize);
+				receiveAndWrite(mCurrentChunkedSize);
 				mCurrentChunkedSize = 0;
 			}
 
@@ -71,7 +71,7 @@ public class HttpReceiver extends AbstractReceiver {
 				}
 
 				long willToReceiving = mCurrentChunkedSize;
-				receiveDataBySize(willToReceiving);
+				receiveAndWrite(willToReceiving);
 				mCurrentChunkedSize = 0 ;
 			}
 		}
@@ -125,6 +125,11 @@ public class HttpReceiver extends AbstractReceiver {
 	}
 
 
+	protected void flushWriter() throws IOException {
+		fileWriter.flushBuffer(dataOffsetBegin);
+	}
+
+
 	/**
 	 * To downloading data from source, and save data to somewhere.
 	 * @param size Size of will downloading.
@@ -145,17 +150,9 @@ public class HttpReceiver extends AbstractReceiver {
 	}
 
 
-	/**
-	 * To downloading data from source, and save data to somewhere.
-	 */
-	protected void receiveData() throws IOException {
-		receiveData(mSizeWillReceive);
-	}
-
-
 	public void receive(long size) throws IOException {
 		mSizeWillReceive = size > 0 ? size : mSizeWillReceive;
-		receiveData();
+		receiveData(mSizeWillReceive);
 	}
 
 
@@ -169,7 +166,7 @@ public class HttpReceiver extends AbstractReceiver {
 	}
 
 
-	public synchronized void stop()  {
+	public void stop()  {
 		isStop = true;
 	}
 

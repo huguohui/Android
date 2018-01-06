@@ -105,10 +105,13 @@ public class HttpResponse extends Response {
 		HttpHeader header = (HttpHeader) this.header;
 		if ((disp = header.get(Http.CONTENT_DISPOSITION)) != null && disp.trim().length() != 0) {
 			if (disp.contains(";")) {
-				arr = disp.split(";");
+				arr = disp.trim().split(";");
 				mContentType = arr[0];
 				if ((off = arr[1].indexOf("filename")) != -1) {
 					mFileName = UrlUtils.decode(arr[1].substring(off + 9), "UTF-8");
+					if (mFileName.startsWith("\"") && mFileName.endsWith("\"")) {
+						mFileName = mFileName.substring(1, mFileName.length() - 1);
+					}
 				}
 			}
 		} else {

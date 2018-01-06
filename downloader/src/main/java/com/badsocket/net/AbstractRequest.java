@@ -23,7 +23,7 @@ public abstract class AbstractRequest implements Request {
     protected Socket mSocket;
 
     /** The connection timeout. (ms) */
-    protected int mTimeout = 200000;
+    protected int mTimeout = 20000000;
 
 	/** The connection used time. */
 	protected long mConnectionTime;

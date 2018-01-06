@@ -1,6 +1,5 @@
 package com.badsocket.core.downloader.factory;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.HttpDownloadTask;
@@ -16,6 +15,7 @@ import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.http.HttpRequest;
+import com.badsocket.util.Log;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -63,10 +63,10 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 	@Override
 	public Request[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy)
 			throws IOException {
-
 		DownloadTask.DownloadSection[] oldSections = task.getSections();
 		int  num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
-		long length = task.getLength(), blockSize = length / num, curBlockSize = 0;
+		long length = task.getLength(), blockSize = length / num,
+				curBlockSize = 0, offsetBegin = 0, offsetEnd = 0;
 
 		Request[] requests = new Request[num];
 		DownloadTask.DownloadSection section = null;
@@ -79,21 +79,23 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 				}
 
 				if (section != null) {
+					Log.debug(section.toString());
 					if (section.getDownloadedLength() != section.getLength()) {
 						requests[j] = createRequest(task,
 								new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
-										section.getLength() - section.getDownloadedLength()));
+										section.getOffsetBegin() + section.getLength()));
 					}
 				}
 			}
 			else {
-				curBlockSize = num > -~j ? blockSize : length - blockSize * -~j;
-				requests[j] = createRequest(task, new HttpRequest.Range(j * blockSize,
-						num > -~j ? blockSize * -~j : length));
+				offsetBegin = j * blockSize;
+				offsetEnd = num > -~j ? blockSize * -~j : length;
+				curBlockSize = offsetEnd - offsetBegin;
+				requests[j] = createRequest(task, new HttpRequest.Range(offsetBegin, offsetEnd));
 				sections[j] = new DownloadTask.DownloadSection(j)
 						.setLength(curBlockSize)
-						.setOffsetEnd(j * blockSize)
-						.setOffsetEnd(j * blockSize + curBlockSize);
+						.setOffsetBegin(offsetBegin)
+						.setOffsetEnd(offsetEnd);
 			}
 		}
 
@@ -110,6 +112,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
+		Log.debug(r.toString());
 		return hr;
 	}
 

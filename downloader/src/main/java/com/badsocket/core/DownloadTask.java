@@ -134,12 +134,19 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 			return index;
 		}
 
+
+		public String toString() {
+			return String.format("[%d, %d, %d, %d]#%d", offsetBegin, offsetEnd, downloadedLength, length, index);
+		}
+
 	}
 
 
 	interface DownloadTaskState extends TaskState {
 		int PAUSED = 4,
-			PREPARING = 5;
+			PREPARING = 5,
+			WAITING = 6,
+			RESUMING = 7;
 	}
 
 

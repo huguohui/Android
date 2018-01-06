@@ -72,7 +72,7 @@ public class DefaultDownloadTaskManager
 
 	protected List<DownloadTask> getRunnableTask() {
 		return CollectionUtils.filter(mList, (o) -> {
-			return true;
+			return o.getState() == DownloadTask.DownloadTaskState.UNSTART;
 		});
 	}
 
@@ -91,7 +91,7 @@ public class DefaultDownloadTaskManager
 
 
 	protected void executeTask(DownloadTask task) throws Exception {
-		taskExecutor.execute(task);
+		taskExecutor.start(task);
 	}
 
 
@@ -297,13 +297,12 @@ public class DefaultDownloadTaskManager
 	public void onTaskFinish(Task t)  {
 		synchronized (mList) {
 			mList.remove(t);
+			taskExecutor.remove(t);
 			runningTaskNum--;
 		}
-
 		synchronized (finishedTasks) {
 			finishedTasks.add((DownloadTask) t);
 		}
-
 		try {
 			startRemainTask();
 		}

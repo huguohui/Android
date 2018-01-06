@@ -123,6 +123,19 @@ public class MainActivity
     }
 
 
+    void toggleTaskState(final DownloadTask task) {
+		downloaderContext.getThreadFactory().createThread(() -> {
+			try {
+				if (task.getState() == DownloadTask.DownloadTaskState.RUNNING)
+					downloader.pauseTask(task);
+				else
+					downloader.resumeTask(task);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+
 	/**
 	 * Called when a view has been clicked.
 	 *
@@ -136,17 +149,7 @@ public class MainActivity
 				break;
 			case R.id.control_button:
 				DownloadTask task = (DownloadTask) v.getTag();
-				showToast( "button , " + task.getName() + " , " + task.getState());
-				downloaderContext.getThreadFactory().createThread(() -> {
-					try {
-						if (task.getState() == DownloadTask.DownloadTaskState.RUNNING)
-							downloader.pauseTask(task);
-						else
-							downloader.resumeTask(task);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}).start();
+				toggleTaskState(task);
 				break;
 		}
 	}
@@ -167,7 +170,7 @@ public class MainActivity
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		showToast(view.getClass().getCanonicalName() + "," + position + "," + id);
+		toggleTaskState(tasks.get(position));
 	}
 
 

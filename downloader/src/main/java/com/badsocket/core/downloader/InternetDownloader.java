@@ -63,15 +63,13 @@ public class InternetDownloader extends AbstractDownloader {
 
 	protected String defaultDownloadPath;
 
-
-	protected ThreadAllocStategy stategy = (info) -> {
-		long len = Math.max(info.getLength(), 1);
+	protected ThreadAllocStategy stategy = (task) -> {
+		long len = Math.max(task.getLength(), 1);
 		int num = 3;
 
 		if (len < 3) {
 			num = 1;
 		}
-
 		if (len > 1024 * 1024 * 1) {
 			num = 10;
 		}
@@ -79,7 +77,7 @@ public class InternetDownloader extends AbstractDownloader {
 		return num;
 	};
 
-	protected Monitor monitor = new DownloadMonitor(1000);
+	protected Monitor monitor;
 
 
 	public InternetDownloader(Context context) {
@@ -97,6 +95,7 @@ public class InternetDownloader extends AbstractDownloader {
 		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
+		monitor = new DownloadMonitor(this, 1000);
 		monitor.monitor(this);
 		taskManager.setAutoStart(true);
 		monitor.addWatcher(new DownloaderWatcher());

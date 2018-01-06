@@ -12,9 +12,7 @@ import java.util.concurrent.Callable;
  * Created by skyrim on 2017/10/6.
  */
 
-public class AsyncReceiver
-		extends AbstractReceiver
-		implements Callable<Long>
+public class AsyncReceiver implements Receiver, Callable<Long>
 {
 
 	protected AbstractReceiver receiver;
@@ -35,6 +33,24 @@ public class AsyncReceiver
 
 	public void receive(long size) {
 		this.size = size;
+	}
+
+
+	@Override
+	public long dataOffsetBegin() {
+		return receiver.dataOffsetBegin();
+	}
+
+
+	@Override
+	public long dataOffsetEnd() {
+		return receiver.dataOffsetEnd();
+	}
+
+
+	@Override
+	public long getCurrentReceivedLength() {
+		return receiver.getCurrentReceivedLength();
 	}
 
 
@@ -78,7 +94,7 @@ public class AsyncReceiver
 	}
 
 
-	public AbstractReceiver setFileWriter(Writer fileWriter) {
+	public AsyncReceiver setFileWriter(Writer fileWriter) {
 		receiver.setFileWriter(fileWriter);
 		return this;
 	}
@@ -94,7 +110,7 @@ public class AsyncReceiver
 	}
 
 
-	public AbstractReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+	public AsyncReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		receiver.setOnReceiveListener(onReceiveListener);
 		return this;
 	}

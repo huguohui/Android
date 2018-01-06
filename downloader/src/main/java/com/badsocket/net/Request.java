@@ -80,7 +80,7 @@ public interface Request extends Closeable {
 		public long end;
 
 		public Range(long s, long e) {
-			if (e > 0 && s > e || e == 0)
+			if (e == 0 || s > e)
 				throw new IllegalArgumentException("The end must >= start and end must != 0!");
 
 			this.start = s;

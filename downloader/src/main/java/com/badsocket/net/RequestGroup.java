@@ -29,7 +29,9 @@ public class RequestGroup {
 
 	public void addRequests(Request[] rs) {
 		for (int i = 0; i < rs.length; i++) {
-			requests.add(rs[i]);
+			if (rs[i] != null) {
+				requests.add(rs[i]);
+			}
 		}
 	}
 
@@ -56,7 +58,7 @@ public class RequestGroup {
 
 	public void openRequests() throws IOException {
 		for (Request r : requests) {
-			if (!r.connected()) {
+			if (r != null && !r.connected()) {
 				r.open();
 			}
 		}
@@ -65,7 +67,7 @@ public class RequestGroup {
 
 	public void sendRequests() throws IOException {
 		for (Request r : requests) {
-			if (!r.sent()) {
+			if (r != null && !r.sent()) {
 				r.send();
 			}
 		}
@@ -75,7 +77,7 @@ public class RequestGroup {
 	public Response[] getResponses() throws IOException {
 		List<Response> list = new ArrayList<>();
 		for (Request r : requests) {
-			if (!r.closed()) {
+			if (r != null && !r.closed()) {
 				list.add(r.response());
 			}
 		}
@@ -87,7 +89,7 @@ public class RequestGroup {
 	public int activeCount() {
 		int activeCount = requests.size();
 		for (Request r : requests) {
-			if (r.closed()) {
+			if (r != null && r.closed()) {
 				--activeCount;
 			}
 		}
@@ -97,7 +99,7 @@ public class RequestGroup {
 
 	public void closeAll() throws IOException {
 		for (Request r : requests) {
-			if (!r.closed()) {
+			if (r != null && !r.closed()) {
 				r.close();
 			}
 		}

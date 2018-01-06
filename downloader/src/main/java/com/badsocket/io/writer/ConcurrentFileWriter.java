@@ -112,16 +112,29 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 	}
 
 
-	public void flush() throws IOException {
+	public void flushBuffer(Long begin) throws IOException {
+		DataBuffer db = dataBuffers.get(begin);
+		if (db.surplusData != null) {
+			db.save(null);
+		}
+		if (db.bufferSize != 0) {
+			writeToFile(db);
+		}
+	}
+
+
+	public synchronized void flush() throws IOException {
 		Set<Map.Entry<Long, DataBuffer>> es = dataBuffers.entrySet();
-		for (Iterator<Map.Entry<Long, DataBuffer>> it = es.iterator(); it.hasNext(); ) {
+		Iterator<Map.Entry<Long, DataBuffer>> it = es.iterator();
+		while(it.hasNext()) {
 			Map.Entry<Long, DataBuffer> map = it.next();
 			DataBuffer dl = map.getValue();
-			if (dl.surplusData != null)
+			if (dl.surplusData != null) {
 				dl.save(null);
-
-			if (dl.bufferSize != 0)
+			}
+			if (dl.bufferSize != 0) {
 				writeToFile(dl);
+			}
 		}
 	}
 

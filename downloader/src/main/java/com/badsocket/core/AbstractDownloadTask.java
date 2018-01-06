@@ -24,9 +24,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected int speedRealTime;
 
-	protected DownloadAddress downloadAddress;
-
-	protected long length;
+	protected long length = 0;
 
 	protected long downloadedLength;
 
@@ -38,25 +36,27 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected boolean isPaused;
 
-	protected DownloadSection[] downloadSections;
-
-	protected transient Context context;
-
-	protected transient Downloader downloader;
-
 	protected int maxThreads;
 
 	protected int priority;
 
-	protected TaskExtraInfo extraInfo;
-
-	protected transient Response response;
-
 	protected int state = TaskState.UNSTART;
 
-	protected transient DownloadTaskDescriptor taskDescriptor;
+	protected TaskExtraInfo extraInfo;
 
-	protected transient FileWriter fileWriter;
+	protected DownloadAddress downloadAddress;
+
+	protected DownloadSection[] downloadSections;
+
+	transient protected Context context;
+
+	transient protected Downloader downloader;
+
+	transient protected Response response;
+
+	transient protected DownloadTaskDescriptor taskDescriptor;
+
+	transient protected FileWriter fileWriter;
 
 	transient protected List<OnTaskCreateListener> onTaskCreateListeners = new ArrayList<>();
 
@@ -69,6 +69,10 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	transient protected List<OnDownloadTaskPauseListener> onDownloadTaskPauseListeners = new ArrayList<>();
 
 	transient protected List<OnDownloadTaskResumeListener> onDownloadTaskResumeListeners = new ArrayList<>();
+
+	transient final protected String[] LISTENER_TYPES = {
+			"START", "PAUSE", "RESUME", "STOP", "FINISH"
+	};
 
 
 	public AbstractDownloadTask(Downloader c, DownloadAddress url) {
@@ -125,6 +129,61 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
+	protected List<?> getListeners(Class listenerType) {
+		List<?> listeners = null;
+		if (listenerType.equals(OnTaskStartListener.class)) {
+			listeners = onTaskStartListeners;
+		}
+		else if (listenerType.equals(OnDownloadTaskPauseListener.class)) {
+			listeners = onDownloadTaskPauseListeners;
+		}
+		else if (listenerType.equals(OnTaskStopListener.class)) {
+			listeners = onTaskStopListeners;
+		}
+		else if (listenerType.equals(OnDownloadTaskResumeListener.class)) {
+			listeners = onDownloadTaskResumeListeners;
+		}
+		else if (listenerType.equals(OnTaskFinishListener.class)) {
+			listeners = onTaskFinishListeners;
+		}
+		else if (listenerType.equals(OnTaskCreateListener.class)) {
+			listeners = onTaskCreateListeners;
+		}
+
+		return listeners;
+	}
+
+
+	protected void notifyListeners(Class listenerType) {
+		List<?> listeners = getListeners(listenerType);
+		if (listeners != null) {
+			for (Object obj : listeners) {
+				if (obj == null) {
+					continue;
+				}
+				if (OnTaskStartListener.class.equals(listenerType)) {
+					((OnTaskStartListener) obj).onTaskStart(this);
+				}
+				else if (OnTaskStopListener.class.equals(listenerType)){
+					((OnTaskStopListener) obj).onTaskStop(this);
+				}
+				else if (OnDownloadTaskResumeListener.class.equals(listenerType)){
+					((OnDownloadTaskResumeListener) obj).onDownloadTaskResume(this);
+				}
+				else if (OnDownloadTaskPauseListener.class.equals(listenerType)){
+					((OnDownloadTaskPauseListener) obj).onDownloadTaskPause(this);
+				}
+				else if (OnTaskFinishListener.class.equals(listenerType)){
+					((OnTaskFinishListener) obj).onTaskFinish(this);
+				}
+				else if (OnTaskCreateListener.class.equals(listenerType)) {
+					((OnTaskCreateListener) obj).onTaskCreate(this);
+				}
+			}
+		}
+	}
+
+
 	public void setSections(DownloadSection[] sections) {
 		this.downloadSections = sections;
 	}
@@ -166,23 +225,15 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
-	public void onFinish() {
+	protected void onTaskFinish() {
 		state = DownloadTaskState.FINISHED;
-		if (onTaskFinishListeners != null) {
-			for (OnTaskFinishListener listener : onTaskFinishListeners) {
-				listener.onTaskFinish(this);
-			}
-		}
+		notifyListeners(OnTaskFinishListener.class);
 	}
 
 
 	public void onCreate(TaskExtraInfo info) throws Exception {
 		state = DownloadTaskState.PREPARING;
-		if (onTaskCreateListeners != null) {
-			for (OnTaskCreateListener listener : onTaskCreateListeners) {
-				listener.onTaskCreate(this);
-			}
-		}
+		notifyListeners(OnTaskCreateListener.class);
 	}
 
 
@@ -190,41 +241,25 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		isRunning = true;
 		state = DownloadTaskState.RUNNING;
 		startTime = DateUtils.millisTime();
-		if (onTaskStartListeners != null) {
-			for (OnTaskStartListener listener : onTaskStartListeners) {
-				listener.onTaskStart(this);
-			}
-		}
+		notifyListeners(OnTaskStartListener.class);
 	}
 
 
 	public void onStop() throws Exception {
 		state = DownloadTaskState.STOPED;
-		if (onTaskStopListeners != null) {
-			for (OnTaskStopListener listener : onTaskStopListeners) {
-				listener.onTaskStop(this);
-			}
-		}
+		notifyListeners(OnTaskStopListener.class);
 	}
 
 
 	public void onPause() throws Exception {
 		state = DownloadTaskState.PAUSED;
-		if (onDownloadTaskPauseListeners != null) {
-			for (OnDownloadTaskPauseListener listener : onDownloadTaskPauseListeners) {
-				listener.onDownloadTaskPause(this);
-			}
-		}
+		notifyListeners(OnDownloadTaskPauseListener.class);
 	}
 
 
 	public void onResume() throws Exception {
 		state = DownloadTaskState.RUNNING;
-		if (onDownloadTaskResumeListeners != null) {
-			for (OnDownloadTaskResumeListener listener : onDownloadTaskResumeListeners) {
-				listener.onDownloadTaskResume(this);
-			}
-		}
+		notifyListeners(OnDownloadTaskResumeListener.class);
 	}
 
 

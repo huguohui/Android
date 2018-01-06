@@ -33,6 +33,8 @@ public abstract class AbstractReceiver implements Receiver {
 	/** Size for next downloading. */
 	protected long mSizeWillReceive = 0;
 
+	protected long lastReceivedLength = 0;
+
 	protected long dataOffsetBegin;
 
 	protected long dataOffsetEnd;
@@ -43,7 +45,7 @@ public abstract class AbstractReceiver implements Receiver {
 
 	protected OnReceiveListener onReceiveListener;
 
-	
+
 	/**
 	 * Construct a downloader by requester.
 	 * @param is A {@link AbstractRequest}.
@@ -59,66 +61,10 @@ public abstract class AbstractReceiver implements Receiver {
 
 
 	/**
-	 * Receiving data.
-	 *
-	 * @return Received data by byte.
-	 * @throws IOException      When I/O exception.
-	 * @throws ConnectException When connection exception.
-	 */
-	@Override
-	public void receive() throws IOException {
-		Log.debug("Start receive data...");
-		byte[] data = null;
-		while(!isStop && null != (data = receiveBySize(BUFFER_SIZE))) {
-			writeData(data);
-		}
-
-		finishReceive();
-	}
-
-
-	/**
-	 * To downloading data from source, and save data to somewhere.
-	 *
-	 * @param size
-	 */
-	@Override
-	public void receive(long size) throws IOException {
-		receiveDataBySize(size);
-		finishReceive();
-	}
-
-
-	protected void invokeListener() {
-		if (!isStop && isFinished && onFinishedListener != null) {
-			if (mSizeWillReceive < 0 || mSizeWillReceive == mReceivedLength) {
-				onFinishedListener.onFinished(this);
-			}
-		}
-
-		if (isStop && onStopListener != null) {
-			onStopListener.onStop(this);
-		}
-	}
-
-
-	protected void writeData(byte[] data) throws IOException {
-		mFileWriter.write(mReceivedLength - data.length, data);
-	}
-
-
-	protected void finishReceive() throws IOException {
-		isFinished = !isStop;
-		invokeListener();
-		Log.debug("Finish received length " + mReceivedLength + "of data.");
-	}
-
-
-	/**
 	 * Receiving data with special length.
 	 * @param size Special length.
 	 */
-	protected byte[] receiveBySize(int size) throws IOException {
+	protected byte[] receiveData(int size) throws IOException {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
@@ -143,9 +89,9 @@ public abstract class AbstractReceiver implements Receiver {
 
 
 	protected void checkAvaliable(InputStream is) throws IOException {
-		int idle = 1, maxWaitMs = 5;
-		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( Exception ex ) {
-			ex.printStackTrace();
+		int idle = 1, maxWaitMs = 1;
+		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( InterruptedException ex ) {
+			Log.debug("从Sleep状态中断！");
 		}
 	}
 
@@ -153,16 +99,90 @@ public abstract class AbstractReceiver implements Receiver {
 	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
 		int read = 0;
 		byte[] buff = new byte[size];
-		synchronized (this) {
-			if (isStop || END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
-				return null;
-			}
+		if (END_OF_STREAM == (read = mInputStream.read(buff, 0, size))) {
+			return null;
 		}
 
 		buff = Arrays.copyOf(buff, read);
 		onReceive(buff);
 
 		return buff;
+	}
+
+
+	/**
+	 * Receiving data with special length.
+	 * @param size Special length.
+	 */
+	protected void receiveAndWrite(long size) throws IOException {
+		int willRec = 0;
+		while(!isStop && size > 0) {
+			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
+			writeData(receiveData(willRec));
+			size -= willRec;
+		}
+	}
+
+
+	protected void invokeListener() {
+		if (!isStop && isFinished && onFinishedListener != null) {
+			if (mSizeWillReceive < 0 || mSizeWillReceive == mReceivedLength) {
+				onFinishedListener.onFinished(this);
+			}
+		}
+
+		if (isStop && onStopListener != null) {
+			onStopListener.onStop(this);
+		}
+	}
+
+
+	protected void writeData(byte[] data) throws IOException {
+		mFileWriter.write(mReceivedLength - data.length, data);
+	}
+
+
+	protected void finishReceive() throws IOException {
+		isFinished = !isStop;
+		invokeListener();
+		flushWriter();
+		Log.debug("Received length " + mReceivedLength + " of data.");
+	}
+
+
+	protected void flushWriter() throws IOException {
+
+	}
+
+
+	/**
+	 * Receiving data.
+	 *
+	 * @return Received data by byte.
+	 * @throws IOException      When I/O exception.
+	 * @throws ConnectException When connection exception.
+	 */
+	@Override
+	public void receive() throws IOException {
+		Log.debug("Start receive data...");
+		byte[] data = null;
+		while(null != (data = receiveData(BUFFER_SIZE))) {
+			writeData(data);
+		}
+
+		finishReceive();
+	}
+
+
+	/**
+	 * To downloading data from source, and save data to somewhere.
+	 *
+	 * @param size
+	 */
+	@Override
+	public void receive(long size) throws IOException {
+		receiveAndWrite(size);
+		finishReceive();
 	}
 
 
@@ -188,20 +208,6 @@ public abstract class AbstractReceiver implements Receiver {
 
 
 	/**
-	 * Receiving data with special length.
-	 * @param size Special length.
-	 */
-	protected void receiveDataBySize(long size) throws IOException {
-		int willRec = 0;
-		while(!isStop && size > 0) {
-			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
-			writeData(receiveBySize(willRec));
-			size -= willRec;
-		}
-	}
-
-
-	/**
 	 * stop the object of managment.
 	 */
 	@Override
@@ -217,6 +223,13 @@ public abstract class AbstractReceiver implements Receiver {
 
 	public long getReceivedLength() {
 		return mReceivedLength;
+	}
+
+
+	public long getCurrentReceivedLength() {
+		long current = mReceivedLength - lastReceivedLength;
+		lastReceivedLength = mReceivedLength;
+		return current;
 	}
 
 

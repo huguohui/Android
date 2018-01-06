@@ -9,8 +9,6 @@ import com.badsocket.net.ReceiverGroup;
 import com.badsocket.net.Request;
 import com.badsocket.net.RequestGroup;
 import com.badsocket.net.Response;
-import com.badsocket.net.http.HttpReceiver;
-import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
 import com.badsocket.util.Log;
 
@@ -19,8 +17,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -65,7 +61,8 @@ public class HttpDownloadTask
 
 
 	protected void init() {
-		downloadComponentFactory = downloader.getProtocolHandler(PROTOCOL).downloadComponentFactory();
+		downloadComponentFactory = downloader.getProtocolHandler(PROTOCOL)
+				.downloadComponentFactory();
 	}
 
 
@@ -119,7 +116,8 @@ public class HttpDownloadTask
 		Response reps[] = requestGroup.getResponses();
 		AsyncReceiver asyncReceiver = null;
 		for (int i = 0; i < reps.length; i++) {
-			receiverGroup.addReceiver(downloadComponentFactory.createReceiver(requestGroup.getRequest(i), fileWriter));
+			receiverGroup.addReceiver(downloadComponentFactory.createReceiver(
+					requestGroup.getRequest(i), fileWriter));
 		}
 	}
 
@@ -135,7 +133,7 @@ public class HttpDownloadTask
 	}
 
 
-	protected void downloadData() throws IOException {
+	protected synchronized void downloadData() throws IOException {
 		createDownloadRequests();
 		createDownloadReceiver();
 		downloadDataByReceiver();
@@ -144,13 +142,17 @@ public class HttpDownloadTask
 
 	protected void closeRequests() throws Exception {
 		requestGroup.closeAll();
-		requestGroup.clear();
 	}
 
 
 	protected void stopReceivers() throws Exception {
 		receiverGroup.stopAll();
+	}
+
+
+	protected void clearGroups() {
 		receiverGroup.clear();
+		requestGroup.clear();
 	}
 
 
@@ -161,44 +163,82 @@ public class HttpDownloadTask
 	}
 
 
-	protected void stopDownload() throws Exception {
-		interruptExecutor();
-		Log.debug("stop...");
-		stopReceivers();
-		Log.debug("stop Receiver...");
-		closeRequests();
-		Log.debug("close Request...");
+	protected void flushIO() throws Exception {
+		fileWriter.flush();
+		fileWriter.close();
 	}
 
 
-	protected void updateDownloadInfo() {
+	protected synchronized void stopDownload() throws Exception {
+		stopReceivers();
+		closeRequests();
+		interruptExecutor();
+		clearGroups();
+		for (DownloadSection section : downloadSections) {
+			Log.debug(section);
+		}
+	}
+
+
+	protected void updateSectionsInfo() {
 		Receiver[] receivers = receiverGroup.getReceivers();
 		Receiver receiver = null;
-		long perReceivedLength = 0, totalReceivedLength = 0;
+		long perReceivedLength = 0,  sectionDownloaded = 0;
 		for (int i = 0; i < receivers.length; i++) {
 			receiver = receivers[i];
 			if (receiver != null) {
-				perReceivedLength = receiver.getReceivedLength();
-				downloadSections[i].setDownloadedLength(perReceivedLength);
-				totalReceivedLength += perReceivedLength;
+				perReceivedLength = receiver.getCurrentReceivedLength();
+				sectionDownloaded = downloadSections[i].getDownloadedLength();
+				downloadSections[i].setDownloadedLength(sectionDownloaded + perReceivedLength);
 			}
 		}
+	}
 
+
+	protected void updateProgressInfo() {
+		long totalReceivedLength = 0;
+		for (int i = 0; i < downloadSections.length; i++) {
+			totalReceivedLength += downloadSections[i].getDownloadedLength();
+		}
 		if (totalReceivedLength > 0) {
-			downloadedLength += totalReceivedLength - downloadedLength;
+			downloadedLength = totalReceivedLength;
 		}
 
 		progress = (float) downloadedLength / (float) length;
 	}
 
 
+	protected void updateDownloadInfo() {
+		updateSectionsInfo();
+		updateProgressInfo();
+	}
+
+
 	protected void checkDownloadStatus() {
-		if (length > 0 && downloadedLength == length) {
+		if (length < 0 || progress >= 1f) {
 			isFinished = true;
 		}
 
 		if (isFinished) {
-			onFinish();
+			onTaskFinish();
+		}
+	}
+
+
+	public void afterTaskFinish() throws Exception {
+		clearGroups();
+		flushIO();
+	}
+
+
+	public void onTaskFinish() {
+		Log.debug("Finished download task.");
+		try {
+			afterTaskFinish();
+			super.onTaskFinish();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -206,35 +246,34 @@ public class HttpDownloadTask
 	@Override
 	public void onCreate(TaskExtraInfo info) throws Exception {
 		this.extraInfo = info;
-		prepare();
+		this.prepare();
+		super.onCreate(info);
 	}
 
 
 	@Override
 	public void onStart() throws IOException {
 		super.onStart();
-
 	}
 
 
 	@Override
 	public void onStop() throws Exception {
-		super.onStop();
 		stopDownload();
+		super.onStop();
 	}
 
 
 	@Override
 	public void onPause() throws Exception {
-		super.onPause();
 		stopDownload();
+		super.onPause();
 	}
 
 
 	@Override
 	public void onResume() throws Exception {
 		super.onResume();
-		downloadData();
 	}
 
 
