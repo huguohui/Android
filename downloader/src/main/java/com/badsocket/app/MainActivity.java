@@ -126,21 +126,19 @@ public class MainActivity
     void toggleTaskState(final DownloadTask task) {
 		downloaderContext.getThreadFactory().createThread(() -> {
 			try {
-				if (task.getState() == DownloadTask.DownloadTaskState.RUNNING)
+				if (task.getState() == DownloadTask.DownloadTaskState.RUNNING) {
 					downloader.pauseTask(task);
-				else
+				}
+				else if (task.getState() == DownloadTask.DownloadTaskState.PAUSED){
 					downloader.resumeTask(task);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}).start();
 	}
 
-	/**
-	 * Called when a view has been clicked.
-	 *
-	 * @param v The view that was clicked.
-	 */
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -155,19 +153,6 @@ public class MainActivity
 	}
 
 
-	/**
-	 * Callback method to be invoked when an item in this AdapterView has
-	 * been clicked.
-	 * <p>
-	 * Implementers can call getItemAtPosition(position) if they need
-	 * to access the data associated with the selected item.
-	 *
-	 * @param parent   The AdapterView where the click happened.
-	 * @param view     The view within the AdapterView that was clicked (this
-	 *                 will be a view provided by the adapter)
-	 * @param position The position of the view in the adapter.
-	 * @param id       The row id of the item that was clicked.
-	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		toggleTaskState(tasks.get(position));

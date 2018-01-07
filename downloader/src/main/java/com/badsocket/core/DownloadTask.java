@@ -146,7 +146,8 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 		int PAUSED = 4,
 			PREPARING = 5,
 			WAITING = 6,
-			RESUMING = 7;
+			PAUSING = 7,
+			RESUMING = 8;
 	}
 
 
