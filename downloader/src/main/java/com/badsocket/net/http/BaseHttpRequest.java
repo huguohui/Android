@@ -156,7 +156,6 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		if (mOnResponseListener != null) {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}
-		Log.debug("Response with header: \n" + mHttpResponse.getHeader().toString());
 	}
 	
 	

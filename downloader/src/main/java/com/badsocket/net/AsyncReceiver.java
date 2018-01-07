@@ -1,7 +1,5 @@
 package com.badsocket.net;
 
-import com.badsocket.worker.Workable;
-import com.badsocket.worker.Worker;
 import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;
@@ -49,8 +47,8 @@ public class AsyncReceiver implements Receiver, Callable<Long>
 
 
 	@Override
-	public long getCurrentReceivedLength() {
-		return receiver.getCurrentReceivedLength();
+	public long getReceivedLengthFromLast() {
+		return receiver.getReceivedLengthFromLast();
 	}
 
 

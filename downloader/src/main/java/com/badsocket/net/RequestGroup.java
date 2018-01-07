@@ -29,9 +29,7 @@ public class RequestGroup {
 
 	public void addRequests(Request[] rs) {
 		for (int i = 0; i < rs.length; i++) {
-			if (rs[i] != null) {
-				requests.add(rs[i]);
-			}
+			requests.add(rs[i]);
 		}
 	}
 

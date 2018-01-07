@@ -30,9 +30,7 @@ public class ReceiverGroup {
 
 	public void addReceivers(Receiver[] rs) {
 		for (int i = 0; i < rs.length; i++) {
-			if (rs[i] != null) {
-				receivers.add(rs[i]);
-			}
+			receivers.add(rs[i]);
 		}
 	}
 

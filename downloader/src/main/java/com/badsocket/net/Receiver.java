@@ -36,7 +36,7 @@ public interface Receiver extends Stopable {
 	long dataOffsetEnd();
 
 
-	long getCurrentReceivedLength();
+	long getReceivedLengthFromLast();
 
 
 	long getReceivedLength();

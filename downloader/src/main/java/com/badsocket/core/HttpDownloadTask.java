@@ -113,11 +113,12 @@ public class HttpDownloadTask
 
 
 	protected void createDownloadReceiver() throws IOException {
-		Response reps[] = requestGroup.getResponses();
+		Request reqs[] = requestGroup.getRequests();
 		AsyncReceiver asyncReceiver = null;
-		for (int i = 0; i < reps.length; i++) {
-			receiverGroup.addReceiver(downloadComponentFactory.createReceiver(
-					requestGroup.getRequest(i), fileWriter));
+		for (int i = 0; i < reqs.length; i++) {
+			receiverGroup.addReceiver(reqs[i] != null
+					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
+							: null);
 		}
 	}
 
@@ -127,8 +128,10 @@ public class HttpDownloadTask
 		Receiver[] receivers = receiverGroup.getReceivers();
 		ThreadExecutor executor = (ThreadExecutor) context.getThreadExecutor();
 		for (int i = 0; i < receivers.length; i++) {
-			asyncReceiver = new AsyncReceiver(receiverGroup.getReceiver(i));
-			receiverFutures.add(executor.submit(asyncReceiver));
+			if (receivers[i] != null) {
+				asyncReceiver = new AsyncReceiver(receivers[i]);
+				receiverFutures.add(executor.submit(asyncReceiver));
+			}
 		}
 	}
 
@@ -187,7 +190,7 @@ public class HttpDownloadTask
 		for (int i = 0; i < receivers.length; i++) {
 			receiver = receivers[i];
 			if (receiver != null) {
-				perReceivedLength = receiver.getCurrentReceivedLength();
+				perReceivedLength = receiver.getReceivedLengthFromLast();
 				sectionDownloaded = downloadSections[i].getDownloadedLength();
 				downloadSections[i].setDownloadedLength(sectionDownloaded + perReceivedLength);
 			}
@@ -228,6 +231,7 @@ public class HttpDownloadTask
 	public void afterTaskFinish() throws Exception {
 		clearGroups();
 		flushIO();
+		super.onTaskFinish();
 	}
 
 
@@ -235,7 +239,6 @@ public class HttpDownloadTask
 		Log.debug("Finished download task.");
 		try {
 			afterTaskFinish();
-			super.onTaskFinish();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -298,7 +301,6 @@ public class HttpDownloadTask
 			checkDownloadStatus();
 		}
 		catch (Exception e) {
-			Log.debug(state);
 			e.printStackTrace();
 		}
 	}

@@ -80,7 +80,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 
 				if (section != null) {
 					Log.debug(section.toString());
-					if (section.getDownloadedLength() != section.getLength()) {
+					if (section.getDownloadedLength() < section.getLength()) {
 						requests[j] = createRequest(task,
 								new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
 										section.getOffsetBegin() + section.getLength()));
