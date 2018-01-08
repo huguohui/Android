@@ -73,7 +73,7 @@ public class HttpDownloadTask
 
 
 	protected void prepareDownload() throws Exception {
-		fileWriter = context.getFileWriter(new File(getDownloadPath(), getName()), 0);
+		fileWriter = context.getFileWriter(new File(getDownloadPath(), getName()), getLength());
 	}
 
 
