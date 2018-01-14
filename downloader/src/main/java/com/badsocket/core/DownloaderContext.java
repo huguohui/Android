@@ -8,20 +8,20 @@ import android.os.StatFs;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
+import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
-import com.badsocket.manager.SimpleFileManager;
 import com.badsocket.manager.ThreadManager;
-import com.badsocket.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by skyrim on 2017/12/15.
@@ -62,6 +62,8 @@ public class DownloaderContext extends Context {
 	private ExecutorService threadExecutor;
 
 	private ExecutorService downloadTaskExecutor;
+
+	private Map<String, ConcurrentFileWriter> fileWriters = new HashMap<>();
 
 
 	public DownloaderContext(android.content.Context androidContext) {
@@ -147,7 +149,12 @@ public class DownloaderContext extends Context {
 
 	@Override
 	public FileWriter getFileWriter(File path, long size) throws IOException {
-		return new ConcurrentFileWriter(path, size);
+		ConcurrentFileWriter fileWriter =  new ConcurrentFileWriter(new File(
+				path.getPath() + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX), size);
+		synchronized (fileWriters) {
+			fileWriters.put(path.getAbsolutePath(), fileWriter);
+		}
+		return fileWriter;
 	}
 
 
@@ -197,4 +204,6 @@ public class DownloaderContext extends Context {
 	public ExecutorService getDownloadTaskExecutor() {
 		return downloadTaskExecutor;
 	}
+
+
 }

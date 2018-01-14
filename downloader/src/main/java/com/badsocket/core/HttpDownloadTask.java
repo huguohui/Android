@@ -136,10 +136,22 @@ public class HttpDownloadTask
 	}
 
 
-	protected synchronized void downloadData() throws IOException {
+	protected void onDownloadStarted() throws Exception {
+		state = DownloadTaskState.RUNNING;
+		if (action == DownloadAction.START) {
+			notifyTaskStarted();
+		}
+		else {
+			notifyTaskResumed();
+		}
+	}
+
+
+	protected synchronized void startDownload() throws Exception {
 		createDownloadRequests();
 		createDownloadReceiver();
 		downloadDataByReceiver();
+		onDownloadStarted();
 	}
 
 
@@ -166,9 +178,24 @@ public class HttpDownloadTask
 	}
 
 
-	protected void flushIO() throws Exception {
-		fileWriter.flush();
+	protected void releaseResource() throws Exception {
+		clearGroups();
 		fileWriter.close();
+	}
+
+
+	protected void onDownloadStoped() throws Exception {
+		for (DownloadSection section : downloadSections) {
+			Log.debug(section);
+		}
+		if (action == DownloadAction.PAUSE) {
+			state = DownloadTaskState.PAUSED;
+			notifyTaskPaused();
+		}
+		else {
+			state = DownloadTaskState.STOPED;
+			notifyTaskStoped();
+		}
 	}
 
 
@@ -177,9 +204,7 @@ public class HttpDownloadTask
 		closeRequests();
 		interruptExecutor();
 		clearGroups();
-		for (DownloadSection section : downloadSections) {
-			Log.debug(section);
-		}
+		onDownloadStoped();
 	}
 
 
@@ -228,17 +253,17 @@ public class HttpDownloadTask
 	}
 
 
-	public void afterTaskFinish() throws Exception {
-		clearGroups();
-		flushIO();
-		super.onTaskFinish();
+	public void afterTaskComplete() throws Exception {
+		releaseResource();
+		notifyTaskFinished();
 	}
 
 
 	public void onTaskFinish() {
 		Log.debug("Finished download task.");
 		try {
-			afterTaskFinish();
+			super.onTaskFinish();
+			afterTaskComplete();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -255,21 +280,19 @@ public class HttpDownloadTask
 
 
 	@Override
-	public void onStart() throws IOException {
+	public void onStart() throws Exception {
 		super.onStart();
 	}
 
 
 	@Override
 	public void onStop() throws Exception {
-		stopDownload();
 		super.onStop();
 	}
 
 
 	@Override
 	public void onPause() throws Exception {
-		stopDownload();
 		super.onPause();
 	}
 
@@ -282,23 +305,24 @@ public class HttpDownloadTask
 
 	@Override
 	public void onStore() {
+		super.onStore();
 	}
 
 
 	@Override
 	public void onRestore() {
+		super.onRestore();
 	}
 
 
 	@Override
 	public void update() {
+		super.update();
 		try {
-			if (state == DownloadTaskState.UNSTART || state == DownloadTaskState.PREPARING) {
-				return;
+			if (state != DownloadTaskState.UNSTART && state != DownloadTaskState.PREPARING) {
+				updateDownloadInfo();
+				checkDownloadStatus();
 			}
-
-			updateDownloadInfo();
-			checkDownloadStatus();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -308,25 +332,32 @@ public class HttpDownloadTask
 
 
 	public void run() {
-		try {
-			call();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		call();
 	}
 
 
 	@Override
-	public Task call() throws Exception {
+	public Task call() {
 		try {
-			downloadData();
+			Log.debug("action: " + action);
+			switch (action) {
+				case DownloadAction.PAUSE:
+				case DownloadAction.STOP:
+					stopDownload();
+					break;
+
+				case DownloadAction.START:
+				case DownloadAction.RESUME:
+					startDownload();
+					break;
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return this;
 	}
+
 
 	public abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {
 

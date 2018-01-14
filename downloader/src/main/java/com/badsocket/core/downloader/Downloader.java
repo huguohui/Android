@@ -17,6 +17,11 @@ import java.util.List;
  */
 public interface Downloader extends Controlable {
 
+	String UNCOMPLETE_DOWNLAOD_TASK_SUFFIX = ".udt";
+
+	String DOWNLOAD_TASK_INFO_SUFFIX = ".dti";
+
+
 
 	boolean isTaskExists(Task task);
 

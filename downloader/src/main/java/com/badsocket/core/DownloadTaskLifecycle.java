@@ -9,16 +9,16 @@ import java.io.IOException;
 public interface DownloadTaskLifecycle extends TaskLifecycle {
 
 
-	void onPause() throws IOException, Exception;
+	void onPause() throws Exception;
 
 
 	void onResume() throws Exception;
 
 
-	void onStore();
+	void onStore() throws Exception;
 
 
-	void onRestore();
+	void onRestore() throws Exception;
 
 
 }

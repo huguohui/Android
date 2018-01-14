@@ -48,6 +48,8 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected DownloadSection[] downloadSections;
 
+	protected int action = DownloadAction.START;
+
 	transient protected Context context;
 
 	transient protected Downloader downloader;
@@ -69,10 +71,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	transient protected List<OnDownloadTaskPauseListener> onDownloadTaskPauseListeners = new ArrayList<>();
 
 	transient protected List<OnDownloadTaskResumeListener> onDownloadTaskResumeListeners = new ArrayList<>();
-
-	transient final protected String[] LISTENER_TYPES = {
-			"START", "PAUSE", "RESUME", "STOP", "FINISH"
-	};
 
 
 	public AbstractDownloadTask(Downloader c, DownloadAddress url) {
@@ -184,6 +182,13 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
+	public boolean equals(Task t) {
+		DownloadTask task = (DownloadTask) t;
+		return this.getName().equals(task.getName())
+				&& this.getDownloadPath().equals(task.getDownloadPath());
+	}
+
+
 	public void setSections(DownloadSection[] sections) {
 		this.downloadSections = sections;
 	}
@@ -226,40 +231,85 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	protected void onTaskFinish() {
-		state = DownloadTaskState.FINISHED;
-		notifyListeners(OnTaskFinishListener.class);
+		state = DownloadTaskState.COMPLETED;
 	}
 
 
 	public void onCreate(TaskExtraInfo info) throws Exception {
 		state = DownloadTaskState.PREPARING;
-		notifyListeners(OnTaskCreateListener.class);
 	}
 
 
-	public void onStart() throws IOException {
+	public void onStart() throws Exception {
 		isRunning = true;
-		state = DownloadTaskState.RUNNING;
+		state = DownloadTaskState.STARTING;
+		action = DownloadAction.START;
 		startTime = DateUtils.millisTime();
-		notifyListeners(OnTaskStartListener.class);
 	}
 
 
 	public void onStop() throws Exception {
-		state = DownloadTaskState.STOPED;
-		notifyListeners(OnTaskStopListener.class);
+		state = DownloadTaskState.STOPPING;
+		action = DownloadAction.STOP;
 	}
 
 
 	public void onPause() throws Exception {
-		state = DownloadTaskState.PAUSED;
-		notifyListeners(OnDownloadTaskPauseListener.class);
+		state = DownloadTaskState.PAUSING;
+		action = DownloadAction.PAUSE;
 	}
 
 
 	public void onResume() throws Exception {
-		state = DownloadTaskState.RUNNING;
+		state = DownloadTaskState.RESUMING;
+		action = DownloadAction.RESUME;
+	}
+
+
+	public void onRestore() {
+
+	}
+
+
+	public void onStore() {
+
+	}
+
+
+	public void update() {
+		if (state == DownloadTaskState.RUNNING) {
+			usedTime += 1000;
+		}
+	}
+
+
+	protected void notifyTaskCreated() {
+		notifyListeners(OnTaskCreateListener.class);
+	}
+
+
+	protected void notifyTaskFinished() {
+		notifyListeners(OnTaskFinishListener.class);
+	}
+
+
+	protected void notifyTaskStarted() {
+		notifyListeners(OnTaskStartListener.class);
+	}
+
+
+	protected void notifyTaskPaused() {
+		notifyListeners(OnDownloadTaskPauseListener.class);
+	}
+
+
+	protected void notifyTaskResumed() {
 		notifyListeners(OnDownloadTaskResumeListener.class);
+	}
+
+
+	protected void notifyTaskStoped() {
+		notifyListeners(OnTaskStopListener.class);
 	}
 
 

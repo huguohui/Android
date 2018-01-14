@@ -142,12 +142,22 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	}
 
 
+	interface DownloadAction {
+		int START = 0,
+			PAUSE = 1,
+			RESUME = 2,
+			STOP = 3;
+	}
+
+
 	interface DownloadTaskState extends TaskState {
 		int PAUSED = 4,
 			PREPARING = 5,
 			WAITING = 6,
 			PAUSING = 7,
-			RESUMING = 8;
+			RESUMING = 8,
+			STOPPING = 9,
+			STARTING = 10;
 	}
 
 

@@ -71,7 +71,7 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 					+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
 			progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");
 
-			int resourceId = R.drawable.downloading;
+			int resourceId = R.drawable.paused;
 			switch (task.getState()) {
 				case DownloadTask.DownloadTaskState.RUNNING:
 					resourceId = R.drawable.downloading;

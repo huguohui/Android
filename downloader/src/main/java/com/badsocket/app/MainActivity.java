@@ -26,6 +26,7 @@ import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
 
@@ -70,6 +71,8 @@ public class MainActivity
 
 	protected SimpleTaskListAdspter adapter;
 
+	protected ThreadFactory threadFactory;
+
 	protected ServiceConnection serviceConnection = new ServiceConnection() {
 
 		@Override
@@ -79,6 +82,7 @@ public class MainActivity
 			downloader = (Downloader) service;
 			downloader.addWatcher(watcher);
 			downloaderContext = downloader.getDownloaderContext();
+			threadFactory = downloaderContext.getThreadFactory();
 
 			try {
 				downloader.start();
@@ -124,18 +128,24 @@ public class MainActivity
 
 
     void toggleTaskState(final DownloadTask task) {
-		downloaderContext.getThreadFactory().createThread(() -> {
-			try {
-				if (task.getState() == DownloadTask.DownloadTaskState.RUNNING) {
-					downloader.pauseTask(task);
+		if (threadFactory != null) {
+			threadFactory.createThread(() -> {
+				try {
+					int state = task.getState();
+					Log.debug("State: " + state);
+					if (state == DownloadTask.DownloadTaskState.RUNNING) {
+						downloader.pauseTask(task);
+					}
+					else if (state == DownloadTask.DownloadTaskState.PAUSED
+							|| state == DownloadTask.DownloadTaskState.STOPED) {
+						downloader.resumeTask(task);
+					}
 				}
-				else if (task.getState() == DownloadTask.DownloadTaskState.PAUSED){
-					downloader.resumeTask(task);
+				catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}).start();
+			}).start();
+		}
 	}
 
 
@@ -207,7 +217,8 @@ public class MainActivity
             case R.id.action_new_task:
                 final EditText ev = new EditText(this);
                 ev.setText(
-					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" /*+
+                		/*"https://issuecdn.baidupcs.com/issue/netdisk/apk/BaiduNetdisk_8.2.0.apk"*/
+					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n"/* +
 					"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
 					"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
 				);
@@ -231,7 +242,7 @@ public class MainActivity
 										}
 										catch (Exception e) {
 											Looper.prepare();
-											showToast(Log.getStackTraceString(e), Toast.LENGTH_LONG);
+											showToast(e.getMessage(), Toast.LENGTH_LONG);
 											Log.e(e);
 											looper.loop();
 										}

@@ -18,10 +18,12 @@ import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
+import com.badsocket.util.CollectionUtils;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,9 @@ import java.util.Map;
 /**
  * Downloads data based http protocol.
  */
-public class InternetDownloader extends AbstractDownloader {
+public class InternetDownloader
+		extends AbstractDownloader
+		implements Task.OnTaskFinishListener {
 
 	public static int MAX_PARALLEL_TASKS = 10;
 
@@ -66,15 +70,7 @@ public class InternetDownloader extends AbstractDownloader {
 	protected ThreadAllocStategy stategy = (task) -> {
 		long len = Math.max(task.getLength(), 1);
 		int num = 3;
-
-		if (len < 3) {
-			num = 1;
-		}
-		if (len > 1024 * 1024 * 1) {
-			num = 10;
-		}
-
-		return num;
+		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
 	};
 
 	protected Monitor monitor;
@@ -102,8 +98,41 @@ public class InternetDownloader extends AbstractDownloader {
 	}
 
 
-	protected void loadUnfinishedTasks() {
+	protected void loadUnCompleteTasks() {
 
+	}
+
+
+	protected void loadCompletedTasks() {
+	}
+
+
+	protected void loadTasks() {
+		loadUnCompleteTasks();
+		loadCompletedTasks();
+	}
+
+
+	protected boolean checkDownloadTaskExists(DownloadTask task) {
+		File completeTask = new File(task.getDownloadPath(), task.getName()),
+			 uncompleteTask = new File(completeTask.getPath() + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+
+		return completeTask.exists() || uncompleteTask.exists()
+				|| CollectionUtils.filter(taskList(),
+							(t) -> { return t.equals(task); }).size() != 0;
+	}
+
+
+	protected boolean isSupportProtocol(Protocol protocol) {
+		return protocolHandlers.get(protocol) != null;
+	}
+
+
+	protected DownloadTask createTask(DownloadTaskDescriptor descriptor, ProtocolHandler handler) throws IOException {
+		DownloadTask task = handler.downloadComponentFactory().creatDownloadTask(
+				this, descriptor, DownloadHelper.fetchResponseByDescriptor(this, descriptor, handler));
+		task.addOnTaskFinishListener(this);
+		return task;
 	}
 
 
@@ -115,27 +144,39 @@ public class InternetDownloader extends AbstractDownloader {
 
 	public DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception {
 		String protocolName = desc.getAddress().getProtocol();
-		Protocol protocol = null;
-		ProtocolHandler protocolHandler = null;
+		Protocol protocol = Protocol.getProtocol(protocolName);
 		DownloadTask task = null;
-		if ((protocol = Protocol.getProtocol(protocolName)) == null
-				|| (protocolHandler = protocolHandlers.get(protocol)) == null) {
+		if (!isSupportProtocol(protocol)) {
 			throw new UnsupportedProtocolException("暂不支持此下载协议:" + protocolName.toUpperCase() + "！");
 		}
 		if (desc.getPath() == null || desc.getPath().length() == 0) {
 			desc.setPath(defaultDownloadPath);
 		}
 
-		task = protocolHandler.downloadComponentFactory().creatDownloadTask(
-				this, desc, DownloadHelper.fetchResponseByDescriptor(this, desc, protocolHandler));
-		File downloadFile = new File(task.getDownloadPath(), task.getName());
-//		if (downloadFile.exists()) {
-//			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
-//		}
+		task = createTask(desc, protocolHandlers.get(protocol));
+		if (checkDownloadTaskExists(task)) {
+			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
+		}
 
 		task.onCreate(desc.getTaskExtraInfo());
 		taskManager.add(task);
 		return task;
+	}
+
+
+	protected void trimUncompleteSuffix(DownloadTask task) {
+		File uncompleteFile = new File(
+				task.getDownloadPath(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+		if(uncompleteFile.exists()) {
+			uncompleteFile.renameTo(new File(task.getDownloadPath(), task.getName()));
+		}
+	}
+
+
+	@Override
+	public void onTaskFinish(Task t) {
+		DownloadTask task = (DownloadTask) t;
+		trimUncompleteSuffix(task);
 	}
 
 

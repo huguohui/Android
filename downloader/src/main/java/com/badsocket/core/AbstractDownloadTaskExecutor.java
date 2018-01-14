@@ -86,6 +86,7 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		task.onPause();
 		cancel(t);
 		remove(t);
+		submit((Callable<Task>) t);
 	}
 
 
@@ -108,5 +109,6 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		task.onStop();
 		cancel(t);
 		remove(t);
+		submit((Callable<Task>) t);
 	}
 }

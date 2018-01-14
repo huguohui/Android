@@ -13,7 +13,7 @@ interface TaskLifecycle {
 	void onCreate(Task.TaskExtraInfo info) throws Exception;
 
 
-	void onStart() throws IOException;
+	void onStart() throws Exception;
 
 
 	void onStop() throws Exception;
