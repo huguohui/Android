@@ -1,5 +1,6 @@
 package com.badsocket.manager;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,6 +22,15 @@ public interface Manager<T> extends Iterable<T> {
 	 * @param obj Object what will to managing.
 	 */
 	boolean add(T obj) throws Exception;
+
+
+	/**
+	 * Add all object to list.
+	 * @param objs All objects.
+	 * @return ture for successing
+	 */
+	boolean addAll(Collection<? extends T> objs);
+
 
 
 	/**

@@ -22,7 +22,6 @@ public interface Downloader extends Controlable {
 	String DOWNLOAD_TASK_INFO_SUFFIX = ".dti";
 
 
-
 	boolean isTaskExists(Task task);
 
 
@@ -112,6 +111,12 @@ public interface Downloader extends Controlable {
 
 
 	void setThreadAllocStategy(InternetDownloader.ThreadAllocStategy stategy);
+
+
+	DownloadTaskInfoStorage getDownloadTaskStorage();
+
+
+	void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage);
 
 
 	interface OnDownloadStartListener {

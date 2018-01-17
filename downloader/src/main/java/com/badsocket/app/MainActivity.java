@@ -132,7 +132,6 @@ public class MainActivity
 			threadFactory.createThread(() -> {
 				try {
 					int state = task.getState();
-					Log.debug("State: " + state);
 					if (state == DownloadTask.DownloadTaskState.RUNNING) {
 						downloader.pauseTask(task);
 					}

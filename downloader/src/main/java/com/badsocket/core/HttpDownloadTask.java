@@ -57,6 +57,7 @@ public class HttpDownloadTask
 	public HttpDownloadTask(Downloader c, DownloadTaskDescriptor d, Response r) {
 		super(c, d, r);
 		init();
+		notifyTaskCreated();
 	}
 
 
@@ -339,7 +340,6 @@ public class HttpDownloadTask
 	@Override
 	public Task call() {
 		try {
-			Log.debug("action: " + action);
 			switch (action) {
 				case DownloadAction.PAUSE:
 				case DownloadAction.STOP:

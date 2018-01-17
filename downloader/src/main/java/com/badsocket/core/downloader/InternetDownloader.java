@@ -67,6 +67,8 @@ public class InternetDownloader
 
 	protected String defaultDownloadPath;
 
+	protected DownloadTaskInfoStorage downloadTaskInfoStorage;
+
 	protected ThreadAllocStategy stategy = (task) -> {
 		long len = Math.max(task.getLength(), 1);
 		int num = 3;
@@ -92,24 +94,21 @@ public class InternetDownloader
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
 		monitor = new DownloadMonitor(this, 1000);
+		downloadTaskInfoStorage = new FileDownloadTaskInfoStorage(new File(defaultDownloadPath));
+
 		monitor.monitor(this);
 		taskManager.setAutoStart(true);
 		monitor.addWatcher(new DownloaderWatcher());
 	}
 
 
-	protected void loadUnCompleteTasks() {
-
-	}
-
-
-	protected void loadCompletedTasks() {
-	}
-
-
 	protected void loadTasks() {
-		loadUnCompleteTasks();
-		loadCompletedTasks();
+		try {
+			taskManager.addAll(downloadTaskInfoStorage.read());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -334,6 +333,18 @@ public class InternetDownloader
 	@Override
 	public void setThreadAllocStategy(ThreadAllocStategy stategy) {
 		this.stategy = stategy;
+	}
+
+
+	@Override
+	public DownloadTaskInfoStorage getDownloadTaskStorage() {
+		return null;
+	}
+
+
+	@Override
+	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
+
 	}
 
 

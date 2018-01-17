@@ -1,11 +1,14 @@
 package com.badsocket.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -142,6 +145,51 @@ public abstract class FileUtils {
 	}
 
 
+	public static File[] listDirectory(File dir) {
+		File[] files = new File[0];
+		if (dir.exists()) {
+			files = dir.listFiles();
+		}
+
+		return files;
+	}
+
+
+	public static File[] listDirectory(String dir) {
+		return listDirectory(new File(dir));
+	}
+
+
+	public static <T> T readObject(File file) throws IOException, ClassNotFoundException {
+		T object = null;
+		ObjectInputStream inputStream = null;
+		try {
+			inputStream = new ObjectInputStream(new FileInputStream(file));
+			object = (T) inputStream.readObject();
+		}
+		finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
+		return object;
+	}
+
+
+	public static void writeObject(Object obj, File file) throws IOException {
+		ObjectOutputStream outputStream = null;
+		try {
+			outputStream = new ObjectOutputStream(new FileOutputStream(file));
+			outputStream.writeObject(obj);
+		}
+		finally {
+			if (outputStream != null) {
+				outputStream.close();
+			}
+		}
+	}
+
+
 	public interface CopyExceptionHandler {
 		void handleCopyException(File src, File dst, Exception e);
 	}
@@ -155,4 +203,7 @@ public abstract class FileUtils {
 	public interface CopyFrontFilter {
 		boolean doFrontCheck(File src, File dst);
 	}
+
+
+
 }

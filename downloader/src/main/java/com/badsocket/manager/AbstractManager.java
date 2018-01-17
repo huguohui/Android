@@ -2,11 +2,10 @@ package com.badsocket.manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import static java.util.Arrays.binarySearch;
 
 /**
  * To defining a generic manager, base class for file manager, resource manger etc.
@@ -54,6 +53,11 @@ public abstract class AbstractManager<T> implements Manager<T> {
     public synchronized boolean add(T obj) throws Exception {
         return mList.add(obj);
     }
+
+
+    public synchronized boolean addAll(Collection<? extends T> objs) {
+    	return mList.addAll(objs);
+	}
 
 
     /**

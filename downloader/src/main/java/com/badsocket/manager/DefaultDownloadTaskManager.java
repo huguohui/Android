@@ -128,7 +128,7 @@ public class DefaultDownloadTaskManager
 
 
 	protected void startTask(DownloadTask t) throws Exception {
-		if (isAutoStart && runningTaskNum < parallelTaskNum) {
+		if (runningTaskNum < parallelTaskNum) {
 			executeTask(t);
 			runningTaskNum++;
 		}
@@ -138,16 +138,16 @@ public class DefaultDownloadTaskManager
 
 
 	public boolean add(DownloadTask task) throws Exception {
-		synchronized (mList) {
-			boolean isAdd = super.add(task);
-			task.addOnTaskFinishListener(this);
-			task.addOnTaskStartListener(this);
-			task.addOnTaskStopListener(this);
-			task.addOnDownloadTaskPauseListener(this);
-			task.addOnDownloadTaskResumeListener(this);
+		boolean isAdd = super.add(task);
+		task.addOnTaskFinishListener(this);
+		task.addOnTaskStartListener(this);
+		task.addOnTaskStopListener(this);
+		task.addOnDownloadTaskPauseListener(this);
+		task.addOnDownloadTaskResumeListener(this);
+		if (isAutoStart()) {
 			startTask(task);
-			return isAdd;
 		}
+		return isAdd;
 	}
 
 

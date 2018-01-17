@@ -24,6 +24,7 @@ public class DownloaderWatcher implements MonitorWatcher {
 		List<DownloadTask> tasks = downloader.taskList();
 		for (DownloadTask task : tasks) {
 			task.update();
+			
 		}
 	}
 }
