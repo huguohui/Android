@@ -7,10 +7,11 @@ import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.Protocol;
+import com.badsocket.core.Protocols;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
+import com.badsocket.core.downloader.DownloadTaskInfoStorage;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.core.downloader.factory.HttpDownloadComponentFactory;
@@ -26,12 +27,12 @@ public class DownloadAdapter extends Binder implements Downloader {
 	protected Downloader downloader;
 
 
-	public DownloadAdapter(Downloader downloader) {
+	public DownloadAdapter(Downloader downloader) throws Exception {
 		this.downloader = downloader;
-		addProtocolHandler(Protocol.HTTP, new ProtocolHandler() {
+		addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
 			@Override
-			public Protocol getProtocol() {
-				return Protocol.HTTP;
+			public Protocols getProtocol() {
+				return Protocols.HTTP;
 			}
 
 
@@ -42,10 +43,11 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 			@Override
-			public boolean isSupport(Protocol protocol) {
-				return protocol.equals(Protocol.HTTP);
+			public boolean isSupport(Protocols protocol) {
+				return protocol.equals(Protocols.HTTP);
 			}
 		});
+		init();
 	}
 
 
@@ -82,6 +84,12 @@ public class DownloadAdapter extends Binder implements Downloader {
 	@Override
 	public void stop() throws Exception {
 		downloader.stop();
+	}
+
+
+	@Override
+	public void init() throws Exception {
+		downloader.init();
 	}
 
 
@@ -223,13 +231,13 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 
 	@Override
-	public void addProtocolHandler(Protocol ptl, ProtocolHandler ph) {
+	public void addProtocolHandler(Protocols ptl, ProtocolHandler ph) {
 		downloader.addProtocolHandler(ptl, ph);
 	}
 
 
 	@Override
-	public ProtocolHandler getProtocolHandler(Protocol ptl) {
+	public ProtocolHandler getProtocolHandler(Protocols ptl) {
 		return downloader.getProtocolHandler(ptl);
 	}
 
@@ -261,5 +269,17 @@ public class DownloadAdapter extends Binder implements Downloader {
 	@Override
 	public void setThreadAllocStategy(InternetDownloader.ThreadAllocStategy stategy) {
 		downloader.setThreadAllocStategy(stategy);
+	}
+
+
+	@Override
+	public DownloadTaskInfoStorage getDownloadTaskStorage() {
+		return downloader.getDownloadTaskStorage();
+	}
+
+
+	@Override
+	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
+		downloader.setDownloadTaskInfoStorage(storage);
 	}
 }

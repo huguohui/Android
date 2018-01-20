@@ -6,6 +6,8 @@ package com.badsocket.core;
 
 public abstract class AbstractTask implements Task {
 
+	private static final long serialVersionUID = 9103658319690261655L;
+
 	protected int id;
 
 	protected String name;
@@ -24,7 +26,7 @@ public abstract class AbstractTask implements Task {
 
 	protected boolean isRunning;
 
-	protected boolean isFinished;
+	protected boolean isCompleted;
 
 	private static int UNIQUE_ID = 0;
 
@@ -134,8 +136,8 @@ public abstract class AbstractTask implements Task {
 
 
 	@Override
-	public boolean isFinished() {
-		return isFinished;
+	public boolean isCompleted() {
+		return isCompleted;
 	}
 
 

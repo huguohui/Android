@@ -18,6 +18,8 @@ import java.util.List;
 
 public abstract class AbstractDownloadTask extends AbstractTask implements DownloadTask {
 
+	private static final long serialVersionUID = 12341234123413413L;
+
 	protected int speedPerSecond;
 
 	protected int speedAverage;
@@ -34,8 +36,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected int speedLimited;
 
-	protected boolean isPaused;
-
 	protected int maxThreads;
 
 	protected int priority;
@@ -48,15 +48,17 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected DownloadSection[] downloadSections;
 
-	protected int action = DownloadAction.START;
+	protected int action = DownloadTaskAction.START;
+
+	protected DownloadTaskDescriptor taskDescriptor;
+
+	protected boolean isPaused = false;
 
 	transient protected Context context;
 
 	transient protected Downloader downloader;
 
 	transient protected Response response;
-
-	transient protected DownloadTaskDescriptor taskDescriptor;
 
 	transient protected FileWriter fileWriter;
 
@@ -82,7 +84,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		super(name);
 		this.downloadAddress = url;
 		this.downloader = c;
-		this.context = c.getDownloaderContext();
 	}
 
 
@@ -100,10 +101,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		this.priority = d.getPriority();
 		this.extraInfo = d.getTaskExtraInfo();
 		this.response = r;
-		this.context = c.getDownloaderContext();
-		if (r != null) {
-			fetchInfoFromResponse();
-		}
 	}
 
 
@@ -231,6 +228,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	protected void onTaskFinish() {
+		isCompleted = true;
 		state = DownloadTaskState.COMPLETED;
 	}
 
@@ -243,36 +241,47 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	public void onStart() throws Exception {
 		isRunning = true;
 		state = DownloadTaskState.STARTING;
-		action = DownloadAction.START;
+		action = DownloadTaskAction.START;
 		startTime = DateUtils.millisTime();
 	}
 
 
 	public void onStop() throws Exception {
+		isStoped = true;
+		isRunning = false;
 		state = DownloadTaskState.STOPPING;
-		action = DownloadAction.STOP;
+		action = DownloadTaskAction.STOP;
 	}
 
 
 	public void onPause() throws Exception {
+		isPaused = true;
+		isRunning = false;
+		isStoped = true;
 		state = DownloadTaskState.PAUSING;
-		action = DownloadAction.PAUSE;
+		action = DownloadTaskAction.PAUSE;
 	}
 
 
 	public void onResume() throws Exception {
+		isPaused = false;
+		isRunning = true;
+		isStoped = false;
 		state = DownloadTaskState.RESUMING;
-		action = DownloadAction.RESUME;
+		action = DownloadTaskAction.RESUME;
 	}
 
 
-	public void onRestore() {
-
+	public void onRestore(Downloader downloader) {
+		this.downloader = downloader;
+		state = DownloadTaskState.RESTORED;
+		action = DownloadTaskAction.RESTORE;
 	}
 
 
 	public void onStore() {
-
+		state = DownloadTaskState.STORED;
+		action = DownloadTaskAction.STORE;
 	}
 
 
@@ -351,6 +360,11 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 
+	public boolean isPaused() {
+		return isPaused;
+	}
+
+
 	@Override
 	public long getLength() {
 		return length;
@@ -377,7 +391,12 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	@Override
 	public File getDownloadPath() {
-		return downloadPath;
+		try {
+			return downloadPath.getCanonicalFile();
+		}
+		catch (Exception e) {
+			return downloadPath;
+		}
 	}
 
 

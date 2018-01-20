@@ -12,10 +12,19 @@ import java.util.List;
 public interface DownloadTaskInfoStorage {
 
 
-	List<DownloadTask> read() throws Exception;
+	List<DownloadTask> readList() throws Exception;
 
 
-	void write(List<DownloadTask> tasks) throws Exception;
+	List<DownloadTask> readList(File location) throws Exception;
+
+
+	DownloadTask read(File infoFile) throws Exception;
+
+
+	void writeList(List<DownloadTask> tasks) throws Exception;
+
+
+	void writeList(List<DownloadTask> tasks, File location) throws Exception;
 
 
 	void write(DownloadTask task) throws Exception;

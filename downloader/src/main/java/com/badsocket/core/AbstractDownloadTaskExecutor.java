@@ -68,7 +68,9 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	@Override
 	public void cancel(Task t) {
 		Future<Task> future = futureMap.get(t);
-		future.cancel(true);
+		if (future != null) {
+			future.cancel(true);
+		}
 	}
 
 

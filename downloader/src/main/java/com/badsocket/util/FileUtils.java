@@ -23,19 +23,28 @@ import java.nio.file.FileAlreadyExistsException;
 public abstract class FileUtils {
 
 	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
-		ReadableByteChannel channel = Channels.newChannel(src);
-		ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
-		WritableByteChannel dstChannel = Channels.newChannel(dst);
-		while (channel.read(buffer) != -1) {
-			buffer.flip();
-			dstChannel.write(buffer);
-			buffer.clear();
+		ReadableByteChannel channel = null;
+		WritableByteChannel dstChannel = null;
+		try {
+			channel = Channels.newChannel(src);
+			dstChannel = Channels.newChannel(dst);
+			ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
+			while (channel.read(buffer) != -1) {
+				buffer.flip();
+				dstChannel.write(buffer);
+				buffer.clear();
+			}
 		}
-
-		channel.close();
-		dstChannel.close();
-		src.close();
-		dst.close();
+		finally {
+			if (channel != null) {
+				channel.close();
+			}
+			if (dstChannel != null) {
+				dstChannel.close();
+			}
+			src.close();
+			dst.close();
+		}
 	}
 
 

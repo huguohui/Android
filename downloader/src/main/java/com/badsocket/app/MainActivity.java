@@ -127,7 +127,10 @@ public class MainActivity
     }
 
 
-    void toggleTaskState(final DownloadTask task) {
+    void taskSwitch(final DownloadTask task) {
+		if (task.isCompleted()) {
+			return;
+		}
 		if (threadFactory != null) {
 			threadFactory.createThread(() -> {
 				try {
@@ -136,7 +139,8 @@ public class MainActivity
 						downloader.pauseTask(task);
 					}
 					else if (state == DownloadTask.DownloadTaskState.PAUSED
-							|| state == DownloadTask.DownloadTaskState.STOPED) {
+							|| state == DownloadTask.DownloadTaskState.STOPED
+							|| state == DownloadTask.DownloadTaskState.RESTORED) {
 						downloader.resumeTask(task);
 					}
 				}
@@ -156,7 +160,7 @@ public class MainActivity
 				break;
 			case R.id.control_button:
 				DownloadTask task = (DownloadTask) v.getTag();
-				toggleTaskState(task);
+				taskSwitch(task);
 				break;
 		}
 	}
@@ -164,7 +168,7 @@ public class MainActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		toggleTaskState(tasks.get(position));
+		taskSwitch(tasks.get(position));
 	}
 
 
@@ -181,6 +185,7 @@ public class MainActivity
 			isServiceStarted = true;
 			if (!isServiceConnected) {
 				bindService(new Intent(this, DownloadService.class), serviceConnection, BIND_AUTO_CREATE);
+				isServiceConnected = true;
 			}
 		}
 	}
@@ -299,10 +304,22 @@ public class MainActivity
 */
 
 
-	public void onBackPressed() {
+	void toHome() {
 		Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		intent.addCategory(Intent.CATEGORY_HOME);
 		startActivity(intent);
+	}
+
+
+	public void onBackPressed() {
+		if (downloader != null) {
+			try {
+				downloader.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		finish();
 	}
 
 }

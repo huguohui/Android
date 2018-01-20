@@ -3,6 +3,7 @@ package com.badsocket.core;
 import com.badsocket.net.DownloadAddress;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -10,6 +11,10 @@ import java.net.URL;
  */
 
 public interface DownloadTask extends Task, DownloadTaskLifecycle {
+
+
+	boolean isPaused();
+
 
 	int getSpeedPerSecond();
 
@@ -62,7 +67,7 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	void addOnDownloadTaskResumeListener(OnDownloadTaskResumeListener listener);
 
 
-	public static class DownloadSection {
+	public static class DownloadSection implements Serializable {
 
 		protected int index;
 
@@ -142,11 +147,13 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 	}
 
 
-	interface DownloadAction {
+	interface DownloadTaskAction {
 		int START = 0,
 			PAUSE = 1,
 			RESUME = 2,
-			STOP = 3;
+			STOP = 3,
+			STORE = 4,
+			RESTORE = 5;
 	}
 
 
@@ -157,7 +164,9 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 			PAUSING = 7,
 			RESUMING = 8,
 			STOPPING = 9,
-			STARTING = 10;
+			STARTING = 10,
+			STORED = 11,
+			RESTORED = 12;
 	}
 
 

@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.ConfigReader;
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.manager.FileManager;
 import com.badsocket.util.FileUtils;
 import com.badsocket.util.Log;
@@ -37,10 +38,13 @@ public class Bootstrap extends Application {
 
 	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-
 	public static final String[] ASSETS_DIRS = {
-			"configs"
+			"configs",
+			"plugins",
+			"icons",
+			"history"
 	};
+
 
 	public void onCreate() {
 		androidContext = this;
@@ -84,11 +88,11 @@ public class Bootstrap extends Application {
 
 		for (String assetsDir : ASSETS_DIRS) {
 			try {
+				File extractDir = new File(rootPath + DS + assetsDir);
+				if (!extractDir.exists()) {
+					extractDir.mkdirs();
+				}
 				for (String file : assetManager.list(assetsDir)) {
-					File extractDir = new File(rootPath + DS + assetsDir);
-					if (!extractDir.exists()) {
-						extractDir.mkdirs();
-					}
 					FileUtils.copyTo(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
 				}
 			} catch (Exception e) {

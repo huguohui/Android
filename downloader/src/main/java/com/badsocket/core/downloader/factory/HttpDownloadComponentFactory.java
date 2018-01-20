@@ -2,7 +2,7 @@ package com.badsocket.core.downloader.factory;
 
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.HttpDownloadTask;
+import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
@@ -15,6 +15,7 @@ import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.http.HttpRequest;
+import com.badsocket.net.http.HttpResponse;
 import com.badsocket.util.Log;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 	public Request createRequest(SocketAddress d) throws IOException {
 		DownloadAddress address = (DownloadAddress) d;
 		BaseHttpRequest hr = new BaseHttpRequest();
-		hr.setAddress(address);
+		hr.open(address);
 		return hr;
 	}
 
@@ -41,7 +42,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 
 	@Override
 	public Request createRequest(Response i) throws IOException {
-		return null;
+		return createRequest(new DownloadAddress(((HttpResponse) i).getURL().toExternalForm()));
 	}
 
 

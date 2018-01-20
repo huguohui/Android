@@ -1,7 +1,10 @@
-package com.badsocket.core;
+package com.badsocket.core.downloader;
 
-import com.badsocket.core.downloader.DownloadTaskDescriptor;
-import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.AbstractDownloadTask;
+import com.badsocket.core.DownloadComponentFactory;
+import com.badsocket.core.Protocols;
+import com.badsocket.core.Task;
+import com.badsocket.core.ThreadExecutor;
 import com.badsocket.net.AsyncReceiver;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.Receiver;
@@ -27,15 +30,17 @@ public class HttpDownloadTask
 		extends AbstractDownloadTask
 {
 
-	transient protected RequestGroup requestGroup = new RequestGroup();
+	private static final long serialVersionUID = 5175561149447466807L;
 
-	transient protected ReceiverGroup receiverGroup = new ReceiverGroup();
+	transient protected RequestGroup requestGroup;
 
-	transient protected List<Future<Long>> receiverFutures = new ArrayList<>();
+	transient protected ReceiverGroup receiverGroup;
+
+	transient protected List<Future<Long>> receiverFutures;
 
 	transient protected DownloadComponentFactory downloadComponentFactory;
 
-	public static final Protocol PROTOCOL = Protocol.HTTP;
+	public static Protocols PROTOCOL;
 
 
 	public HttpDownloadTask(Downloader c, DownloadAddress url) {
@@ -57,13 +62,19 @@ public class HttpDownloadTask
 	public HttpDownloadTask(Downloader c, DownloadTaskDescriptor d, Response r) {
 		super(c, d, r);
 		init();
-		notifyTaskCreated();
 	}
 
 
 	protected void init() {
+		PROTOCOL = Protocols.HTTP;
 		downloadComponentFactory = downloader.getProtocolHandler(PROTOCOL)
 				.downloadComponentFactory();
+		requestGroup = new RequestGroup();
+		receiverGroup = new ReceiverGroup();
+		receiverFutures = new ArrayList<>();
+		context = downloader.getDownloaderContext();
+		isRunning = false;
+		isStoped = true;
 	}
 
 
@@ -139,7 +150,8 @@ public class HttpDownloadTask
 
 	protected void onDownloadStarted() throws Exception {
 		state = DownloadTaskState.RUNNING;
-		if (action == DownloadAction.START) {
+		isRunning = true;
+		if (action == DownloadTaskAction.START) {
 			notifyTaskStarted();
 		}
 		else {
@@ -149,6 +161,7 @@ public class HttpDownloadTask
 
 
 	protected synchronized void startDownload() throws Exception {
+		prepare();
 		createDownloadRequests();
 		createDownloadReceiver();
 		downloadDataByReceiver();
@@ -189,7 +202,7 @@ public class HttpDownloadTask
 		for (DownloadSection section : downloadSections) {
 			Log.debug(section);
 		}
-		if (action == DownloadAction.PAUSE) {
+		if (action == DownloadTaskAction.PAUSE) {
 			state = DownloadTaskState.PAUSED;
 			notifyTaskPaused();
 		}
@@ -213,12 +226,14 @@ public class HttpDownloadTask
 		Receiver[] receivers = receiverGroup.getReceivers();
 		Receiver receiver = null;
 		long perReceivedLength = 0,  sectionDownloaded = 0;
-		for (int i = 0; i < receivers.length; i++) {
-			receiver = receivers[i];
-			if (receiver != null) {
-				perReceivedLength = receiver.getReceivedLengthFromLast();
-				sectionDownloaded = downloadSections[i].getDownloadedLength();
-				downloadSections[i].setDownloadedLength(sectionDownloaded + perReceivedLength);
+		if (receivers != null) {
+			for (int i = 0; i < receivers.length; i++) {
+				receiver = receivers[i];
+				if (receiver != null) {
+					perReceivedLength = receiver.getReceivedLengthFromLast();
+					sectionDownloaded = downloadSections[i].getDownloadedLength();
+					downloadSections[i].setDownloadedLength(sectionDownloaded + perReceivedLength);
+				}
 			}
 		}
 	}
@@ -226,8 +241,10 @@ public class HttpDownloadTask
 
 	protected void updateProgressInfo() {
 		long totalReceivedLength = 0;
-		for (int i = 0; i < downloadSections.length; i++) {
-			totalReceivedLength += downloadSections[i].getDownloadedLength();
+		if (downloadSections != null) {
+			for (int i = 0; i < downloadSections.length; i++) {
+				totalReceivedLength += downloadSections[i].getDownloadedLength();
+			}
 		}
 		if (totalReceivedLength > 0) {
 			downloadedLength = totalReceivedLength;
@@ -245,10 +262,10 @@ public class HttpDownloadTask
 
 	protected void checkDownloadStatus() {
 		if (length < 0 || progress >= 1f) {
-			isFinished = true;
+			isCompleted = true;
 		}
 
-		if (isFinished) {
+		if (isCompleted) {
 			onTaskFinish();
 		}
 	}
@@ -261,7 +278,6 @@ public class HttpDownloadTask
 
 
 	public void onTaskFinish() {
-		Log.debug("Finished download task.");
 		try {
 			super.onTaskFinish();
 			afterTaskComplete();
@@ -275,8 +291,8 @@ public class HttpDownloadTask
 	@Override
 	public void onCreate(TaskExtraInfo info) throws Exception {
 		this.extraInfo = info;
-		this.prepare();
 		super.onCreate(info);
+		notifyTaskCreated();
 	}
 
 
@@ -311,8 +327,9 @@ public class HttpDownloadTask
 
 
 	@Override
-	public void onRestore() {
-		super.onRestore();
+	public void onRestore(Downloader downloader) {
+		super.onRestore(downloader);
+		init();
 	}
 
 
@@ -341,13 +358,14 @@ public class HttpDownloadTask
 	public Task call() {
 		try {
 			switch (action) {
-				case DownloadAction.PAUSE:
-				case DownloadAction.STOP:
+				case DownloadTaskAction.PAUSE:
+				case DownloadTaskAction.STOP:
 					stopDownload();
 					break;
 
-				case DownloadAction.START:
-				case DownloadAction.RESUME:
+				case DownloadTaskAction.START:
+				case DownloadTaskAction.RESUME:
+				case DownloadTaskAction.RESTORE:
 					startDownload();
 					break;
 			}

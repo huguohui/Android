@@ -1,10 +1,14 @@
-package com.badsocket.core;
+package com.badsocket.core.downloader;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 
+import com.badsocket.core.Context;
+import com.badsocket.core.GenericDownloadTaskExecutor;
+import com.badsocket.core.NetworkType;
+import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
@@ -35,7 +39,11 @@ public class DownloaderContext extends Context {
 
 	public static final String CONFIG_DIR = "configs";
 
-	public static final String ICON_DIR = "icon";
+	public static final String ICON_DIR = "icons";
+
+	public static final String PLUGIN_DIR = "plugins";
+
+	public static final String HISTORY_DIR = "history";
 
 	public static String HOME_DIRECTORY;
 

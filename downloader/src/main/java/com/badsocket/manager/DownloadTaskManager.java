@@ -4,6 +4,9 @@ package com.badsocket.manager;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Task;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Abstracts for manager of download task.
  */
@@ -17,6 +20,12 @@ public interface DownloadTaskManager extends Manager<DownloadTask> {
 
 	
 	public DownloadTask getTask(int i);
+
+
+	public boolean addTasks(Collection<? extends DownloadTask> tasks);
+
+
+	public boolean addTask(DownloadTask task);
 
 
 	public abstract DownloadTask getTaskById(int id);
@@ -69,5 +78,10 @@ public interface DownloadTaskManager extends Manager<DownloadTask> {
 
 	public abstract int getParallelTaskNum();
 
+
+	public abstract List<DownloadTask> getUncompleteTasks();
+
+
+	public abstract List<DownloadTask> getCompletedTasks();
 
 }

@@ -7,13 +7,13 @@ package com.badsocket.core;
 public interface ProtocolHandler {
 
 
-	Protocol getProtocol();
+	Protocols getProtocol();
 
 
 	DownloadComponentFactory downloadComponentFactory();
 
 
-	boolean isSupport(Protocol protocol);
+	boolean isSupport(Protocols protocol);
 
 
 }

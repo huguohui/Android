@@ -3,12 +3,10 @@ package com.badsocket.core.downloader;
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.DownloadTaskExecutor;
-import com.badsocket.core.DownloaderContext;
-import com.badsocket.core.DownloaderWatcher;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.Protocol;
 import com.badsocket.core.ProtocolHandler;
+import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
@@ -19,6 +17,8 @@ import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.util.CollectionUtils;
+import com.badsocket.util.Log;
+import com.badsocket.util.TimeCounter;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
@@ -57,7 +57,7 @@ public class InternetDownloader
 
 	protected DownloadTaskManager taskManager;
 
-	protected Map<Protocol, ProtocolHandler> protocolHandlers = new HashMap<>();
+	protected Map<Protocols, ProtocolHandler> protocolHandlers = new HashMap<>();
 
 	protected Context context;
 
@@ -81,11 +81,10 @@ public class InternetDownloader
 	public InternetDownloader(Context context) {
 		this.context = context;
 		androidContext = context.getAndroidContext();
-		init();
 	}
 
 
-	protected void init() {
+	protected void initEnvironment() {
 		worker = new AsyncWorker(threadManager);
 		taskManager = DefaultDownloadTaskManager.getInstance(this);
 		config = context.getDownloadConfig();
@@ -94,21 +93,34 @@ public class InternetDownloader
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
 		monitor = new DownloadMonitor(this, 1000);
-		downloadTaskInfoStorage = new FileDownloadTaskInfoStorage(new File(defaultDownloadPath));
+		downloadTaskInfoStorage = new FileDownloadTaskInfoStorage(
+				new File(DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR));
 
-		monitor.monitor(this);
 		taskManager.setAutoStart(true);
-		monitor.addWatcher(new DownloaderWatcher());
+		monitor.addWatcher(new DownloaderWatcher(this));
+		monitor.monitor(this);
 	}
 
 
-	protected void loadTasks() {
-		try {
-			taskManager.addAll(downloadTaskInfoStorage.read());
+	protected void loadTasks() throws Exception {
+		List<DownloadTask> tasks = downloadTaskInfoStorage.readList();
+		for (DownloadTask task : tasks) {
+			taskManager.addTask(task);
+			task.onRestore(this);
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+
+
+	}
+
+
+	protected void initTasks() throws Exception {
+		loadTasks();
+	}
+
+
+	public void init() throws Exception {
+		initEnvironment();
+		initTasks();
 	}
 
 
@@ -122,12 +134,13 @@ public class InternetDownloader
 	}
 
 
-	protected boolean isSupportProtocol(Protocol protocol) {
+	protected boolean isSupportProtocol(Protocols protocol) {
 		return protocolHandlers.get(protocol) != null;
 	}
 
 
-	protected DownloadTask createTask(DownloadTaskDescriptor descriptor, ProtocolHandler handler) throws IOException {
+	protected DownloadTask createTask(DownloadTaskDescriptor descriptor, ProtocolHandler handler)
+			throws IOException {
 		DownloadTask task = handler.downloadComponentFactory().creatDownloadTask(
 				this, descriptor, DownloadHelper.fetchResponseByDescriptor(this, descriptor, handler));
 		task.addOnTaskFinishListener(this);
@@ -143,7 +156,7 @@ public class InternetDownloader
 
 	public DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception {
 		String protocolName = desc.getAddress().getProtocol();
-		Protocol protocol = Protocol.getProtocol(protocolName);
+		Protocols protocol = Protocols.getProtocol(protocolName);
 		DownloadTask task = null;
 		if (!isSupportProtocol(protocol)) {
 			throw new UnsupportedProtocolException("暂不支持此下载协议:" + protocolName.toUpperCase() + "！");
@@ -159,6 +172,7 @@ public class InternetDownloader
 
 		task.onCreate(desc.getTaskExtraInfo());
 		taskManager.add(task);
+		monitor.monitor(this);
 		return task;
 	}
 
@@ -197,7 +211,8 @@ public class InternetDownloader
 
 
 	public void stop() throws Exception {
-		taskManager.startAll();
+		taskManager.stopAll();
+		monitor.stop();
 	}
 
 
@@ -301,7 +316,7 @@ public class InternetDownloader
 	}
 
 
-	public void addProtocolHandler(Protocol protocol, ProtocolHandler handler) {
+	public void addProtocolHandler(Protocols protocol, ProtocolHandler handler) {
 		protocolHandlers.put(protocol, handler);
 	}
 
@@ -338,17 +353,17 @@ public class InternetDownloader
 
 	@Override
 	public DownloadTaskInfoStorage getDownloadTaskStorage() {
-		return null;
+		return downloadTaskInfoStorage;
 	}
 
 
 	@Override
 	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
-
+		downloadTaskInfoStorage = storage;
 	}
 
 
-	public ProtocolHandler getProtocolHandler(Protocol p) {
+	public ProtocolHandler getProtocolHandler(Protocols p) {
 		return protocolHandlers.get(p);
 	}
 

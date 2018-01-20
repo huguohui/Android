@@ -6,7 +6,7 @@ import com.badsocket.core.Controlable;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.Protocol;
+import com.badsocket.core.Protocols;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Task;
 
@@ -20,6 +20,9 @@ public interface Downloader extends Controlable {
 	String UNCOMPLETE_DOWNLAOD_TASK_SUFFIX = ".udt";
 
 	String DOWNLOAD_TASK_INFO_SUFFIX = ".dti";
+
+
+	public void init() throws Exception;
 
 
 	boolean isTaskExists(Task task);
@@ -92,10 +95,10 @@ public interface Downloader extends Controlable {
 	Monitor getMonitor();
 
 
-	void addProtocolHandler(Protocol ptl, ProtocolHandler ph);
+	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
 
 
-	ProtocolHandler getProtocolHandler(Protocol ptl);
+	ProtocolHandler getProtocolHandler(Protocols ptl);
 
 
 	void setParallelTaskNum(int num);

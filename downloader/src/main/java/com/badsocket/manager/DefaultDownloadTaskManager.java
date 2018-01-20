@@ -7,6 +7,7 @@ import com.badsocket.core.downloader.Downloader;
 import com.badsocket.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -31,9 +32,9 @@ public class DefaultDownloadTaskManager
 
 	protected int parallelTaskNum = MAX_PARALELL_TASK;
 
-	protected List<DownloadTask> finishedTasks = new ArrayList<>();
+	protected List<DownloadTask> completedTasks = new ArrayList<>();
 
-	protected List<DownloadTask> runningTasks = new ArrayList<>();
+	protected List<DownloadTask> uncompleteTasks = new ArrayList<>();
 
 	protected boolean isAutoStart = false;
 
@@ -81,6 +82,7 @@ public class DefaultDownloadTaskManager
 		int needStartTask = parallelTaskNum - runningTaskNum;
 		List<DownloadTask> tasks = null;
 		if (needStartTask > 0 && (tasks = getRunnableTask()).size() != 0) {
+			uncompleteTasks.addAll(tasks);
 			taskControll(Controller.START, tasks.subList(0, needStartTask));
 			runningTaskNum += needStartTask;
 		}
@@ -92,6 +94,7 @@ public class DefaultDownloadTaskManager
 
 	protected void executeTask(DownloadTask task) throws Exception {
 		taskExecutor.start(task);
+		uncompleteTasks.add(task);
 	}
 
 
@@ -214,6 +217,18 @@ public class DefaultDownloadTaskManager
 
 
 	@Override
+	public List<DownloadTask> getUncompleteTasks() {
+		return uncompleteTasks;
+	}
+
+
+	@Override
+	public List<DownloadTask> getCompletedTasks() {
+		return completedTasks;
+	}
+
+
+	@Override
 	public boolean hasTask(Task task) {
 		return mList.contains(task);
 	}
@@ -232,6 +247,22 @@ public class DefaultDownloadTaskManager
 
 			return mList.get(i);
 		}
+	}
+
+
+	@Override
+	public boolean addTasks(Collection<? extends DownloadTask> tasks) {
+		for (DownloadTask task : tasks) {
+			addTask(task);
+		}
+		return true;
+	}
+
+
+	@Override
+	public synchronized boolean addTask(DownloadTask task) {
+		mList.add(task);
+		return task.isCompleted() ? completedTasks.add(task) : uncompleteTasks.add(task);
 	}
 
 
@@ -296,12 +327,12 @@ public class DefaultDownloadTaskManager
 
 	public void onTaskFinish(Task t)  {
 		synchronized (mList) {
-			mList.remove(t);
+			uncompleteTasks.remove(t);
 			taskExecutor.remove(t);
 			runningTaskNum--;
 		}
-		synchronized (finishedTasks) {
-			finishedTasks.add((DownloadTask) t);
+		synchronized (completedTasks) {
+			completedTasks.add((DownloadTask) t);
 		}
 		try {
 			startRemainTask();

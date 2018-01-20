@@ -66,7 +66,7 @@ public interface Task
 	boolean isRunning();
 
 
-	boolean isFinished();
+	boolean isCompleted();
 
 
 	int getState();

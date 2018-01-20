@@ -7,11 +7,9 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.badsocket.R;
-import com.badsocket.core.DownloaderContext;
-import com.badsocket.core.config.Config;
-import com.badsocket.core.Context;
+import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.downloader.InternetDownloader;
-import com.badsocket.manager.Manager;
 
 /**
  * Created by skyrim on 2017/10/10.
@@ -33,12 +31,10 @@ public class DownloadService extends Service {
 				.setContentText("下载任务进行中");
 		Notification notification = mNotifyBuilder.build();
 		this.startForeground(0xffff, notification);
-		Log.e(TAG, "onCreate() executed");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.e(TAG, "onStartCommand() executed");
 		super.onStartCommand(intent, flags, startId);
 		return START_REDELIVER_INTENT;
 	}
@@ -46,19 +42,23 @@ public class DownloadService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.e(TAG, "onDestroy() executed");
 	}
 
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.e(TAG, "onBind() executed");
-		return new DownloadAdapter(new InternetDownloader(new DownloaderContext(this)));
+		DownloadAdapter downloader = null;
+		try {
+			downloader = new DownloadAdapter(new InternetDownloader(new DownloaderContext(this)));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return downloader;
 	}
 
 
 	public boolean onUnbind(Intent intent) {
-		Log.e(TAG, "onUnbind() executed");
 		super.onUnbind(intent);
 		return false;
 	}

@@ -3,15 +3,15 @@ package com.badsocket.core;
 /**
  * Common protocol. 
  */
-public enum Protocol {
+public enum Protocols {
 
-	/** HyperText Transfer Protocol. */
+	/** HyperText Transfer Protocols. */
 	HTTP,
 
-	/** Hyper Text Transfer Protocol over Secure Socket Layer. */
+	/** Hyper Text Transfer Protocols over Secure Socket Layer. */
 	HTTPS,
 	
-	/** File Transfer Protocol. */
+	/** File Transfer Protocols. */
 	FTP,
 
 	MAGANET,
@@ -19,7 +19,7 @@ public enum Protocol {
 	ED2K;
 
 
-	public static Protocol getProtocol(String protocolName) {
+	public static Protocols getProtocol(String protocolName) {
 		try {
 			return valueOf(protocolName.toUpperCase());
 		}

@@ -19,7 +19,6 @@ public abstract class DownloadHelper {
 		DownloadComponentFactory factory = handler.downloadComponentFactory();
 		Request req = factory.createRequest(desc);
 		Response rep = null;
-		req.open(desc.getAddress());
 		req.send();
 		rep = req.response();
 		req.close();
@@ -36,7 +35,6 @@ public abstract class DownloadHelper {
 		context.getThreadFactory().createThread(() -> {
 			Response rep = null;
 			try {
-				req.open(desc.getAddress());
 				req.send();
 				rep = req.response();
 				req.close();

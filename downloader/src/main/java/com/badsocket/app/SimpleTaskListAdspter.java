@@ -74,18 +74,24 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 			int resourceId = R.drawable.paused;
 			switch (task.getState()) {
 				case DownloadTask.DownloadTaskState.RUNNING:
+				case DownloadTask.DownloadTaskState.STARTING:
 					resourceId = R.drawable.downloading;
 					break;
 
 				case DownloadTask.DownloadTaskState.PAUSED:
+				case DownloadTask.DownloadTaskState.PAUSING:
 					resourceId = R.drawable.paused;
 					break;
 
 				case DownloadTask.DownloadTaskState.STOPED:
+				case DownloadTask.DownloadTaskState.STOPPING:
 					resourceId = R.drawable.stoped;
 					break;
 			}
 
+			if (task.isCompleted()) {
+				controlButton.setVisibility(View.GONE);
+			}
 			controlButton.setBackgroundResource(resourceId);
 			controlButton.setTag(task);
 			controlButton.setOnClickListener((View.OnClickListener) context);
