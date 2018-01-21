@@ -126,4 +126,14 @@ public abstract class AbstractManager<T> implements Manager<T> {
     public Iterator<T> iterator() {
         return mList.iterator();
     }
+
+
+    public void finalize() {
+    	if (mList != null) {
+			synchronized (mList) {
+				mList.clear();
+				mList = null;
+			}
+		}
+	}
 }

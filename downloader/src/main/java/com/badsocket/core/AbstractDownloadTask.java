@@ -101,6 +101,9 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		this.priority = d.getPriority();
 		this.extraInfo = d.getTaskExtraInfo();
 		this.response = r;
+		if (r != null) {
+			fetchInfoFromResponse();
+		}
 	}
 
 
@@ -247,26 +250,18 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 
 	public void onStop() throws Exception {
-		isStoped = true;
-		isRunning = false;
 		state = DownloadTaskState.STOPPING;
 		action = DownloadTaskAction.STOP;
 	}
 
 
 	public void onPause() throws Exception {
-		isPaused = true;
-		isRunning = false;
-		isStoped = true;
 		state = DownloadTaskState.PAUSING;
 		action = DownloadTaskAction.PAUSE;
 	}
 
 
 	public void onResume() throws Exception {
-		isPaused = false;
-		isRunning = true;
-		isStoped = false;
 		state = DownloadTaskState.RESUMING;
 		action = DownloadTaskAction.RESUME;
 	}

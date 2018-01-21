@@ -136,7 +136,7 @@ public class HttpHeader extends Header {
 	 *
 	 * @param data Header content.
 	 * @throws NullPointerException If content is null.
-	 * @throws IOException          If can't read content.
+	 * @throws IOException          If can't readTask content.
 	 */
 	protected void parseContent(Reader data) throws NullPointerException, IOException {
 		initParser();
@@ -148,7 +148,7 @@ public class HttpHeader extends Header {
 	 * Set header content by input stream.
 	 *
 	 * @param data Header content.
-	 * @throws IOException          If can't read content.
+	 * @throws IOException          If can't readTask content.
 	 * @throws NullPointerException If content is null.
 	 */
 	protected void parseContent(InputStream data) throws IOException, NullPointerException {

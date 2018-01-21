@@ -214,4 +214,10 @@ public class DownloaderContext extends Context {
 	}
 
 
+	@Override
+	public void finalize() {
+		
+	}
+
+
 }

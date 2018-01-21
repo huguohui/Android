@@ -29,6 +29,7 @@ import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
+import com.badsocket.util.TimeCounter;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity
 		extends AppCompatActivity
-		implements View.OnClickListener, ListView.OnItemClickListener
+		implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener
 {
 
 	@BindView(R.id.listView)
@@ -100,12 +101,15 @@ public class MainActivity
 
 	};
 
+
 	class MessageHanlder extends Handler {
 
 		public void handleMessage(Message msg) {
-			tasks.clear();
-			tasks.addAll((List<DownloadTask>) msg.obj);
-			adapter.notifyDataSetChanged();
+			if (tasks != null) {
+				tasks.clear();
+				tasks.addAll((List<DownloadTask>) msg.obj);
+				adapter.notifyDataSetChanged();
+			}
 		}
 
 	}
@@ -114,6 +118,7 @@ public class MainActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		startServiceAsync();
         setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		PermissionChecker.requestPermissons(this);
@@ -123,6 +128,7 @@ public class MainActivity
 		watcher = new DownloadTaskListWatcher(handler);
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);
+		listView.setOnItemLongClickListener(this);
 		btnAdd.setOnClickListener(this);
     }
 
@@ -172,10 +178,22 @@ public class MainActivity
 	}
 
 
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		downloader.deleteTask(tasks.get(position));
+		return false;
+	}
+
 
 	public void onStart() {
 		super.onStart();
-		startService();
+	}
+
+
+	private void startServiceAsync() {
+		new Thread(() -> {
+			startService();
+		}).start();
 	}
 
 
@@ -221,10 +239,10 @@ public class MainActivity
             case R.id.action_new_task:
                 final EditText ev = new EditText(this);
                 ev.setText(
-                		/*"https://issuecdn.baidupcs.com/issue/netdisk/apk/BaiduNetdisk_8.2.0.apk"*/
-					"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n"/* +
-					"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
-					"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
+                		"http://issuecdn.baidupcs.com/issue/netdisk/apk/BaiduNetdisk_8.2.0.apk"
+						/*"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" +
+						"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
+						"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
 				);
 
                 new AlertDialog.Builder(this)
@@ -304,7 +322,7 @@ public class MainActivity
 */
 
 
-	void toHome() {
+	void toDesktop() {
 		Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		intent.addCategory(Intent.CATEGORY_HOME);
 		startActivity(intent);
@@ -314,7 +332,7 @@ public class MainActivity
 	public void onBackPressed() {
 		if (downloader != null) {
 			try {
-				downloader.stop();
+				downloader.exit();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

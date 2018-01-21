@@ -151,6 +151,8 @@ public class HttpDownloadTask
 	protected void onDownloadStarted() throws Exception {
 		state = DownloadTaskState.RUNNING;
 		isRunning = true;
+		isPaused = false;
+		isStoped = false;
 		if (action == DownloadTaskAction.START) {
 			notifyTaskStarted();
 		}
@@ -202,12 +204,16 @@ public class HttpDownloadTask
 		for (DownloadSection section : downloadSections) {
 			Log.debug(section);
 		}
+
+		isRunning = false;
 		if (action == DownloadTaskAction.PAUSE) {
+			isPaused = true;
 			state = DownloadTaskState.PAUSED;
 			notifyTaskPaused();
 		}
 		else {
 			state = DownloadTaskState.STOPED;
+			isStoped = true;
 			notifyTaskStoped();
 		}
 	}
@@ -337,10 +343,8 @@ public class HttpDownloadTask
 	public void update() {
 		super.update();
 		try {
-			if (state != DownloadTaskState.UNSTART && state != DownloadTaskState.PREPARING) {
-				updateDownloadInfo();
-				checkDownloadStatus();
-			}
+			updateDownloadInfo();
+			checkDownloadStatus();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -356,17 +360,22 @@ public class HttpDownloadTask
 
 	@Override
 	public Task call() {
+
 		try {
 			switch (action) {
 				case DownloadTaskAction.PAUSE:
 				case DownloadTaskAction.STOP:
-					stopDownload();
+					if (isRunning) {
+						stopDownload();
+					}
 					break;
 
 				case DownloadTaskAction.START:
 				case DownloadTaskAction.RESUME:
 				case DownloadTaskAction.RESTORE:
-					startDownload();
+					if (isStoped || isPaused || !isRunning) {
+						startDownload();
+					}
 					break;
 			}
 		}

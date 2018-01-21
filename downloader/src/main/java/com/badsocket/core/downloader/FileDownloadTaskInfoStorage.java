@@ -2,9 +2,9 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
 import com.badsocket.util.FileUtils;
-import com.badsocket.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,10 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 
 	protected File location;
 
+	protected List<DownloadTaskInfoListItem> oldTaskInfoItems = new ArrayList<>();
+
 	protected List<DownloadTask> tasks = new ArrayList<>();
+
 
 	protected static class DownloadTaskInfoListItem implements Serializable {
 		int taskIndex;
@@ -37,7 +40,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 	}
 
 
-	public DownloadTask read(File file) throws Exception {
+	public DownloadTask readTask(File file) throws Exception {
 		if (file.exists()) {
 			return FileUtils.readObject(file);
 		}
@@ -52,14 +55,26 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		for (int i = 0; i < tasks.size(); i++) {
 			DownloadTask task = tasks.get(i);
 			if (task != null) {
-				taskInfoItems.add(new DownloadTaskInfoListItem(
+				DownloadTaskInfoListItem item = new DownloadTaskInfoListItem(
 						i + 1, task.getDownloadPath() + DownloaderContext.DS + task.getName()
-								+ Downloader.DOWNLOAD_TASK_INFO_SUFFIX));
-				write(task);
+								+ Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
+
+				taskInfoItems.add(item);
+				writeTask(task);
 			}
 		}
 
-		FileUtils.writeObject(taskInfoItems, taskListFile);
+		boolean isUpdate = false;
+		if (oldTaskInfoItems.size() != taskInfoItems.size()
+				|| !oldTaskInfoItems.containsAll(taskInfoItems)) {
+			isUpdate = true;
+		}
+
+		if (isUpdate) {
+			oldTaskInfoItems.clear();
+			oldTaskInfoItems.addAll(taskInfoItems);
+			FileUtils.writeObject(taskInfoItems, taskListFile);
+		}
 	}
 
 
@@ -82,7 +97,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 			List<DownloadTaskInfoListItem> items = FileUtils.readObject(listFile);
 			if (items != null && items.size() != 0) {
 				for (DownloadTaskInfoListItem item : items) {
-					DownloadTask task = read(new File(item.infoLocation));
+					DownloadTask task = readTask(new File(item.infoLocation));
 					if (task != null) {
 						tasks.add(task);
 					}
@@ -95,7 +110,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 
 
 	@Override
-	public void write(DownloadTask task) throws Exception {
+	public void writeTask(DownloadTask task) throws Exception {
 		if (task != null && task.isRunning()) {
 			File file = new File(task.getDownloadPath(), task.getName() + Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
 			FileUtils.writeObject(task, file);
@@ -112,5 +127,10 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 	@Override
 	public void setLocation(File location) {
 		this.location = location;
+	}
+
+
+	@Override
+	public void finish() {
 	}
 }

@@ -30,6 +30,6 @@ public class DownloadMonitor extends AbstractMonitor {
 
 	@Override
 	public boolean isStoped() {
-		return false;
+		return isStoped;
 	}
 }

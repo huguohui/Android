@@ -62,7 +62,7 @@ public class SimpleFileManager extends AbstractFileManager {
 			msg = String.format("No such a directory %s!", dir.getAbsoluteFile());
 		}
 		else if (!dir.canRead()) {
-			msg = String.format("The directory %s can't be read!", dir.getAbsoluteFile());
+			msg = String.format("The directory %s can't be readTask!", dir.getAbsoluteFile());
 		}
 
 		if (msg.length() != 0) {
@@ -114,7 +114,7 @@ public class SimpleFileManager extends AbstractFileManager {
 
 		if (obj.isDirectory()) {
 			if (!obj.canWrite())
-				throw new IOException("Can't delete this directory cause the directory is read-only!");
+				throw new IOException("Can't delete this directory cause the directory is readTask-only!");
 
 			File[] deletedFiles = obj.listFiles();
 			for (File file : deletedFiles) {

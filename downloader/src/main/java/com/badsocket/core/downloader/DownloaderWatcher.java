@@ -33,9 +33,7 @@ public class DownloaderWatcher implements MonitorWatcher {
 
 
 	protected void recordTasks(List<DownloadTask> tasks) throws Exception {
-		if (tasks.size() != 0) {
-			taskInfoStorage.writeList(tasks);
-		}
+		taskInfoStorage.writeList(tasks);
 	}
 
 

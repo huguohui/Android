@@ -18,7 +18,7 @@ public interface DownloadTaskInfoStorage {
 	List<DownloadTask> readList(File location) throws Exception;
 
 
-	DownloadTask read(File infoFile) throws Exception;
+	DownloadTask readTask(File infoFile) throws Exception;
 
 
 	void writeList(List<DownloadTask> tasks) throws Exception;
@@ -27,13 +27,16 @@ public interface DownloadTaskInfoStorage {
 	void writeList(List<DownloadTask> tasks, File location) throws Exception;
 
 
-	void write(DownloadTask task) throws Exception;
+	void writeTask(DownloadTask task) throws Exception;
 
 
 	File location();
 
 
 	void setLocation(File location);
+
+
+	void finish();
 
 
 }

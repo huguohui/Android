@@ -13,6 +13,7 @@ import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.DownloadTaskInfoStorage;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.HttpProtocolHandler;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.core.downloader.factory.HttpDownloadComponentFactory;
 
@@ -29,24 +30,6 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 	public DownloadAdapter(Downloader downloader) throws Exception {
 		this.downloader = downloader;
-		addProtocolHandler(Protocols.HTTP, new ProtocolHandler() {
-			@Override
-			public Protocols getProtocol() {
-				return Protocols.HTTP;
-			}
-
-
-			@Override
-			public DownloadComponentFactory downloadComponentFactory() {
-				return new HttpDownloadComponentFactory();
-			}
-
-
-			@Override
-			public boolean isSupport(Protocols protocol) {
-				return protocol.equals(Protocols.HTTP);
-			}
-		});
 		init();
 	}
 
@@ -89,6 +72,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 	@Override
 	public void init() throws Exception {
+		addProtocolHandler(Protocols.HTTP, new HttpProtocolHandler());
 		downloader.init();
 	}
 
@@ -281,5 +265,11 @@ public class DownloadAdapter extends Binder implements Downloader {
 	@Override
 	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
 		downloader.setDownloadTaskInfoStorage(storage);
+	}
+
+
+	@Override
+	public void exit() throws Exception {
+		downloader.exit();
 	}
 }

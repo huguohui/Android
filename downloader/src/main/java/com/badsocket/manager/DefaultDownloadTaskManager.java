@@ -154,6 +154,14 @@ public class DefaultDownloadTaskManager
 	}
 
 
+	public void finalize() {
+		super.finalize();
+		synchronized (mInstance) {
+			mInstance = null;
+		}
+	}
+
+
 	/**
 	 * Controls the task start.
 	 */
@@ -170,7 +178,7 @@ public class DefaultDownloadTaskManager
 	 */
 	@Override
 	public void pauseAll() throws Exception {
-		taskControll(Controller.RESUME, mList);
+		taskControll(Controller.PAUSE, mList);
 	}
 
 
@@ -188,7 +196,7 @@ public class DefaultDownloadTaskManager
 	 */
 	@Override
 	public void stopAll() throws Exception {
-		taskControll(Controller.RESUME, mList);
+		taskControll(Controller.STOP, mList);
 	}
 
 

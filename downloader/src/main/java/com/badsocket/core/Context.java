@@ -69,7 +69,7 @@ public abstract class Context {
 	public abstract ExecutorService getDownloadTaskExecutor();
 
 
-
+	public abstract void finalize();
 
 
 }

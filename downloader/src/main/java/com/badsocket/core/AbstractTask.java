@@ -10,7 +10,7 @@ public abstract class AbstractTask implements Task {
 
 	protected int id;
 
-	protected String name;
+	protected String name = "";
 
 	protected long startTime;
 
@@ -18,7 +18,7 @@ public abstract class AbstractTask implements Task {
 
 	protected long usedTime;
 
-	protected float progress;
+	protected float progress = 0f;
 
 	protected int priority;
 
@@ -63,7 +63,7 @@ public abstract class AbstractTask implements Task {
 	 */
 	@Override
 	public String getName() {
-		return name == null ? toString() : name;
+		return name == null ? "" : name;
 	}
 
 

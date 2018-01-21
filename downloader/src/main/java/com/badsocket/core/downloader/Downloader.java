@@ -122,6 +122,9 @@ public interface Downloader extends Controlable {
 	void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage);
 
 
+	void exit() throws Exception;
+
+
 	interface OnDownloadStartListener {
 		void onDownloadStart(AbstractDownloader d);
 	}

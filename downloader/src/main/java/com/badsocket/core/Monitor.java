@@ -11,6 +11,9 @@ public interface Monitor extends Stopable {
 	void monitor(Object d);
 
 
+	void monitorNow(Object d);
+
+
 	Object collectedData();
 
 

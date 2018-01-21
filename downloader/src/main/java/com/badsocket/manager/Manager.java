@@ -74,6 +74,9 @@ public interface Manager<T> extends Iterable<T> {
 	List<T> list();
 
 
+	void finalize();
+
+
 	/**
 	 * SearchFilter of searching.
 	 */

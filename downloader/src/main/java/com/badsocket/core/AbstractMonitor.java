@@ -1,7 +1,6 @@
 package com.badsocket.core;
 
-import com.badsocket.core.Monitor;
-import com.badsocket.core.MonitorWatcher;
+import com.badsocket.util.TimeCounter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,8 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
 	protected List<MonitorWatcher> watchers = new ArrayList<>();
 
+	protected boolean isStoped;
+
 
 	public AbstractMonitor(int interval) {
 		this.interval = interval;
@@ -33,21 +34,29 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
 
 	@Override
-	public void monitor(Object d) {
+	public void monitor(Object obj) {
 		if (monitored == null) {
-			monitored = d;
+			monitored = obj;
 			monitorTimer.schedule(this, 0, interval);
 		}
 		else {
-			doMonitor();
+			monitorNow(obj);
 		}
 	}
 
 
-	protected void doMonitor() {
-		Object obj = null;
-		if ((obj = localObj.get()) == null) {
-			localObj.set(monitored);
+	public void monitorNow(Object obj) {
+		new Thread(() -> {
+			doMonitor(obj);
+		}).start();
+	}
+
+
+	protected void doMonitor(Object obj) {
+		if (obj == null) {
+			if ((obj = localObj.get()) == null) {
+				localObj.set(monitored);
+			}
 		}
 
 		for (int i = 0; i < watchers.size(); i++) {
@@ -72,13 +81,14 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 			return;
 		}
 
-		doMonitor();
+		doMonitor(null);
 	}
 
 
 	public void addWatcher(MonitorWatcher w) {
 		synchronized (watchers) {
 			watchers.add(w);
+			monitorNow(null);
 		}
 	}
 
@@ -112,6 +122,7 @@ public abstract class AbstractMonitor extends TimerTask implements Monitor {
 
 	public void stop() {
 		monitorTimer.cancel();
+		isStoped = true;
 	}
 
 }

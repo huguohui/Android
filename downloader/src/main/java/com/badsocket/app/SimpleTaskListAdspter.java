@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.badsocket.R;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.util.CalculationUtils;
+import com.badsocket.util.TimeCounter;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -75,6 +76,7 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 			switch (task.getState()) {
 				case DownloadTask.DownloadTaskState.RUNNING:
 				case DownloadTask.DownloadTaskState.STARTING:
+				case DownloadTask.DownloadTaskState.PREPARING:
 					resourceId = R.drawable.downloading;
 					break;
 

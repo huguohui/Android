@@ -82,7 +82,7 @@ public class Bootstrap extends Application {
 			return;
 		}
 		if (!rootPath.canRead() || !rootPath.canWrite()) {
-			Log.debug("The path: " + rootPath.getAbsolutePath() + " can't read or write!");
+			Log.debug("The path: " + rootPath.getAbsolutePath() + " can't readTask or writeTask!");
 			return;
 		}
 

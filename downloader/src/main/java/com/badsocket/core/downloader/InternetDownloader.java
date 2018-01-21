@@ -17,7 +17,6 @@ import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.util.CollectionUtils;
-import com.badsocket.util.Log;
 import com.badsocket.util.TimeCounter;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
@@ -108,8 +107,6 @@ public class InternetDownloader
 			taskManager.addTask(task);
 			task.onRestore(this);
 		}
-
-
 	}
 
 
@@ -172,7 +169,7 @@ public class InternetDownloader
 
 		task.onCreate(desc.getTaskExtraInfo());
 		taskManager.add(task);
-		monitor.monitor(this);
+		monitor.monitorNow(this);
 		return task;
 	}
 
@@ -206,7 +203,7 @@ public class InternetDownloader
 
 
 	public void start() throws Exception {
-		taskManager.startAll();
+//		taskManager.startAll();
 	}
 
 
@@ -232,14 +229,27 @@ public class InternetDownloader
 	}
 
 
+	public void deleteTaskFile(DownloadTask task) {
+		File taskFile = new File(task.getDownloadPath(), task.getName()
+				+ (task.isCompleted() ? "" : UNCOMPLETE_DOWNLAOD_TASK_SUFFIX));
+		File taskInfoFile = new File(task.getDownloadPath(), task.getName()
+				+ DOWNLOAD_TASK_INFO_SUFFIX);
+
+		taskFile.delete();
+		taskInfoFile.delete();
+	}
+
+
 	@Override
 	public void deleteTask(int id) {
+		deleteTaskFile(taskManager.getTask(id));
 		taskManager.remove(id);
 	}
 
 
 	@Override
 	public void deleteTask(DownloadTask task) {
+		deleteTaskFile(task);
 		taskManager.deleteTask(task);
 	}
 
@@ -360,6 +370,13 @@ public class InternetDownloader
 	@Override
 	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
 		downloadTaskInfoStorage = storage;
+	}
+
+
+	@Override
+	public void exit() throws Exception {
+		stop();
+		taskManager.finalize();
 	}
 
 
