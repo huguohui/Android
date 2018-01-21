@@ -12,13 +12,16 @@ import com.badsocket.net.ReceiverGroup;
 import com.badsocket.net.Request;
 import com.badsocket.net.RequestGroup;
 import com.badsocket.net.Response;
+import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
 import com.badsocket.util.Log;
+import com.badsocket.util.TimeCounter;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -98,9 +101,11 @@ public class HttpDownloadTask
 		else {
 			req = downloadComponentFactory.createRequest(downloadAddress);
 		}
+
 		if (!req.connected()) {
 			throw new ConnectException("未打开下载连接！");
 		}
+
 		req.send();
 		response = req.response();
 		req.closed();
@@ -115,12 +120,36 @@ public class HttpDownloadTask
 	}
 
 
-	protected void createDownloadRequests() throws IOException {
+	protected void createDownloadRequests() throws IOException, InterruptedException {
 		Request[] reqs = downloadComponentFactory.createRequest(this, downloader.getThreadAllocStategy());
 		Receiver recs[] = new Receiver[reqs.length];
+		Thread[] threads = new Thread[reqs.length];
+
+		for (int i = 0; i < reqs.length; i++) {
+			final int idx = i;
+			threads[i] = context.getThreadFactory().createThread(() -> {
+				HttpRequest httpRequest = (HttpRequest) reqs[idx];
+				try {
+					if (!httpRequest.connected()) {
+						httpRequest.open();
+					}
+
+					httpRequest.send();
+					requestGroup.addResponse(httpRequest.response());
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+
+			threads[i].start();
+		}
+
+		for(Thread thread : threads) {
+			thread.join();
+		}
+
 		requestGroup.addRequests(reqs);
-		requestGroup.openRequests();
-		requestGroup.sendRequests();
 	}
 
 
@@ -149,10 +178,10 @@ public class HttpDownloadTask
 
 
 	protected void onDownloadStarted() throws Exception {
-		state = DownloadTaskState.RUNNING;
 		isRunning = true;
 		isPaused = false;
 		isStoped = false;
+		state = DownloadTaskState.RUNNING;
 		if (action == DownloadTaskAction.START) {
 			notifyTaskStarted();
 		}
@@ -360,7 +389,6 @@ public class HttpDownloadTask
 
 	@Override
 	public Task call() {
-
 		try {
 			switch (action) {
 				case DownloadTaskAction.PAUSE:

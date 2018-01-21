@@ -87,21 +87,24 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 	}
 
 
-	public synchronized void write(long startOff, long curOff, byte[] data) throws IOException {
+	public void write(long startOff, long curOff, byte[] data) throws IOException {
 		if (data == null)
 			throw new NullPointerException();
 
-		if (!dataBuffers.containsKey(startOff))
-			dataBuffers.put(startOff, createDataBuffer(startOff));
+		synchronized(dataBuffers) {
+			if (!dataBuffers.containsKey(startOff)) {
+				dataBuffers.put(startOff, createDataBuffer(startOff));
+			}
 
-		DataBuffer buffer = dataBuffers.get(startOff);
-		if (buffer.save(data).isFull()) {
-			writeToFile(buffer);
+			DataBuffer buffer = dataBuffers.get(startOff);
+			if (buffer.save(data).isFull()) {
+				writeToFile(buffer);
+			}
 		}
 	}
 
 
-	public synchronized void write(long offset, byte[] data, int s, int e) throws IOException {
+	public void write(long offset, byte[] data, int s, int e) throws IOException {
 		super.write(offset, data, s, e);
 	}
 

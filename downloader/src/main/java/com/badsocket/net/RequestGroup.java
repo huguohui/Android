@@ -12,6 +12,8 @@ public class RequestGroup {
 
 	private List<Request> requests = new ArrayList<>();
 
+	private List<Response> responses = new ArrayList<>();
+
 	private RequestGroup parent;
 
 	private boolean isRoot;
@@ -19,6 +21,11 @@ public class RequestGroup {
 
 	public void addRequest(Request req) {
 		requests.add(req);
+	}
+
+
+	public void addResponse(Response rep) {
+		responses.add(rep);
 	}
 
 
@@ -73,14 +80,15 @@ public class RequestGroup {
 
 
 	public Response[] getResponses() throws IOException {
-		List<Response> list = new ArrayList<>();
+		/*List<Response> list = new ArrayList<>();
 		for (Request r : requests) {
 			if (r != null && !r.closed()) {
 				list.add(r.response());
 			}
-		}
+		}*/
 
-		return list.toArray(new Response[0]);
+//		return list.toArray(new Response[0]);
+		return responses.toArray(new Response[0]);
 	}
 
 

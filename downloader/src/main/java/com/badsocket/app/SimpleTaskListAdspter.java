@@ -1,5 +1,6 @@
 package com.badsocket.app;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import com.badsocket.R;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.util.CalculationUtils;
-import com.badsocket.util.TimeCounter;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -66,8 +66,11 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 		DownloadTask task = data.get(position);
 
 		if (task != null) {
+			ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", (int)(task.getProgress() * 100));
+			animation.setDuration(100);
+			animation.start();
+
 			fileName.setText(task.getName());
-			pb.setProgress((int) (task.getProgress() * 100));
 			progressText.setText(CalculationUtils.getFriendlyUnitOfBytes(task.getDownloadedLength(), 2)
 					+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
 			progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");

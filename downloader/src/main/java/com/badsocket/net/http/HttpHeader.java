@@ -3,6 +3,7 @@ package com.badsocket.net.http;
 
 import com.badsocket.core.Parser;
 import com.badsocket.net.Header;
+import com.badsocket.util.TimeCounter;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

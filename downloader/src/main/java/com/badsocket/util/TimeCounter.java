@@ -28,7 +28,7 @@ public abstract class TimeCounter {
 
 
 	public static final void logUsedTime() {
-		Log.e("-->", usedTime + "");
+		Log.e("-->", end() + "");
 	}
 
 }
