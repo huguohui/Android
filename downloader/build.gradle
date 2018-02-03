@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'downloader'
             keyPassword '123456'
-            storeFile file('D:/Android/tankwar.jks')
+            storeFile file('tankwar.jks')
             storePassword '123456'
         }
     }
