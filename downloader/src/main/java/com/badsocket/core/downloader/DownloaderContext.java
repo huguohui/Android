@@ -45,6 +45,8 @@ public class DownloaderContext extends Context {
 
 	public static final String HISTORY_DIR = "history";
 
+	public static final String PATCHES_DIR = "patches";
+
 	public static String HOME_DIRECTORY;
 
 	private android.content.Context androidContext;

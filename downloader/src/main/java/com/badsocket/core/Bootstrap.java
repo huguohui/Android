@@ -42,7 +42,8 @@ public class Bootstrap extends Application {
 			"configs",
 			"plugins",
 			"icons",
-			"history"
+			"history",
+			"patches"
 	};
 
 

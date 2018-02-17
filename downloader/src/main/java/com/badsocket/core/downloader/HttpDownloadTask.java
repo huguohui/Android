@@ -5,6 +5,8 @@ import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
 import com.badsocket.core.ThreadExecutor;
+import com.badsocket.core.downloader.exception.DownloadTaskException;
+import com.badsocket.core.downloader.exception.StopDownloadTaskException;
 import com.badsocket.net.AsyncReceiver;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.Receiver;
@@ -15,13 +17,11 @@ import com.badsocket.net.Response;
 import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
 import com.badsocket.util.Log;
-import com.badsocket.util.TimeCounter;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -133,12 +133,18 @@ public class HttpDownloadTask
 					if (!httpRequest.connected()) {
 						httpRequest.open();
 					}
-
 					httpRequest.send();
 					requestGroup.addResponse(httpRequest.response());
 				}
 				catch (Exception e) {
 					e.printStackTrace();
+					if (httpRequest.connected() && !httpRequest.closed()) {
+						try {
+							httpRequest.close();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
 				}
 			});
 
@@ -146,7 +152,9 @@ public class HttpDownloadTask
 		}
 
 		for(Thread thread : threads) {
-			thread.join();
+			if (Thread.State.RUNNABLE.equals(thread.getState())) {
+				thread.join();
+			}
 		}
 
 		requestGroup.addRequests(reqs);
@@ -191,12 +199,18 @@ public class HttpDownloadTask
 	}
 
 
-	protected synchronized void startDownload() throws Exception {
-		prepare();
-		createDownloadRequests();
-		createDownloadReceiver();
-		downloadDataByReceiver();
-		onDownloadStarted();
+	protected synchronized void startDownload() throws DownloadTaskException {
+		try {
+			prepare();
+			createDownloadRequests();
+			createDownloadReceiver();
+			downloadDataByReceiver();
+			onDownloadStarted();
+		}
+		catch(Exception e) {
+			state = DownloadTaskState.STOPED;
+			throw new DownloadTaskException(e.getMessage());
+		}
 	}
 
 
@@ -229,7 +243,7 @@ public class HttpDownloadTask
 	}
 
 
-	protected void onDownloadStoped() throws Exception {
+	protected void onDownloadStoped() {
 		for (DownloadSection section : downloadSections) {
 			Log.debug(section);
 		}
@@ -248,12 +262,19 @@ public class HttpDownloadTask
 	}
 
 
-	protected synchronized void stopDownload() throws Exception {
-		stopReceivers();
-		closeRequests();
-		interruptExecutor();
-		clearGroups();
-		onDownloadStoped();
+	protected synchronized void stopDownload() throws DownloadTaskException {
+		try {
+			stopReceivers();
+			closeRequests();
+			interruptExecutor();
+			clearGroups();
+		}
+		catch (Exception e) {
+			throw new StopDownloadTaskException(e.getMessage());
+		}
+		finally {
+			onDownloadStoped();
+		}
 	}
 
 

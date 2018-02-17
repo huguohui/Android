@@ -79,12 +79,12 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 			switch (task.getState()) {
 				case DownloadTask.DownloadTaskState.RUNNING:
 				case DownloadTask.DownloadTaskState.STARTING:
-				case DownloadTask.DownloadTaskState.PREPARING:
 					resourceId = R.drawable.downloading;
 					break;
 
 				case DownloadTask.DownloadTaskState.PAUSED:
 				case DownloadTask.DownloadTaskState.PAUSING:
+				case DownloadTask.DownloadTaskState.PREPARING:
 					resourceId = R.drawable.paused;
 					break;
 

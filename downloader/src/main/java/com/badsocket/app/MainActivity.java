@@ -146,7 +146,7 @@ public class MainActivity
 					}
 					else if (state == DownloadTask.DownloadTaskState.PAUSED
 							|| state == DownloadTask.DownloadTaskState.STOPED
-							|| state == DownloadTask.DownloadTaskState.RESTORED) {
+							|| state == DownloadTask.DownloadTaskState.STORED) {
 						downloader.resumeTask(task);
 					}
 				}
