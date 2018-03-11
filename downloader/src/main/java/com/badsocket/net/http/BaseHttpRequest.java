@@ -89,7 +89,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		HttpHeader mHeader = new HttpHeader();
 		mHeader.setVersion(HTTP_VERSION);
 		mHeader.set(Http.ACCEPT, ACCEPT).set(Http.ACCEPT_ENCODING, ACCEPT_ENCODING)
-			  .set(Http.USER_AGENT, USER_AGENT).set(Http.CONNECTION, CONNECTING);
+			   .set(Http.USER_AGENT, USER_AGENT).set(Http.CONNECTION, CONNECTING);
 
 		this.mHeader = mHeader;
 	}
