@@ -269,13 +269,13 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	public void onRestore(Downloader downloader) {
 		this.downloader = downloader;
-		state = DownloadTaskState.RESTORED;
+		state = DownloadTaskState.STOPED;
 		action = DownloadTaskAction.RESTORE;
 	}
 
 
 	public void onStore() {
-		state = DownloadTaskState.STORED;
+		state = DownloadTaskState.STOPED;
 		action = DownloadTaskAction.STORE;
 	}
 

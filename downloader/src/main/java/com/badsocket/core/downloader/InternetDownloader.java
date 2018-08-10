@@ -17,7 +17,7 @@ import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.util.CollectionUtils;
-import com.badsocket.util.TimeCounter;
+import com.badsocket.util.Log;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
@@ -177,7 +177,7 @@ public class InternetDownloader
 	protected void trimUncompleteSuffix(DownloadTask task) {
 		File uncompleteFile = new File(
 				task.getDownloadPath(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
-		if(uncompleteFile.exists()) {
+		if (uncompleteFile.exists()) {
 			uncompleteFile.renameTo(new File(task.getDownloadPath(), task.getName()));
 		}
 	}
@@ -229,7 +229,7 @@ public class InternetDownloader
 	}
 
 
-	public void deleteTaskFile(DownloadTask task) {
+	private void deleteTaskFile(DownloadTask task) {
 		File taskFile = new File(task.getDownloadPath(), task.getName()
 				+ (task.isCompleted() ? "" : UNCOMPLETE_DOWNLAOD_TASK_SUFFIX));
 		File taskInfoFile = new File(task.getDownloadPath(), task.getName()

@@ -105,6 +105,11 @@ public class MainActivity
 	class MessageHanlder extends Handler {
 
 		public void handleMessage(Message msg) {
+			switch(msg.arg1) {
+				case 1:
+					break;
+			}
+
 			if (tasks != null) {
 				tasks.clear();
 				tasks.addAll((List<DownloadTask>) msg.obj);
