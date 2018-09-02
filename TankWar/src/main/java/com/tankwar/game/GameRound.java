@@ -36,7 +36,7 @@ public class GameRound extends Round {
     public void start() {
         mWorldSubsystem = getEngine().getWorldSubsystem();
         mWorldSubsystem.setWorld(new Terrain[][]{
-				{new Wall(getEngine().getGameContext(), 0, 0)}
+				//{new Wall(getEngine().getGameContext(), 0, 0)}
 		});
 
 		int width = getEngine().getGameContext().getScreenWidth(),
@@ -45,16 +45,16 @@ public class GameRound extends Round {
 		getEngine().getGraphicsSubsystem().setXScale(width / Game.SCREEN_WIDTH);
 		getEngine().getGraphicsSubsystem().setYScale(height / Game.SCREEN_HEIGHT);
 
-
-//
         Explosion exp = new Explosion(getEngine());
         FrameAnimation fa = new FrameAnimation(getEngine());
-        fa.setDescriptor(exp);
+		Tank t = null;
+		VirtualPad vp = new VirtualPad();
+
+		fa.setDescriptor(exp);
         fa.play();
         setIsStart(true);
-		//getEngine().getAISubsystem().addControllable(
-				Tank t = new LightTank(GameContext.getGameContext(), 0, 0);//);
-		VirtualPad vp = new VirtualPad();
+//		getEngine().getAISubsystem().addControllable(
+//				t = new LightTank(GameContext.getGameContext(), 0, 0));
 		vp.setControllable(t);
 		getEngine().getControlSubsystem().addTouchEventListener(vp);
 		getEngine().getGraphicsSubsystem().addDrawable(vp);

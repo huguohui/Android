@@ -44,7 +44,7 @@ public abstract class Animation implements Drawable {
     private int mY;
 
     /** The frame counter. */
-    private int mFrameCount = 0;
+    private int mFrameCount = 1;
 
     /** The animation play time count. */
     private int mPlayTime = 0;

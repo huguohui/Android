@@ -6,6 +6,7 @@ import com.tankwar.engine.Engine;
 import com.tankwar.engine.animation.Animation;
 import com.tankwar.engine.subsystem.Sprite;
 import com.tankwar.engine.subsystem.WorldSubsystem;
+import com.tankwar.util.GameRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +24,19 @@ final public class Explosion extends Animation.Descriptor {
         super(engine);
         List list = new ArrayList();
         WorldSubsystem ws = engine.getWorldSubsystem();
-        //list.add(new Sprite(ws.getBitmap("explode1.png")));
-        //list.add(new Sprite(ws.getBitmap("explode2.png")));
-        //list.add(new Sprite(ws.getBitmap("gameover.png")));
+
+        GameRes.initialize(engine.getGameContext().getResources());
+        Bitmap explosions[] = GameRes.getExplode();
+        for (Bitmap explosion : explosions) {
+			list.add(new Sprite(explosion));
+		}
 
         setLayerIndex(0);
         setSprites(list);
-        setDistance(200);
-        setDuration(400000);
+        setDistance(50);
+        setDuration(2000);
         setIsLoop(true);
-        setTotalFrames(2);
+        setTotalFrames(explosions.length);
 	}
 
     /**

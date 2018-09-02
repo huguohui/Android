@@ -60,6 +60,7 @@ public class FrameAnimation extends Animation {
     @Override
     public void play() {
         getEngine().getGraphicsSubsystem().addDrawable(this);
+        setStartTime(getEngine().getTimingSubsystem().getSystemTime());
     }
 
     /**
@@ -95,27 +96,28 @@ public class FrameAnimation extends Animation {
     public void draw(Canvas canvas) {
         TimingSubsystem ts = getEngine().getTimingSubsystem();
         long systemTime = ts.getSystemTime();
+        Descriptor descriptor = getDescriptor();
 
-        if (systemTime - getStartTime() >= getDescriptor().getDuration()) {
-            this.stop();
-            return;
-        }else{
-            if (getFrameStartTime() == 0)
-                setFrameStartTime(systemTime);
+        if (systemTime - getStartTime() >= descriptor.getDuration()) {
+			if (descriptor.isLoop()) {
+				setFrameCount(1);
+				setFrameStartTime(0);
+				setStartTime(systemTime);
+			}
+			else {
+				this.stop();
+				return;
+			}
+        }
+        else {
+            if (getFrameStartTime() == 0) {
+				setFrameStartTime(systemTime);
+			}
 
-            if (systemTime - getFrameStartTime() >= getDescriptor().getDistance()) {
-                setFrameStartTime(0);
+            if (systemTime - getFrameStartTime() >= getDescriptor().getDistance()
+					&& getFrameCount() < getDescriptor().getTotalFrames()) {
+				setFrameStartTime(systemTime);
                 nextFrameCount();
-            }
-
-            if (getFrameCount() >= getDescriptor().getTotalFrames()) {
-                if (getDescriptor().isLoop()) {
-                    setFrameCount(0);
-                    return;
-                }else{
-                    stop();
-                    return;
-                }
             }
         }
 
@@ -123,7 +125,7 @@ public class FrameAnimation extends Animation {
         paint.setTextSize(50);
         paint.setColor(Color.WHITE);
         canvas.drawText("Frame count: " + getFrameCount(), 300, 1000, paint);
-        canvas.drawBitmap(getDescriptor().getNextFrame(getFrameCount()),
+        canvas.drawBitmap(getDescriptor().getNextFrame(getFrameCount() - 1),
                 getX(), getY(), new Paint());
     }
 

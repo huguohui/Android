@@ -241,12 +241,6 @@ public class Engine implements Runnable {
         return mEntities;
     }
 
-
-    /**
-     *
-     */
-
-
     /**
      * Add a entity.
      * @param entity A {@link Entity}.
