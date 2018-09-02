@@ -8,6 +8,7 @@ import com.tankwar.engine.GameContext;
 import com.tankwar.engine.entity.Entity;
 import com.tankwar.engine.entity.Obstacle;
 import com.tankwar.engine.subsystem.Sprite;
+import com.tankwar.util.GameRes;
 
 /**
  * A kind of obstacle, it can destroy.
@@ -29,8 +30,7 @@ public class Wall extends Obstacle {
      */
     public Wall(GameContext gameContext, int x, int y) {
 		super(gameContext, x, y);
-//		setSprite(new Sprite(getGameContext().getEngine().
-//				getWorldSubsystem().getBitmap("tile.png"), 0, 0, getWidth(), getHeight()));
+		setSprite(new Sprite(GameRes.getRedflag(), 0, 0, getWidth(), getHeight()));
     }
 
     /**
