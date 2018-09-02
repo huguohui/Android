@@ -22,9 +22,6 @@ public class ControlSubsystem
 	/** Key event listeners. */
 	private List<KeyEventListener> mKeyEventListeners = new ArrayList<>();
 
-	/** The **/
-
-
 	/**
 	 * Constructor.
 	 * @param engine Engine instance.
