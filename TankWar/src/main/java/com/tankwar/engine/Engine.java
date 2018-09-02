@@ -81,9 +81,6 @@ public class Engine implements Runnable {
     /** The ai subsystem. */
     private AISubsystem mAISubsystem;
 
-
-
-
     /**
      * Constructor.
      */
