@@ -13,8 +13,9 @@ import java.util.List;
  * The control subsystem.
  * @since 2015/11/10
  */
-public class ControlSubsystem extends Subsystem
-	implements View.OnTouchListener, View.OnKeyListener, Engine.StateListener {
+public class ControlSubsystem
+		extends Subsystem
+		implements View.OnTouchListener, View.OnKeyListener, Engine.StateListener {
 	/** The motion event listeners. */
 	private List<TouchEventListener> mTouchEventListeners = new ArrayList<>();
 
