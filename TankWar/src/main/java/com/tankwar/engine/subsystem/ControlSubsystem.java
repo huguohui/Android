@@ -74,7 +74,8 @@ public class ControlSubsystem extends Subsystem
 					}
 				}
 			}
-		}else{
+		}
+		else{
 			boolean isUp = false;
 			int x = (int) event.getX(), y = (int) event.getY();
 			switch (event.getAction() & event.ACTION_MASK) {
