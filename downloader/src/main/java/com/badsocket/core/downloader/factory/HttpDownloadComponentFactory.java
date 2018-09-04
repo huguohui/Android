@@ -2,9 +2,9 @@ package com.badsocket.core.downloader.factory;
 
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.net.DownloadAddress;
@@ -20,6 +20,8 @@ import com.badsocket.util.Log;
 
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by skyrim on 2017/10/6.
@@ -65,11 +67,11 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 	public Request[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy)
 			throws IOException {
 		DownloadTask.DownloadSection[] oldSections = task.getSections();
-		int  num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
+		int num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
 		long length = task.getLength(), blockSize = length / num,
-				curBlockSize = 0, offsetBegin = 0, offsetEnd = 0;
+			 curBlockSize = 0, offsetBegin = 0, offsetEnd = 0;
 
-		Request[] requests = new Request[num];
+		List<Request> requestList = new ArrayList<>();
 		DownloadTask.DownloadSection section = null;
 		DownloadTask.DownloadSection[] sections = new DownloadTask.DownloadSection[num];
 
@@ -80,11 +82,11 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 				}
 
 				if (section != null) {
-					Log.debug(section.toString());
+					Log.d(section.toString());
 					if (section.getDownloadedLength() < section.getLength()) {
-						requests[j] = createRequest(task,
+						requestList.add(createRequest(task,
 								new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
-										section.getOffsetBegin() + section.getLength()));
+										section.getOffsetBegin() + section.getLength())));
 					}
 				}
 			}
@@ -92,7 +94,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 				offsetBegin = j * blockSize;
 				offsetEnd = num > -~j ? blockSize * -~j : length;
 				curBlockSize = offsetEnd - offsetBegin;
-				requests[j] = createRequest(task, new HttpRequest.Range(offsetBegin, offsetEnd));
+				requestList.add(createRequest(task, new HttpRequest.Range(offsetBegin, offsetEnd)));
 				sections[j] = new DownloadTask.DownloadSection(j)
 						.setLength(curBlockSize)
 						.setOffsetBegin(offsetBegin)
@@ -104,7 +106,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 			task.setSections(sections);
 		}
 
-		return requests;
+		return requestList.toArray(new Request[0]);
 	}
 
 
@@ -113,7 +115,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
-		Log.debug(r.toString());
+		Log.d(r.toString());
 		return hr;
 	}
 
