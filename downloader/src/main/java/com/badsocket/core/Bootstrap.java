@@ -79,11 +79,11 @@ public class Bootstrap extends Application {
 		}
 
 		if (!rootPath.isDirectory()) {
-			Log.debug("The path: " + rootPath.getAbsolutePath() + " isn't directory!");
+			Log.d("The path: " + rootPath.getAbsolutePath() + " isn't directory!");
 			return;
 		}
 		if (!rootPath.canRead() || !rootPath.canWrite()) {
-			Log.debug("The path: " + rootPath.getAbsolutePath() + " can't readTask or writeTask!");
+			Log.d("The path: " + rootPath.getAbsolutePath() + " can't readTask or writeTask!");
 			return;
 		}
 

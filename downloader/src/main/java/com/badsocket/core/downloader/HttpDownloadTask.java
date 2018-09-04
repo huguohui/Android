@@ -245,7 +245,7 @@ public class HttpDownloadTask
 
 	protected void onDownloadStoped() {
 		for (DownloadSection section : downloadSections) {
-			Log.debug(section);
+			Log.d(section.toString());
 		}
 
 		isRunning = false;

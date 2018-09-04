@@ -91,7 +91,7 @@ public abstract class AbstractReceiver implements Receiver {
 	protected void checkAvaliable(InputStream is) throws IOException {
 		int idle = 1, maxWaitMs = 1;
 		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( InterruptedException ex ) {
-			Log.debug("从Sleep状态中断！");
+			Log.d("从Sleep状态中断！");
 		}
 	}
 
@@ -146,7 +146,7 @@ public abstract class AbstractReceiver implements Receiver {
 		isFinished = !isStop;
 		invokeListener();
 		flushWriter();
-		Log.debug("Received length " + mReceivedLength + " of data.");
+		Log.d("Received length " + mReceivedLength + " of data.");
 	}
 
 
@@ -164,7 +164,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 */
 	@Override
 	public void receive() throws IOException {
-		Log.debug("Start receive data...");
+		Log.d("Start receive data...");
 		byte[] data = null;
 		while(null != (data = receiveData(BUFFER_SIZE))) {
 			writeData(data);

@@ -16,7 +16,7 @@ public abstract class AbstractThreadManager extends AbstractManager<Thread> impl
 
 	@Override
 	public void uncaughtException(Thread thread, Throwable throwable) {
-		Log.debug("There is a exception at thread " + thread.getName());
+		Log.d("There is a exception at thread " + thread.getName());
 		throwable.printStackTrace();
 	}
 

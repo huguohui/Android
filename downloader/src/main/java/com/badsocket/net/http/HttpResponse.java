@@ -128,7 +128,7 @@ public class HttpResponse extends Response {
 				throw new RedirectException();
 			}
 
-			Log.debug("连接被重定向到" + newUrl);
+			Log.d("连接被重定向到" + newUrl);
 			httpRequest.setUrl(UrlUtils.fullUrl(mUrl, newUrl));
 			httpRequest.setAddress(new DownloadAddress(UrlUtils.fullUrl(mUrl, newUrl)));
 			httpRequest.reopen();

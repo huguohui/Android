@@ -104,7 +104,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 
 
 	protected void afterSend() {
-		Log.debug("Sent request data.");
+		Log.d("Sent request data.");
 	}
 
 
@@ -167,7 +167,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		setAddress(url);
 		setMethod(method == null ? Method.GET : method);
 		super.open(UrlUtils.socketAddressByUrl(((DownloadAddress) url).getUrl()));
-		Log.debug("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
+		Log.d("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
 	}
 	
 	

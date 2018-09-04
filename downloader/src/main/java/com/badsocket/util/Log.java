@@ -16,57 +16,6 @@ final public class Log
 
 	public static boolean isDebugMode = true;
 
-
-	public final synchronized static void log(Throwable e) {
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter(LOG_FILE_PATH, true);
-			File file = new File(LOG_FILE_PATH);
-			String date = new Date().toString();
-			String eMsg = getStackTraceString(e);
-            if (file.length() > 1024 * 100) {
-				file.delete();
-				file.createNewFile();
-			}
-
-			fw.append(eMsg);
-			fw.flush();
-			fw.close();
-		} catch (IOException err) {
-            android.util.Log.e("e", err.getMessage());
-		}finally{
-            if (fw != null) {
-                try {
-                    fw.flush();
-                    fw.close();
-                } catch (IOException e1) {
-                    android.util.Log.e("e", e1.getMessage());
-                }
-            }
-        }
-	}
-
-
-	public final synchronized static void s(String s) {
-		try {
-			FileWriter fw = new FileWriter(LOG_FILE_PATH, true);
-			File f = new File(LOG_FILE_PATH);
-			String date = new Date().toString();
-
-			if (f.length() > 1024 * 100) {
-				f.delete();
-				f.createNewFile();
-			}
-
-			fw.append(date + " Msg: " + s + "\n");
-			fw.flush();
-			fw.close();
-		} catch (IOException err) {
-            android.util.Log.e("e", err.getMessage());
-		}
-	}
-
-
 	public final static void d(String key, String val) {
 		android.util.Log.d(key, val);
 	}
@@ -109,11 +58,12 @@ final public class Log
 	}
 
 
-	public static void debug(Object obj) {
+	public static void debug(String obj) {
 		if (!isDebugMode) {
 			return;
 		}
-		System.out.println("  " + obj);
+
+		android.util.Log.d("DEBUG", obj);
 	}
 
 
