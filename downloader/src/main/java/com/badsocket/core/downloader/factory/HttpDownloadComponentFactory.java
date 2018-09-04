@@ -68,8 +68,8 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 			throws IOException {
 		DownloadTask.DownloadSection[] oldSections = task.getSections();
 		int num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
-		long length = task.getLength(), blockSize = length / num,
-			 curBlockSize = 0, offsetBegin = 0, offsetEnd = 0;
+		long length = task.getLength(), blockSize = length / num, curBlockSize = 0,
+			 offsetBegin = 0, offsetEnd = 0;
 
 		List<Request> requestList = new ArrayList<>();
 		DownloadTask.DownloadSection section = null;
