@@ -2,6 +2,7 @@ package com.badsocket.core.downloader;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
@@ -12,7 +13,6 @@ import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
-import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.io.writer.ConcurrentFileWriter;
@@ -188,7 +188,12 @@ public class DownloaderContext extends Context {
 
 	@Override
 	public long getAvailableSpaceSize(File path) {
-		return pathStat.getFreeBytes();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			return pathStat.getFreeBytes();
+		}
+		else {
+			return 0;
+		}
 	}
 
 
