@@ -8,70 +8,76 @@ import java.util.List;
 
 /**
  * Implements a physical engine.
+ *
  * @author hgh
  * @since 2015/11/06
  */
 public class PhysicalSubsystem extends Subsystem {
-    /**
-     * World subsystem reference.
-     */
-    private WorldSubsystem mWorldSubsystem;
+	/**
+	 * World subsystem reference.
+	 */
+	private WorldSubsystem mWorldSubsystem;
 
-    /** The collidable enitys. */
-    private List<Entity> mCollisionCheckables = new ArrayList<>();
-
-
-    /**
-     * Construct a physical subsystem object.
-     * @param engine Game engine.
-     */
-    public PhysicalSubsystem(Engine engine) {
-        super(engine);
-        mWorldSubsystem = getEngine().getWorldSubsystem();
-    }
+	/**
+	 * The collidable enitys.
+	 */
+	private List<Entity> mCollisionCheckables = new ArrayList<>();
 
 
-    /**
-     * Enable a module.
-     */
-    @Override
-    public void enable() {
-        super.enable();
-    }
+	/**
+	 * Construct a physical subsystem object.
+	 *
+	 * @param engine Game engine.
+	 */
+	public PhysicalSubsystem(Engine engine) {
+		super(engine);
+		mWorldSubsystem = getEngine().getWorldSubsystem();
+	}
 
 
-   /**
-     * Disable a module.
-     */
-    @Override
-    public void disable() {
-        super.disable();
-    }
+	/**
+	 * Enable a module.
+	 */
+	@Override
+	public void enable() {
+		super.enable();
+	}
 
 
-    /**
-     * Add a entity that would like to check collision.
-     * @param entity A {@lick Entity}.
-     */
-    public void addEntity(Entity entity) {
-        this.mCollisionCheckables.add(entity);
-    }
+	/**
+	 * Disable a module.
+	 */
+	@Override
+	public void disable() {
+		super.disable();
+	}
 
 
-    /**
-     * Get all entitys.
-     * @return All {@link Entity}s.
-     */
-    public List<Entity> getEntities() {
-        return this.mCollisionCheckables;
-    }
+	/**
+	 * Add a entity that would like to check collision.
+	 *
+	 * @param entity A {@lick Entity}.
+	 */
+	public void addEntity(Entity entity) {
+		this.mCollisionCheckables.add(entity);
+	}
 
 
-    /**
-     * Game loop tick.
-     */
-    public void update() {
-        Entity temp = null;
+	/**
+	 * Get all entitys.
+	 *
+	 * @return All {@link Entity}s.
+	 */
+	public List<Entity> getEntities() {
+		return this.mCollisionCheckables;
+	}
+
+
+	/**
+	 * Game loop tick.
+	 */
+	public void update() {
+		Entity temp = null;
 		List<Entity> entities = getEngine().getEntities();
 		int pos = 1, size = entities.size();
 
@@ -93,5 +99,5 @@ public class PhysicalSubsystem extends Subsystem {
 			}
 		}
 
-    }
+	}
 }
