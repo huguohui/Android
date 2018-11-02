@@ -29,7 +29,6 @@ import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.net.DownloadAddress;
 import com.badsocket.util.Log;
-import com.badsocket.util.TimeCounter;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ public class MainActivity
 		startServiceAsync();
         setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
-		PermissionChecker.requestPermissons(this);
+		PermissionChecker.requestPermissions(this);
 
 		handler = new MessageHanlder();
 		adapter = new SimpleTaskListAdspter(this, tasks);
