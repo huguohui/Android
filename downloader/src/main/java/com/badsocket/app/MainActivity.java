@@ -326,7 +326,7 @@ public class MainActivity
 */
 
 
-	void toDesktop() {
+	void backDesktop() {
 		Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		intent.addCategory(Intent.CATEGORY_HOME);
 		startActivity(intent);
@@ -335,11 +335,13 @@ public class MainActivity
 
 	public void onBackPressed() {
 		if (downloader != null) {
-			try {
-				downloader.exit();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			downloaderContext.getThreadFactory().createThread(() -> {
+				try {
+					downloader.exit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
 		}
 		finish();
 	}
