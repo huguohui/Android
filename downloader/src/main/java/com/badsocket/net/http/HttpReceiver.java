@@ -182,8 +182,7 @@ public class HttpReceiver extends AbstractReceiver {
 	}
 
 
-	public HttpReceiver setFileWriter(Writer fileWriter) {
+	public void setFileWriter(Writer fileWriter) {
 		this.fileWriter = (ConcurrentWriter) fileWriter;
-		return this;
 	}
 }
