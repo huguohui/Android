@@ -92,9 +92,8 @@ public class AsyncReceiver implements Receiver, Callable<Long>
 	}
 
 
-	public AsyncReceiver setFileWriter(Writer fileWriter) {
+	public void setFileWriter(Writer fileWriter) {
 		receiver.setFileWriter(fileWriter);
-		return this;
 	}
 
 
@@ -108,9 +107,8 @@ public class AsyncReceiver implements Receiver, Callable<Long>
 	}
 
 
-	public AsyncReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+	public void setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		receiver.setOnReceiveListener(onReceiveListener);
-		return this;
 	}
 
 
