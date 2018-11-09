@@ -160,7 +160,6 @@ public abstract class AbstractReceiver implements Receiver {
 	 *
 	 * @return Received data by byte.
 	 * @throws IOException      When I/O exception.
-	 * @throws ConnectException When connection exception.
 	 */
 	@Override
 	public void receive() throws IOException {
