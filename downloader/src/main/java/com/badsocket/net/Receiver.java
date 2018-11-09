@@ -56,6 +56,9 @@ public interface Receiver extends Stopable {
 	void setFileWriter(Writer fileWriter);
 
 
+	Writer getFileWriter();
+
+
 	InputStream getInputStream();
 
 
