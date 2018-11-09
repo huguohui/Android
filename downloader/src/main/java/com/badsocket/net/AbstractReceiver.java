@@ -248,9 +248,8 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 
-	public AbstractReceiver setFileWriter(Writer fileWriter) {
+	public void setFileWriter(Writer fileWriter) {
 		mFileWriter = fileWriter;
-		return this;
 	}
 
 
@@ -264,8 +263,7 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 
-	public AbstractReceiver setOnReceiveListener(OnReceiveListener onReceiveListener) {
+	public void setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		this.onReceiveListener = onReceiveListener;
-		return this;
 	}
 }
