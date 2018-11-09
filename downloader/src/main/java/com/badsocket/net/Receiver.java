@@ -1,8 +1,10 @@
 package com.badsocket.net;
 
 import com.badsocket.core.Stopable;
+import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Receiver can receive some data form somewhere.
@@ -40,6 +42,27 @@ public interface Receiver extends Stopable {
 
 
 	long getReceivedLength();
+
+
+	void setOnFinishedListener(OnFinishedListener onFinishedListener);
+
+
+	void setOnStopListener(OnStopListener onStopListener);
+
+
+	void setOnReceiveListener(OnReceiveListener onReceiveListener);
+
+
+	void setFileWriter(Writer fileWriter);
+
+
+	InputStream getInputStream();
+
+
+	boolean isFinished();
+
+
+	boolean isStop();
 
 
 	interface OnFinishedListener {
