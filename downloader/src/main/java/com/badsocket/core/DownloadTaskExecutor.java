@@ -6,16 +6,10 @@ package com.badsocket.core;
 
 public interface DownloadTaskExecutor extends TaskExecutor {
 
-
 	void pause(Task t) throws Exception;
-
 
 	void resume(Task t) throws Exception;
 
-
 	void stop(Task t) throws Exception;
-
-
-
 
 }

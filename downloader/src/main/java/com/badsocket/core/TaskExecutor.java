@@ -1,7 +1,6 @@
 package com.badsocket.core;
 
 import java.util.List;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
@@ -11,10 +10,10 @@ import java.util.concurrent.ScheduledExecutorService;
 public interface TaskExecutor extends ScheduledExecutorService {
 
 
-	Future<Task> start(Task task) throws Exception;
+	void start(Task task) throws Exception;
 
 
-	Future<Task> start(Task task, long delay) throws Exception;
+	void start(Task task, long delay) throws Exception;
 
 
 	void start(Task task, long delay, long interval) throws Exception;
