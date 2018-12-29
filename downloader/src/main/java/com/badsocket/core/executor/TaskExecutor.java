@@ -1,22 +1,20 @@
-package com.badsocket.core;
+package com.badsocket.core.executor;
+
+import com.badsocket.core.Task;
 
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by skyrim on 2017/12/15.
  */
 
-public interface TaskExecutor extends ScheduledExecutorService {
+public interface TaskExecutor {
 
 
 	void start(Task task) throws Exception;
 
 
 	void start(Task task, long delay) throws Exception;
-
-
-	void start(Task task, long delay, long interval) throws Exception;
 
 
 	boolean isDone(Task t);

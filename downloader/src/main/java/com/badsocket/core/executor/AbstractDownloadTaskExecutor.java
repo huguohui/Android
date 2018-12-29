@@ -1,6 +1,7 @@
-package com.badsocket.core;
+package com.badsocket.core.executor;
 
 
+import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloaderContext;
 
 import java.util.Map;
@@ -17,8 +18,10 @@ public abstract class AbstractDownloadTaskExecutor implements DownloadTaskExecut
 	private DownloaderContext context;
 
 	public AbstractDownloadTaskExecutor(DownloaderContext context) {
-
+		this.context = context;
 	}
+
+	
 
 
 }

@@ -1,4 +1,6 @@
-package com.badsocket.core;
+package com.badsocket.core.executor;
+
+import com.badsocket.core.Task;
 
 /**
  * Created by skyrim on 2017/12/15.
