@@ -2,7 +2,7 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.DownloadTaskExecutor;
+import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
@@ -17,7 +17,6 @@ import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
 import com.badsocket.util.CollectionUtils;
-import com.badsocket.util.Log;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
