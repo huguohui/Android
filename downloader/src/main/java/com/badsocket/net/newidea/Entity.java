@@ -1,4 +1,9 @@
 package com.badsocket.net.newidea;
 
-public interface Entity {
+import java.io.InputStream;
+
+public abstract class Entity {
+
+	public abstract InputStream inputStream();
+
 }
