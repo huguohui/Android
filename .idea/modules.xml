@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TankWar/TankWar.iml" filepath="$PROJECT_DIR$/TankWar/TankWar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/downloader/downloader.iml" filepath="$PROJECT_DIR$/downloader/downloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android.iml" filepath="$PROJECT_DIR$/Android.iml" group="Android" />
+      <module fileurl="file://$PROJECT_DIR$/TankWar/TankWar.iml" filepath="$PROJECT_DIR$/TankWar/TankWar.iml" group="Android/TankWar" />
+      <module fileurl="file://$PROJECT_DIR$/downloader/downloader.iml" filepath="$PROJECT_DIR$/downloader/downloader.iml" group="Android/downloader" />
     </modules>
   </component>
 </project>
