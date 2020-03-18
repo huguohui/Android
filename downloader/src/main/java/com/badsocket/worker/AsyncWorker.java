@@ -23,7 +23,7 @@ public class AsyncWorker extends AbstractWorker {
 	public AsyncWorker(ThreadManager tm, long interval) {
 		threadManager = tm;
 		this.interval = interval;
-		mThread = tm.alloc(this);
+		mThread = tm.create(this);
 	}
 
 
@@ -61,7 +61,7 @@ public class AsyncWorker extends AbstractWorker {
 			return;
 		}
 
-		threadManager.alloc(new RunnableAdapter(workable)).start();
+		threadManager.create(new RunnableAdapter(workable)).start();
 		waitTimes(interval);
 	}
 }

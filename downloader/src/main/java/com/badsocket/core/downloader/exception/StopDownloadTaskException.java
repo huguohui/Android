@@ -1,7 +1,5 @@
 package com.badsocket.core.downloader.exception;
 
-import com.badsocket.core.DownloadTaskExecutor;
-
 /**
  * Created by windy on 2018/2/16.
  */

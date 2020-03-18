@@ -1,5 +1,6 @@
 package com.badsocket.core;
 
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.executor.AbstractDownloadTaskExecutor;
 
 import java.util.List;
@@ -11,15 +12,9 @@ import java.util.concurrent.ThreadFactory;
 public class GenericDownloadTaskExecutor extends AbstractDownloadTaskExecutor {
 
 
-	public GenericDownloadTaskExecutor(int corePoolSize) {
-		super(corePoolSize);
+	public GenericDownloadTaskExecutor(DownloaderContext context) {
+		super(context);
 	}
-
-
-	public GenericDownloadTaskExecutor(int corePoolSize, ThreadFactory factory) {
-		super(corePoolSize, factory);
-	}
-
 
 	@Override
 	public void pause(Task t) throws Exception {

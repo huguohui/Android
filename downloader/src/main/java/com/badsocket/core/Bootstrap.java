@@ -39,20 +39,18 @@ public class Bootstrap extends Application {
 	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 	public static final String[] ASSETS_DIRS = {
-			"configs",
-			"plugins",
-			"icons",
-			"history",
-			"patches"
+		"configs",
+		"plugins",
+		"icons",
+		"history",
+		"patches"
 	};
-
 
 	public void onCreate() {
 		androidContext = this;
 		initAll();
 
 	}
-
 
 	public void initAll() {
 		try {
@@ -63,7 +61,6 @@ public class Bootstrap extends Application {
 			Log.e(e);
 		}
 	}
-
 
 	public void initEnvironment() throws IOException {
 		packageName = androidContext.getApplicationInfo().packageName;
@@ -102,10 +99,8 @@ public class Bootstrap extends Application {
 		}
 	}
 
-
 	public void initContext() {
 		context = new DownloaderContext(androidContext);
 	}
-
 
 }

@@ -249,36 +249,33 @@ public class MainActivity
 						"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
 				);
 
-                new AlertDialog.Builder(this)
-						.setTitle("请输入")
-						.setIcon(android.R.drawable.ic_dialog_info)
-						.setView(ev)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                final String url = ev.getText().toString();
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("请输入");
+				builder.setIcon(android.R.drawable.ic_dialog_info);
+				builder.setView(ev);
+				builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						final String url = ev.getText().toString();
 
-								new Thread() {
-									public void run() {
-										try {
-											downloader.newTask(new DownloadTaskDescriptor
-													.Builder()
-													.setAddress(new DownloadAddress(new URL(url)))
-													.build());
-										}
-										catch (Exception e) {
-											Looper.prepare();
-											showToast(e.getMessage(), Toast.LENGTH_LONG);
-											Log.e(e);
-											looper.loop();
-										}
-									}
-								}.start();
+						new Thread(() -> {
+							try {
+								downloader.newTask(new DownloadTaskDescriptor
+										.Builder()
+										.setAddress(new DownloadAddress(new URL(url)))
+										.build());
+							} catch (Exception e) {
+								Looper.prepare();
+								showToast(e.getMessage(), Toast.LENGTH_LONG);
+								Log.e(e);
+								looper.loop();
 							}
-						})
-                        .setNegativeButton("取消", null)
-						.show();
-                break;
+						}).start();
+					}
+				});
+				builder.setNegativeButton("取消", null);
+				builder.show();
+				break;
             default:
                 Log.e("ERROR", "你点击了" + item.getTitle() + "!");
                 break;

@@ -3,6 +3,8 @@ package com.badsocket.manager;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 
+import java.util.List;
+
 /**
  * Thread manager.
  */
@@ -15,7 +17,6 @@ public class ThreadManager extends AbstractThreadManager {
 	protected ThreadManager() {
 
 	}
-
 
 	/**
 	 * Get single instance of ThreadManager.
@@ -31,9 +32,8 @@ public class ThreadManager extends AbstractThreadManager {
 		}
 	}
 
-
 	@Override
-	public Thread[] alloc(Runnable... r) {
+	public Thread[] create(Runnable... r) {
 		int size = r.length;
 		Thread[] threads = new Thread[size];
 
@@ -51,9 +51,8 @@ public class ThreadManager extends AbstractThreadManager {
 		return threads;
 	}
 
-
 	@Override
-	public Thread alloc(Runnable r) {
+	public Thread create(Runnable r) {
 		Thread th = factory.createThread(r);
 		th.setUncaughtExceptionHandler(this);
 		synchronized (mList) {
@@ -62,7 +61,6 @@ public class ThreadManager extends AbstractThreadManager {
 
 		return th;
 	}
-
 
 	public final static void release() {
 		mManager.list().clear();

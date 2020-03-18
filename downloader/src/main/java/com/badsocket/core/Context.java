@@ -6,13 +6,13 @@ import android.net.NetworkInfo;
 
 import com.badsocket.core.config.Config;
 import com.badsocket.core.downloader.factory.ThreadFactory;
+import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -66,7 +66,7 @@ public abstract class Context {
 	public abstract ExecutorService getThreadExecutor();
 
 
-	public abstract ExecutorService getDownloadTaskExecutor();
+	public abstract DownloadTaskExecutor getDownloadTaskExecutor();
 
 
 	public abstract void finalize();

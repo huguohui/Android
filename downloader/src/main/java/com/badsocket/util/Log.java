@@ -44,13 +44,13 @@ final public class Log
 	public static String getStackTraceString(Throwable e) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(e.getClass().getName())
-				.append(": ").append(e.getMessage())
-				.append("\n");
+		  .append(": ").append(e.getMessage())
+		  .append("\n");
 		for (StackTraceElement st : e.getStackTrace()) {
 			sb.append("at: ")
-					.append(st.getClassName()).append(".").append(st.getMethodName())
-					.append("(").append(st.getLineNumber()).append(").")
-					.append("\n");
+			  .append(st.getClassName()).append(".").append(st.getMethodName())
+			  .append("(").append(st.getLineNumber()).append(").")
+			  .append("\n");
 		}
 
 		sb.insert(0, new Date().toString() + "\n").append("\n");

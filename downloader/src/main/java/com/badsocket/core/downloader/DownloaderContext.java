@@ -15,6 +15,7 @@ import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
+import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
@@ -71,7 +72,7 @@ public class DownloaderContext extends Context {
 
 	private ExecutorService threadExecutor;
 
-	private ExecutorService downloadTaskExecutor;
+	private DownloadTaskExecutor downloadTaskExecutor;
 
 	private Map<String, ConcurrentFileWriter> fileWriters = new HashMap<>();
 
@@ -105,8 +106,7 @@ public class DownloaderContext extends Context {
 		threadExecutor = new ThreadExecutor(
 				config.getInteger(DownloadConfig.GLOBAL_MAX_DOWNLOAD_THREADS)
 						* config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
-		downloadTaskExecutor = new GenericDownloadTaskExecutor(
-				config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
+		downloadTaskExecutor = new GenericDownloadTaskExecutor(this);
 	}
 
 
@@ -216,14 +216,14 @@ public class DownloaderContext extends Context {
 
 
 	@Override
-	public ExecutorService getDownloadTaskExecutor() {
+	public DownloadTaskExecutor getDownloadTaskExecutor() {
 		return downloadTaskExecutor;
 	}
 
 
 	@Override
 	public void finalize() {
-		
+
 	}
 
 

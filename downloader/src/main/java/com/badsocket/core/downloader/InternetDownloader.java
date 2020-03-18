@@ -122,11 +122,11 @@ public class InternetDownloader
 
 	protected boolean checkDownloadTaskExists(DownloadTask task) {
 		File completeTask = new File(task.getDownloadPath(), task.getName()),
-			 uncompleteTask = new File(completeTask.getPath() + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+			 uncompleteTask = new File(completeTask.getPath()
+					 + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 
 		return completeTask.exists() || uncompleteTask.exists()
-				|| CollectionUtils.filter(taskList(),
-							(t) -> { return t.equals(task); }).size() != 0;
+				|| CollectionUtils.filter(taskList(), (t) -> t.equals(task)).size() != 0;
 	}
 
 

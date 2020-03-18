@@ -1,4 +1,4 @@
-package com.badsocket.io.exceptions;
+package com.badsocket.io;
 
 import java.io.IOException;
 

@@ -1,10 +1,9 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
-import com.badsocket.util.FileUtils;
+import com.badsocket.util.ObjectUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 
 	public DownloadTask readTask(File file) throws Exception {
 		if (file.exists()) {
-			return FileUtils.readObject(file);
+			return ObjectUtils.readObject(file);
 		}
 		return null;
 	}
@@ -73,7 +72,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		if (isUpdate) {
 			oldTaskInfoItems.clear();
 			oldTaskInfoItems.addAll(taskInfoItems);
-			FileUtils.writeObject(taskInfoItems, taskListFile);
+			ObjectUtils.writeObject(taskInfoItems, taskListFile);
 		}
 	}
 
@@ -94,7 +93,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 	public List<DownloadTask> readList(File location) throws Exception {
 		File listFile = new File(location, DEFAULT_TASK_LIST_FILE);
 		if (listFile.exists()) {
-			List<DownloadTaskInfoListItem> items = FileUtils.readObject(listFile);
+			List<DownloadTaskInfoListItem> items = ObjectUtils.readObject(listFile);
 			if (items != null && items.size() != 0) {
 				for (DownloadTaskInfoListItem item : items) {
 					DownloadTask task = readTask(new File(item.infoLocation));
@@ -113,7 +112,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 	public void writeTask(DownloadTask task) throws Exception {
 		if (task != null && task.isRunning()) {
 			File file = new File(task.getDownloadPath(), task.getName() + Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
-			FileUtils.writeObject(task, file);
+			ObjectUtils.writeObject(task, file);
 		}
 	}
 

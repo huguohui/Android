@@ -25,11 +25,10 @@ import java.nio.file.FileAlreadyExistsException;
 public abstract class FileUtils {
 
 	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
-		ReadableByteChannel channel = null;
-		WritableByteChannel dstChannel = null;
-		try {
-			channel = Channels.newChannel(src);
-			dstChannel = Channels.newChannel(dst);
+		try (
+			ReadableByteChannel channel = Channels.newChannel(src);
+			WritableByteChannel dstChannel = Channels.newChannel(dst);
+		) {
 			ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
 			while (channel.read(buffer) != -1) {
 				buffer.flip();
@@ -38,12 +37,6 @@ public abstract class FileUtils {
 			}
 		}
 		finally {
-			if (channel != null) {
-				channel.close();
-			}
-			if (dstChannel != null) {
-				dstChannel.close();
-			}
 			src.close();
 			dst.close();
 		}
@@ -168,48 +161,6 @@ public abstract class FileUtils {
 
 	public static File[] listDirectory(String dir) {
 		return listDirectory(new File(dir));
-	}
-
-
-	public static <T> T readObject(File file) throws IOException, ClassNotFoundException {
-		T object = null;
-		ObjectInputStream inputStream = null;
-		try {
-			inputStream = new ObjectInputStream(new FileInputStream(file));
-			object = (T) inputStream.readObject();
-		}
-		catch (EOFException e) {
-			return null;
-		}
-		finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		}
-		return object;
-	}
-
-
-	public static void writeObject(Object obj, OutputStream os) throws IOException {
-		ObjectOutputStream outputStream = null;
-		try {
-			outputStream = os instanceof ObjectOutputStream
-					? (ObjectOutputStream) os : new ObjectOutputStream(os);
-			outputStream.writeObject(obj);
-			// 写入一个null用于解决readObject()时抛出java.io.EOFException异常的问题
-			outputStream.writeObject(null);
-		}
-		finally {
-			if (outputStream != null) {
-				outputStream.flush();
-				outputStream.close();
-			}
-		}
-	}
-
-
-	public static void writeObject(Object obj, File file) throws IOException {
-		writeObject(obj, new FileOutputStream(file));
 	}
 
 
