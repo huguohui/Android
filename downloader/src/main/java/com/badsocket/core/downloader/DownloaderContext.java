@@ -7,7 +7,7 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import com.badsocket.core.Context;
-import com.badsocket.core.executor.GenericDownloadTaskExecutor;
+import com.badsocket.core.GenericDownloadTaskExecutor;
 import com.badsocket.core.NetworkType;
 import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.config.Config;

@@ -15,7 +15,8 @@ import java.io.IOException;
 
 public abstract class DownloadHelper {
 
-	public static Response fetchResponseByDescriptor(Downloader c, DownloadTaskDescriptor desc, ProtocolHandler handler) throws IOException {
+	public static Response fetchResponseByDescriptor(Downloader c,
+			DownloadTaskDescriptor desc, ProtocolHandler handler) throws IOException {
 		DownloadComponentFactory factory = handler.downloadComponentFactory();
 		Request req = factory.createRequest(desc);
 		Response rep = null;

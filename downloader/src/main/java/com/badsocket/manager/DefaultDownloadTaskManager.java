@@ -16,8 +16,10 @@ import java.util.List;
  * @since 2016/12/26 15:45
  */
 public class DefaultDownloadTaskManager
-		extends AbstractManager<DownloadTask>
-		implements DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
+		extends
+			AbstractManager<DownloadTask>
+		implements
+			DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
 			Task.OnTaskStopListener, DownloadTask.OnDownloadTaskPauseListener,
 			DownloadTask.OnDownloadTaskResumeListener
 {
