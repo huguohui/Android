@@ -8,24 +8,24 @@ import com.badsocket.core.Controlable;
 public interface Worker extends Runnable, Controlable {
 	/**
 	 * Add a workable to working.
+	 *
 	 * @param workable For working.
 	 */
 	void add(Workable workable);
 
-
 	/**
 	 * Remove a workable.
+	 *
 	 * @param workable Will to removing.
 	 */
 	Workable remove(Workable workable);
 
-
 	/**
 	 * Get thread of this worker.
+	 *
 	 * @return A thread of this worker.
 	 */
 	Thread thread();
-
 
 	/**
 	 * Listener for listening worker state.
@@ -33,11 +33,11 @@ public interface Worker extends Runnable, Controlable {
 	interface OnWorkDoneListener {
 		/**
 		 * Invokes on work done.
+		 *
 		 * @param w {@lik Worker}.
 		 */
 		void onWorkDone(Worker w);
 	}
-
 
 	class RunnableAdapter implements Runnable {
 
@@ -47,13 +47,13 @@ public interface Worker extends Runnable, Controlable {
 			workable = w;
 		}
 
-
 		@Override
 		public void run() {
 			try {
 				if (workable != null)
 					workable.work();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

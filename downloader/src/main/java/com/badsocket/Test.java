@@ -1,28 +1,13 @@
 package com.badsocket;
 
-
-import com.badsocket.core.DownloadComponentFactory;
-import com.badsocket.core.ThreadExecutor;
-import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.io.writer.ConcurrentFileWriter;
-import com.badsocket.io.writer.FileWriter;
-import com.badsocket.net.AsyncReceiver;
-import com.badsocket.net.Receiver;
-import com.badsocket.net.ReceiverGroup;
-import com.badsocket.net.Request;
-import com.badsocket.net.RequestGroup;
-import com.badsocket.net.Response;
 import com.badsocket.net.http.HttpReceiver;
-import com.badsocket.net.http.HttpResponse;
 import com.badsocket.worker.AbstractWorker;
 
-import java.io.IOException;
-import java.net.ConnectException;
 import java.util.Date;
 
 public class Test {
 	static long length = 0;
-
 
 	static ThreadLocal<Date> date = new ThreadLocal<>();
 
@@ -37,21 +22,20 @@ public class Test {
 			"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"
 	};
 
-
 	public static void main(String[] args) throws Exception {
+		System.out.println(2 >> 1);
+		System.out.println(1 << 2);
+		long a = ~1;
+		System.out.println(a + ", " + Long.toBinaryString(a));
 	}
-
 
 	void downloadTest() throws Exception {
 
-
 	}
-
 
 	class A {
 		int val = 0;
 	}
-
 
 	void lockTest() {
 		final A a = new A();
@@ -60,7 +44,8 @@ public class Test {
 				a.val = 100;
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				System.out.println(Thread.currentThread().getName() + "," + a.val);
@@ -74,7 +59,6 @@ public class Test {
 			}
 		}).start();
 	}
-
 
 	public static void println(Object args) {
 

@@ -1,31 +1,34 @@
 package com.badsocket.manager;
 
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.core.Task;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * Tool for management download task.
+ *
  * @since 2016/12/26 15:45
  */
 public class DefaultDownloadTaskManager
 		extends
-			AbstractManager<DownloadTask>
+		AbstractManager<DownloadTask>
 		implements
-			DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
-			Task.OnTaskStopListener, DownloadTask.OnDownloadTaskPauseListener,
-			DownloadTask.OnDownloadTaskResumeListener
-{
-	/** Instance of manager. */
+		DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
+		Task.OnTaskStopListener, DownloadTask.OnDownloadTaskPauseListener,
+		DownloadTask.OnDownloadTaskResumeListener {
+	/**
+	 * Instance of manager.
+	 */
 	private static DefaultDownloadTaskManager mInstance = null;
-	/** Max并行的任务数 */
+	/**
+	 * Max并行的任务数
+	 */
 	public final static int MAX_PARALELL_TASK = 5;
 
 	protected int runningTaskNum = 0;
@@ -44,23 +47,21 @@ public class DefaultDownloadTaskManager
 
 	protected DownloadTaskExecutor taskExecutor;
 
-
 	public enum Controller {
 		START, PAUSE, RESUME, STOP
 	}
 
-	
 	/**
 	 * Private constructor for singleton pattern.
 	 */
 	private DefaultDownloadTaskManager(Downloader downloader) {
 		this.downloader = downloader;
-		taskExecutor = (DownloadTaskExecutor) downloader.getDownloaderContext().getDownloadTaskExecutor();
+		taskExecutor = downloader.getDownloaderContext().getDownloadTaskExecutor();
 	}
 
-	
 	/**
 	 * Gets instance of manager.
+	 *
 	 * @return Instance of manager.
 	 */
 	public final synchronized static DefaultDownloadTaskManager getInstance(Downloader downloader) {
@@ -72,13 +73,11 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
 	protected List<DownloadTask> getRunnableTask() {
 		return CollectionUtils.filter(mList, (o) -> {
 			return o.getState() == DownloadTask.DownloadTaskState.UNSTART;
 		});
 	}
-
 
 	protected void startRemainTask() throws Exception {
 		int needStartTask = parallelTaskNum - runningTaskNum;
@@ -93,27 +92,22 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
 	protected void executeTask(DownloadTask task) throws Exception {
 		taskExecutor.start(task);
 		uncompleteTasks.add(task);
 	}
 
-
 	protected void pauseTask(DownloadTask task) throws Exception {
 		taskExecutor.pause(task);
 	}
-
 
 	protected void resumeTask(DownloadTask task) throws Exception {
 		taskExecutor.resume(task);
 	}
 
-
 	protected void stopTask(DownloadTask task) throws Exception {
 		taskExecutor.stop(task);
 	}
-
 
 	protected void taskControll(Controller controller, List<DownloadTask> dts) throws Exception {
 		for (DownloadTask dt : dts) {
@@ -121,16 +115,22 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
 	protected void taskControll(Controller controller, DownloadTask dt) throws Exception {
 		switch (controller) {
-			case START:		startTask(dt);	break;
-			case STOP:		stopTask(dt);	break;
-			case PAUSE:		pauseTask(dt);	break;
-			case RESUME:	resumeTask(dt);	break;
+			case START:
+				startTask(dt);
+				break;
+			case STOP:
+				stopTask(dt);
+				break;
+			case PAUSE:
+				pauseTask(dt);
+				break;
+			case RESUME:
+				resumeTask(dt);
+				break;
 		}
 	}
-
 
 	protected void startTask(DownloadTask t) throws Exception {
 		if (runningTaskNum < parallelTaskNum) {
@@ -140,7 +140,6 @@ public class DefaultDownloadTaskManager
 		else {
 		}
 	}
-
 
 	public boolean add(DownloadTask task) throws Exception {
 		boolean isAdd = super.add(task);
@@ -155,14 +154,12 @@ public class DefaultDownloadTaskManager
 		return isAdd;
 	}
 
-
 	public void finalize() {
 		super.finalize();
 		synchronized (mInstance) {
 			mInstance = null;
 		}
 	}
-
 
 	/**
 	 * Controls the task start.
@@ -174,7 +171,6 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
 	/**
 	 * Controls the task pause.
 	 */
@@ -182,7 +178,6 @@ public class DefaultDownloadTaskManager
 	public void pauseAll() throws Exception {
 		taskControll(Controller.PAUSE, mList);
 	}
-
 
 	/**
 	 * Controls the task resume.
@@ -192,7 +187,6 @@ public class DefaultDownloadTaskManager
 		taskControll(Controller.RESUME, mList);
 	}
 
-
 	/**
 	 * Controls the task stop.
 	 */
@@ -201,54 +195,45 @@ public class DefaultDownloadTaskManager
 		taskControll(Controller.STOP, mList);
 	}
 
-
 	@Override
 	public boolean isAutoStart() {
 		return isAutoStart;
 	}
-
 
 	@Override
 	public void setAutoStart(boolean is) {
 		isAutoStart = is;
 	}
 
-
 	@Override
 	public void setParallelTaskNum(int num) {
 		parallelTaskNum = num;
 	}
-
 
 	@Override
 	public int getParallelTaskNum() {
 		return parallelTaskNum;
 	}
 
-
 	@Override
 	public List<DownloadTask> getUncompleteTasks() {
 		return uncompleteTasks;
 	}
-
 
 	@Override
 	public List<DownloadTask> getCompletedTasks() {
 		return completedTasks;
 	}
 
-
 	@Override
 	public boolean hasTask(Task task) {
 		return mList.contains(task);
 	}
 
-
 	@Override
 	public boolean deleteTask(Task task) {
 		return mList.remove(task);
 	}
-
 
 	public DownloadTask getTask(int i) {
 		synchronized (mList) {
@@ -259,7 +244,6 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
 	@Override
 	public boolean addTasks(Collection<? extends DownloadTask> tasks) {
 		for (DownloadTask task : tasks) {
@@ -268,13 +252,11 @@ public class DefaultDownloadTaskManager
 		return true;
 	}
 
-
 	@Override
 	public synchronized boolean addTask(DownloadTask task) {
 		mList.add(task);
 		return task.isCompleted() ? completedTasks.add(task) : uncompleteTasks.add(task);
 	}
-
 
 	@Override
 	public DownloadTask getTaskById(int id) {
@@ -286,56 +268,47 @@ public class DefaultDownloadTaskManager
 		return null;
 	}
 
-
 	@Override
 	public void start(int i) throws Exception {
 		startTask(getTask(i));
 	}
-
 
 	@Override
 	public void start(DownloadTask task) throws Exception {
 		startTask(task);
 	}
 
-
 	@Override
 	public void pause(int i) throws Exception {
 		pauseTask(getTask(i));
 	}
-
 
 	@Override
 	public void pause(DownloadTask task) throws Exception {
 		pauseTask(task);
 	}
 
-
 	@Override
 	public void resume(int i) throws Exception {
 		resumeTask(getTask(i));
 	}
-
 
 	@Override
 	public void resume(DownloadTask task) throws Exception {
 		resumeTask(task);
 	}
 
-
 	@Override
 	public void stop(int i) throws Exception {
 		stopTask(getTask(i));
 	}
-
 
 	@Override
 	public void stop(DownloadTask task) throws Exception {
 		stopTask(task);
 	}
 
-
-	public void onTaskFinish(Task t)  {
+	public void onTaskFinish(Task t) {
 		synchronized (mList) {
 			uncompleteTasks.remove(t);
 			taskExecutor.remove(t);
@@ -352,25 +325,20 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-
-
 	@Override
 	public void onDownloadTaskPause(DownloadTask t) {
 
 	}
-
 
 	@Override
 	public void onTaskStart(Task t) {
 
 	}
 
-
 	@Override
 	public void onDownloadTaskResume(DownloadTask t) {
 
 	}
-
 
 	@Override
 	public void onTaskStop(Task t) {

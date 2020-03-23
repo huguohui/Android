@@ -1,6 +1,5 @@
 package com.badsocket.core;
 
-
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -20,56 +19,38 @@ import java.util.concurrent.ExecutorService;
  */
 public abstract class Context {
 
-
 	public abstract Manager getThreadManager();
-
 
 	public abstract FileManager getFileManager();
 
-
 	public abstract Config getDownloadConfig();
-
 
 	public abstract ThreadFactory getThreadFactory();
 
-
 	public abstract FileWriter getFileWriter(String path) throws IOException;
-
 
 	public abstract FileWriter getFileWriter(File path) throws IOException;
 
-
 	public abstract FileWriter getFileWriter(String path, long size) throws IOException;
-
 
 	public abstract FileWriter getFileWriter(File path, long size) throws IOException;
 
-
 	public abstract android.content.Context getAndroidContext();
-
 
 	public abstract NetworkInfo getNetworkInfo();
 
-
 	public abstract boolean isNetworkAvailable();
-
 
 	public abstract long getAvailableSpaceSize(File path);
 
-
 	public abstract NetworkType getNetworkType();
-
 
 	public abstract ConnectivityManager getConnectivityManager();
 
-
 	public abstract ExecutorService getThreadExecutor();
-
 
 	public abstract DownloadTaskExecutor getDownloadTaskExecutor();
 
-
 	public abstract void finalize();
-
 
 }

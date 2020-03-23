@@ -24,7 +24,6 @@ public abstract class PermissionChecker {
 			Manifest.permission.CHANGE_WIFI_MULTICAST_STATE
 	};
 
-
 	public static void requestPermissions(Activity activity) {
 		for (String permission : permissions) {
 			if (isPermissionDenied(activity, permission)) {
@@ -33,17 +32,14 @@ public abstract class PermissionChecker {
 		}
 	}
 
-
 	public static boolean isPermissionDenied(Activity activity, String permission) {
 		int permissionCheck = ContextCompat.checkSelfPermission(activity,
 				permission);
 		return permissionCheck == PackageManager.PERMISSION_DENIED;
 	}
 
-
-
 	public static void requestPermission(Activity activity, String permission) {
-		ActivityCompat.requestPermissions(activity, new String[] { permission }, 0xff);
+		ActivityCompat.requestPermissions(activity, new String[]{permission}, 0xff);
 	}
 
 }

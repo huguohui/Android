@@ -8,16 +8,19 @@ import java.io.RandomAccessFile;
  * File writer.
  */
 public class SimpleFileWriter extends AbstractWriter implements FileWriter {
-	/** Step for writing. */
+	/**
+	 * Step for writing.
+	 */
 	protected int step = 0;
 
-	/** Random access file for writer. */
+	/**
+	 * Random access file for writer.
+	 */
 	protected RandomAccessFile mWriter;
 
 	protected File mFile;
 
 	protected long mLength;
-
 
 	/**
 	 * Create a file with special name and size.
@@ -31,21 +34,19 @@ public class SimpleFileWriter extends AbstractWriter implements FileWriter {
 		makeFile(mFile, mLength);
 	}
 
-
 	/**
 	 * Create a file by file.
+	 *
 	 * @param file File will to creating.
 	 */
 	public SimpleFileWriter(File file) throws IOException {
 		this(file, 0);
 	}
 
-
 	protected void ensureWritable() {
 		if (mWriter == null)
 			throw new NullPointerException();
 	}
-
 
 	/**
 	 * To writing data with special length from special offset.
@@ -71,14 +72,12 @@ public class SimpleFileWriter extends AbstractWriter implements FileWriter {
 		writeData(offset, data, start, end);
 	}
 
-
 	protected void writeData(long offset, byte[] data, int start, int end) throws IOException {
 		mWriter.seek(offset);
 		mWriter.write(data, start, end);
 		mOffset = offset + data.length;
 		mLength += data.length;
 	}
-
 
 	/**
 	 * Make a file with special name and size.
@@ -94,12 +93,10 @@ public class SimpleFileWriter extends AbstractWriter implements FileWriter {
 		}
 	}
 
-
 	@Override
 	public void flush() throws IOException {
 
 	}
-
 
 	@Override
 	public void close() throws IOException {

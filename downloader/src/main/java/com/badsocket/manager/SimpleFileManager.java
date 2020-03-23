@@ -9,20 +9,26 @@ import java.util.Arrays;
 /**
  * File manager is manager based directory, managed files is under special directory.
  * To use file manager by pass a special directory path or pass nothing to instancing it.
+ *
  * @since 2015/12/15
  */
 public class SimpleFileManager extends AbstractFileManager {
-	/** The default home directory. */
+	/**
+	 * The default home directory.
+	 */
 	private final static String DEFAULT_HOME_DIR = "/";
 
 	private static FileManager instance;
 
-	/** The special directory. */
+	/**
+	 * The special directory.
+	 */
 	private String mManagedDir = "";
 
-	/** The traversal index of iterator. */
+	/**
+	 * The traversal index of iterator.
+	 */
 	private int mCurrentIndex = 0;
-
 
 	/**
 	 * Constructor a file manager instance by a special directory,
@@ -41,7 +47,6 @@ public class SimpleFileManager extends AbstractFileManager {
 		loadDirectory(mManagedDir);
 	}
 
-
 	/**
 	 * Constructor a file manager instance by default directory setting.
 	 */
@@ -49,9 +54,9 @@ public class SimpleFileManager extends AbstractFileManager {
 		this(DEFAULT_HOME_DIR);
 	}
 
-
 	/**
 	 * Check the directory whatever is valid.
+	 *
 	 * @return The directory whatever is valid.
 	 */
 	public void checkDirectory(String directory) throws IOException {
@@ -70,7 +75,6 @@ public class SimpleFileManager extends AbstractFileManager {
 		}
 	}
 
-
 	/**
 	 * Load all files to list.
 	 */
@@ -78,7 +82,6 @@ public class SimpleFileManager extends AbstractFileManager {
 		checkDirectory(dir);
 		mList.addAll(Arrays.asList(new File(dir).listFiles()));
 	}
-
 
 	@Override
 	public void createDirectory(File parent, String name) throws IOException {
@@ -90,7 +93,6 @@ public class SimpleFileManager extends AbstractFileManager {
 		file.mkdirs();
 	}
 
-
 	@Override
 	public void createDirectory(File dir) throws IOException {
 		if (dir.exists()) {
@@ -99,7 +101,6 @@ public class SimpleFileManager extends AbstractFileManager {
 
 		dir.mkdirs();
 	}
-
 
 	/**
 	 * Delete a file or directory.
@@ -128,12 +129,10 @@ public class SimpleFileManager extends AbstractFileManager {
 		return !obj.exists() || obj.delete();
 	}
 
-
 	@Override
 	public synchronized boolean delete(int idx) throws IOException {
 		return false;
 	}
-
 
 	/**
 	 * Delete a object.
@@ -144,7 +143,6 @@ public class SimpleFileManager extends AbstractFileManager {
 	public void deleteAll() throws IOException {
 
 	}
-
 
 	/**
 	 * Get a details of object.
@@ -162,7 +160,6 @@ public class SimpleFileManager extends AbstractFileManager {
 		}
 		return null;
 	}
-
 
 	public synchronized static FileManager getInstance() throws IOException {
 		synchronized (ThreadManager.class) {

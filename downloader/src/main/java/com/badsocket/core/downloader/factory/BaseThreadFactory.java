@@ -17,12 +17,10 @@ public class BaseThreadFactory implements ThreadFactory {
 		return createThread(null, null, Thread.NORM_PRIORITY);
 	}
 
-
 	@Override
 	public Thread newThread(@NonNull Runnable runnable) {
 		return createThread(runnable.toString(), runnable, Thread.NORM_PRIORITY);
 	}
-
 
 	public Thread createThread(String name, Runnable runnable, int priority) {
 		if (runnable == null)
@@ -34,7 +32,6 @@ public class BaseThreadFactory implements ThreadFactory {
 
 		return t;
 	}
-
 
 	@Override
 	public Thread createThread(Runnable runnable) {

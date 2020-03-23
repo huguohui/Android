@@ -11,54 +11,45 @@ public class HttpDownloadTaskExecutor extends AbstractDownloadTaskExecutor {
 		super(context);
 	}
 
-
 	@Override
 	public void pause(Task t) throws Exception {
 
 	}
-
 
 	@Override
 	public void resume(Task t) throws Exception {
 
 	}
 
-
 	@Override
 	public void stop(Task t) throws Exception {
 
 	}
-
 
 	@Override
 	public void start(Task task) throws Exception {
 
 	}
 
-
 	@Override
 	public void start(Task task, long delay) throws Exception {
 
 	}
-
 
 	@Override
 	public boolean isDone(Task t) {
 		return false;
 	}
 
-
 	@Override
 	public void cancel(Task t) {
 
 	}
 
-
 	@Override
 	public List<Task> tasks() {
 		return null;
 	}
-
 
 	@Override
 	public boolean remove(Task t) {

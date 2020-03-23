@@ -18,21 +18,17 @@ public class RequestGroup {
 
 	private boolean isRoot;
 
-
 	public void addRequest(Request req) {
 		requests.add(req);
 	}
-
 
 	public void addResponse(Response rep) {
 		responses.add(rep);
 	}
 
-
 	public void addRequests(Collection<? extends Request> rs) {
 		requests.addAll(rs);
 	}
-
 
 	public void addRequests(Request[] rs) {
 		for (int i = 0; i < rs.length; i++) {
@@ -40,26 +36,21 @@ public class RequestGroup {
 		}
 	}
 
-
 	public void removeRequest(Request req) {
 		requests.remove(req);
 	}
-
 
 	public Request[] getRequests() {
 		return requests.toArray(new Request[0]);
 	}
 
-
 	public Request getRequest(int idx) {
 		return requests.get(idx);
 	}
 
-
 	public RequestGroup getParent() {
 		return parent;
 	}
-
 
 	public void openRequests() throws IOException {
 		for (Request r : requests) {
@@ -69,7 +60,6 @@ public class RequestGroup {
 		}
 	}
 
-
 	public void sendRequests() throws IOException {
 		for (Request r : requests) {
 			if (r != null && !r.sent()) {
@@ -77,7 +67,6 @@ public class RequestGroup {
 			}
 		}
 	}
-
 
 	public Response[] getResponses() throws IOException {
 		/*List<Response> list = new ArrayList<>();
@@ -91,7 +80,6 @@ public class RequestGroup {
 		return responses.toArray(new Response[0]);
 	}
 
-
 	public int activeCount() {
 		int activeCount = requests.size();
 		for (Request r : requests) {
@@ -102,7 +90,6 @@ public class RequestGroup {
 		return activeCount;
 	}
 
-
 	public void closeAll() throws IOException {
 		for (Request r : requests) {
 			if (r != null && !r.closed()) {
@@ -111,11 +98,9 @@ public class RequestGroup {
 		}
 	}
 
-
 	public void clear() {
 		requests.clear();
 	}
-
 
 	boolean isRoot() {
 		return parent == null;

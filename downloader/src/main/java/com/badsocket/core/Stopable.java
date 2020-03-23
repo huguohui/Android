@@ -1,6 +1,5 @@
 package com.badsocket.core;
 
-
 /**
  * A stopable object for managment.
  */
@@ -9,10 +8,8 @@ public interface Stopable {
 	/**
 	 * stop the object of managment.
 	 */
-	 void stop() ;
+	void stop();
 
-
-	 boolean isStoped();
-
+	boolean isStoped();
 
 }

@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 
 /**
  * Sender can send something to somewhere.
@@ -12,27 +11,24 @@ import java.net.SocketAddress;
 public interface Request extends Closeable {
 	/**
 	 * Open a request by speical internet downloadAddress.
+	 *
 	 * @param address Specials internet downloadAddress.
 	 */
 	void open(InetSocketAddress address) throws IOException;
 
-
 	/**
 	 * Open a request with a timeout by speical socket downloadAddress.
+	 *
 	 * @param address Specials socket downloadAddress.
 	 * @param timeout Timeout in milliseconds.
 	 */
 	void open(InetSocketAddress address, int timeout) throws IOException;
 
-
 	void open() throws IOException;
-
 
 	void reopen() throws IOException;
 
-
 	void reopen(InetSocketAddress address) throws IOException;
-
 
 	/**
 	 * Request data to somewhere.
@@ -41,7 +37,6 @@ public interface Request extends Closeable {
 	 * @throws IOException If exception.
 	 */
 	void send() throws IOException;
-
 
 	/**
 	 * Request data to somewhere.
@@ -52,31 +47,31 @@ public interface Request extends Closeable {
 	 */
 	void send(byte[] data) throws IOException;
 
-
 	Socket socket() throws IOException;
-
 
 	boolean connected();
 
-
 	boolean sent();
-
 
 	boolean closed();
 
-
-	/** Get response of this request. */
+	/**
+	 * Get response of this request.
+	 */
 	Response response() throws IOException;
-
 
 	/**
 	 * A range of data.
 	 */
 	class Range {
-		/** Start offset. */
+		/**
+		 * Start offset.
+		 */
 		public long start;
 
-		/** End offset. */
+		/**
+		 * End offset.
+		 */
 		public long end;
 
 		public Range(long s, long e) {
@@ -91,22 +86,18 @@ public interface Request extends Closeable {
 			this(s, -1);
 		}
 
-
 		public long getRange() {
 			return end - start;
 		}
-
 
 		public String toString() {
 			return String.format("range: %d-%d", start, end);
 		}
 	}
 
-
 	interface RequestBuilder {
 		Request build();
 	}
-
 
 	/**
 	 * AbstractRequest state listener.
@@ -115,11 +106,9 @@ public interface Request extends Closeable {
 		void onConnected(AbstractRequest r);
 	}
 
-
 	public interface OnSendListener {
 		void onSend(AbstractRequest r);
 	}
-
 
 	public interface OnResponseListener {
 		void onResponse(Response r);

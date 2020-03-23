@@ -11,32 +11,22 @@ import java.util.List;
 
 public interface DownloadTaskInfoStorage {
 
-
 	List<DownloadTask> readList() throws Exception;
-
 
 	List<DownloadTask> readList(File location) throws Exception;
 
-
 	DownloadTask readTask(File infoFile) throws Exception;
-
 
 	void writeList(List<DownloadTask> tasks) throws Exception;
 
-
 	void writeList(List<DownloadTask> tasks, File location) throws Exception;
-
 
 	void writeTask(DownloadTask task) throws Exception;
 
-
 	File location();
-
 
 	void setLocation(File location);
 
-
 	void finish();
-
 
 }

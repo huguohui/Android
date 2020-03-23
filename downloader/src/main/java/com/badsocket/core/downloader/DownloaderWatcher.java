@@ -18,12 +18,10 @@ public class DownloaderWatcher implements MonitorWatcher {
 
 	protected DownloadTaskInfoStorage taskInfoStorage;
 
-
 	public DownloaderWatcher(Downloader downloader) {
 		this.downloader = downloader;
 		taskInfoStorage = downloader.getDownloadTaskStorage();
 	}
-
 
 	protected void updateTask(DownloadTask task) {
 		if (task != null && !task.isCompleted()) {
@@ -31,15 +29,13 @@ public class DownloaderWatcher implements MonitorWatcher {
 		}
 	}
 
-
 	protected void recordTasks(List<DownloadTask> tasks) throws Exception {
 		taskInfoStorage.writeList(tasks);
 	}
 
-
 	protected void handleTask() {
 		try {
-			CollectionUtils.forEach(tasks, (CollectionUtils.Action<DownloadTask>)(task) -> {
+			CollectionUtils.forEach(tasks, (CollectionUtils.Action<DownloadTask>) (task) -> {
 				updateTask(task);
 			});
 			recordTasks(tasks);
@@ -48,7 +44,6 @@ public class DownloaderWatcher implements MonitorWatcher {
 			e.printStackTrace();
 		}
 	}
-
 
 	@Override
 	public void watch(Object o) {

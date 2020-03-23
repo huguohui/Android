@@ -10,14 +10,10 @@ import java.io.InputStream;
  */
 public interface ConfigReader extends Closeable {
 
-
 	Config read() throws IOException;
-
 
 	Config read(File file) throws IOException;
 
-
 	Config read(InputStream stream) throws IOException;
-
 
 }

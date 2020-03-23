@@ -39,11 +39,11 @@ public class Bootstrap extends Application {
 	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 	public static final String[] ASSETS_DIRS = {
-		"configs",
-		"plugins",
-		"icons",
-		"history",
-		"patches"
+			"configs",
+			"plugins",
+			"icons",
+			"history",
+			"patches"
 	};
 
 	public void onCreate() {
@@ -67,7 +67,6 @@ public class Bootstrap extends Application {
 		assetManager = androidContext.getAssets();
 		extractAssets();
 	}
-
 
 	public void extractAssets() {
 		File rootPath = new File(DownloaderContext.ROOT_PATH, packageName);
@@ -93,7 +92,8 @@ public class Bootstrap extends Application {
 				for (String file : assetManager.list(assetsDir)) {
 					FileUtils.copyTo(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				Log.e(e);
 			}
 		}

@@ -4,10 +4,8 @@ import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.badsocket.R;
-import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.downloader.InternetDownloader;
 
@@ -44,7 +42,6 @@ public class DownloadService extends Service {
 		super.onDestroy();
 	}
 
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		DownloadAdapter downloader = null;
@@ -56,7 +53,6 @@ public class DownloadService extends Service {
 		}
 		return downloader;
 	}
-
 
 	public boolean onUnbind(Intent intent) {
 		super.onUnbind(intent);

@@ -2,19 +2,25 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Task;
-import com.badsocket.net.DownloadAddress;
+import com.badsocket.net.newidea.URI;
 
 /**
  * Descriptor for downloading task.
  */
 public class DownloadTaskDescriptor extends Descriptor {
-	/** URL for downloading. */
-	protected DownloadAddress mAddress;
+	/**
+	 * URL for downloading.
+	 */
+	protected URI mUri;
 
-	/** Task priority. */
+	/**
+	 * Task priority.
+	 */
 	protected int mPriority;
 
-	/** Number of max used for threads. */
+	/**
+	 * Number of max used for threads.
+	 */
 	protected int mMaxThread;
 
 	protected String path;
@@ -23,35 +29,29 @@ public class DownloadTaskDescriptor extends Descriptor {
 
 	protected String taskName;
 
-
 	public DownloadTaskDescriptor() {
 
 	}
 
-
 	public DownloadTaskDescriptor(DownloadTask task) {
-		this.setAddress(task.getDownloadAddress());
+		this.setUri(task.getDownloadAddress());
 		this.setMaxThread(task.getSectionNumber());
 		this.setPriority(task.getPriority());
 		this.setPath(task.getDownloadPath().getAbsolutePath());
 	}
 
-
 	public String getTaskName() {
 		return taskName;
 	}
-
 
 	public DownloadTaskDescriptor setTaskName(String taskName) {
 		this.taskName = taskName;
 		return this;
 	}
 
-
 	public String getPath() {
 		return path;
 	}
-
 
 	public DownloadTaskDescriptor setPath(String path) {
 		this.path = path;
@@ -62,19 +62,17 @@ public class DownloadTaskDescriptor extends Descriptor {
 		return taskExtraInfo;
 	}
 
-
 	public DownloadTaskDescriptor setTaskExtraInfo(Task.TaskExtraInfo taskExtraInfo) {
 		this.taskExtraInfo = taskExtraInfo;
 		return this;
 	}
 
-
-	public DownloadAddress getAddress() {
-		return mAddress;
+	public URI getUri() {
+		return mUri;
 	}
 
-	public void setAddress(DownloadAddress mUrl) {
-		this.mAddress = mUrl;
+	public void setUri(URI mUrl) {
+		this.mUri = mUrl;
 	}
 
 	public int getPriority() {
@@ -93,7 +91,6 @@ public class DownloadTaskDescriptor extends Descriptor {
 		this.mMaxThread = mMaxThread;
 	}
 
-
 	public static class Builder {
 
 		private DownloadTaskDescriptor descriptor;
@@ -102,36 +99,30 @@ public class DownloadTaskDescriptor extends Descriptor {
 			descriptor = new DownloadTaskDescriptor();
 		}
 
-
-		public Builder setAddress(DownloadAddress address) {
-			descriptor.setAddress(address);
+		public Builder setURI(URI address) {
+			descriptor.setUri(address);
 			return this;
 		}
-
 
 		public Builder setPriority(int mPriority) {
 			descriptor.setPriority(mPriority);
 			return this;
 		}
 
-
 		public Builder setMaxThread(int mMaxThread) {
 			descriptor.setMaxThread(mMaxThread);
 			return this;
 		}
-
 
 		public Builder setPath(String path) {
 			descriptor.path = path;
 			return this;
 		}
 
-
 		public Builder setExtraInfo(Task.TaskExtraInfo info) {
 			descriptor.setTaskExtraInfo(info);
 			return this;
 		}
-
 
 		public DownloadTaskDescriptor build() {
 			return descriptor;

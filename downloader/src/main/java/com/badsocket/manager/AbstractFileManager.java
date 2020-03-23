@@ -7,6 +7,4 @@ import java.io.File;
  */
 public abstract class AbstractFileManager extends AbstractManager<File> implements FileManager {
 
-
-
 }

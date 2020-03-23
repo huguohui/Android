@@ -9,7 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-class ObjectUtils {
+public class ObjectUtils {
 	public static <T> T readObject(File file) throws IOException, ClassNotFoundException {
 		T object = null;
 		ObjectInputStream inputStream = null;
@@ -28,7 +28,6 @@ class ObjectUtils {
 		return object;
 	}
 
-
 	public static void writeObject(Object obj, OutputStream os) throws IOException {
 		ObjectOutputStream outputStream = null;
 		try {
@@ -45,7 +44,6 @@ class ObjectUtils {
 			}
 		}
 	}
-
 
 	public static void writeObject(Object obj, File file) throws IOException {
 		writeObject(obj, new FileOutputStream(file));

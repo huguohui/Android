@@ -1,16 +1,11 @@
 package com.badsocket.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -26,8 +21,8 @@ public abstract class FileUtils {
 
 	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
 		try (
-			ReadableByteChannel channel = Channels.newChannel(src);
-			WritableByteChannel dstChannel = Channels.newChannel(dst);
+				ReadableByteChannel channel = Channels.newChannel(src);
+				WritableByteChannel dstChannel = Channels.newChannel(dst);
 		) {
 			ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
 			while (channel.read(buffer) != -1) {
@@ -41,7 +36,6 @@ public abstract class FileUtils {
 			dst.close();
 		}
 	}
-
 
 	public static void copyTo(InputStream src, File dst) throws IOException {
 		if (src == null || dst == null) {
@@ -60,7 +54,6 @@ public abstract class FileUtils {
 		copyTo(src, new FileOutputStream(dst));
 	}
 
-
 	public static void copyTo(File src, File dst) throws IOException {
 		if (src.isDirectory()) {
 			for (File file : src.listFiles()) {
@@ -72,16 +65,14 @@ public abstract class FileUtils {
 		}
 	}
 
-
 	public static void copyTo(File[] srcs, File dst) throws IOException {
 		for (File src : srcs) {
 			copyTo(src, dst);
 		}
 	}
 
-
 	public static void copyTo(File[] srcs, File dst, CopyFrontFilter filter,
-			CopyExceptionHandler eh, CopySuccessHandler sh) throws IOException {
+							  CopyExceptionHandler eh, CopySuccessHandler sh) throws IOException {
 		for (File src : srcs) {
 			try {
 				if (!filter.doFrontCheck(src, dst)) {
@@ -97,13 +88,11 @@ public abstract class FileUtils {
 		}
 	}
 
-
 	public static void copyTo(File[] srcs, File[] dsts) throws IOException {
 		for (int i = 0, j = 0; i < srcs.length; i++, j++) {
 			copyTo(srcs[i], dsts[i]);
 		}
 	}
-
 
 	public static void copyTo(File[] srcs, File[] dsts, CopyFrontFilter filter,
 							  CopyExceptionHandler eh, CopySuccessHandler sh) throws IOException {
@@ -123,7 +112,6 @@ public abstract class FileUtils {
 		}
 	}
 
-
 	public static void moveTo(File src, File dst) throws IOException {
 		if (!src.exists()) {
 			throw new FileNotFoundException(src.getAbsolutePath());
@@ -136,7 +124,6 @@ public abstract class FileUtils {
 		src.delete();
 	}
 
-
 	public static void renameFile(File src, File dst) throws IOException {
 		if (!src.exists()) {
 			throw new FileNotFoundException(src.getAbsolutePath());
@@ -148,7 +135,6 @@ public abstract class FileUtils {
 		src.renameTo(dst);
 	}
 
-
 	public static File[] listDirectory(File dir) {
 		File[] files = new File[0];
 		if (dir.exists()) {
@@ -158,26 +144,20 @@ public abstract class FileUtils {
 		return files;
 	}
 
-
 	public static File[] listDirectory(String dir) {
 		return listDirectory(new File(dir));
 	}
-
 
 	public interface CopyExceptionHandler {
 		void handleCopyException(File src, File dst, Exception e);
 	}
 
-
 	public interface CopySuccessHandler {
 		void handleCopySuccess(File src, File dst);
 	}
 
-
 	public interface CopyFrontFilter {
 		boolean doFrontCheck(File src, File dst);
 	}
-
-
 
 }

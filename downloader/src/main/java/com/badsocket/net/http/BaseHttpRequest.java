@@ -1,77 +1,85 @@
 package com.badsocket.net.http;
 
-
 import com.badsocket.net.AbstractRequest;
-import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.Entity;
 import com.badsocket.net.Header;
 import com.badsocket.net.Request;
 import com.badsocket.net.Response;
 import com.badsocket.net.http.Http.Method;
+import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
-import com.badsocket.util.UrlUtils;
+import com.badsocket.util.URLUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.URL;
 
 /**
  * HTTP request class implement.
+ *
  * @author HGH
  * @since 2015/11/05
  */
 public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
-	/** Accept field. */
+	/**
+	 * Accept field.
+	 */
 	protected final String ACCEPT = "*/*";
 
-	/** User-Agent field. */
+	/**
+	 * User-Agent field.
+	 */
 	protected final String USER_AGENT = "T-Virus v1.0";
 
-	/** Accept-Encoding field. */
+	/**
+	 * Accept-Encoding field.
+	 */
 	protected final String ACCEPT_ENCODING = "identity";
 
-	/** Connection field. */
+	/**
+	 * Connection field.
+	 */
 	protected final String CONNECTING = "close";
 
-	/** The default http version. */
+	/**
+	 * The default http version.
+	 */
 	protected final String HTTP_VERSION = "1.1";
 
-	/** The method of requesting  */
+	/**
+	 * The method of requesting
+	 */
 	protected Method mMethod = Method.GET;
-
-	/** Requested downloadAddress. */
-	protected URL mUrl;
 
 	protected HttpResponse mHttpResponse;
 
+	protected URI mUri;
+
 	/**
-     * Construct a http request object.
-     * @param url Special URL.
-     * @param method Special method of requesting.
-     */
-	public BaseHttpRequest(DownloadAddress address, Method method) throws IOException {
-		super(UrlUtils.socketAddressByUrl(address.getUrl()));
+	 * Construct a http request object.
+	 *
+	 * @param uri    Special URL.
+	 * @param method Special method of requesting.
+	 */
+	public BaseHttpRequest(URI address, Method method) throws IOException {
 		if (method != null)
 			this.mMethod = method;
 
-
-		mUrl = address.getUrl();
-		this.mAddress = address;
+		mUri = address;
+		mAddress = URLUtils.socketAddressByUri(address);
 		initHeader();
 	}
 
-	
 	/**
-     * Construct a http request object.
-     * @param url Special URL.
-     */
-	public BaseHttpRequest(DownloadAddress address) throws IOException {
+	 * Construct a http request object.
+	 *
+	 * @param uri Special URL.
+	 */
+	public BaseHttpRequest(URI address) throws IOException {
 		this(address, null);
 	}
-
 
 	/**
 	 * Default constructor.
@@ -80,39 +88,36 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		initHeader();
 	}
 
-
 	/**
 	 * Build default http header.
+	 *
 	 * @return Default header.
 	 */
 	protected void initHeader() {
 		HttpHeader mHeader = new HttpHeader();
 		mHeader.setVersion(HTTP_VERSION);
 		mHeader.set(Http.ACCEPT, ACCEPT).set(Http.ACCEPT_ENCODING, ACCEPT_ENCODING)
-			   .set(Http.USER_AGENT, USER_AGENT).set(Http.CONNECTION, CONNECTING);
+				.set(Http.USER_AGENT, USER_AGENT).set(Http.CONNECTION, CONNECTING);
 
 		this.mHeader = mHeader;
 	}
 
-
 	protected void beforeSend() {
 		HttpHeader mHeader = (HttpHeader) this.mHeader;
-		mHeader.setUrl(mUrl.toString());
+		mHeader.setUrl(mUri.toString());
 		mHeader.setMethod(mMethod);
-		mHeader.set(Http.HOST, UrlUtils.domainWithPort(mUrl));
+		mHeader.set(Http.HOST, URLUtils.domainWithPort(mUri));
 	}
-
 
 	protected void afterSend() {
 		Log.d("Sent request data.");
 	}
 
-
 	/**
-     * Sends http request.
-     */
-    @Override
-    public synchronized void send() throws IOException {
+	 * Sends http request.
+	 */
+	@Override
+	public synchronized void send() throws IOException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		HttpEntity entity = (HttpEntity) getEntity();
 
@@ -134,22 +139,17 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		if (mOnSendListener != null) {
 			mOnSendListener.onSend(this);
 		}
+	}
 
-		receiveResponse();
-    }
-
-
-    public void send(byte[] data) throws IOException {
+	public void send(byte[] data) throws IOException {
 		ensureConnected();
 		mOutputStream.write(data);
 	}
-
 
 	@Override
 	public Socket socket() throws IOException {
 		return mSocket;
 	}
-
 
 	protected void receiveResponse() throws IOException {
 		mHttpResponse = new HttpResponse(this);
@@ -157,106 +157,59 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}
 	}
-	
-	
-	/**
-	 * Open a downloadAddress downloadAddress.
-	 * @throws IOException If exception.
-	 */
-	public void open(InetSocketAddress url, Method method) throws IOException {
-		setAddress(url);
+
+
+	public void open(URI uri, Method method) throws IOException {
+		setUri(uri);
 		setMethod(method == null ? Method.GET : method);
-		super.open(UrlUtils.socketAddressByUrl(((DownloadAddress) url).getUrl()));
-		Log.d("Open a connection with url : " + ((DownloadAddress) url).getUrl().toExternalForm());
-	}
-	
-	
-	/**
-	 * Open a downloadAddress downloadAddress.
-	 * @throws IOException If exception.
-	 */
-	public void open(InetSocketAddress url) throws IOException {
-		DownloadAddress adr = (DownloadAddress) url;
-		open(adr, mMethod);
+		super.open(URLUtils.socketAddressByUri(uri));
 	}
 
-
-	public void open() throws IOException {
-		open(mAddress, mMethod);
+	public void open(URI uri) throws IOException {
+		open(uri, null);
 	}
-
 
 	/**
 	 * Reopen a connection.
 	 */
-	public void reopen(InetSocketAddress url) throws IOException {
-		DownloadAddress address = (DownloadAddress) url;
-    	mUrl = address.getUrl();
-    	reopen();
+	public void reopen(InetSocketAddress uri) throws IOException {
+		mAddress = uri;
+		reopen();
 	}
-	
-	
+
 	/**
 	 * Reopen a connection.
 	 */
 	public void reopen() throws IOException {
-    	if (!getState().equals(State.closed)) {
+		if (!getState().equals(State.closed)) {
 			close();
 		}
-    	
-    	isSend = false;
-    	open(mAddress);
+
+		isSend = false;
+		open(mAddress);
 	}
 
-
 	public synchronized Response response() throws IOException {
+		receiveResponse();
 		return mHttpResponse == null ? mHttpResponse = new HttpResponse(this) : mHttpResponse;
 	}
 
-
-	public void setAddress(InetSocketAddress address) {
-		if (address == null) {
-			throw new NullPointerException("The requesting downloadAddress is null!");
-		}
-
-		mAddress = address;
-		mUrl = ((DownloadAddress) address).getUrl();
-	}
-	
-
-    public Method getMethod() {
-        return mMethod;
-    }
-
-
-    public void setMethod(Method method) {
-        this.mMethod = method;
-    }
-
-
-	public URL getUrl() {
-		return mUrl;
-	}
-	
-	
-	public void setUrl(URL url) {
-		if (url == null)
-			throw new NullPointerException("The special URL can't null!");
-
-		mUrl = url;
+	public Method getMethod() {
+		return mMethod;
 	}
 
+	public void setMethod(Method method) {
+		this.mMethod = method;
+	}
 
 	public void setHeader(String key, String val) {
 		HttpHeader header = (HttpHeader) mHeader;
 		header.set(key, val);
 	}
 
-
 	public String getHeader(String key) {
 		return ((HttpHeader) mHeader).get(key);
 	}
-
 
 	public static class Builder implements Request.RequestBuilder {
 
@@ -266,40 +219,43 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 			request = new BaseHttpRequest();
 		}
 
-
-		public Builder setAddress(DownloadAddress address) {
+		public Builder setAddress(InetSocketAddress address) {
 			request.setAddress(address);
 			return this;
 		}
-
 
 		public Builder setMethod(Method method) {
 			request.setMethod(method);
 			return this;
 		}
 
-
 		public Builder setHeader(Header header) {
 			request.setHeader(header);
 			return this;
 		}
-
 
 		public Builder setTimeout(int t) {
 			request.setTimeout(t);
 			return this;
 		}
 
-
 		public Builder setEntity(Entity t) {
 			request.setEntity(t);
 			return this;
 		}
 
-
 		@Override
 		public Request build() {
 			return request;
 		}
+	}
+
+	public URI getUri() {
+		return mUri;
+	}
+
+	public BaseHttpRequest setUri(URI uri) {
+		mUri = uri;
+		return this;
 	}
 }

@@ -21,18 +21,15 @@ public class DownloadTaskListWatcher implements MonitorWatcher {
 		this.handler = handler;
 	}
 
-
 	protected Message generateMessage(Object obj) {
 		Message msg = handler.obtainMessage();
 		msg.obj = obj;
 		return msg;
 	}
 
-
 	protected void sendMessage(Message msg) {
 		handler.sendMessage(msg);
 	}
-
 
 	@Override
 	public void watch(Object o) {

@@ -3,6 +3,7 @@ package com.badsocket.worker;
 import com.badsocket.manager.ThreadManager;
 
 /**
+ *
  */
 public class AsyncWorker extends AbstractWorker {
 
@@ -14,18 +15,15 @@ public class AsyncWorker extends AbstractWorker {
 
 	protected Object waitLock = new Object();
 
-
 	public AsyncWorker(ThreadManager tm) {
 		this(tm, 0);
 	}
-
 
 	public AsyncWorker(ThreadManager tm, long interval) {
 		threadManager = tm;
 		this.interval = interval;
 		mThread = tm.create(this);
 	}
-
 
 	/**
 	 * Get thread of this worker.
@@ -37,7 +35,6 @@ public class AsyncWorker extends AbstractWorker {
 		return mThread;
 	}
 
-
 	/**
 	 * Controls the task start.
 	 */
@@ -46,7 +43,6 @@ public class AsyncWorker extends AbstractWorker {
 		mThread.start();
 	}
 
-
 	protected void waitTimes(long time) throws InterruptedException {
 		synchronized (waitLock) {
 			if (time != 0) {
@@ -54,7 +50,6 @@ public class AsyncWorker extends AbstractWorker {
 			}
 		}
 	}
-
 
 	protected void doWork(Workable workable) throws Exception {
 		if (workable == null || interval == -1) {

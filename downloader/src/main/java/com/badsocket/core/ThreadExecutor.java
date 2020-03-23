@@ -22,7 +22,6 @@ public class ThreadExecutor extends ScheduledThreadPoolExecutor {
 		super(corePoolSize);
 	}
 
-
 	public ThreadExecutor(int corePoolSize, ThreadFactory factory) {
 		super(corePoolSize, factory);
 	}

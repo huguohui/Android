@@ -6,14 +6,10 @@ package com.badsocket.core;
 
 public interface ProtocolHandler {
 
-
 	Protocols getProtocol();
-
 
 	DownloadComponentFactory downloadComponentFactory();
 
-
 	boolean isSupport(Protocols protocol);
-
 
 }

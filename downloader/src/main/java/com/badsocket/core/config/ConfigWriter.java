@@ -8,8 +8,6 @@ import java.io.IOException;
  */
 public interface ConfigWriter extends Closeable {
 
-
 	Config writer() throws IOException;
-
 
 }

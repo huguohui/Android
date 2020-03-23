@@ -23,19 +23,16 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 	private LayoutInflater layoutInflater;
 	private Context context;
 
-
 	public SimpleTaskListAdspter(Context context, List<DownloadTask> data) {
 		this.context = context;
 		this.data = data;
 		this.layoutInflater = LayoutInflater.from(context);
 	}
 
-
 	@Override
 	public int getCount() {
 		return data.size();
 	}
-
 
 	/**
 	 * 获得某一位置的数据
@@ -45,7 +42,6 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 		return data.get(position);
 	}
 
-
 	/**
 	 * 获得唯一标识
 	 */
@@ -53,7 +49,6 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 	public long getItemId(int position) {
 		return position;
 	}
-
 
 	@Override
 	public View getView(int position, View cv, ViewGroup parent) {
@@ -66,7 +61,7 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 		DownloadTask task = data.get(position);
 
 		if (task != null) {
-			ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", (int)(task.getProgress() * 100));
+			ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", (int) (task.getProgress() * 100));
 			animation.setDuration(100);
 			animation.start();
 

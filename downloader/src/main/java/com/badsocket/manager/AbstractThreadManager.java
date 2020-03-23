@@ -2,8 +2,6 @@ package com.badsocket.manager;
 
 import com.badsocket.util.Log;
 
-import java.util.List;
-
 /**
  * Thread manager.
  */

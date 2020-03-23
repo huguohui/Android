@@ -3,13 +3,13 @@ package com.badsocket.manager;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 
-import java.util.List;
-
 /**
  * Thread manager.
  */
 public class ThreadManager extends AbstractThreadManager {
-	/** Single instance of ThreadManager. */
+	/**
+	 * Single instance of ThreadManager.
+	 */
 	private static ThreadManager mManager = null;
 
 	private ThreadFactory factory = new BaseThreadFactory();
@@ -20,6 +20,7 @@ public class ThreadManager extends AbstractThreadManager {
 
 	/**
 	 * Get single instance of ThreadManager.
+	 *
 	 * @return Instance of ThreadManager.
 	 */
 	public synchronized static ThreadManager getInstance() {

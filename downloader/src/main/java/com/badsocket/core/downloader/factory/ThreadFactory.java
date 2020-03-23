@@ -4,7 +4,6 @@ public interface ThreadFactory extends Factory<Thread>, java.util.concurrent.Thr
 
 	Thread createThread(String name, Runnable runnable, int priority);
 
-
 	Thread createThread(Runnable runnable);
 
 }

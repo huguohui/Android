@@ -7,27 +7,19 @@ import java.util.List;
  */
 public interface Monitor extends Stopable {
 
-
 	void monitor(Object d);
-
 
 	void monitorNow(Object d);
 
-
 	Object collectedData();
-
 
 	void addWatcher(MonitorWatcher w);
 
-
 	void removeWatcher(MonitorWatcher w);
-
 
 	long interval();
 
-
 	void setInterval(long i);
-
 
 	List<MonitorWatcher> getWatchers();
 

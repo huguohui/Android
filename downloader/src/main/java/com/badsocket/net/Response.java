@@ -1,6 +1,5 @@
 package com.badsocket.net;
 
-
 import java.io.Closeable;
 
 /**
@@ -12,20 +11,18 @@ public abstract class Response implements Closeable {
 
 	protected Entity entity;
 
-
 	/**
 	 * Get response from request.
+	 *
 	 * @param r Request object.
 	 */
 	protected Response(Request r) {
 
 	}
 
-
 	public Header getHeader() {
 		return header;
 	}
-
 
 	public Entity getEntity() {
 		return entity;

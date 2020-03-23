@@ -25,7 +25,6 @@
 
 package com.badsocket.core.downloader.exception;
 
-
 import java.io.IOException;
 
 /**
@@ -36,18 +35,16 @@ import java.io.IOException;
  */
 
 public class FileAlreadyExistsException
-    extends IOException
-{
-    static final long serialVersionUID = 7579540934498831181L;
+		extends IOException {
+	static final long serialVersionUID = 7579540934498831181L;
 
-    /**
-     * Constructs an instance of this class.
-     *
-     * @param   file
-     *          a string identifying the file or {@code null} if not known
-     */
-    public FileAlreadyExistsException(String file) {
-        super(file);
-    }
+	/**
+	 * Constructs an instance of this class.
+	 *
+	 * @param file a string identifying the file or {@code null} if not known
+	 */
+	public FileAlreadyExistsException(String file) {
+		super(file);
+	}
 
 }

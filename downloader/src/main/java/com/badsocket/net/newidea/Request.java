@@ -8,13 +8,13 @@ public abstract class Request {
 		this.uri = uri;
 	}
 
-
 	public URI getUri() {
 		return uri;
 	}
 
-
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
+
+
 }

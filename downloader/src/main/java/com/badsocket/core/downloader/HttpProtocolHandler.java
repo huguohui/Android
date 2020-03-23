@@ -11,23 +11,19 @@ import com.badsocket.core.downloader.factory.HttpDownloadComponentFactory;
 
 public class HttpProtocolHandler implements ProtocolHandler {
 
-
 	@Override
 	public Protocols getProtocol() {
 		return Protocols.HTTP;
 	}
-
 
 	@Override
 	public DownloadComponentFactory downloadComponentFactory() {
 		return new HttpDownloadComponentFactory();
 	}
 
-
 	@Override
 	public boolean isSupport(Protocols protocol) {
 		return protocol.equals(Protocols.HTTP);
 	}
-
 
 }

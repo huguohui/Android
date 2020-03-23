@@ -16,6 +16,4 @@ public class TaskWorker extends AsyncWorker {
 		super(tm, interval);
 	}
 
-
-
 }

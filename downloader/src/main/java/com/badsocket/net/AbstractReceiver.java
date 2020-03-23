@@ -7,30 +7,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-
 /**
  * Download some data form a place.
  */
 public abstract class AbstractReceiver implements Receiver {
-	/** Default buffer size. */
+	/**
+	 * Default buffer size.
+	 */
 	public final static int BUFFER_SIZE = 1024 << 3;
 
-	/** The requester object. */
+	/**
+	 * The requester object.
+	 */
 	protected InputStream mInputStream;
 
-	/** Writable of receiver. */
+	/**
+	 * Writable of receiver.
+	 */
 	protected Writer mFileWriter;
 
-	/** Is finished? */
+	/**
+	 * Is finished?
+	 */
 	protected boolean isFinished = false;
 
-	/** Received data length. */
+	/**
+	 * Received data length.
+	 */
 	protected volatile long mReceivedLength;
 
-	/** Is stop receive? */
+	/**
+	 * Is stop receive?
+	 */
 	protected boolean isStop = false;
 
-	/** Size for next downloading. */
+	/**
+	 * Size for next downloading.
+	 */
 	protected long mSizeWillReceive = 0;
 
 	protected long lastReceivedLength = 0;
@@ -45,9 +58,9 @@ public abstract class AbstractReceiver implements Receiver {
 
 	protected OnReceiveListener onReceiveListener;
 
-
 	/**
 	 * Construct a downloader by requester.
+	 *
 	 * @param is A {@link AbstractRequest}.
 	 */
 	public AbstractReceiver(InputStream is, Writer writable) {
@@ -55,13 +68,12 @@ public abstract class AbstractReceiver implements Receiver {
 		mFileWriter = writable;
 	}
 
-
 	protected AbstractReceiver() {
 	}
 
-
 	/**
 	 * Receiving data with special length.
+	 *
 	 * @param size Special length.
 	 */
 	protected byte[] receiveData(int size) throws IOException {
@@ -71,7 +83,7 @@ public abstract class AbstractReceiver implements Receiver {
 		byte[] chunk = new byte[size], buff;
 		int count = 0, read = 0, freeLoop = 0;
 
-		while(!isStop && count < size) {
+		while (!isStop && count < size) {
 			checkAvaliable(mInputStream);
 			if (null == (buff = receiveFromStream(mInputStream,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
@@ -87,14 +99,15 @@ public abstract class AbstractReceiver implements Receiver {
 		return chunk;
 	}
 
-
 	protected void checkAvaliable(InputStream is) throws IOException {
 		int idle = 1, maxWaitMs = 1;
-		try { Thread.sleep(is.available() != 0 ? idle : maxWaitMs); } catch ( InterruptedException ex ) {
+		try {
+			Thread.sleep(is.available() != 0 ? idle : maxWaitMs);
+		}
+		catch (InterruptedException ex) {
 			Log.d("从Sleep状态中断！");
 		}
 	}
-
 
 	protected byte[] receiveFromStream(InputStream is, int size) throws IOException {
 		int read = 0;
@@ -109,20 +122,19 @@ public abstract class AbstractReceiver implements Receiver {
 		return buff;
 	}
 
-
 	/**
 	 * Receiving data with special length.
+	 *
 	 * @param size Special length.
 	 */
 	protected void receiveAndWrite(long size) throws IOException {
 		int willRec = 0;
-		while(!isStop && size > 0) {
+		while (!isStop && size > 0) {
 			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
 			writeData(receiveData(willRec));
 			size -= willRec;
 		}
 	}
-
 
 	protected void invokeListener() {
 		if (!isStop && isFinished && onFinishedListener != null) {
@@ -136,11 +148,9 @@ public abstract class AbstractReceiver implements Receiver {
 		}
 	}
 
-
 	protected void writeData(byte[] data) throws IOException {
 		mFileWriter.write(mReceivedLength - data.length, data);
 	}
-
 
 	protected void finishReceive() throws IOException {
 		isFinished = !isStop;
@@ -149,29 +159,26 @@ public abstract class AbstractReceiver implements Receiver {
 		Log.d("Received length " + mReceivedLength + " of data.");
 	}
 
-
 	protected void flushWriter() throws IOException {
 
 	}
-
 
 	/**
 	 * Receiving data.
 	 *
 	 * @return Received data by byte.
-	 * @throws IOException      When I/O exception.
+	 * @throws IOException When I/O exception.
 	 */
 	@Override
 	public void receive() throws IOException {
 		Log.d("Start receive data...");
 		byte[] data = null;
-		while(null != (data = receiveData(BUFFER_SIZE))) {
+		while (null != (data = receiveData(BUFFER_SIZE))) {
 			writeData(data);
 		}
 
 		finishReceive();
 	}
-
 
 	/**
 	 * To downloading data from source, and save data to somewhere.
@@ -184,18 +191,15 @@ public abstract class AbstractReceiver implements Receiver {
 		finishReceive();
 	}
 
-
 	@Override
 	public long dataOffsetBegin() {
 		return dataOffsetBegin;
 	}
 
-
 	@Override
 	public long dataOffsetEnd() {
 		return dataOffsetEnd;
 	}
-
 
 	protected void onReceive(byte[] data) {
 		if (onReceiveListener == null) {
@@ -205,7 +209,6 @@ public abstract class AbstractReceiver implements Receiver {
 		onReceiveListener.onReceive(this, data);
 	}
 
-
 	/**
 	 * stop the object of managment.
 	 */
@@ -214,16 +217,13 @@ public abstract class AbstractReceiver implements Receiver {
 		isStop = true;
 	}
 
-
 	public InputStream getInputStream() {
 		return mInputStream;
 	}
 
-
 	public long getReceivedLength() {
 		return mReceivedLength;
 	}
-
 
 	public long getReceivedLengthFromLast() {
 		long current = mReceivedLength - lastReceivedLength;
@@ -231,36 +231,29 @@ public abstract class AbstractReceiver implements Receiver {
 		return current;
 	}
 
-
 	public boolean isFinished() {
 		return isFinished;
 	}
-
 
 	public boolean isStop() {
 		return isStop;
 	}
 
-
 	public Writer getFileWriter() {
 		return mFileWriter;
 	}
-
 
 	public void setFileWriter(Writer fileWriter) {
 		mFileWriter = fileWriter;
 	}
 
-
 	public void setOnFinishedListener(OnFinishedListener onFinishedListener) {
 		this.onFinishedListener = onFinishedListener;
 	}
 
-
 	public void setOnStopListener(OnStopListener onStopListener) {
 		this.onStopListener = onStopListener;
 	}
-
 
 	public void setOnReceiveListener(OnReceiveListener onReceiveListener) {
 		this.onReceiveListener = onReceiveListener;

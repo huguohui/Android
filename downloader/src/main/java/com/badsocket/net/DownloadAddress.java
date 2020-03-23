@@ -14,30 +14,25 @@ public class DownloadAddress extends InetSocketAddress {
 
 	protected String address;
 
-
 	public DownloadAddress(URL url) {
-		super(url.getHost(), url.getPort() != - 1 ? url.getPort() : 80);
+		super(url.getHost(), url.getPort() != -1 ? url.getPort() : 80);
 		this.url = url;
 		protocol = url.getProtocol();
 	}
-
 
 	public DownloadAddress(String address) {
 		super("", 80);
 		this.address = address;
 	}
 
-
 	public URL getUrl() {
 		return url;
 	}
-
 
 	public DownloadAddress setUrl(URL url) {
 		this.url = url;
 		return this;
 	}
-
 
 	public String getProtocol() {
 		return protocol;

@@ -1,10 +1,9 @@
 package com.badsocket.core;
 
-import com.badsocket.net.DownloadAddress;
+import com.badsocket.net.newidea.URI;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.URL;
 
 /**
  * Created by skyrim on 2017/11/28.
@@ -12,60 +11,41 @@ import java.net.URL;
 
 public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
-
 	boolean isPaused();
-
 
 	int getSpeedPerSecond();
 
-
 	int getSpeedAverage();
-
 
 	int getSpeedRealTime();
 
-
 	void setSpeedLimit(int speed);
-
 
 	int getSpeedLimited();
 
+	URI getDownloadAddress();
 
-	DownloadAddress getDownloadAddress();
-
-
-	void setDownloadAddress(DownloadAddress url);
-
+	void setDownloadAddress(URI url);
 
 	long getLength();
 
-
 	long getDownloadedLength();
-
 
 	void setDownloadPath(String path);
 
-
 	void setDownloadPath(File path);
-
 
 	File getDownloadPath();
 
-
 	int getSectionNumber();
-
 
 	DownloadSection[] getSections();
 
-
 	void setSections(DownloadSection[] sections);
-
 
 	void addOnDownloadTaskPauseListener(OnDownloadTaskPauseListener listener);
 
-
 	void addOnDownloadTaskResumeListener(OnDownloadTaskResumeListener listener);
-
 
 	public static class DownloadSection implements Serializable {
 
@@ -79,73 +59,60 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
 		protected long downloadedLength;
 
-
 		public DownloadSection(int index) {
 			this.index = index;
 		}
-
 
 		public DownloadSection setIndex(int index) {
 			this.index = index;
 			return this;
 		}
 
-
 		public DownloadSection setOffsetBegin(long offsetBegin) {
 			this.offsetBegin = offsetBegin;
 			return this;
 		}
-
 
 		public DownloadSection setOffsetEnd(long offsetEnd) {
 			this.offsetEnd = offsetEnd;
 			return this;
 		}
 
-
 		public DownloadSection setLength(long length) {
 			this.length = length;
 			return this;
 		}
-
 
 		public DownloadSection setDownloadedLength(long downloadedLength) {
 			this.downloadedLength = downloadedLength;
 			return this;
 		}
 
-
 		public long getOffsetBegin() {
 			return offsetBegin;
 		}
-
 
 		public long getOffsetEnd() {
 			return offsetEnd;
 		}
 
-
 		public long getLength() {
 			return length;
 		}
-
 
 		public long getDownloadedLength() {
 			return downloadedLength;
 		}
 
-
 		public int getIndex() {
 			return index;
 		}
-
 
 		public String toString() {
 			return String.format("[%d, %d, %d, %d]#%d", offsetBegin, offsetEnd, downloadedLength, length, index);
 		}
 
 	}
-
 
 	interface DownloadTaskAction {
 		int START = 0,
@@ -155,7 +122,6 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 			STORE = 4,
 			RESTORE = 5;
 	}
-
 
 	interface DownloadTaskState extends TaskState {
 		int PAUSED = 4,
@@ -169,11 +135,9 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 			RESTORED = 12;
 	}
 
-
 	interface OnDownloadTaskPauseListener {
 		void onDownloadTaskPause(DownloadTask t);
 	}
-
 
 	interface OnDownloadTaskResumeListener {
 		void onDownloadTaskResume(DownloadTask t);

@@ -4,17 +4,16 @@ import com.badsocket.net.Entity;
 import com.badsocket.net.Header;
 import com.badsocket.net.Request;
 import com.badsocket.net.Response;
-import com.badsocket.net.DownloadAddress;
+import com.badsocket.net.newidea.URI;
+import com.badsocket.util.DateUtils;
 import com.badsocket.util.Log;
 import com.badsocket.util.StringUtils;
-import com.badsocket.util.DateUtils;
-import com.badsocket.util.UrlUtils;
+import com.badsocket.util.URLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.URL;
 import java.util.Date;
 import java.util.Locale;
 
@@ -51,10 +50,9 @@ public class HttpResponse extends Response {
 
 	protected Float mHttpVersion;
 
-	protected URL mUrl;
+	protected URI mUri;
 
 	protected int redirectTimes = 5;
-
 
 	/**
 	 * Get response from request.
@@ -72,7 +70,7 @@ public class HttpResponse extends Response {
 			socket = r.socket();
 			inputStream = socket.getInputStream();
 			header = new HttpHeader(inputStream);
-			mUrl = httpRequest.getUrl();
+			mUri = httpRequest.getUri();
 			entity = new HttpEntity(inputStream);
 
 			parseResponse();
@@ -80,12 +78,11 @@ public class HttpResponse extends Response {
 		}
 	}
 
-
 	protected void parseResponse() throws IOException {
 		HttpHeader header = (HttpHeader) this.header;
 		contentLength = StringUtils.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
-		mFileName = UrlUtils.decode(UrlUtils.filename(httpRequest.getUrl()), "UTF-8");
+		mFileName = URLUtils.decode(URLUtils.filename(httpRequest.getUri()), "UTF-8");
 		mContentType = header.get(Http.CONTENT_TYPE);
 		mHttpVersion = Float.parseFloat(header.getVersion());
 		mCookies = HttpCookie.formString(header.get(Http.SET_COOKIE));
@@ -95,11 +92,10 @@ public class HttpResponse extends Response {
 		isChunked = Http.CHUNKED.equalsIgnoreCase(header.get(Http.TRANSFER_ENCODING));
 		parseContentDisposition();
 	}
-	
-	
+
 	protected void parseContentDisposition() {
 		int off = 0;
-		String 	disp = "", type = "";
+		String disp = "", type = "";
 		String[] arr = null;
 
 		HttpHeader header = (HttpHeader) this.header;
@@ -108,17 +104,17 @@ public class HttpResponse extends Response {
 				arr = disp.trim().split(";");
 				mContentType = arr[0];
 				if ((off = arr[1].indexOf("filename")) != -1) {
-					mFileName = UrlUtils.decode(arr[1].substring(off + 9), "UTF-8");
+					mFileName = URLUtils.decode(arr[1].substring(off + 9), "UTF-8");
 					if (mFileName.startsWith("\"") && mFileName.endsWith("\"")) {
 						mFileName = mFileName.substring(1, mFileName.length() - 1);
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			mContentType = disp;
 		}
 	}
-
 
 	protected void checkRedirect() throws IOException, RedirectException {
 		String newUrl = "";
@@ -129,95 +125,76 @@ public class HttpResponse extends Response {
 			}
 
 			Log.d("连接被重定向到" + newUrl);
-			httpRequest.setUrl(UrlUtils.fullUrl(mUrl, newUrl));
-			httpRequest.setAddress(new DownloadAddress(UrlUtils.fullUrl(mUrl, newUrl)));
+			httpRequest.setUri(URLUtils.fullURI(mUri, newUrl));
 			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();
 		}
 	}
-	
-
 
 	@Override
 	public void close() throws IOException {
 		inputStream.close();
 	}
 
-
 	public String getHeader(String key) {
 		return ((HttpHeader) header).get(key);
 	}
-
 
 	public InputStream getInputStream() {
 		return inputStream;
 	}
 
-
 	public Header getHeader() {
 		return header;
 	}
-
 
 	public Entity getEntity() {
 		return entity;
 	}
 
-
 	public long getContentLength() {
 		return contentLength;
 	}
-
 
 	public String getTransferEncoding() {
 		return mTransferEncoding;
 	}
 
-
 	public String getFileName() {
 		return mFileName;
 	}
-
 
 	public String getContentType() {
 		return mContentType;
 	}
 
-
 	public Date getDate() {
 		return mDate;
 	}
-
 
 	public HttpCookie[] getCookies() {
 		return mCookies;
 	}
 
-
 	public boolean isKeepAlive() {
 		return isKeepAlive;
 	}
-
 
 	public Float getHttpVersion() {
 		return mHttpVersion;
 	}
 
-
 	public boolean isSupportRange() {
 		return isSupportRange;
 	}
 
-
-	public URL getURL() {
-		return mUrl;
+	public URI getURI() {
+		return mUri;
 	}
-
 
 	public boolean isChunked() {
 		return isChunked;
 	}
 }
-
 

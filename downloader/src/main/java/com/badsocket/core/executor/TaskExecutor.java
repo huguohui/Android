@@ -10,21 +10,15 @@ import java.util.List;
 
 public interface TaskExecutor {
 
-
 	void start(Task task) throws Exception;
-
 
 	void start(Task task, long delay) throws Exception;
 
-
 	boolean isDone(Task t);
-
 
 	void cancel(Task t);
 
-
 	List<Task> tasks();
-
 
 	boolean remove(Task t);
 

@@ -8,7 +8,6 @@ import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.downloader.exception.DownloadTaskException;
 import com.badsocket.core.downloader.exception.StopDownloadTaskException;
 import com.badsocket.net.AsyncReceiver;
-import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.Receiver;
 import com.badsocket.net.ReceiverGroup;
 import com.badsocket.net.Request;
@@ -16,6 +15,7 @@ import com.badsocket.net.RequestGroup;
 import com.badsocket.net.Response;
 import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
+import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
 
 import java.io.File;
@@ -30,8 +30,7 @@ import java.util.concurrent.Future;
  */
 
 public class HttpDownloadTask
-		extends AbstractDownloadTask
-{
+		extends AbstractDownloadTask {
 
 	private static final long serialVersionUID = 5175561149447466807L;
 
@@ -45,28 +44,23 @@ public class HttpDownloadTask
 
 	public static Protocols PROTOCOL;
 
-
-	public HttpDownloadTask(Downloader c, DownloadAddress url) {
+	public HttpDownloadTask(Downloader c, URI url) {
 		this(c, url, "");
 	}
 
-
-	public HttpDownloadTask(Downloader c, DownloadAddress url, String name) {
+	public HttpDownloadTask(Downloader c, URI url, String name) {
 		super(c, url, name);
 		init();
 	}
-
 
 	public HttpDownloadTask(Downloader c, DownloadTaskDescriptor d) {
 		this(c, d, null);
 	}
 
-
 	public HttpDownloadTask(Downloader c, DownloadTaskDescriptor d, Response r) {
 		super(c, d, r);
 		init();
 	}
-
 
 	protected void init() {
 		PROTOCOL = Protocols.HTTP;
@@ -80,17 +74,14 @@ public class HttpDownloadTask
 		isStoped = true;
 	}
 
-
 	protected void prepare() throws Exception {
 		super.prepare();
 		prepareDownload();
 	}
 
-
 	protected void prepareDownload() throws Exception {
 		fileWriter = context.getFileWriter(new File(getDownloadPath(), getName()), getLength());
 	}
-
 
 	@Override
 	protected void prefetchResponse() throws IOException {
@@ -108,9 +99,8 @@ public class HttpDownloadTask
 
 		req.send();
 		response = req.response();
-		req.closed();
+		req.close();
 	}
-
 
 	@Override
 	protected void fetchInfoFromResponse() {
@@ -118,7 +108,6 @@ public class HttpDownloadTask
 		name = hr.getFileName();
 		length = hr.getContentLength();
 	}
-
 
 	protected void createDownloadRequests() throws IOException, InterruptedException {
 		Request[] reqs = downloadComponentFactory.createRequest(this, downloader.getThreadAllocStategy());
@@ -141,7 +130,8 @@ public class HttpDownloadTask
 					if (httpRequest.connected() && !httpRequest.closed()) {
 						try {
 							httpRequest.close();
-						} catch (IOException e1) {
+						}
+						catch (IOException e1) {
 							e1.printStackTrace();
 						}
 					}
@@ -151,7 +141,7 @@ public class HttpDownloadTask
 			threads[i].start();
 		}
 
-		for(Thread thread : threads) {
+		for (Thread thread : threads) {
 			if (Thread.State.RUNNABLE.equals(thread.getState())) {
 				thread.join();
 			}
@@ -160,17 +150,15 @@ public class HttpDownloadTask
 		requestGroup.addRequests(reqs);
 	}
 
-
 	protected void createDownloadReceiver() throws IOException {
 		Request reqs[] = requestGroup.getRequests();
 		AsyncReceiver asyncReceiver = null;
 		for (int i = 0; i < reqs.length; i++) {
 			receiverGroup.addReceiver(reqs[i] != null
 					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
-							: null);
+					: null);
 		}
 	}
-
 
 	protected void downloadDataByReceiver() {
 		AsyncReceiver asyncReceiver = null;
@@ -183,7 +171,6 @@ public class HttpDownloadTask
 			}
 		}
 	}
-
 
 	protected void onDownloadStarted() throws Exception {
 		isRunning = true;
@@ -198,7 +185,6 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	protected synchronized void startDownload() throws DownloadTaskException {
 		try {
 			prepare();
@@ -207,28 +193,24 @@ public class HttpDownloadTask
 			downloadDataByReceiver();
 			onDownloadStarted();
 		}
-		catch(Exception e) {
+		catch (Exception e) {
 			state = DownloadTaskState.STOPED;
 			throw new DownloadTaskException(e.getMessage());
 		}
 	}
 
-
 	protected void closeRequests() throws Exception {
 		requestGroup.closeAll();
 	}
-
 
 	protected void stopReceivers() throws Exception {
 		receiverGroup.stopAll();
 	}
 
-
 	protected void clearGroups() {
 		receiverGroup.clear();
 		requestGroup.clear();
 	}
-
 
 	protected void interruptExecutor() throws Exception {
 		for (Future<Long> future : receiverFutures) {
@@ -236,12 +218,10 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	protected void releaseResource() throws Exception {
 		clearGroups();
 		fileWriter.close();
 	}
-
 
 	protected void onDownloadStoped() {
 		for (DownloadSection section : downloadSections) {
@@ -261,7 +241,6 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	protected synchronized void stopDownload() throws DownloadTaskException {
 		try {
 			stopReceivers();
@@ -277,11 +256,10 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	protected void updateSectionsInfo() {
 		Receiver[] receivers = receiverGroup.getReceivers();
 		Receiver receiver = null;
-		long perReceivedLength = 0,  sectionDownloaded = 0;
+		long perReceivedLength = 0, sectionDownloaded = 0;
 		if (receivers != null) {
 			for (int i = 0; i < receivers.length; i++) {
 				receiver = receivers[i];
@@ -293,7 +271,6 @@ public class HttpDownloadTask
 			}
 		}
 	}
-
 
 	protected void updateProgressInfo() {
 		long totalReceivedLength = 0;
@@ -309,12 +286,10 @@ public class HttpDownloadTask
 		progress = (float) downloadedLength / (float) length;
 	}
 
-
 	protected void updateDownloadInfo() {
 		updateSectionsInfo();
 		updateProgressInfo();
 	}
-
 
 	protected void checkDownloadStatus() {
 		if (length < 0 || progress >= 1f) {
@@ -326,12 +301,10 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	public void afterTaskComplete() throws Exception {
 		releaseResource();
 		notifyTaskFinished();
 	}
-
 
 	public void onTaskFinish() {
 		try {
@@ -343,7 +316,6 @@ public class HttpDownloadTask
 		}
 	}
 
-
 	@Override
 	public void onCreate(TaskExtraInfo info) throws Exception {
 		this.extraInfo = info;
@@ -351,43 +323,36 @@ public class HttpDownloadTask
 		notifyTaskCreated();
 	}
 
-
 	@Override
 	public void onStart() throws Exception {
 		super.onStart();
 	}
-
 
 	@Override
 	public void onStop() throws Exception {
 		super.onStop();
 	}
 
-
 	@Override
 	public void onPause() throws Exception {
 		super.onPause();
 	}
-
 
 	@Override
 	public void onResume() throws Exception {
 		super.onResume();
 	}
 
-
 	@Override
 	public void onStore() {
 		super.onStore();
 	}
-
 
 	@Override
 	public void onRestore(Downloader downloader) {
 		super.onRestore(downloader);
 		init();
 	}
-
 
 	@Override
 	public void update() {
@@ -401,12 +366,9 @@ public class HttpDownloadTask
 		}
 	}
 
-
-
 	public void run() {
 		call();
 	}
-
 
 	@Override
 	public Task call() {
@@ -434,9 +396,7 @@ public class HttpDownloadTask
 		return this;
 	}
 
-
 	public abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {
-
 
 	}
 }

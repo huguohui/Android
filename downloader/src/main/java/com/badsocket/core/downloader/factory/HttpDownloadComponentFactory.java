@@ -16,10 +16,10 @@ import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
+import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
 
 import java.io.IOException;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,31 +28,26 @@ import java.util.List;
  */
 public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 	@Override
-	public Request createRequest(SocketAddress d) throws IOException {
-		DownloadAddress address = (DownloadAddress) d;
+	public Request createRequest(URI d) throws IOException {
 		BaseHttpRequest hr = new BaseHttpRequest();
-		hr.open(address);
+		hr.open(d);
 		return hr;
 	}
 
-
 	@Override
 	public Request createRequest(DownloadTaskDescriptor d) throws IOException {
-		return createRequest(d.getAddress());
+		return createRequest(d.getUri());
 	}
-
 
 	@Override
 	public Request createRequest(Response i) throws IOException {
-		return createRequest(new DownloadAddress(((HttpResponse) i).getURL().toExternalForm()));
+		return createRequest(((HttpResponse) i).getURI());
 	}
-
 
 	@Override
 	public Request createRequest(DownloadTask i) throws IOException {
 		return createRequest(i.getDownloadAddress());
 	}
-
 
 	@Override
 	public Request createRequest(DownloadTaskDescriptor d, Request.Range r) throws IOException {
@@ -62,14 +57,13 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		return hr;
 	}
 
-
 	@Override
 	public Request[] createRequest(DownloadTask task, InternetDownloader.ThreadAllocStategy stategy)
 			throws IOException {
 		DownloadTask.DownloadSection[] oldSections = task.getSections();
 		int num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
 		long length = task.getLength(), blockSize = length / num, curBlockSize = 0,
-			 offsetBegin = 0, offsetEnd = 0;
+				offsetBegin = 0, offsetEnd = 0;
 
 		List<Request> requestList = new ArrayList<>();
 		DownloadTask.DownloadSection section = null;
@@ -109,7 +103,6 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		return requestList.toArray(new Request[0]);
 	}
 
-
 	@Override
 	public Request createRequest(DownloadTask i, Request.Range r) throws IOException {
 		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
@@ -119,7 +112,6 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		return hr;
 	}
 
-
 	@Override
 	public Receiver createReceiver(Request r, Writer w) throws IOException {
 		BaseHttpRequest req = (BaseHttpRequest) r;
@@ -127,19 +119,16 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		return rec;
 	}
 
-
 	@Override
-	public DownloadTask creatDownloadTask(Downloader c, DownloadAddress address) throws IOException {
+	public DownloadTask creatDownloadTask(Downloader c, URI address) throws IOException {
 		return new HttpDownloadTask(c, address);
 	}
-
 
 	@Override
 	public DownloadTask creatDownloadTask(Downloader c, DownloadTaskDescriptor d) throws IOException {
 		DownloadTask task = new HttpDownloadTask(c, d);
 		return task;
 	}
-
 
 	@Override
 	public DownloadTask creatDownloadTask(Downloader c, DownloadTaskDescriptor d, Response response) throws IOException {

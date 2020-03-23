@@ -1,9 +1,6 @@
 package com.badsocket.core.downloader;
 
-
 import com.badsocket.core.AbstractMonitor;
-import com.badsocket.core.MonitorWatcher;
-import com.badsocket.core.downloader.factory.ThreadFactory;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,17 +13,14 @@ public class DownloadMonitor extends AbstractMonitor {
 
 	protected ExecutorService executeServcie;
 
-
 	public DownloadMonitor(Downloader downloader, int interval) {
 		super(interval);
 		this.downloader = downloader;
 	}
 
-
 	public void run() {
 		super.run();
 	}
-
 
 	@Override
 	public boolean isStoped() {

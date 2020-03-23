@@ -1,6 +1,5 @@
 package com.badsocket.core.executor;
 
-
 import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloaderContext;
 
@@ -13,15 +12,12 @@ import java.util.concurrent.Future;
  */
 public abstract class AbstractDownloadTaskExecutor implements DownloadTaskExecutor {
 
-	private Map<Task, Future<Task>> futureMap = new ConcurrentHashMap<>();
+	private Map<Task, Future<Task>> taskFutureMap = new ConcurrentHashMap<>();
 
 	private DownloaderContext context;
 
 	public AbstractDownloadTaskExecutor(DownloaderContext context) {
 		this.context = context;
 	}
-
-	
-
 
 }

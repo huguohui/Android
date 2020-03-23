@@ -22,7 +22,6 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 
 	protected List<DownloadTask> tasks = new ArrayList<>();
 
-
 	protected static class DownloadTaskInfoListItem implements Serializable {
 		int taskIndex;
 		String infoLocation;
@@ -33,11 +32,9 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		}
 	}
 
-
 	public FileDownloadTaskInfoStorage(File location) {
 		this.location = location;
 	}
-
 
 	public DownloadTask readTask(File file) throws Exception {
 		if (file.exists()) {
@@ -45,7 +42,6 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		}
 		return null;
 	}
-
 
 	@Override
 	public void writeList(List<DownloadTask> tasks, File location) throws Exception {
@@ -56,7 +52,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 			if (task != null) {
 				DownloadTaskInfoListItem item = new DownloadTaskInfoListItem(
 						i + 1, task.getDownloadPath() + DownloaderContext.DS + task.getName()
-								+ Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
+						+ Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
 
 				taskInfoItems.add(item);
 				writeTask(task);
@@ -76,18 +72,15 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		}
 	}
 
-
 	@Override
 	public void writeList(List<DownloadTask> tasks) throws Exception {
 		writeList(tasks, location);
 	}
 
-
 	@Override
 	public List<DownloadTask> readList() throws Exception {
 		return readList(location);
 	}
-
 
 	@Override
 	public List<DownloadTask> readList(File location) throws Exception {
@@ -107,7 +100,6 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		return tasks;
 	}
 
-
 	@Override
 	public void writeTask(DownloadTask task) throws Exception {
 		if (task != null && task.isRunning()) {
@@ -116,18 +108,15 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 		}
 	}
 
-
 	@Override
 	public File location() {
 		return location;
 	}
 
-
 	@Override
 	public void setLocation(File location) {
 		this.location = location;
 	}
-
 
 	@Override
 	public void finish() {

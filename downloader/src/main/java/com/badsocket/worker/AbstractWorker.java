@@ -7,13 +7,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Abstract
  */
 public abstract class AbstractWorker implements Worker {
-	/** Queue of workables. */
+	/**
+	 * Queue of workables.
+	 */
 	protected Queue<Workable> mQueue = new ConcurrentLinkedQueue<>();
 
-	/** Is worker paused? */
+	/**
+	 * Is worker paused?
+	 */
 	protected boolean isPause;
 
-	/** Is worker stoped? */
+	/**
+	 * Is worker stoped?
+	 */
 	protected boolean isStop;
 
 	protected Thread mThread;
@@ -21,7 +27,6 @@ public abstract class AbstractWorker implements Worker {
 	protected OnExceptionListener mOnExceptionListener;
 
 	protected OnWorkDoneListener mOnWorkDoneListener;
-
 
 	/**
 	 * Add a workable to working.
@@ -33,7 +38,6 @@ public abstract class AbstractWorker implements Worker {
 		mQueue.offer(workable);
 		resume();
 	}
-
 
 	/**
 	 * Remove a workable.
@@ -47,7 +51,6 @@ public abstract class AbstractWorker implements Worker {
 		return remove ? workable : null;
 	}
 
-
 	/**
 	 * Controls the task pause.
 	 */
@@ -55,7 +58,6 @@ public abstract class AbstractWorker implements Worker {
 	public void pause() {
 		isPause = true;
 	}
-
 
 	/**
 	 * Controls the task resume.
@@ -70,50 +72,50 @@ public abstract class AbstractWorker implements Worker {
 		}
 	}
 
-
 	/**
 	 * Controls the task stop.
 	 */
 	@Override
-	public void stop()  {
+	public void stop() {
 		resume();
 		isStop = true;
 	}
-
 
 	protected void doWork(Workable w) throws Exception {
 		if (w != null)
 			w.work();
 	}
 
-
 	protected void doWorks() {
 		Workable workable = null;
 		try {
 			doWork(workable = mQueue.poll());
 			isPause = mQueue.isEmpty();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			if (workable != null && mOnWorkDoneListener != null) {
 				mOnWorkDoneListener.onWorkDone(this);
 			}
 		}
 	}
 
-
 	protected void pauseWorker() {
 		synchronized (this) {
-			try { wait(); } catch (Exception e) {
+			try {
+				wait();
+			}
+			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-
 	@Override
 	public void run() {
-		for (;;) {
+		for (; ; ) {
 			if (isStop) {
 				return;
 			}
@@ -126,7 +128,6 @@ public abstract class AbstractWorker implements Worker {
 			doWorks();
 		}
 	}
-
 
 	public interface OnExceptionListener {
 		void onException(Exception e);

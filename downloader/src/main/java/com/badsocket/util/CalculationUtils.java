@@ -7,9 +7,8 @@ package com.badsocket.util;
 public abstract class CalculationUtils {
 
 	public final static String[] STORAGE_UNITS = {
-		"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"
+			"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"
 	};
-
 
 	public final static String getFriendlyUnitOfBytes(long bytes, int bit) {
 		int radix = 1024;

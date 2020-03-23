@@ -13,7 +13,6 @@ public abstract class TaskDescriptor extends Descriptor {
 		return name;
 	}
 
-
 	public Descriptor setName(String name) {
 		this.name = name;
 		return this;

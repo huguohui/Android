@@ -1,5 +1,7 @@
 package com.badsocket.util;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,35 +9,32 @@ import java.util.List;
 
 public abstract class CollectionUtils {
 
-	public static <T> void forEach(T[] os, Callback<T> callbck) {
+	public static <T> void forEach(@NonNull T[] os, Callback<T> callbck) {
 		for (T o : os) {
 			callbck.callback(o);
 		}
 	}
 
-
-	public static <T> void forEach(T[] os, Action<T> callbck) {
+	public static <T> void forEach(@NonNull T[] os, Action<T> callbck) {
 		for (T o : os) {
 			callbck.doAction(o);
 		}
 	}
 
-
-	public static <T> void forEach(Collection<T> c, Callback<T> callbck) {
+	public static <T> void forEach(@NonNull Collection<T> c, Callback<T> callbck) {
 		for (Iterator<T> t = c.iterator(); t.hasNext(); ) {
 			callbck.callback(t.next());
 		}
 	}
 
-
-	public static <T> void forEach(Collection<T> c, Action<T> action) {
+	public static <T> void forEach(@NonNull Collection<T> c, Action<T> action) {
 		for (Iterator<T> t = c.iterator(); t.hasNext(); ) {
 			action.doAction(t.next());
 		}
 	}
 
-
-	public static <T> List<T> filter(Collection<T> c, Filter<T> f) {
+	@NonNull
+	public static <T> List<T> filter(@NonNull Collection<T> c, Filter<T> f) {
 		List<T> list = new ArrayList<>();
 		for (Iterator<T> t = c.iterator(); t.hasNext(); ) {
 			T o = t.next();
@@ -46,7 +45,6 @@ public abstract class CollectionUtils {
 
 		return list;
 	}
-
 
 	@FunctionalInterface
 	public interface Action<T> {

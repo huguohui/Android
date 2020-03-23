@@ -24,7 +24,6 @@ public abstract class PropertiesUtils {
 		return new Properties();
 	}
 
-
 	public static Properties load(InputStream stream) {
 		Properties p = new Properties();
 		try {

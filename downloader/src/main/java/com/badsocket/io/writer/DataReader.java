@@ -1,6 +1,5 @@
 package com.badsocket.io.writer;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,12 +10,10 @@ public class DataReader implements DataReadable {
 		inputStream = is;
 	}
 
-
 	@Override
 	public byte read() throws IOException {
 		return (byte) inputStream.read();
 	}
-
 
 	@Override
 	public byte[] read(int i) throws IOException {
@@ -24,7 +21,6 @@ public class DataReader implements DataReadable {
 		inputStream.read(buff);
 		return buff;
 	}
-
 
 	protected long readIntData(int bits) throws IOException {
 		long retVal = 0x0;
@@ -40,7 +36,6 @@ public class DataReader implements DataReadable {
 		return val;
 	}
 
-
 	protected long readLongData() throws IOException {
 		long retVal = 0x0;
 		for (int i = 0; i < 2; i++) {
@@ -51,30 +46,25 @@ public class DataReader implements DataReadable {
 		return retVal;
 	}
 
-
 	@Override
 	public int readInt() throws IOException {
 		return (int) readIntData(Integer.SIZE);
 	}
-
 
 	@Override
 	public short readShort() throws IOException {
 		return (short) readIntData(Short.SIZE);
 	}
 
-
 	@Override
 	public char readChar() throws IOException {
 		return (char) (short) readIntData(Short.SIZE);
 	}
 
-
 	@Override
 	public long readLong() throws IOException {
 		return readLongData();
 	}
-
 
 	@Override
 	public int[] readInt(int i) throws IOException {
@@ -86,7 +76,6 @@ public class DataReader implements DataReadable {
 		return vals;
 	}
 
-
 	@Override
 	public short[] readShort(int i) throws IOException {
 		short[] vals = new short[i];
@@ -96,7 +85,6 @@ public class DataReader implements DataReadable {
 
 		return vals;
 	}
-
 
 	@Override
 	public char[] readChar(int i) throws IOException {
@@ -108,7 +96,6 @@ public class DataReader implements DataReadable {
 		return vals;
 	}
 
-
 	@Override
 	public long[] readLong(int i) throws IOException {
 		long[] vals = new long[i];
@@ -118,7 +105,6 @@ public class DataReader implements DataReadable {
 
 		return vals;
 	}
-
 
 	@Override
 	public void close() throws IOException {

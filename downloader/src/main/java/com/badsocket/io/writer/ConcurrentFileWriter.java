@@ -13,10 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * File writer.
  */
 public class ConcurrentFileWriter extends SimpleFileWriter implements ConcurrentWriter {
-	/** Buffer size of writing. */
+	/**
+	 * Buffer size of writing.
+	 */
 	final public static int WRITE_BUFFER_SIZE = 1024 * 1024 * 1;
 
-	/** A data buffer. */
+	/**
+	 * A data buffer.
+	 */
 	private class DataBuffer {
 		private long offset;
 		private long size;
@@ -29,7 +33,6 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 			this.offset = offset;
 			buffer = bos;
 		}
-
 
 		private DataBuffer save(byte[] data) throws IOException {
 			int surplus = 0;
@@ -50,11 +53,9 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 			return this;
 		}
 
-
 		private boolean isFull() {
 			return isFull;
 		}
-
 
 		private void clean() throws IOException {
 			offset += WRITE_BUFFER_SIZE;
@@ -64,7 +65,6 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 	}
 
 	protected Map<Long, DataBuffer> dataBuffers = new ConcurrentHashMap<>();
-
 
 	/**
 	 * Create a file with special name and size.
@@ -76,22 +76,19 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 		super(file, size);
 	}
 
-
 	public ConcurrentFileWriter(File file) throws IOException {
 		super(file);
 	}
-
 
 	protected DataBuffer createDataBuffer(Long off) {
 		return new DataBuffer(off, new ByteArrayOutputStream(WRITE_BUFFER_SIZE));
 	}
 
-
 	public void write(long startOff, long curOff, byte[] data) throws IOException {
 		if (data == null)
 			throw new NullPointerException();
 
-		synchronized(dataBuffers) {
+		synchronized (dataBuffers) {
 			if (!dataBuffers.containsKey(startOff)) {
 				dataBuffers.put(startOff, createDataBuffer(startOff));
 			}
@@ -103,17 +100,14 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 		}
 	}
 
-
 	public void write(long offset, byte[] data, int s, int e) throws IOException {
 		super.write(offset, data, s, e);
 	}
-
 
 	protected void writeToFile(DataBuffer dl) throws IOException {
 		super.write(dl.offset, dl.buffer.toByteArray());
 		dl.clean();
 	}
-
 
 	public void flushBuffer(Long begin) throws IOException {
 		DataBuffer db = dataBuffers.get(begin);
@@ -125,11 +119,10 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 		}
 	}
 
-
 	public synchronized void flush() throws IOException {
 		Set<Map.Entry<Long, DataBuffer>> es = dataBuffers.entrySet();
 		Iterator<Map.Entry<Long, DataBuffer>> it = es.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Map.Entry<Long, DataBuffer> map = it.next();
 			DataBuffer dl = map.getValue();
 			if (dl.surplusData != null) {
@@ -141,12 +134,10 @@ public class ConcurrentFileWriter extends SimpleFileWriter implements Concurrent
 		}
 	}
 
-
 	protected void release() {
 		dataBuffers.clear();
 		dataBuffers = null;
 	}
-
 
 	public synchronized void close() throws IOException {
 		flush();

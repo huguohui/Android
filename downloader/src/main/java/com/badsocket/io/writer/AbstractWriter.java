@@ -7,9 +7,10 @@ import java.io.IOException;
  */
 public abstract class AbstractWriter implements Writer {
 
-	/** Offset of file writer. */
+	/**
+	 * Offset of file writer.
+	 */
 	protected long mOffset = 0;
-
 
 	/**
 	 * To writing data from offset 0.
@@ -20,7 +21,6 @@ public abstract class AbstractWriter implements Writer {
 	public void write(byte[] data) throws IOException {
 		write(mOffset, data);
 	}
-
 
 	/**
 	 * To writing data with special length form offset 0.
@@ -34,7 +34,6 @@ public abstract class AbstractWriter implements Writer {
 		write(mOffset, data, start, end);
 	}
 
-
 	/**
 	 * To writing data from special offset.
 	 *
@@ -45,7 +44,6 @@ public abstract class AbstractWriter implements Writer {
 	public void write(long offset, byte[] data) throws IOException {
 		write(offset, data, 0, data.length);
 	}
-
 
 	/**
 	 * To writing data with special length from special offset.

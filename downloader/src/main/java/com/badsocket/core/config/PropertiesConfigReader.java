@@ -18,19 +18,16 @@ public class PropertiesConfigReader implements ConfigReader {
 
 	private InputStream inputStream;
 
-
-	public PropertiesConfigReader() { }
-
+	public PropertiesConfigReader() {
+	}
 
 	public PropertiesConfigReader(File file) {
 		configFile = file;
 	}
 
-
 	public PropertiesConfigReader(InputStream stream) {
 		inputStream = stream;
 	}
-
 
 	@Override
 	public Config read() throws IOException {
@@ -44,7 +41,6 @@ public class PropertiesConfigReader implements ConfigReader {
 
 		return config;
 	}
-
 
 	@Override
 	public Config read(File file) throws IOException {
@@ -65,7 +61,6 @@ public class PropertiesConfigReader implements ConfigReader {
 		return config;
 	}
 
-
 	@Override
 	public Config read(InputStream stream) throws IOException {
 		Config config = new DownloadConfig();
@@ -77,7 +72,6 @@ public class PropertiesConfigReader implements ConfigReader {
 
 		return config;
 	}
-
 
 	@Override
 	public void close() throws IOException {

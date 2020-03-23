@@ -26,33 +26,27 @@ public class DownloadConfig implements Config {
 
 	public static final String CONFIG_FILE = CONFIG_FILE_NAME + CONFIG_FILE_EXT;
 
-
 	private Map<String, String> configMap = new ConcurrentHashMap<>();
 
 	private File location;
-
 
 	public DownloadConfig() {
 		this(null);
 	}
 
-
 	public DownloadConfig(File location) {
 		this.location = location;
 	}
-
 
 	@Override
 	public String get(String key) {
 		return configMap.get(key);
 	}
 
-
 	@Override
 	public void set(String key, String val) {
 		configMap.put(key, val);
 	}
-
 
 	@Override
 	public Integer getInteger(String key) {
@@ -60,11 +54,11 @@ public class DownloadConfig implements Config {
 		try {
 			integer = Integer.parseInt(configMap.get(key));
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+		}
 
 		return integer;
 	}
-
 
 	@Override
 	public Float getFloat(String key) {
@@ -72,11 +66,11 @@ public class DownloadConfig implements Config {
 		try {
 			value = Float.parseFloat(configMap.get(key));
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+		}
 
 		return value;
 	}
-
 
 	@Override
 	public Double getDouble(String key) {
@@ -84,23 +78,21 @@ public class DownloadConfig implements Config {
 		try {
 			value = Double.parseDouble(configMap.get(key));
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+		}
 
 		return value;
 	}
-
 
 	@Override
 	public Set<String> keySet() {
 		return configMap.keySet();
 	}
 
-
 	@Override
 	public Collection<String> values() {
 		return configMap.values();
 	}
-
 
 	@Override
 	public void merge(Config config) {
@@ -108,7 +100,6 @@ public class DownloadConfig implements Config {
 			set(key, config.get(key));
 		}
 	}
-
 
 	@Override
 	public File location() {

@@ -1,39 +1,40 @@
 package com.badsocket.util;
 
+import com.badsocket.net.http.Http;
+import com.badsocket.net.newidea.URI;
+
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.regex.Pattern;
 
-import com.badsocket.net.http.Http;
-
-
 /**
  * Utility for url.
+ *
  * @since 2017/01/15 16:19
  */
-final public class UrlUtils {
+final public class URLUtils {
 	/**
 	 * Get the top domain of url.
+	 *
 	 * @param url Given url.
 	 * @return Top domain of url.
 	 */
-	public static String topDomain(URL url) {
+	public static String topDomain(URI url) {
 		if (url == null)
 			return null;
 
 		String host = url.getHost();
-		return /*"www." +*/ host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
+		return host.substring(host.substring(0, host.lastIndexOf('.')).lastIndexOf('.') + 1);
 	}
-
 
 	/**
 	 * Get IP downloadAddress by top domain.
+	 *
 	 * @param domain Top domain.
 	 * @return IP downloadAddress of domain.
 	 * @throws UnknownHostException Can't parse domain.
@@ -42,56 +43,56 @@ final public class UrlUtils {
 		return InetAddress.getByName(domain);
 	}
 
-
 	/**
-	 * Get socket downloadAddress by URL.
-	 * @param url The URL.
+	 * Get socket downloadAddress by URI.
+	 *
+	 * @param url The URI.
 	 * @return Socket downloadAddress.
 	 * @throws UnknownHostException
 	 */
-	public static InetSocketAddress socketAddressByUrl(URL url) throws UnknownHostException {
+	public static InetSocketAddress socketAddressByUri(URI url) throws UnknownHostException {
 		return new InetSocketAddress(inetAddressByDomain(url.getHost()),
 				url.getPort() == -1 ? 80 : url.getPort());
 	}
 
-	
 	/**
-	 * Get URL path and query string.
+	 * Get URI path and query string.
+	 *
 	 * @param url Given url.
-	 * @return URL path and query string;
+	 * @return URI path and query string;
 	 */
-	public static String urlFullPathParam(URL url) {
+	public static String uriFullPathParam(URI url) {
 		if (url == null) return null;
 		return (url.getPath() == null || url.getPath().equals("") ?
 				"/" + url.getPath() : url.getPath())
 				+ (url.getQuery() == null ? "" : "?" + url.getQuery())
-				+ (url.getRef() == null ? "" : "#" +url.getRef());
+				+ (url.getFragment() == null ? "" : "#" + url.getFragment());
 	}
-	
-	
+
 	/**
 	 * Get domain with port.
+	 *
 	 * @param url Given url.
 	 * @return domain with port.
 	 */
-	public static String domainWithPort(URL url) {
+	public static String domainWithPort(URI url) {
 		if (url == null) return null;
 		return url.getHost() + ":" + (url.getPort() != -1 ? url.getPort() : Http.DEFAULT_PORT);
 	}
-	
-	
+
 	/**
-	 * Get filename of url.
-	 * @param url Given url.
-	 * @return Filename of url.
+	 * Get filename of uri.
+	 *
+	 * @param uri Given uri.
+	 * @return Filename of uri.
 	 */
-	public static String filename(URL url) {
-		if (url == null) return null;
-		String file = url.getFile();
+	public static String filename(URI uri) {
+		if (uri == null) return null;
+		String file = uri.getPath();
 		String[] path = file.split("/");
 		if (file.trim().length() == 0)
 			return "index.html";
-		
+
 		if (path.length != 0) {
 			try {
 				return URLDecoder.decode(path[path.length - 1], "UTF-8");
@@ -103,42 +104,42 @@ final public class UrlUtils {
 
 		return file;
 	}
-	
-	
+
 	/**
-	 * Get string url by URL.
-	 * @param url URL object.
-	 * @return String url.	
+	 * Get string url by URI.
+	 *
+	 * @param url URI object.
+	 * @return String url.
 	 */
-	public static String toString(URL url) {
-		return url.getProtocol() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort())
-				+ urlFullPathParam(url);
+	public static String toString(URI url) {
+		return url.getScheme() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort())
+				+ uriFullPathParam(url);
 	}
-	
-	
+
 	/**
-	 * Get string url by URL without path.
-	 * @param url URL object.
+	 * Get string url by URI without path.
+	 *
+	 * @param url URI object.
 	 * @reutrn String url without path.
 	 */
-	public static String urlWithoutPath(URL url) {
-		return url.getProtocol() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort());
+	public static String urlWithoutPath(URI url) {
+		return url.getScheme() + "://" + url.getHost() + ':' + (url.getPort() == -1 ? "80" : url.getPort());
 	}
-	
-	
+
 	/**
-	 * 以一个基本的URL为基础，根据给出的部分URL组建一个完整的URL，如果给出的部分URL为完整的URL，则原样返回。
-	 * @param baseUrl 基本的URL。
-	 * @param url 部分URL。
-	 * @return 一个完整的URL。
-	 * @throws MalformedURLException 
+	 * 以一个基本的URI为基础，根据给出的部分URI组建一个完整的URI，如果给出的部分URI为完整的URI，则原样返回。
+	 *
+	 * @param baseUrl 基本的URI。
+	 * @param url     部分URI。
+	 * @return 一个完整的URI。
+	 * @throws MalformedURIException
 	 */
-	public static URL fullUrl(URL baseUrl, String url) throws MalformedURLException {
+	public static URI fullURI(URI baseUrl, String url) throws MalformedURLException {
 		final String urlRegex = "^https?://(\\w+\\.)+([a-z]{2,5})(:\\d+)?(/.*)?";
 		Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
 		if (pattern.matcher(url).matches())
-			return new URL(url);
-		
+			return new URI(url);
+
 		String baseUrlStr = urlWithoutPath(baseUrl), newPath = "", newUrl = "";
 		if (url.startsWith("/")) {
 			newUrl = baseUrlStr + url;
@@ -150,9 +151,8 @@ final public class UrlUtils {
 			newUrl = baseUrlStr + newPath + url;
 		}
 
-		return new URL(newUrl);
+		return new URI(newUrl);
 	}
-
 
 	public static String decode(String url, String enc) {
 		try {
@@ -165,7 +165,6 @@ final public class UrlUtils {
 		return "";
 	}
 
-
 	public static String encode(String url, String enc) {
 		try {
 			return URLEncoder.encode(url, enc);
@@ -176,8 +175,7 @@ final public class UrlUtils {
 
 		return "";
 	}
-	
-	
+
 	public static void main(String[] args) throws MalformedURLException {
 /*
 		String downloadAddress = "http://www.app.baidu.com:80/asdfasdfaa;fa/?afja9f1#afk?";
@@ -188,7 +186,6 @@ final public class UrlUtils {
 		}
 */
 
-
-		System.out.println(fullUrl(new URL("http://baidu.com/dfa/a"), "../"));
+		System.out.println(fullURI(new URI("http://baidu.com/dfa/a"), "../"));
 	}
 }

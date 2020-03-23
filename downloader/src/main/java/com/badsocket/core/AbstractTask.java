@@ -30,11 +30,9 @@ public abstract class AbstractTask implements Task {
 
 	private static int UNIQUE_ID = 0;
 
-
 	public AbstractTask() {
 		this(null);
 	}
-
 
 	public AbstractTask(String name) {
 		synchronized (this) {
@@ -43,7 +41,6 @@ public abstract class AbstractTask implements Task {
 
 		this.name = name;
 	}
-
 
 	/**
 	 * Gets unique id of task.
@@ -55,7 +52,6 @@ public abstract class AbstractTask implements Task {
 		return id;
 	}
 
-
 	/**
 	 * Gets name of task.
 	 *
@@ -66,12 +62,10 @@ public abstract class AbstractTask implements Task {
 		return name == null ? "" : name;
 	}
 
-
 	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	/**
 	 * Gets start time of task in milliseconds.
@@ -83,7 +77,6 @@ public abstract class AbstractTask implements Task {
 		return startTime;
 	}
 
-
 	/**
 	 * Gets progress in precent of task.
 	 *
@@ -93,7 +86,6 @@ public abstract class AbstractTask implements Task {
 	public float getProgress() {
 		return progress;
 	}
-
 
 	/**
 	 * Gets used time of task that from start to finish in milliseconds.
@@ -105,7 +97,6 @@ public abstract class AbstractTask implements Task {
 		return usedTime;
 	}
 
-
 	/**
 	 * Gets finish time of task.
 	 *
@@ -116,30 +107,25 @@ public abstract class AbstractTask implements Task {
 		return finishTime;
 	}
 
-
 	@Override
 	public int getPriority() {
 		return priority;
 	}
-
 
 	@Override
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 
-
 	@Override
 	public boolean isRunning() {
 		return isRunning;
 	}
 
-
 	@Override
 	public boolean isCompleted() {
 		return isCompleted;
 	}
-
 
 	@Override
 	public boolean isStoped() {

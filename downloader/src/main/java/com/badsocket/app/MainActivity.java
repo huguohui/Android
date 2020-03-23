@@ -28,6 +28,7 @@ import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.net.DownloadAddress;
+import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
 
 import java.net.URL;
@@ -37,11 +38,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class MainActivity
 		extends AppCompatActivity
-		implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener
-{
+		implements View.OnClickListener, ListView.OnItemClickListener, ListView.OnItemLongClickListener {
 
 	@BindView(R.id.listView)
 	protected ListView listView;
@@ -92,7 +91,6 @@ public class MainActivity
 			}
 		}
 
-
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			isServiceConnected = false;
@@ -100,11 +98,10 @@ public class MainActivity
 
 	};
 
-
 	class MessageHanlder extends Handler {
 
 		public void handleMessage(Message msg) {
-			switch(msg.arg1) {
+			switch (msg.arg1) {
 				case 1:
 					break;
 			}
@@ -118,12 +115,11 @@ public class MainActivity
 
 	}
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		startServiceAsync();
-        setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		PermissionChecker.requestPermissions(this);
 
@@ -134,24 +130,29 @@ public class MainActivity
 		listView.setOnItemClickListener(this);
 		listView.setOnItemLongClickListener(this);
 		btnAdd.setOnClickListener(this);
-    }
+	}
 
-
-    void taskSwitch(final DownloadTask task) {
+	void taskSwitch(final DownloadTask task) {
 		if (task.isCompleted()) {
 			return;
 		}
+
 		if (threadFactory != null) {
 			threadFactory.createThread(() -> {
 				try {
 					int state = task.getState();
-					if (state == DownloadTask.DownloadTaskState.RUNNING) {
-						downloader.pauseTask(task);
-					}
-					else if (state == DownloadTask.DownloadTaskState.PAUSED
-							|| state == DownloadTask.DownloadTaskState.STOPED
-							|| state == DownloadTask.DownloadTaskState.STORED) {
-						downloader.resumeTask(task);
+					switch(state) {
+						case DownloadTask.DownloadTaskState.RUNNING:
+							downloader.pauseTask(task);
+							break;
+						case DownloadTask.DownloadTaskState.UNSTART:
+							downloader.startTask(task);
+							break;
+						case DownloadTask.DownloadTaskState.PAUSED:
+						case DownloadTask.DownloadTaskState.STOPED:
+						case DownloadTask.DownloadTaskState.STORED:
+							downloader.resumeTask(task);
+							break;
 					}
 				}
 				catch (Exception e) {
@@ -160,7 +161,6 @@ public class MainActivity
 			}).start();
 		}
 	}
-
 
 	@Override
 	public void onClick(View v) {
@@ -175,12 +175,10 @@ public class MainActivity
 		}
 	}
 
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		taskSwitch(tasks.get(position));
 	}
-
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -188,18 +186,15 @@ public class MainActivity
 		return false;
 	}
 
-
 	public void onStart() {
 		super.onStart();
 	}
-
 
 	private void startServiceAsync() {
 		new Thread(() -> {
 			startService();
 		}).start();
 	}
-
 
 	private void startService() {
 		if (!isServiceStarted) {
@@ -212,7 +207,6 @@ public class MainActivity
 		}
 	}
 
-
 	private void stopService() {
 		if (isServiceStarted) {
 			stopService(new Intent(this, DownloadService.class));
@@ -222,31 +216,25 @@ public class MainActivity
 		}
 	}
 
-
 	public void onPause() {
 		super.onPause();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_main, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch(id) {
-            case R.id.action_new_task:
-                final EditText ev = new EditText(this);
-                ev.setText(
-                		"http://issuecdn.baidupcs.com/issue/netdisk/apk/BaiduNetdisk_8.2.0.apk"
-						/*"http://down.sandai.net/thunder9/Thunder9.1.40.898.exe\n" +
-						"http://dl.doyo.cn/hz/xiazaiba/doyoinstall.exe/downloadname/game_%E5%B0%98%E5%9F%834_10104719_3174.exe\n" +
-						"http://file.douyucdn.cn/download/client/douyu_pc_client_v1.0.zip"*/
+		switch (id) {
+			case R.id.action_new_task:
+				final EditText ev = new EditText(this);
+				ev.setText(
+						"http://a10.pc6.com/lhy9/banliyunshsij.apk"
 				);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -262,9 +250,10 @@ public class MainActivity
 							try {
 								downloader.newTask(new DownloadTaskDescriptor
 										.Builder()
-										.setAddress(new DownloadAddress(new URL(url)))
+										.setURI(new URI(url))
 										.build());
-							} catch (Exception e) {
+							}
+							catch (Exception e) {
 								Looper.prepare();
 								showToast(e.getMessage(), Toast.LENGTH_LONG);
 								Log.e(e);
@@ -276,36 +265,31 @@ public class MainActivity
 				builder.setNegativeButton("取消", null);
 				builder.show();
 				break;
-            default:
-                Log.e("ERROR", "你点击了" + item.getTitle() + "!");
-                break;
-        }
+			default:
+				Log.e("ERROR", "你点击了" + item.getTitle() + "!");
+				break;
+		}
 
-        return super.onOptionsItemSelected(item);
-    }
+		return super.onOptionsItemSelected(item);
+	}
 
-
-    public void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
+	public void showToast(String msg) {
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
 
 	public void showToast(String msg, int duration) {
 		Toast.makeText(this, msg, duration).show();
 	}
 
-
-    public void onRestart() {
+	public void onRestart() {
 		super.onRestart();
 	}
 
-
-    public void onStop() {
+	public void onStop() {
 		super.onStop();
 	}
 
-
-    public void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
 		stopService();
 	}
@@ -322,20 +306,19 @@ public class MainActivity
 	}
 */
 
-
 	void backDesktop() {
 		Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		intent.addCategory(Intent.CATEGORY_HOME);
 		startActivity(intent);
 	}
 
-
 	public void onBackPressed() {
 		if (downloader != null) {
 			downloaderContext.getThreadFactory().createThread(() -> {
 				try {
 					downloader.exit();
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 				}
 			});

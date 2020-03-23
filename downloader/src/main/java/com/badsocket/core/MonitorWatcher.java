@@ -6,8 +6,6 @@ package com.badsocket.core;
 
 public interface MonitorWatcher {
 
-
 	void watch(Object o);
-
 
 }

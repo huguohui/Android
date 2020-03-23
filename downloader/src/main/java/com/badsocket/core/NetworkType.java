@@ -16,12 +16,10 @@ public enum NetworkType {
 
 	NT_WIFI("WI-FI");
 
-
 	private String type;
 
 	private NetworkType(String type) {
 		this.type = type;
 	}
-
 
 }

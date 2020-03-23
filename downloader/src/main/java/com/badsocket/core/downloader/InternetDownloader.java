@@ -2,7 +2,6 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.core.Monitor;
 import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
@@ -12,6 +11,7 @@ import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
+import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
@@ -75,18 +75,16 @@ public class InternetDownloader
 
 	protected Monitor monitor;
 
-
 	public InternetDownloader(Context context) {
 		this.context = context;
 		androidContext = context.getAndroidContext();
 	}
 
-
 	protected void initEnvironment() {
 		worker = new AsyncWorker(threadManager);
 		taskManager = DefaultDownloadTaskManager.getInstance(this);
 		config = context.getDownloadConfig();
-		downloadTaskExecutor = (DownloadTaskExecutor) context.getDownloadTaskExecutor();
+		downloadTaskExecutor = context.getDownloadTaskExecutor();
 		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
@@ -99,7 +97,6 @@ public class InternetDownloader
 		monitor.monitor(this);
 	}
 
-
 	protected void loadTasks() throws Exception {
 		List<DownloadTask> tasks = downloadTaskInfoStorage.readList();
 		for (DownloadTask task : tasks) {
@@ -108,32 +105,27 @@ public class InternetDownloader
 		}
 	}
 
-
 	protected void initTasks() throws Exception {
 		loadTasks();
 	}
-
 
 	public void init() throws Exception {
 		initEnvironment();
 		initTasks();
 	}
 
-
 	protected boolean checkDownloadTaskExists(DownloadTask task) {
 		File completeTask = new File(task.getDownloadPath(), task.getName()),
-			 uncompleteTask = new File(completeTask.getPath()
-					 + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+				uncompleteTask = new File(completeTask.getPath()
+						+ Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 
 		return completeTask.exists() || uncompleteTask.exists()
 				|| CollectionUtils.filter(taskList(), (t) -> t.equals(task)).size() != 0;
 	}
 
-
 	protected boolean isSupportProtocol(Protocols protocol) {
 		return protocolHandlers.get(protocol) != null;
 	}
-
 
 	protected DownloadTask createTask(DownloadTaskDescriptor descriptor, ProtocolHandler handler)
 			throws IOException {
@@ -143,15 +135,13 @@ public class InternetDownloader
 		return task;
 	}
 
-
 	@Override
 	public boolean isTaskExists(Task task) {
 		return taskManager.hasTask(task);
 	}
 
-
 	public DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception {
-		String protocolName = desc.getAddress().getProtocol();
+		String protocolName = desc.getUri().getScheme();
 		Protocols protocol = Protocols.getProtocol(protocolName);
 		DownloadTask task = null;
 		if (!isSupportProtocol(protocol)) {
@@ -172,7 +162,6 @@ public class InternetDownloader
 		return task;
 	}
 
-
 	protected void trimUncompleteSuffix(DownloadTask task) {
 		File uncompleteFile = new File(
 				task.getDownloadPath(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
@@ -181,52 +170,43 @@ public class InternetDownloader
 		}
 	}
 
-
 	@Override
 	public void onTaskFinish(Task t) {
 		DownloadTask task = (DownloadTask) t;
 		trimUncompleteSuffix(task);
 	}
 
-
 	@Override
 	public DownloadTask findTask(int id) {
 		return taskManager.get(id);
 	}
-
 
 	@Override
 	public DownloadTask findTaskByTaskId(int idx) {
 		return taskManager.getTaskById(idx);
 	}
 
-
 	public void start() throws Exception {
 //		taskManager.startAll();
 	}
-
 
 	public void stop() throws Exception {
 		taskManager.stopAll();
 		monitor.stop();
 	}
 
-
 	public void pause() throws Exception {
 		taskManager.pauseAll();
 	}
-
 
 	public void resume() throws Exception {
 		taskManager.resumeAll();
 	}
 
-
 	@Override
 	public void addTask(DownloadTask t) throws Exception {
 		taskManager.add(t);
 	}
-
 
 	private void deleteTaskFile(DownloadTask task) {
 		File taskFile = new File(task.getDownloadPath(), task.getName()
@@ -238,13 +218,11 @@ public class InternetDownloader
 		taskInfoFile.delete();
 	}
 
-
 	@Override
 	public void deleteTask(int id) {
 		deleteTaskFile(taskManager.getTask(id));
 		taskManager.remove(id);
 	}
-
 
 	@Override
 	public void deleteTask(DownloadTask task) {
@@ -252,125 +230,104 @@ public class InternetDownloader
 		taskManager.deleteTask(task);
 	}
 
-
 	@Override
 	public void startTask(int id) throws Exception {
 		taskManager.start(id);
 	}
-
 
 	@Override
 	public void startTask(DownloadTask task) throws Exception {
 		taskManager.start(task);
 	}
 
-
 	@Override
 	public void stopTask(int id) throws Exception {
 		taskManager.stop(id);
 	}
-
 
 	@Override
 	public void stopTask(DownloadTask task) throws Exception {
 		taskManager.stop(task);
 	}
 
-
 	@Override
 	public void pauseTask(int id) throws Exception {
 		taskManager.pause(id);
 	}
-
 
 	@Override
 	public void pauseTask(DownloadTask task) throws Exception {
 		taskManager.pause(task);
 	}
 
-
 	@Override
 	public void resumeTask(int id) throws Exception {
 		taskManager.resume(id);
 	}
-
 
 	@Override
 	public void resumeTask(DownloadTask task) throws Exception {
 		taskManager.resume(task);
 	}
 
-
 	@Override
 	public List<DownloadTask> taskList() {
 		return taskManager.list();
 	}
-
 
 	@Override
 	public List<Thread> threadList() {
 		return threadManager.list();
 	}
 
-
 	@Override
 	public void addWatcher(MonitorWatcher w) {
 		monitor.addWatcher(w);
 	}
-
 
 	@Override
 	public Monitor getMonitor() {
 		return monitor;
 	}
 
-
 	public void addProtocolHandler(Protocols protocol, ProtocolHandler handler) {
 		protocolHandlers.put(protocol, handler);
 	}
-
 
 	@Override
 	public void setParallelTaskNum(int num) {
 		taskManager.setParallelTaskNum(num);
 	}
 
-
 	@Override
 	public int getParallelTaskNum() {
 		return taskManager.getParallelTaskNum();
 	}
-
 
 	@Override
 	public Context getDownloaderContext() {
 		return context;
 	}
 
-
 	@Override
 	public ThreadAllocStategy getThreadAllocStategy() {
 		return this.stategy;
 	}
-
 
 	@Override
 	public void setThreadAllocStategy(ThreadAllocStategy stategy) {
 		this.stategy = stategy;
 	}
 
-
 	@Override
 	public DownloadTaskInfoStorage getDownloadTaskStorage() {
 		return downloadTaskInfoStorage;
 	}
 
-
 	@Override
 	public void setDownloadTaskInfoStorage(DownloadTaskInfoStorage storage) {
 		downloadTaskInfoStorage = storage;
 	}
-
 
 	@Override
 	public void exit() throws Exception {
@@ -378,11 +335,9 @@ public class InternetDownloader
 		taskManager.finalize();
 	}
 
-
 	public ProtocolHandler getProtocolHandler(Protocols p) {
 		return protocolHandlers.get(p);
 	}
-
 
 	public interface ThreadAllocStategy {
 

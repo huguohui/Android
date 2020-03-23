@@ -8,17 +8,12 @@ import com.badsocket.core.downloader.Downloader;
 
 public interface DownloadTaskLifecycle extends TaskLifecycle {
 
-
 	void onPause() throws Exception;
-
 
 	void onResume() throws Exception;
 
-
 	void onStore() throws Exception;
 
-
 	void onRestore(Downloader downloader) throws Exception;
-
 
 }

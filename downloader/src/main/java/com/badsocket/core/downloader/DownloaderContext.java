@@ -76,7 +76,6 @@ public class DownloaderContext extends Context {
 
 	private Map<String, ConcurrentFileWriter> fileWriters = new HashMap<>();
 
-
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
 		HOME_DIRECTORY = ROOT_PATH + DS + androidContext.getApplicationInfo().packageName;
@@ -89,11 +88,9 @@ public class DownloaderContext extends Context {
 		}
 	}
 
-
 	public DownloaderContext() {
 		this(null);
 	}
-
 
 	protected void init() throws IOException {
 		threadManager = ThreadManager.getInstance();
@@ -109,57 +106,48 @@ public class DownloaderContext extends Context {
 		downloadTaskExecutor = new GenericDownloadTaskExecutor(this);
 	}
 
-
 	protected void checkEnvironment() {
 		isNetworkAvailable = networkInfo.isConnected() && networkInfo.isAvailable();
 	}
-
 
 	@Override
 	public Manager getThreadManager() {
 		return threadManager;
 	}
 
-
 	@Override
 	public FileManager getFileManager() {
 		return fileManger;
 	}
-
 
 	@Override
 	public Config getDownloadConfig() {
 		return config;
 	}
 
-
 	@Override
 	public ThreadFactory getThreadFactory() {
 		return threadFactory;
 	}
-
 
 	@Override
 	public FileWriter getFileWriter(String path) throws IOException {
 		return getFileWriter(new File(path));
 	}
 
-
 	@Override
 	public FileWriter getFileWriter(File path) throws IOException {
 		return new ConcurrentFileWriter(path);
 	}
-
 
 	@Override
 	public FileWriter getFileWriter(String path, long size) throws IOException {
 		return getFileWriter(new File(path), size);
 	}
 
-
 	@Override
 	public FileWriter getFileWriter(File path, long size) throws IOException {
-		ConcurrentFileWriter fileWriter =  new ConcurrentFileWriter(new File(
+		ConcurrentFileWriter fileWriter = new ConcurrentFileWriter(new File(
 				path.getPath() + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX), size);
 		synchronized (fileWriters) {
 			fileWriters.put(path.getAbsolutePath(), fileWriter);
@@ -167,24 +155,20 @@ public class DownloaderContext extends Context {
 		return fileWriter;
 	}
 
-
 	@Override
 	public android.content.Context getAndroidContext() {
 		return androidContext;
 	}
-
 
 	@Override
 	public NetworkInfo getNetworkInfo() {
 		return networkInfo;
 	}
 
-
 	@Override
 	public boolean isNetworkAvailable() {
 		return isNetworkAvailable;
 	}
-
 
 	@Override
 	public long getAvailableSpaceSize(File path) {
@@ -196,35 +180,29 @@ public class DownloaderContext extends Context {
 		}
 	}
 
-
 	@Override
 	public NetworkType getNetworkType() {
 		return networkType;
 	}
-
 
 	@Override
 	public ConnectivityManager getConnectivityManager() {
 		return connectivityManager;
 	}
 
-
 	@Override
 	public ExecutorService getThreadExecutor() {
 		return threadExecutor;
 	}
-
 
 	@Override
 	public DownloadTaskExecutor getDownloadTaskExecutor() {
 		return downloadTaskExecutor;
 	}
 
-
 	@Override
 	public void finalize() {
 
 	}
-
 
 }
