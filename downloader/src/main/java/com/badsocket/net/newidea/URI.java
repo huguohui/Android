@@ -71,6 +71,9 @@ public class URI implements Serializable {
 	private final String HASH = "#";
 
 	public URI(String uriStr) {
+		if (uriStr == null) {
+			throw new RuntimeException("URI can't be null!");
+		}
 		originUri = uriStr.trim();
 		parsingUri.append(originUri);
 		parseURI();

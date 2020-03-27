@@ -5,7 +5,7 @@ package com.badsocket.core.downloader.exception;
  */
 
 public class StopDownloadTaskException extends DownloadTaskException {
-	public StopDownloadTaskException(String message) {
-		super(message);
+	public StopDownloadTaskException(String message, Throwable e) {
+		super(message, e);
 	}
 }

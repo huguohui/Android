@@ -115,7 +115,7 @@ public class InternetDownloader
 	}
 
 	protected boolean checkDownloadTaskExists(DownloadTask task) {
-		File completeTask = new File(task.getDownloadPath(), task.getName()),
+		File completeTask = new File(task.getStorageDir(), task.getName()),
 				uncompleteTask = new File(completeTask.getPath()
 						+ Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 
@@ -163,10 +163,9 @@ public class InternetDownloader
 	}
 
 	protected void trimUncompleteSuffix(DownloadTask task) {
-		File uncompleteFile = new File(
-				task.getDownloadPath(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+		File uncompleteFile = new File(task.getStorageDir(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 		if (uncompleteFile.exists()) {
-			uncompleteFile.renameTo(new File(task.getDownloadPath(), task.getName()));
+			uncompleteFile.renameTo(new File(task.getStorageDir(), task.getName()));
 		}
 	}
 
@@ -174,6 +173,10 @@ public class InternetDownloader
 	public void onTaskFinish(Task t) {
 		DownloadTask task = (DownloadTask) t;
 		trimUncompleteSuffix(task);
+		File dtiFile = new File(task.getStorageDir(), task.getName() + DOWNLOAD_TASK_INFO_SUFFIX);
+		if (dtiFile.exists()) {
+			dtiFile.delete();
+		}
 	}
 
 	@Override
@@ -209,9 +212,9 @@ public class InternetDownloader
 	}
 
 	private void deleteTaskFile(DownloadTask task) {
-		File taskFile = new File(task.getDownloadPath(), task.getName()
+		File taskFile = new File(task.getStorageDir(), task.getName()
 				+ (task.isCompleted() ? "" : UNCOMPLETE_DOWNLAOD_TASK_SUFFIX));
-		File taskInfoFile = new File(task.getDownloadPath(), task.getName()
+		File taskInfoFile = new File(task.getStorageDir(), task.getName()
 				+ DOWNLOAD_TASK_INFO_SUFFIX);
 
 		taskFile.delete();

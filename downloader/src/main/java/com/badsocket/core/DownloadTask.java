@@ -35,7 +35,7 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
 	void setDownloadPath(File path);
 
-	File getDownloadPath();
+	File getStorageDir();
 
 	int getSectionNumber();
 

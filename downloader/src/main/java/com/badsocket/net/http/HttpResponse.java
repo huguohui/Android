@@ -61,6 +61,7 @@ public class HttpResponse extends Response {
 	 */
 	protected HttpResponse(Request r) throws IOException {
 		super(r);
+		System.out.println(r);
 		httpRequest = (BaseHttpRequest) r;
 		if (r.connected()) {
 			if (!r.sent()) {
@@ -84,7 +85,12 @@ public class HttpResponse extends Response {
 		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
 		mFileName = URLUtils.decode(URLUtils.filename(httpRequest.getUri()), "UTF-8");
 		mContentType = header.get(Http.CONTENT_TYPE);
-		mHttpVersion = Float.parseFloat(header.getVersion());
+		try {
+			mHttpVersion = Float.parseFloat(header.getVersion());
+		}
+		catch(Exception e) {
+			System.out.println(httpRequest.getHeader());
+		}
 		mCookies = HttpCookie.formString(header.get(Http.SET_COOKIE));
 		mDate = DateUtils.str2Date(header.get(Http.DATE), Http.GMT_DATE_FORMAT[0], Locale.ENGLISH);
 		isKeepAlive = Http.KEEP_ALIVE.equalsIgnoreCase(header.get(Http.CONNECTION));

@@ -110,7 +110,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 	}
 
 	protected void afterSend() {
-		Log.d("Sent request data.");
+		System.out.println("sent !!!!!!!!!!");
 	}
 
 	/**
@@ -152,7 +152,6 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 	}
 
 	protected void receiveResponse() throws IOException {
-		mHttpResponse = new HttpResponse(this);
 		if (mOnResponseListener != null) {
 			mOnResponseListener.onResponse(mHttpResponse);
 		}

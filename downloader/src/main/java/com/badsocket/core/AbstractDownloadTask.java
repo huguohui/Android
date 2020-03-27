@@ -174,7 +174,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	public boolean equals(Task t) {
 		DownloadTask task = (DownloadTask) t;
 		return this.getName().equals(task.getName())
-				&& this.getDownloadPath().equals(task.getDownloadPath());
+				&& this.getStorageDir().equals(task.getStorageDir());
 	}
 
 	public void setSections(DownloadSection[] sections) {
@@ -339,7 +339,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 	@Override
-	public File getDownloadPath() {
+	public File getStorageDir() {
 		try {
 			return downloadPath.getCanonicalFile();
 		}

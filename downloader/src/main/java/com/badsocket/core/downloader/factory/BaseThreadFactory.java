@@ -7,15 +7,7 @@ import android.support.annotation.NonNull;
  */
 
 public class BaseThreadFactory implements ThreadFactory {
-	/**
-	 * To creating a object.
-	 *
-	 * @return A object.
-	 */
-	@Override
-	public Thread create() {
-		return createThread(null, null, Thread.NORM_PRIORITY);
-	}
+
 
 	@Override
 	public Thread newThread(@NonNull Runnable runnable) {

@@ -25,6 +25,4 @@ public interface Config {
 
 	void merge(Config config);
 
-	File location();
-
 }

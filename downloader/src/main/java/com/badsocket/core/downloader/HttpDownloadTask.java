@@ -6,7 +6,6 @@ import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
 import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.downloader.exception.DownloadTaskException;
-import com.badsocket.core.downloader.exception.StopDownloadTaskException;
 import com.badsocket.net.AsyncReceiver;
 import com.badsocket.net.Receiver;
 import com.badsocket.net.ReceiverGroup;
@@ -80,7 +79,7 @@ public class HttpDownloadTask
 	}
 
 	protected void prepareDownload() throws Exception {
-		fileWriter = context.getFileWriter(new File(getDownloadPath(), getName()), getLength());
+		fileWriter = context.getFileWriter(new File(getStorageDir(), getName()), getLength());
 	}
 
 	@Override
@@ -122,7 +121,6 @@ public class HttpDownloadTask
 
 		for (Thread thread : threads) {
 			if (Thread.State.RUNNABLE.equals(thread.getState())) {
-//				thread.start();
 				thread.join();
 			}
 		}
@@ -131,7 +129,6 @@ public class HttpDownloadTask
 	}
 
 	protected void createDownloadReceiver() throws IOException {
-		System.out.println("Rec...............");
 		Request reqs[] = requestGroup.getRequests();
 		AsyncReceiver asyncReceiver = null;
 		for (int i = 0; i < reqs.length; i++) {

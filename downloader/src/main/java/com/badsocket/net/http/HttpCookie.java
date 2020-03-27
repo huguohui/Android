@@ -148,6 +148,9 @@ public class HttpCookie {
 				long maxAge = 0L;
 				String k = null, v = null, domain = null, path = null;
 				for (String s : kvArr) {
+					if (s == null)
+						continue;
+
 					s = s.trim();
 					if (!s.contains("=")) {
 						if (s.equals("secure"))

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by skyrim on 2017/12/16.
  */
 
-public class DownloadConfig implements Config {
+public class DownloadConfig implements FileConfig {
 
 	public static final String GLOBAL_MAX_DOWNLOAD_THREADS = "global.max_download_threads";
 

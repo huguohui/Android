@@ -47,6 +47,8 @@ public class DefaultDownloadTaskManager
 
 	protected DownloadTaskExecutor taskExecutor;
 
+	protected Task.OnTaskFinishListener taskFinishListeners;
+
 	public enum Controller {
 		START, PAUSE, RESUME, STOP
 	}
@@ -148,6 +150,7 @@ public class DefaultDownloadTaskManager
 		task.addOnTaskStopListener(this);
 		task.addOnDownloadTaskPauseListener(this);
 		task.addOnDownloadTaskResumeListener(this);
+
 		if (isAutoStart()) {
 			startTask(task);
 		}

@@ -37,7 +37,7 @@ public class DownloadTaskDescriptor extends Descriptor {
 		this.setUri(task.getDownloadAddress());
 		this.setMaxThread(task.getSectionNumber());
 		this.setPriority(task.getPriority());
-		this.setPath(task.getDownloadPath().getAbsolutePath());
+		this.setPath(task.getStorageDir().getAbsolutePath());
 	}
 
 	public String getTaskName() {

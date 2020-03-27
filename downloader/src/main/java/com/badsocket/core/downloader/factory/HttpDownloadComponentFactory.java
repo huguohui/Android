@@ -76,7 +76,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 				}
 
 				if (section != null) {
-					Log.d(section.toString());
+					System.out.println(section.toString());
 					if (section.getDownloadedLength() < section.getLength()) {
 						requestList.add(createRequest(task,
 								new HttpRequest.Range(section.getOffsetBegin() + section.getDownloadedLength(),
@@ -108,7 +108,6 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 		BaseHttpRequest hr = (BaseHttpRequest) createRequest(i);
 		hr.setHeader(Http.RANGE, new HttpRequest.Range(r).toString());
 		hr.setRange(r);
-		Log.d(r.toString());
 		return hr;
 	}
 

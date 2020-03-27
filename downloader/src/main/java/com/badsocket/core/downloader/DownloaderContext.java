@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import static com.badsocket.core.config.DownloadConfig.GLOBAL_MAX_DOWNLOAD_THREADS;
+
 /**
  * Created by skyrim on 2017/12/15.
  */
@@ -101,9 +103,9 @@ public class DownloaderContext extends Context {
 		config = new PropertiesConfigReader(
 				new File(HOME_DIRECTORY + DS + CONFIG_DIR, DownloadConfig.CONFIG_FILE)).read();
 		threadExecutor = new ThreadExecutor(
-				config.getInteger(DownloadConfig.GLOBAL_MAX_DOWNLOAD_THREADS)
+				config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS)
 						* config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
-		downloadTaskExecutor = new GenericDownloadTaskExecutor(this);
+		downloadTaskExecutor = new GenericDownloadTaskExecutor(this,config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS));
 	}
 
 	protected void checkEnvironment() {

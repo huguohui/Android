@@ -322,8 +322,7 @@ public class HttpHeader extends Header {
 						pos++;
 
 					if (pos <= lineOffset - 1) {
-						header.set(new String(buff, 0, pos), new String(buff, pos + 1,
-								lineOffset - pos - 1).trim());
+						header.set(new String(buff, 0, pos), new String(buff, pos + 1, lineOffset - pos - 1).trim());
 					}
 					else {
 						if (pos == lineOffset - 1) {
@@ -391,8 +390,6 @@ public class HttpHeader extends Header {
 			}
 
 			byte[] temp = bos.toByteArray();
-			bos.flush();
-			bos.close();
 			return parse(temp);
 		}
 

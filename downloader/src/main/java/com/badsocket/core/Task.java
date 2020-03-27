@@ -63,6 +63,8 @@ public interface Task
 
 	boolean isCompleted();
 
+	boolean isPauseSupport();
+
 	int getState();
 
 	TaskExtraInfo getExtraInfo();
