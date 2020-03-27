@@ -116,33 +116,13 @@ public class HttpDownloadTask
 
 		for (int i = 0; i < reqs.length; i++) {
 			final int idx = i;
-			threads[i] = context.getThreadFactory().createThread(() -> {
-				HttpRequest httpRequest = (HttpRequest) reqs[idx];
-				try {
-					if (!httpRequest.connected()) {
-						httpRequest.open();
-					}
-					httpRequest.send();
-					requestGroup.addResponse(httpRequest.response());
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					if (httpRequest.connected() && !httpRequest.closed()) {
-						try {
-							httpRequest.close();
-						}
-						catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			});
-
+			threads[i] = context.getThreadFactory().createThread(new RequestThread((HttpRequest) reqs[idx], requestGroup));
 			threads[i].start();
 		}
 
 		for (Thread thread : threads) {
 			if (Thread.State.RUNNABLE.equals(thread.getState())) {
+//				thread.start();
 				thread.join();
 			}
 		}
@@ -151,12 +131,13 @@ public class HttpDownloadTask
 	}
 
 	protected void createDownloadReceiver() throws IOException {
+		System.out.println("Rec...............");
 		Request reqs[] = requestGroup.getRequests();
 		AsyncReceiver asyncReceiver = null;
 		for (int i = 0; i < reqs.length; i++) {
 			receiverGroup.addReceiver(reqs[i] != null
 					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
-					: null);
+							: null);
 		}
 	}
 
@@ -195,7 +176,7 @@ public class HttpDownloadTask
 		}
 		catch (Exception e) {
 			state = DownloadTaskState.STOPED;
-			throw new DownloadTaskException(e.getMessage());
+			throw new DownloadTaskException(e);
 		}
 	}
 
@@ -249,7 +230,7 @@ public class HttpDownloadTask
 			clearGroups();
 		}
 		catch (Exception e) {
-			throw new StopDownloadTaskException(e.getMessage());
+			throw new DownloadTaskException(e);
 		}
 		finally {
 			onDownloadStoped();
@@ -396,7 +377,47 @@ public class HttpDownloadTask
 		return this;
 	}
 
-	public abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {
+	@Override
+	public boolean isPauseSupport() {
+		return true;
+	}
 
+	public static abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {
+
+	}
+
+	private static class RequestThread implements Runnable {
+
+		HttpRequest rq;
+
+		RequestGroup rg;
+
+		public RequestThread(HttpRequest rq, RequestGroup rg) {
+			this.rq = rq;
+			this.rg = rg;
+		}
+
+		@Override
+		public void run() {
+			HttpRequest httpRequest = rq;
+			try {
+				if (!httpRequest.connected()) {
+					httpRequest.open();
+				}
+				httpRequest.send();
+				rg.addResponse(httpRequest.response());
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				if (httpRequest.connected() && !httpRequest.closed()) {
+					try {
+						httpRequest.close();
+					}
+					catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 }
