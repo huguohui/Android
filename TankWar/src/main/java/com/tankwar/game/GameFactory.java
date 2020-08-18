@@ -2,28 +2,27 @@ package com.tankwar.game;
 
 /**
  * The factory of game creation.
+ *
  * @since 2015/11/08
  */
 public class GameFactory {
-    /**
-     * Factory instance.
-     */
-    private static GameFactory ourInstance = new GameFactory();
+	/**
+	 * Factory instance.
+	 */
+	private static GameFactory ourInstance = new GameFactory();
 
+	/**
+	 * Private constructor.
+	 */
+	private GameFactory() {
+	}
 
-    /**
-     * Private constructor.
-     */
-    private GameFactory() {
-    }
-
-
-    /**
-     * Create a single play game.
-     */
-    public static Game createGame(Game.Option option) {
-        Game game = Game.create();
-        game.setOption(option);
-        return game;
-    }
+	/**
+	 * Create a single play game.
+	 */
+	public static Game createGame(Game.Option option) {
+		Game game = Game.create();
+		game.setOption(option);
+		return game;
+	}
 }

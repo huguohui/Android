@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
  * Created by skyrim on 2017/11/28.
  */
 public interface Task
-		extends Runnable, Serializable, Callable<Task>, TaskLifecycle, Updatable {
+		extends Serializable, Callable<Integer>, TaskLifecycle, Updatable {
 
 	/**
 	 * Gets unique id of task.

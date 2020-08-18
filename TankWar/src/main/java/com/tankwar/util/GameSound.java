@@ -4,24 +4,23 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-public class GameSound extends SoundPool{
-	public static final int[] soundIds   = {
+public class GameSound extends SoundPool {
+	public static final int[] soundIds = {
 	};
 
-	public final static int GSD_START		= 0;
-	public final static int GSD_GAMEOVER	= 1;
-	public final static int GSD_BLAST		= 2;
-	public final static int GSD_BOMB		= 3;
-	public final static int GSD_BONUS		= 4;
-	public final static int GSD_GETBONUS	= 5;
-	public final static int GSD_FIRE		= 6;
-	public final static int GSD_GETLIFE		= 7;
-	public final static int GSD_HITWALL		= 8;
-	public final static int GSD_PLAYERMOVE	= 9;
-	public final static int GSD_ENEMYMOVE	= 10;
-	private static int[] 	allSounds 	    = new int[soundIds.length];
-	private static GameSound mGameSound		= null;
-
+	public final static int GSD_START = 0;
+	public final static int GSD_GAMEOVER = 1;
+	public final static int GSD_BLAST = 2;
+	public final static int GSD_BOMB = 3;
+	public final static int GSD_BONUS = 4;
+	public final static int GSD_GETBONUS = 5;
+	public final static int GSD_FIRE = 6;
+	public final static int GSD_GETLIFE = 7;
+	public final static int GSD_HITWALL = 8;
+	public final static int GSD_PLAYERMOVE = 9;
+	public final static int GSD_ENEMYMOVE = 10;
+	private static int[] allSounds = new int[soundIds.length];
+	private static GameSound mGameSound = null;
 
 	private GameSound(Context context) {
 		super(50, AudioManager.STREAM_MUSIC, 10);
@@ -30,42 +29,34 @@ public class GameSound extends SoundPool{
 		}
 	}
 
-
 	public final static void load(Context context) {
 		mGameSound = null;
 		mGameSound = new GameSound(context);
 	}
 
-
 	public final static void play(int soundId) {
 		mGameSound.play(allSounds[soundId], 1f, 1f, 1, 0, 1);
 	}
-
 
 	public final static void play(int soundId, float rate) {
 		mGameSound.play(allSounds[soundId], 1, 1, 1, 0, rate);
 	}
 
-
 	public final static void play(int soundId, int loop) {
 		mGameSound.play(allSounds[soundId], 1f, 1f, 1, loop, 1);
 	}
-
 
 	public final static void play(int soundId, int loop, float rate) {
 		mGameSound.play(allSounds[soundId], 1, 1, 1, loop, rate);
 	}
 
-
 	public final static void stop(Integer id) {
 		mGameSound.stop(allSounds[id]);
 	}
 
-
 	public final static void releaseResource() {
 		mGameSound.release();
 	}
-
 
 	public final static void pauseAll() {
 		for (int i = 0; i < allSounds.length; i++) {
@@ -73,13 +64,11 @@ public class GameSound extends SoundPool{
 		}
 	}
 
-
 	public final static void resumeAll() {
 		for (int i = 0; i < allSounds.length; i++) {
 			mGameSound.resume(allSounds[i]);
 		}
 	}
-
 
 	public final static void stopAll() {
 		for (int i = 0; i < allSounds.length; i++) {

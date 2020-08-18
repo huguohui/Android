@@ -33,7 +33,7 @@ public interface Downloader extends Controlable {
 
 	DownloadTask findTask(int idx);
 
-	DownloadTask findTaskByTaskId(int idx);
+	DownloadTask findTaskById(int idx);
 
 	void addTask(DownloadTask t) throws Exception;
 

@@ -1,10 +1,12 @@
 package com.badsocket.core;
+
 import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.executor.DownloadTaskExecutor;
+import com.badsocket.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -18,7 +20,7 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 
 	private ExecutorService executorService;
 
-	private Map<Task, Future<Task>> futureMap = new ConcurrentHashMap<>();
+	private Map<Task, Future<Integer>> futureMap = new ConcurrentHashMap<>();
 
 	private DownloaderContext context;
 
@@ -36,35 +38,33 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 	}
 
 	@Override
-	public Future<Task> start(Task task) throws Exception {
-		return start(task, 0);
+	public Future<Integer> execute(Task task) throws Exception {
+		return execute(task, 0);
 	}
 
 	@Override
-	public Future<Task> start(Task task, long delay) throws Exception {
+	public Future<Integer> execute(Task task, long delay) throws Exception {
 		DownloadTask dt = (DownloadTask) task;
-		Future<Task> future = super.schedule((Callable<Task>) task, delay, TimeUnit.MILLISECONDS);
+		Future<Integer> future = super.schedule(task, delay, TimeUnit.MILLISECONDS);
 		futureMap.put(task, future);
 		dt.onStart();
 		return future;
 	}
 
 	@Override
-	public void start(Task task, long delay, long interval) throws Exception {
-		DownloadTask dt = (DownloadTask) task;
-		super.scheduleWithFixedDelay(task, delay, interval, TimeUnit.MILLISECONDS);
-		dt.onStart();
+	public void execute(Task task, long delay, long interval) throws Exception {
+		throw new RuntimeException("Not support!");
 	}
 
 	@Override
 	public boolean isDone(Task t) {
-		Future<Task> future = futureMap.get(t);
+		Future<Integer> future = futureMap.get(t);
 		return future.isDone();
 	}
 
 	@Override
 	public void cancel(Task t) {
-		Future<Task> future = futureMap.get(t);
+		Future<Integer> future = futureMap.get(t);
 		if (future != null) {
 			future.cancel(true);
 		}
@@ -82,8 +82,9 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		DownloadTask task = (DownloadTask) t;
 		cancel(t);
 		remove(t);
+		purge();
 		task.onPause();
-		submit((Callable<Task>) t);
+		futureMap.put(t, submit(t));
 	}
 
 	@Override
@@ -92,11 +93,16 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		cancel(t);
 		remove(t);
 		task.onResume();
-		submit((Callable<Task>) task);
+		futureMap.put(t, submit(t));
 	}
 
-	public boolean remove(Task t) {
-		return super.remove(t);
+	public void remove(Task t) {
+		Future<Integer> future = futureMap.get(t);
+		if (!future.isDone() || !future.isCancelled()) {
+			future.cancel(true);
+		}
+		purge();
+		futureMap.remove(t);
 	}
 
 	@Override
@@ -104,7 +110,8 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		DownloadTask task = (DownloadTask) t;
 		cancel(t);
 		remove(t);
+		purge();
 		task.onStop();
-		submit((Callable<Task>) t);
+		futureMap.put(t, submit(t));
 	}
 }

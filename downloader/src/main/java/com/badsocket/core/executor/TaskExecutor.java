@@ -10,11 +10,11 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public interface TaskExecutor extends ScheduledExecutorService {
 
-	Future<Task> start(Task task) throws Exception;
+	Future<Integer> execute(Task task) throws Exception;
 
-	Future<Task> start(Task task, long delay) throws Exception;
+	Future<Integer> execute(Task task, long delay) throws Exception;
 
-	void start(Task task, long delay, long interval) throws Exception;
+	void execute(Task task, long delay, long interval) throws Exception;
 
 	boolean isDone(Task t);
 
@@ -22,7 +22,7 @@ public interface TaskExecutor extends ScheduledExecutorService {
 
 	List<Task> tasks();
 
-	boolean remove(Task t);
+	void remove(Task t);
 
 	void pause(Task t) throws Exception;
 

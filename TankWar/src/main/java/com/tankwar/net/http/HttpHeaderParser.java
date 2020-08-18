@@ -14,9 +14,10 @@ import java.util.regex.Pattern;
  *
  */
 public class HttpHeaderParser implements Parser {
-	/** Default buffer size. */
+	/**
+	 * Default buffer size.
+	 */
 	public final static int BUFF_SIZE = 1024 * 8;
-
 
 	/**
 	 * Parse data to a kind of format.
@@ -35,31 +36,30 @@ public class HttpHeaderParser implements Parser {
 		HttpHeader header = new HttpHeader();
 		byte[] buff = new byte[BUFF_SIZE];
 		int lineOffset = 0;
-		while(offset < len) {
-			if (offset < len-1 && data[offset] == '\r' && data[offset + 1] == '\n') {
+		while (offset < len) {
+			if (offset < len - 1 && data[offset] == '\r' && data[offset + 1] == '\n') {
 				int pos = 0;
 				if (lineOffset == 0)
 					break;
 
-				while(pos <= lineOffset && buff[pos] != ':') pos++;
+				while (pos <= lineOffset && buff[pos] != ':') pos++;
 				if (pos <= lineOffset - 1) {
-					header.append(new String(buff, 0, pos), new String(buff, pos + 1,
-							lineOffset - pos - 1).trim());
-				}else{
+					header.append(new String(buff, 0, pos), new String(buff, pos + 1, lineOffset - pos - 1).trim());
+				} else {
 					if (pos == lineOffset - 1) {
 						header.append(new String(buff, 0, pos - 1), "");
-					}else{
+					} else {
 						Pattern response = Pattern.compile("^HTTP\\/(\\d\\.\\d)\\s(\\d+)\\s(.+)");
 						Pattern request = Pattern.compile(
 								"^(GET|POST|PUT|HEAD)\\s([^\\s]+)\\sHTTP/(\\d\\.\\d)$");
 						Matcher matcher;
-						
+
 						if ((matcher = response.matcher(new String(buff, 0, lineOffset))) != null
 								&& matcher.matches()) {
 							header.setVersion(matcher.group(1));
 							header.setStatusCode(matcher.group(2));
 							header.setStatusMsg(matcher.group(3));
-						}else if ((matcher = request.matcher(new String(buff, 0, lineOffset))) != null
+						} else if ((matcher = request.matcher(new String(buff, 0, lineOffset))) != null
 								&& matcher.matches()) {
 							header.setMethod(Http.Method.valueOf(matcher.group(1)));
 							header.setUrl(matcher.group(2));
@@ -80,7 +80,6 @@ public class HttpHeaderParser implements Parser {
 		return header;
 	}
 
-
 	/**
 	 * Parse data to a kind of format.
 	 *
@@ -97,12 +96,11 @@ public class HttpHeaderParser implements Parser {
 		byte searchedCount = 0;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-		while(-1 != (buff = (byte)data.read())) {
+		while (-1 != (buff = (byte) data.read())) {
 			if (buff == searchStr[searchedCount])
 				searchedCount++;
 			else
 				searchedCount = 0;
-
 
 			bos.write(buff);
 			if (searchedCount == searchStr.length - 1) {
@@ -116,7 +114,6 @@ public class HttpHeaderParser implements Parser {
 		bos.close();
 		return parse(temp);
 	}
-
 
 	/**
 	 * Parse data to a kind of format.
@@ -133,12 +130,11 @@ public class HttpHeaderParser implements Parser {
 		String line;
 		StringBuilder sb = new StringBuilder();
 
-		while(null != (line = reader.readLine())) {
+		while (null != (line = reader.readLine())) {
 			if (line.length() == 0)
 				break;
 			sb.append(line);
 		}
-
 
 		return parse(sb.toString().getBytes());
 	}

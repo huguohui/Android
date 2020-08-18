@@ -23,7 +23,6 @@ public class PhysicalSubsystem extends Subsystem {
 	 */
 	private List<Entity> mCollisionCheckables = new ArrayList<>();
 
-
 	/**
 	 * Construct a physical subsystem object.
 	 *
@@ -34,7 +33,6 @@ public class PhysicalSubsystem extends Subsystem {
 		mWorldSubsystem = getEngine().getWorldSubsystem();
 	}
 
-
 	/**
 	 * Enable a module.
 	 */
@@ -43,7 +41,6 @@ public class PhysicalSubsystem extends Subsystem {
 		super.enable();
 	}
 
-
 	/**
 	 * Disable a module.
 	 */
@@ -51,7 +48,6 @@ public class PhysicalSubsystem extends Subsystem {
 	public void disable() {
 		super.disable();
 	}
-
 
 	/**
 	 * Add a entity that would like to check collision.
@@ -62,7 +58,6 @@ public class PhysicalSubsystem extends Subsystem {
 		this.mCollisionCheckables.add(entity);
 	}
 
-
 	/**
 	 * Get all entitys.
 	 *
@@ -71,7 +66,6 @@ public class PhysicalSubsystem extends Subsystem {
 	public List<Entity> getEntities() {
 		return this.mCollisionCheckables;
 	}
-
 
 	/**
 	 * Game loop tick.

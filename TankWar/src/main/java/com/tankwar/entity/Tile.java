@@ -12,7 +12,7 @@ public class Tile {
 	protected int tileType;
 	protected int destructionTimes;
 
-	protected Rect	 tileRect;
+	protected Rect tileRect;
 	protected Rect[] tileRects;
 
 	public final static class WallTile extends Tile implements Destructible {
@@ -85,12 +85,9 @@ public class Tile {
 		}
 	}
 
-
 	protected interface Destructible {
 		Rect destroyRegion(int index);
 	}
-
-
 
 	public Tile(int x, int y, int w, int h, int type) {
 		absX = x;
@@ -122,7 +119,6 @@ public class Tile {
 	public final int getType() {
 		return tileType;
 	}
-
 
 	public final Rect getRect() {
 		return tileRect;

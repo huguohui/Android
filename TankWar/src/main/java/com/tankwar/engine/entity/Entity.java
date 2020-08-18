@@ -26,89 +26,90 @@ public abstract class Entity {
 	 */
 	private int mHeight;
 
-    /** The context. */
-    private GameContext mGameContext;
+	/**
+	 * The context.
+	 */
+	private GameContext mGameContext;
 
-
-    /**
-     * The constructor of entity.
-     * @param gameContext The game context.
-     * @param x The default x coordinate.
-     * @param y The default y coordinate.
-     */
-    public Entity(GameContext gameContext, int x, int y) {
-        this.mGameContext = gameContext;
-        this.mX = x;
-        this.mY = y;
+	/**
+	 * The constructor of entity.
+	 *
+	 * @param gameContext The game context.
+	 * @param x           The default x coordinate.
+	 * @param y           The default y coordinate.
+	 */
+	public Entity(GameContext gameContext, int x, int y) {
+		this.mGameContext = gameContext;
+		this.mX = x;
+		this.mY = y;
 		gameContext.getEngine().addEntity(this);
-    }
+	}
 
-
-    /**
-     * The empty constructor.
-     */
-    public Entity(GameContext gameContext) {
-        this.mGameContext = gameContext;
+	/**
+	 * The empty constructor.
+	 */
+	public Entity(GameContext gameContext) {
+		this.mGameContext = gameContext;
 		gameContext.getEngine().addEntity(this);
-    }
-
+	}
 
 	/**
 	 * Get width of entity.
+	 *
 	 * @return Width of entity.
 	 */
 	public int getWidth() {
-        return mWidth;
-    }
-
+		return mWidth;
+	}
 
 	/**
 	 * Get heigth of entity.
+	 *
 	 * @return Height of entity.
 	 */
 	public int getHeight() {
-        return mHeight;
-    }
-
+		return mHeight;
+	}
 
 	/**
 	 * Get the entity x value.
+	 *
 	 * @return The entity x value.
 	 */
 	public int getX() {
-        return mX;
-    }
-
+		return mX;
+	}
 
 	/**
 	 * Get the entity y value.
+	 *
 	 * @return The entity y value.
 	 */
 	public int getY() {
-        return mY;
-    }
+		return mY;
+	}
 
-    public GameContext getGameContext() {
-        return mGameContext;
-    }
+	public GameContext getGameContext() {
+		return mGameContext;
+	}
 
-    public void setGameContext(GameContext gameContext) {
-        mGameContext = gameContext;
-    }
+	public void setGameContext(GameContext gameContext) {
+		mGameContext = gameContext;
+	}
 
-    public void setX(int x) {
-        mX = x;
-    }
+	public void setX(int x) {
+		mX = x;
+	}
 
-    public void setY(int y) {
-        mY = y;
-    }
+	public void setY(int y) {
+		mY = y;
+	}
 
-    public void setWidth(int width) {
-        mWidth = width;
-    }
+	public void setWidth(int width) {
+		mWidth = width;
+	}
 
-    public void setHeight(int height) {
-        mHeight = height;
-    }
+	public void setHeight(int height) {
+		mHeight = height;
+	}
 }

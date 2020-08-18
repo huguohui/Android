@@ -16,7 +16,6 @@ import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
-import com.badsocket.util.CollectionUtils;
 import com.badsocket.worker.AsyncWorker;
 import com.badsocket.worker.Worker;
 
@@ -120,7 +119,7 @@ public class InternetDownloader
 						+ Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 
 		return completeTask.exists() || uncompleteTask.exists()
-				|| CollectionUtils.filter(taskList(), (t) -> t.equals(task)).size() != 0;
+				|| taskList().stream().filter((t) -> t.equals(task)).count() != 0;
 	}
 
 	protected boolean isSupportProtocol(Protocols protocol) {
@@ -185,7 +184,7 @@ public class InternetDownloader
 	}
 
 	@Override
-	public DownloadTask findTaskByTaskId(int idx) {
+	public DownloadTask findTaskById(int idx) {
 		return taskManager.getTaskById(idx);
 	}
 

@@ -7,22 +7,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-
-final public class Log
-{
+final public class Log {
 	public static String LOG_FILE_NAME = "game.log";
 	public static String LOG_FILE_PATH = GameContext.SDCARD_APP_ROOT + GameContext.DS +
-            GameContext.LOG_DIR + GameContext.DS + LOG_FILE_NAME;
+			GameContext.LOG_DIR + GameContext.DS + LOG_FILE_NAME;
 
 	public final synchronized static void e(Throwable e) {
-        FileWriter fw = null;
+		FileWriter fw = null;
 		try {
-            fw = new FileWriter(LOG_FILE_PATH, true);
+			fw = new FileWriter(LOG_FILE_PATH, true);
 			File file = new File(LOG_FILE_PATH);
 			String date = new Date().toString();
 			String eMsg = null;
 
-            if (file.length() > 1024 * 100) {
+			if (file.length() > 1024 * 100) {
 				file.delete();
 				file.createNewFile();
 			}
@@ -38,19 +36,18 @@ final public class Log
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-            android.util.Log.e("error", err.getMessage());
-		}finally{
-            if (fw != null) {
-                try {
-                    fw.flush();
-                    fw.close();
-                } catch (IOException e1) {
-                    android.util.Log.e("error", e1.getMessage());
-                }
-            }
-        }
+			android.util.Log.e("error", err.getMessage());
+		} finally {
+			if (fw != null) {
+				try {
+					fw.flush();
+					fw.close();
+				} catch (IOException e1) {
+					android.util.Log.e("error", e1.getMessage());
+				}
+			}
+		}
 	}
-
 
 	public final synchronized static void s(String s) {
 		try {
@@ -67,20 +64,16 @@ final public class Log
 			fw.flush();
 			fw.close();
 		} catch (IOException err) {
-            android.util.Log.e("error", err.getMessage());
+			android.util.Log.e("error", err.getMessage());
 		}
 	}
-
 
 	public final synchronized static void debug(String key, String val) {
 		android.util.Log.d(key, val);
 	}
 
-
-
 	public final synchronized static void error(String key, String val) {
 		android.util.Log.e(key, val);
 	}
 }
-
 

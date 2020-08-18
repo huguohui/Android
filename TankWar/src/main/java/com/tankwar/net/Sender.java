@@ -15,7 +15,6 @@ public interface Sender {
 	 */
 	boolean send() throws IOException;
 
-
 	/**
 	 * Send data to somewhere.
 	 *

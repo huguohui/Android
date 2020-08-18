@@ -19,17 +19,17 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 	public int D_Pad_H = 50;
 	public int A_Pad_W = 50;
 	public int A_Pad_H = 50;
-	public int keyDistance 	= 50;
+	public int keyDistance = 50;
 	public int bottomMargin = 20;
-	public int topMargin	= Game.SCREEN_HEIGHT- (bottomMargin + (D_Pad_H << 1) + keyDistance);
-	public int leftMargin 	= 20;
-	public int rightMargin 	= 20;
+	public int topMargin = Game.SCREEN_HEIGHT - (bottomMargin + (D_Pad_H << 1) + keyDistance);
+	public int leftMargin = 20;
+	public int rightMargin = 20;
 
-	public Rect upKeyRect 	= null;
+	public Rect upKeyRect = null;
 	public Rect downKeyRect = null;
 	public Rect leftKeyRect = null;
-	public Rect rightKeyRect= null;
-	public Rect atkKeyRect	= null;
+	public Rect rightKeyRect = null;
+	public Rect atkKeyRect = null;
 	public RectF ukRealRect = new RectF();
 	public RectF dkRealRect = new RectF();
 	public RectF lkRealRect = new RectF();
@@ -38,13 +38,13 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 
 	private Controllable mControllable;
 
-	public final int KEY_UP		= 1;
-	public final int KEY_RIGHT	= 2;
-	public final int KEY_LEFT	= 3;
-	public final int KEY_DOWN	= 4;
+	public final int KEY_UP = 1;
+	public final int KEY_RIGHT = 2;
+	public final int KEY_LEFT = 3;
+	public final int KEY_DOWN = 4;
 	public final int KEY_ATTACK = 5;
-	public final int KEY_NONE	= 6;
-	public final int SOUND_ID	=  GameSound.GSD_PLAYERMOVE;
+	public final int KEY_NONE = 6;
+	public final int SOUND_ID = GameSound.GSD_PLAYERMOVE;
 
 	public VirtualPad() {
 		Matrix mtx = new Matrix();
@@ -73,9 +73,8 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 		mtx.mapRect(akRealRect, new RectF(atkKeyRect));
 	}
 
-
 	public void onLoosen(int x, int y) {
-		switch(getKey(x, y)) {
+		switch (getKey(x, y)) {
 			case KEY_UP:
 				loosenUp();
 				break;
@@ -94,75 +93,63 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 		}
 	}
 
-
 	private void pressA() {
 		mControllable.attack();
 	}
-
 
 	private void pressUp() {
 		mControllable.move(MovableEntity.Direction.UP);
 	}
 
-
 	private void pressRight() {
 		mControllable.move(MovableEntity.Direction.RIGHT);
 	}
-
 
 	private void pressDown() {
 		mControllable.move(MovableEntity.Direction.DOWN);
 	}
 
-
 	private void pressLeft() {
 		mControllable.move(MovableEntity.Direction.LEFT);
 	}
 
-
 	private void loosenA() {
 	}
-
 
 	private void loosenUp() {
 
 	}
 
-
 	private void loosenRight() {
 
 	}
-
 
 	private void loosenDown() {
 
 	}
 
-
 	private void loosenLeft() {
 
 	}
 
-
 	private int getKey(int x, int y) {
 		if (ukRealRect.contains(x, y)) {
 			return KEY_UP;
-		}else if (dkRealRect.contains(x, y)) {
+		} else if (dkRealRect.contains(x, y)) {
 			return KEY_DOWN;
-		}else if (rkRealRect.contains(x, y)) {
+		} else if (rkRealRect.contains(x, y)) {
 			return KEY_RIGHT;
-		}else if (lkRealRect.contains(x, y)) {
+		} else if (lkRealRect.contains(x, y)) {
 			return KEY_LEFT;
-		}else if (akRealRect.contains(x, y)){
+		} else if (akRealRect.contains(x, y)) {
 			return KEY_ATTACK;
-		}else{
+		} else {
 			return KEY_NONE;
 		}
 	}
 
-
 	public void onPress(int x, int y) {
-		switch(getKey(x, y)) {
+		switch (getKey(x, y)) {
 			case KEY_UP:
 				pressUp();
 				break;
@@ -181,7 +168,6 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 		}
 	}
 
-
 	/**
 	 * To draw itself.
 	 *
@@ -198,7 +184,6 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 		c.drawRect(atkKeyRect, p);
 	}
 
-
 	/**
 	 * The layer index of draw.
 	 *
@@ -209,12 +194,10 @@ final public class VirtualPad implements ControlSubsystem.TouchEventListener, Dr
 		return 4;
 	}
 
-
 	public void setControllable(Controllable controllable) {
 		if (controllable == null) return;
 		this.mControllable = controllable;
 	}
-
 
 	public Controllable getControllable() {
 		return mControllable;

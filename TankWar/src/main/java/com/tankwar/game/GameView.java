@@ -1,7 +1,6 @@
 package com.tankwar.game;
 
-final public class GameView
-{
+final public class GameView {
 	/*public final static int SCREEN_WIDTH  	= Client.getInstance().getResources()
 												.getDisplayMetrics().widthPixels;
 	public final static int SCREEN_HEIGHT 	= Client.getInstance().getResources()
@@ -56,15 +55,13 @@ final public class GameView
 	private static int		gameMode  = GM_SINGLE_PLAY;
 	private static GameView mInstance = null;
 
-
-	public GameView(GameContext context) {
+public GameView(GameContext context) {
 		super(context);
 		mActivity = (Client) context;
 		initGame();
 	}
 
-
-	private final void initGame() {
+private final void initGame() {
 		Bundle b 	= mActivity.getIntent().getExtras();
 		gameMode 	= b.getInt("GameMode");
 		isSoundOn 	= b.getBoolean("GameSound");
@@ -91,14 +88,12 @@ final public class GameView
 				   .addWork(mTankAI);
 	}
 
-
-	private final void loadResourece() {
+private final void loadResourece() {
 		GameRes.initialize(mActivity.getResources());
 		GameSound.load(mActivity);
 	}
 
-
-	private final void drawStartAnimation(boolean isOpen) {
+private final void drawStartAnimation(boolean isOpen) {
 		int start = SCREEN_HEIGHT >> 1, end = SCREEN_HEIGHT, right = SCREEN_WIDTH;
 		for (int y = start; y <= end && !isGameExit; y+=10) {
 			if (isOpen == true) {
@@ -120,8 +115,7 @@ final public class GameView
 		}
 	}
 
-
-	private final void beforeGameStart() {
+private final void beforeGameStart() {
 		GameSound.play(GameSound.GSD_START);
 		drawStartAnimation(false);
 		mGameMap.drawOnBuffer();
@@ -129,8 +123,7 @@ final public class GameView
 		//GameSound.play(GameSound.GSD_ENEMYMOVE, -1, 1.3f);
 	}
 
-
-	private final void doDraw() {
+private final void doDraw() {
 		if (!isDrawOpen) {
 			beforeGameStart();
 			isDrawOpen = true;
@@ -147,8 +140,7 @@ final public class GameView
 		}
 	}
 
-
-	private final void drawGame(Canvas c) {
+private final void drawGame(Canvas c) {
 		drawBackgroud(c);
 		mGameMap.draw(c, mPaint);
 		drawFpsText(c);
@@ -160,16 +152,14 @@ final public class GameView
 		mVirtualPad.draw(c, mPaint);
 	}
 
-
-	private final void drawBackground(Canvas c) {
+private final void drawBackground(Canvas c) {
 		mPaint.setColor(Color.GRAY);
 		c.drawRect(0, 0, ORIGINAL_WIDTH, ORIGINAL_HEIGHT, mPaint);
 		mPaint.setColor(Color.BLACK);
 		c.drawRect(MAP_LEFT, MAP_TOP, MAP_RIGHT, MAP_BOTTOM, mPaint);
 	}
 
-
-	private final void drawFpsText(Canvas c) {
+private final void drawFpsText(Canvas c) {
 		Rect rect = new Rect();
 		String fps = "fps:"+Integer.toString(mGameFps);
 		mPaint.setTextSize(14);
@@ -180,8 +170,7 @@ final public class GameView
 		c.drawText(fps, 0, rect.bottom - rect.top, mPaint);
 	}
 
-
-	private final void countFps() {
+private final void countFps() {
 		if (System.currentTimeMillis() - mSpendTime >= mFpsCountDistance) {
 			mGameFps = mFrameCounter >> (mFpsCountDistance / 2000);
 			mSpendTime = System.currentTimeMillis();
@@ -192,8 +181,7 @@ final public class GameView
 		}
 	}
 
-
-	private final void pauseGame() throws InterruptedException {
+private final void pauseGame() throws InterruptedException {
 		if (mViewThread.getState().equals(Thread.State.RUNNABLE)) {
 			isGamePause = true;
 			GameSound.pauseAll();
@@ -204,32 +192,27 @@ final public class GameView
 
 	}
 
-
-	private synchronized final void resumeGame() {
+private synchronized final void resumeGame() {
 		isGamePause = false;
 		mDrawState = DS_GAME_START;
 		GameSound.resumeAll();
 	}
 
-
-	private final void stopGame() throws InterruptedException {
+private final void stopGame() throws InterruptedException {
 		isGameExit = true;
 	}
 
-
-	public synchronized final void onGameStart() {
+public synchronized final void onGameStart() {
 		mDrawState = DS_GAME_START;
 	}
 
-
-	public synchronized final void onGamePause() {
+public synchronized final void onGamePause() {
 		if (!isGameExit && mDrawState != DS_GAME_STOP)
 			mDrawState = DS_GAME_PAUSE;
 
 	}
 
-
-	public final void onGameResume() {
+public final void onGameResume() {
 		if (mDrawState == DS_GAME_PAUSE) {
 			synchronized(mViewThread) {
 				mViewThread.notify();
@@ -239,73 +222,59 @@ final public class GameView
 
 	}
 
-
-	public synchronized final void onGameStop() {
+public synchronized final void onGameStop() {
 		mDrawState = DS_GAME_STOP;
 	}
 
-
-	public synchronized final void onGameFailed() {
+public synchronized final void onGameFailed() {
 		mDrawState = DS_GAME_FAILED;
 	}
 
-
-	public synchronized final void onGameSuccess() {
+public synchronized final void onGameSuccess() {
 		mDrawState = DS_GAME_SUCCESS;
 	}
 
-
-	public final static int getGameMode() {
+public final static int getGameMode() {
 		return gameMode;
 	}
 
-
-	public synchronized final boolean isPause() {
+public synchronized final boolean isPause() {
 		return isGamePause;
 	}
 
-
-	public synchronized final boolean isExit() {
+public synchronized final boolean isExit() {
 		return isGameExit;
 	}
 
-
-	public synchronized final boolean isFailed() {
+public synchronized final boolean isFailed() {
 		return isGameFailed;
 	}
 
-
-	public final long getSecondCounter() {
+public final long getSecondCounter() {
 		return mPerSecCounter;
 	}
 
-
-	public final int getFPS() {
+public final int getFPS() {
 		return mGameFps;
 	}
 
-
-	public final TankAI getTankAI() {
+public final TankAI getTankAI() {
 		return mTankAI;
 	}
 
-
-	public final Bonus getBonus() {
+public final Bonus getBonus() {
 		return mBonus;
 	}
 
-
-	public final Thread getViewThread() {
+public final Thread getViewThread() {
 		return mViewThread;
 	}
 
-
-	public final Matrix getScaledMatrix() {
+public final Matrix getScaledMatrix() {
 		return mMatrix;
 	}
 
-
-	public final boolean onTouchEvent(MotionEvent e) {
+public final boolean onTouchEvent(MotionEvent e) {
 		super.onTouchEvent(e);
 		int x = 0, y = 0, index = -1;
 
@@ -346,14 +315,12 @@ final public class GameView
 		return true;
 	}
 
-
-	@Override
+@Override
 	public final void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 
 	}
 
-
-	@Override
+@Override
 	public final void surfaceCreated(SurfaceHolder arg0) {
 		if (mViewThread.getState() == Thread.State.NEW) {
 			mViewThread.setPriority(Thread.MAX_PRIORITY);
@@ -361,13 +328,11 @@ final public class GameView
 		}
 	}
 
-
-	@Override
+@Override
 	public final void surfaceDestroyed(SurfaceHolder arg0) {
 	}
 
-
-	@Override
+@Override
 	public final void run() {
 		try{
 			while ( !isGameExit ) {
@@ -395,8 +360,7 @@ final public class GameView
 		}
 	}
 
-
-	public final void release() {
+public final void release() {
 		Bullet.reset();
 		Explosion.reset();
 		mGameMap.recycle();
@@ -405,8 +369,8 @@ final public class GameView
 		GameRes.recycle();
 	}
 
-
-	public final static GameView getInstance() {
+public final static GameView getInstance() {
 		return mInstance;
 	}
-*/}
+*/
+}

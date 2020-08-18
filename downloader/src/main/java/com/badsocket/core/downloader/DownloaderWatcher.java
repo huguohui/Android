@@ -2,7 +2,6 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.MonitorWatcher;
-import com.badsocket.util.CollectionUtils;
 
 import java.util.List;
 
@@ -35,9 +34,7 @@ public class DownloaderWatcher implements MonitorWatcher {
 
 	protected void handleTask() {
 		try {
-			CollectionUtils.forEach(tasks, (CollectionUtils.Action<DownloadTask>) (task) -> {
-				updateTask(task);
-			});
+			tasks.stream().forEach((t) -> updateTask(t));
 			recordTasks(tasks);
 		}
 		catch (Exception e) {

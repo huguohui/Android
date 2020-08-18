@@ -4,11 +4,12 @@ import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Task;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.executor.DownloadTaskExecutor;
-import com.badsocket.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Tool for management download task.
@@ -76,9 +77,9 @@ public class DefaultDownloadTaskManager
 	}
 
 	protected List<DownloadTask> getRunnableTask() {
-		return CollectionUtils.filter(mList, (o) -> {
-			return o.getState() == DownloadTask.DownloadTaskState.UNSTART;
-		});
+		return mList.stream()
+					.filter((o) -> o.getState() == DownloadTask.DownloadTaskState.UNSTART)
+					.collect(Collectors.toList());
 	}
 
 	protected void startRemainTask() throws Exception {
@@ -95,8 +96,7 @@ public class DefaultDownloadTaskManager
 	}
 
 	protected void executeTask(DownloadTask task) throws Exception {
-		taskExecutor.start(task);
-		uncompleteTasks.add(task);
+		taskExecutor.execute(task);
 	}
 
 	protected void pauseTask(DownloadTask task) throws Exception {

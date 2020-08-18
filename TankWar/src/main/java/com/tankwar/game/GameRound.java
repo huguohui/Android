@@ -14,97 +14,98 @@ import com.tankwar.ui.VirtualPad;
 
 /**
  * The game round.
+ *
  * @since 2015/11/25
  */
 public class GameRound extends Round {
-    /** The world subsystem. */
-    private WorldSubsystem mWorldSubsystem;
+	/**
+	 * The world subsystem.
+	 */
+	private WorldSubsystem mWorldSubsystem;
 
-    /**
-     * @param engine A {@link Engine}.
-     * Default constructor.
-     *
-     */
-    public GameRound(Engine engine) {
-        super(engine);
-    }
+	/**
+	 * @param engine A {@link Engine}.
+	 *               Default constructor.
+	 */
+	public GameRound(Engine engine) {
+		super(engine);
+	}
 
-    /**
-     * Start a round.
-     */
-    @Override
-    public void start() {
-        mWorldSubsystem = getEngine().getWorldSubsystem();
-        mWorldSubsystem.setWorld(new Terrain[][]{
+	/**
+	 * Start a round.
+	 */
+	@Override
+	public void start() {
+		mWorldSubsystem = getEngine().getWorldSubsystem();
+		mWorldSubsystem.setWorld(new Terrain[][]{
 				//{new Wall(getEngine().getGameContext(), 0, 0)}
 		});
 
 		int width = getEngine().getGameContext().getScreenWidth(),
-			height = getEngine().getGameContext().getScreenHeight();
+				height = getEngine().getGameContext().getScreenHeight();
 
-		getEngine().getGraphicsSubsystem().setXScale(width / Game.SCREEN_WIDTH);
-		getEngine().getGraphicsSubsystem().setYScale(height / Game.SCREEN_HEIGHT);
+		getEngine().getGraphicsSubsystem().setXScale((float) width / Game.SCREEN_WIDTH);
+		getEngine().getGraphicsSubsystem().setYScale((float) height / Game.SCREEN_HEIGHT);
 
-        Explosion exp = new Explosion(getEngine());
-        FrameAnimation fa = new FrameAnimation(getEngine());
+		Explosion exp = new Explosion(getEngine());
+		FrameAnimation fa = new FrameAnimation(getEngine());
 		Tank t = null;
 		VirtualPad vp = new VirtualPad();
 
 		fa.setDescriptor(exp);
-        fa.play();
-        setIsStart(true);
+		fa.play();
+		setIsStart(true);
 //		getEngine().getAISubsystem().addControllable(
 //				t = new LightTank(GameContext.getGameContext(), 0, 0));
 		vp.setControllable(t);
 		getEngine().getControlSubsystem().addTouchEventListener(vp);
 		getEngine().getGraphicsSubsystem().addDrawable(vp);
-    }
+	}
 
 	public Engine getEngine() {
 		return super.getEngine();
 	}
 
+	/**
+	 * Handler round progress.
+	 */
+	@Override
+	public void progress() {
 
-    /**
-     * Handler round progress.
-     */
-    @Override
-    public void progress() {
+	}
 
-    }
+	/**
+	 * When round failed, to do something.
+	 */
+	@Override
+	public void failed() {
 
-    /**
-     * When round failed, to do something.
-     */
-    @Override
-    public void failed() {
+	}
 
-    }
+	/**
+	 * Retry game.
+	 */
+	@Override
+	public void retry() {
 
-    /**
-     * Retry game.
-     */
-    @Override
-    public void retry() {
+	}
 
-    }
+	/**
+	 * When round clear to do something.
+	 */
+	@Override
+	public void clear() {
 
-    /**
-     * When round clear to do something.
-     */
-    @Override
-    public void clear() {
+	}
 
-    }
-
-    /**
-     * If this round is cleared, start a new round by this method returned.
-     *
-     * @return a new {@link Round}.
-     */
-    @Override
-    public Round getNext() {
-        return this;
-    }
+	/**
+	 * If this round is cleared, start a new round by this method returned.
+	 *
+	 * @return a new {@link Round}.
+	 */
+	@Override
+	public Round getNext() {
+		return this;
+	}
 
 }

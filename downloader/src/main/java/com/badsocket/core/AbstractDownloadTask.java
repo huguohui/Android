@@ -118,59 +118,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		fetchInfo();
 	}
 
-	protected List<?> getListeners(Class listenerType) {
-		List<?> listeners = null;
-		if (listenerType.equals(OnTaskStartListener.class)) {
-			listeners = onTaskStartListeners;
-		}
-		else if (listenerType.equals(OnDownloadTaskPauseListener.class)) {
-			listeners = onDownloadTaskPauseListeners;
-		}
-		else if (listenerType.equals(OnTaskStopListener.class)) {
-			listeners = onTaskStopListeners;
-		}
-		else if (listenerType.equals(OnDownloadTaskResumeListener.class)) {
-			listeners = onDownloadTaskResumeListeners;
-		}
-		else if (listenerType.equals(OnTaskFinishListener.class)) {
-			listeners = onTaskFinishListeners;
-		}
-		else if (listenerType.equals(OnTaskCreateListener.class)) {
-			listeners = onTaskCreateListeners;
-		}
-
-		return listeners;
-	}
-
-	protected void notifyListeners(Class listenerType) {
-		List<?> listeners = getListeners(listenerType);
-		if (listeners != null) {
-			for (Object obj : listeners) {
-				if (obj == null) {
-					continue;
-				}
-				if (OnTaskStartListener.class.equals(listenerType)) {
-					((OnTaskStartListener) obj).onTaskStart(this);
-				}
-				else if (OnTaskStopListener.class.equals(listenerType)) {
-					((OnTaskStopListener) obj).onTaskStop(this);
-				}
-				else if (OnDownloadTaskResumeListener.class.equals(listenerType)) {
-					((OnDownloadTaskResumeListener) obj).onDownloadTaskResume(this);
-				}
-				else if (OnDownloadTaskPauseListener.class.equals(listenerType)) {
-					((OnDownloadTaskPauseListener) obj).onDownloadTaskPause(this);
-				}
-				else if (OnTaskFinishListener.class.equals(listenerType)) {
-					((OnTaskFinishListener) obj).onTaskFinish(this);
-				}
-				else if (OnTaskCreateListener.class.equals(listenerType)) {
-					((OnTaskCreateListener) obj).onTaskCreate(this);
-				}
-			}
-		}
-	}
-
 	public boolean equals(Task t) {
 		DownloadTask task = (DownloadTask) t;
 		return this.getName().equals(task.getName())
@@ -211,7 +158,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		onDownloadTaskResumeListeners.add(listener);
 	}
 
-	protected void onTaskFinish() {
+	protected void afterTaskFinish() {
 		isCompleted = true;
 		state = DownloadTaskState.COMPLETED;
 	}
@@ -260,27 +207,27 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 	protected void notifyTaskCreated() {
-		notifyListeners(OnTaskCreateListener.class);
+		onTaskCreateListeners.stream().forEach((listener) -> listener.onTaskCreate(this));
 	}
 
 	protected void notifyTaskFinished() {
-		notifyListeners(OnTaskFinishListener.class);
+		onTaskFinishListeners.stream().forEach((listener) -> listener.onTaskFinish(this));
 	}
 
 	protected void notifyTaskStarted() {
-		notifyListeners(OnTaskStartListener.class);
+		onTaskStartListeners.stream().forEach((listener) -> listener.onTaskStart(this));
 	}
 
 	protected void notifyTaskPaused() {
-		notifyListeners(OnDownloadTaskPauseListener.class);
+		onDownloadTaskPauseListeners.stream().forEach((listener) -> listener.onDownloadTaskPause(this));
 	}
 
 	protected void notifyTaskResumed() {
-		notifyListeners(OnDownloadTaskResumeListener.class);
+		onDownloadTaskResumeListeners.stream().forEach((listener) -> listener.onDownloadTaskResume(this));
 	}
 
 	protected void notifyTaskStoped() {
-		notifyListeners(OnTaskStopListener.class);
+		onTaskStopListeners.stream().forEach((listener) -> listener.onTaskStop(this));
 	}
 
 	@Override

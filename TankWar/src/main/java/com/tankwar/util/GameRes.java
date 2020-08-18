@@ -9,120 +9,105 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 final public class GameRes {
-	private static Resources	 mResource 	= null;
-	private static AssetManager  mAssets 	= null;
-	private static boolean 		 isLoaded	= false;
+	private static Resources mResource = null;
+	private static AssetManager mAssets = null;
+	private static boolean isLoaded = false;
 
-	private static Bitmap Redflag			= null;
-	private static Bitmap Gameover			= null;
-	private static Bitmap EnemyIco			= null;
-	private static Bitmap[] Player1Icos		= new Bitmap[2];
-	private static Bitmap[] Player2Icos		= new Bitmap[2];
-	private static Bitmap[] Tiles			= new Bitmap[7];
-	private static Bitmap[] Bullets			= new Bitmap[4];
-	private static Bitmap[] Bore			= new Bitmap[4];
-	private static Bitmap[] Number			= new Bitmap[10];
-	private static Bitmap[] Bonus			= new Bitmap[6];
-	private static Bitmap[] Shield			= new Bitmap[2];
-	private static Bitmap[] Explode			= new Bitmap[2];
-	private static Bitmap[][] EnemyTanks	= new Bitmap[4][16];
-	private static Bitmap[][][] PlayerTanks	= new Bitmap[2][4][8];
+	private static Bitmap Redflag = null;
+	private static Bitmap Gameover = null;
+	private static Bitmap EnemyIco = null;
+	private static Bitmap[] Player1Icos = new Bitmap[2];
+	private static Bitmap[] Player2Icos = new Bitmap[2];
+	private static Bitmap[] Tiles = new Bitmap[7];
+	private static Bitmap[] Bullets = new Bitmap[4];
+	private static Bitmap[] Bore = new Bitmap[4];
+	private static Bitmap[] Number = new Bitmap[10];
+	private static Bitmap[] Bonus = new Bitmap[6];
+	private static Bitmap[] Shield = new Bitmap[2];
+	private static Bitmap[] Explode = new Bitmap[2];
+	private static Bitmap[][] EnemyTanks = new Bitmap[4][16];
+	private static Bitmap[][][] PlayerTanks = new Bitmap[2][4][8];
 
-	public static final String PNG_TILE		= "bitmaps/tile.png";
-	public static final String PNG_BORE		= "bitmaps/bore.png";
-	public static final String PNG_BONUS	= "bitmaps/bonus.png";
-	public static final String PNG_BULLET	= "bitmaps/bullet.png";
-	public static final String PNG_ENEMY	= "bitmaps/enemy.png";
+	public static final String PNG_TILE = "bitmaps/tile.png";
+	public static final String PNG_BORE = "bitmaps/bore.png";
+	public static final String PNG_BONUS = "bitmaps/bonus.png";
+	public static final String PNG_BULLET = "bitmaps/bullet.png";
+	public static final String PNG_ENEMY = "bitmaps/enemy.png";
 	public static final String PNG_EXPLODE1 = "bitmaps/explode1.png";
 	public static final String PNG_EXPLODE2 = "bitmaps/explode2.png";
-	public static final String PNG_FLAG		= "bitmaps/flag.png";
+	public static final String PNG_FLAG = "bitmaps/flag.png";
 	public static final String PNG_GAMEOVER = "bitmaps/gameover.png";
-	public static final String PNG_GAMEICO	= "bitmaps/gameico.png";
-	public static final String PNG_NUMBER	= "bitmaps/number.png";
-	public static final String PNG_PLAYER1	= "bitmaps/player1.png";
-	public static final String PNG_PLAYER2  = "bitmaps/player2.png";
-	public static final String PNG_SHIELD	= "bitmaps/shield.png";
-
+	public static final String PNG_GAMEICO = "bitmaps/gameico.png";
+	public static final String PNG_NUMBER = "bitmaps/number.png";
+	public static final String PNG_PLAYER1 = "bitmaps/player1.png";
+	public static final String PNG_PLAYER2 = "bitmaps/player2.png";
+	public static final String PNG_SHIELD = "bitmaps/shield.png";
 
 	public final static void initialize(Resources resource) {
 		if (isLoaded == false) {
-			try{
+			try {
 				mAssets = resource.getAssets();
 				mResource = resource;
 				loadBitmaps();
 				loadTankBitmap();
 				isLoaded = true;
-			}catch(Throwable e) {
+			} catch (Throwable e) {
 				Log.e(e);
 			}
 		}
 	}
 
-
 	public final static Bitmap getGameover() {
 		return Gameover;
 	}
-
 
 	public final static Bitmap getRedflag() {
 		return Redflag;
 	}
 
-
 	public final static Bitmap getEnemyIco() {
 		return EnemyIco;
 	}
-
 
 	public final static Bitmap[] getTiles() {
 		return Tiles;
 	}
 
-
 	public final static Bitmap[] getBonus() {
 		return Bonus;
 	}
-
 
 	public final static Bitmap[] getBore() {
 		return Bore;
 	}
 
-
 	public final static Bitmap[] getExplode() {
 		return Explode;
 	}
-
 
 	public final static Bitmap[] getBullets() {
 		return Bullets;
 	}
 
-
 	public final static Bitmap[] getShield() {
 		return Shield;
 	}
-
 
 	public final static Bitmap[][] getEnemyTankBitmaps() {
 		return EnemyTanks;
 	}
 
-
 	public final static Bitmap[][][] getPlayerTankBitmaps() {
 		return PlayerTanks;
 	}
-
 
 	public final static Bitmap[] getPlayer1Icos() {
 		return Player1Icos;
 	}
 
-
 	public final static Bitmap[] getPlayer2Icos() {
 		return Player2Icos;
 	}
-
 
 	private final static Bitmap getAssetBmp(String s) throws IOException {
 		InputStream ins = mAssets.open(s);
@@ -131,14 +116,13 @@ final public class GameRes {
 		return b;
 	}
 
-
 	public final static void recycle() {
-		try{
+		try {
 			Bitmap[][] objs = {
-				Player1Icos, Player2Icos, Tiles, Bore, Bonus, Number, Shield, Explode
+					Player1Icos, Player2Icos, Tiles, Bore, Bonus, Number, Shield, Explode
 			};
 			Bitmap[] objs2 = {
-				Redflag, Gameover, EnemyIco
+					Redflag, Gameover, EnemyIco
 			};
 
 			for (int i = 0; i < objs2.length; i++) {
@@ -172,31 +156,30 @@ final public class GameRes {
 					}
 				}
 			}
-		}catch(Throwable e) {
+		} catch (Throwable e) {
 			Log.e(e);
-		}finally{
+		} finally {
 			isLoaded = false;
 		}
 	}
-
 
 	private final static void loadTankBitmap() throws IOException {
 		Bitmap temp[] = {
 				getAssetBmp(PNG_PLAYER1),
 				getAssetBmp(PNG_PLAYER2)
 		};
-		Bitmap temp2  = getAssetBmp(PNG_ENEMY);
-		int bmpWidth  = temp[0].getWidth() / PlayerTanks[0][0].length,
-			bmpHeight = temp[0].getHeight() / PlayerTanks[0].length;
+		Bitmap temp2 = getAssetBmp(PNG_ENEMY);
+		int bmpWidth = temp[0].getWidth() / PlayerTanks[0][0].length,
+				bmpHeight = temp[0].getHeight() / PlayerTanks[0].length;
 		int bmpWidth2 = temp2.getWidth() / (EnemyTanks[0].length / 2),
-			bmpHeight2= temp2.getHeight() / (EnemyTanks[0].length / 2),
-			perLineNum= EnemyTanks[0].length / 2;
+				bmpHeight2 = temp2.getHeight() / (EnemyTanks[0].length / 2),
+				perLineNum = EnemyTanks[0].length / 2;
 
 		for (int i = 0; i < PlayerTanks.length; i++) {
 			for (int j = 0; j < PlayerTanks[i].length; j++) {
 				for (int k = 0; k < PlayerTanks[i][j].length; k++) {
 					PlayerTanks[i][j][k] = Bitmap.createBitmap
-											(temp[i], k * bmpWidth, j * bmpHeight, bmpWidth, bmpHeight);
+							(temp[i], k * bmpWidth, j * bmpHeight, bmpWidth, bmpHeight);
 				}
 			}
 			temp[i].recycle();
@@ -204,41 +187,40 @@ final public class GameRes {
 		for (int j = 0; j < EnemyTanks.length; j++) {
 			for (int k = 0; k < EnemyTanks[j].length; k++) {
 				EnemyTanks[j][k] = Bitmap.createBitmap(
-									temp2, k % perLineNum * bmpWidth2,
-									(j + k / perLineNum * (perLineNum / 2)) *
-									bmpHeight2, bmpWidth2, bmpHeight2);
+						temp2, k % perLineNum * bmpWidth2,
+						(j + k / perLineNum * (perLineNum / 2)) *
+								bmpHeight2, bmpWidth2, bmpHeight2);
 			}
 		}
 		temp2.recycle();
 	}
 
-
 	private final static void loadBitmaps() throws IOException {
 		Bitmap[] temp = {
-			getAssetBmp(PNG_TILE),		getAssetBmp(PNG_BORE),
-			getAssetBmp(PNG_BONUS),		getAssetBmp(PNG_NUMBER),
-			getAssetBmp(PNG_BULLET),	getAssetBmp(PNG_SHIELD),
+				getAssetBmp(PNG_TILE), getAssetBmp(PNG_BORE),
+				getAssetBmp(PNG_BONUS), getAssetBmp(PNG_NUMBER),
+				getAssetBmp(PNG_BULLET), getAssetBmp(PNG_SHIELD),
 		};
 		Bitmap[][] objs = {
-			Tiles, Bore, Bonus, Number, Bullets, Shield
+				Tiles, Bore, Bonus, Number, Bullets, Shield
 		};
 		Bitmap[] other = {
-			getAssetBmp(PNG_GAMEICO),	getAssetBmp(PNG_FLAG),
-			getAssetBmp(PNG_EXPLODE1),	getAssetBmp(PNG_EXPLODE2),
-			getAssetBmp(PNG_GAMEOVER)
+				getAssetBmp(PNG_GAMEICO), getAssetBmp(PNG_FLAG),
+				getAssetBmp(PNG_EXPLODE1), getAssetBmp(PNG_EXPLODE2),
+				getAssetBmp(PNG_GAMEOVER)
 		};
 
 		for (int i = 0; i < temp.length; i++) {
 			int rawWidth = temp[i].getWidth(), rawHeight = temp[i].getHeight(),
-				bmpWidth = 0, bmpHeight = 0;
+					bmpWidth = 0, bmpHeight = 0;
 			if (rawWidth > rawHeight) {
-				bmpWidth  = rawWidth / objs[i].length;
-				rawWidth  = bmpWidth;
+				bmpWidth = rawWidth / objs[i].length;
+				rawWidth = bmpWidth;
 				bmpHeight = 0;
-			}else{
+			} else {
 				bmpHeight = rawHeight / objs[i].length;
 				rawHeight = bmpHeight;
-				bmpWidth  = 0;
+				bmpWidth = 0;
 			}
 
 			for (int l = 0; l < objs[i].length; l++) {

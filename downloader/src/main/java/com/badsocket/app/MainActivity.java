@@ -294,18 +294,6 @@ public class MainActivity
 		stopService();
 	}
 
-/*
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Log.e("back button", "back button");
-			moveTaskToBack(false);
-			return false;
-		}
-
-		return super.onKeyDown(keyCode, event);
-	}
-*/
-
 	void backDesktop() {
 		Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		intent.addCategory(Intent.CATEGORY_HOME);

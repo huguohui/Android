@@ -102,9 +102,7 @@ public class DownloaderContext extends Context {
 		networkInfo = connectivityManager.getActiveNetworkInfo();
 		config = new PropertiesConfigReader(
 				new File(HOME_DIRECTORY + DS + CONFIG_DIR, DownloadConfig.CONFIG_FILE)).read();
-		threadExecutor = new ThreadExecutor(
-				config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS)
-						* config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
+		threadExecutor = new ThreadExecutor(config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS), threadFactory);
 		downloadTaskExecutor = new GenericDownloadTaskExecutor(this,config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS));
 	}
 

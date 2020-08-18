@@ -89,8 +89,8 @@ public class DownloadAdapter extends Binder implements Downloader {
 	}
 
 	@Override
-	public DownloadTask findTaskByTaskId(int idx) {
-		return downloader.findTaskByTaskId(idx);
+	public DownloadTask findTaskById(int idx) {
+		return downloader.findTaskById(idx);
 	}
 
 	@Override

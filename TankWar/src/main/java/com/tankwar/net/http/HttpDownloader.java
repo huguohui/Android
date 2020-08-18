@@ -1,6 +1,5 @@
 package com.tankwar.net.http;
 
-
 import com.tankwar.net.Downloader;
 import com.tankwar.net.Parser;
 import com.tankwar.net.Requester;
@@ -15,17 +14,20 @@ import java.util.Arrays;
 
 /**
  * Download data from URL, based HTTP protocol.
+ *
  * @since 2015/11/29
  */
 public class HttpDownloader extends Downloader {
-	/** The input stream. */
+	/**
+	 * The input stream.
+	 */
 	private InputStream mInputStream;
-
 
 	/**
 	 * Construct a http downloader object.
+	 *
 	 * @param requester A {@link Requester}.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public HttpDownloader(Requester requester) throws IOException {
 		super(requester);
@@ -35,7 +37,6 @@ public class HttpDownloader extends Downloader {
 		setDownloadedLength(0);
 		mInputStream = requester.getSocket().getInputStream();
 	}
-
 
 	/**
 	 * Start download data.
@@ -48,7 +49,6 @@ public class HttpDownloader extends Downloader {
 		download(getSaveTo());
 	}
 
-
 	/**
 	 * Download data form stream.
 	 */
@@ -56,11 +56,10 @@ public class HttpDownloader extends Downloader {
 		String transferEncoding = getRequester().getHeader().get(Http.TRANSFER_ENCODING);
 		if (transferEncoding != null && transferEncoding.equals("chunked")) {
 			downloadChunked(file);
-		}else{
+		} else {
 			super.download(file);
 		}
 	}
-
 
 	/**
 	 * Download data as chunk.
@@ -70,7 +69,7 @@ public class HttpDownloader extends Downloader {
 		OutputStream fos = new FileOutputStream(file);
 		byte[] buff;
 
-		while((buff = chunkedParser.parse(
+		while ((buff = chunkedParser.parse(
 				getRequester().getSocket().getInputStream())) != null) {
 			if (buff.length == 1 && buff[0] == HttpChunkedParser.CHUNKED_END_FLAG) {
 				getRequester().close();
@@ -88,13 +87,12 @@ public class HttpDownloader extends Downloader {
 		fos.flush();
 		fos.close();
 	}
-	
 
 	/**
 	 * Receiving data.
 	 *
 	 * @return Received data by byte.
-	 * @throws IOException      When I/O exception.
+	 * @throws IOException When I/O exception.
 	 */
 	@Override
 	public byte receive() throws IOException {
@@ -112,7 +110,7 @@ public class HttpDownloader extends Downloader {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
-			size = (int)(getLength() - getDownloadedLength());
+			size = (int) (getLength() - getDownloadedLength());
 
 		if (size <= 0) return null;
 
@@ -121,7 +119,7 @@ public class HttpDownloader extends Downloader {
 		int count = 0, read = 0, wait = 0;
 		boolean dataAvailable = false;
 
-		while(count < size) {
+		while (count < size) {
 			int available = source.available();
 
 			if (available >= BUFFER_SIZE || available >= size - count || dataAvailable) {
@@ -143,8 +141,9 @@ public class HttpDownloader extends Downloader {
 
 	/**
 	 * To receiving data from source.
+	 *
 	 * @param source Data source.
-	 * @param size Size of will receiving.
+	 * @param size   Size of will receiving.
 	 */
 	@Override
 	public synchronized char[] receive(Reader source, int size) throws IOException {
@@ -152,7 +151,7 @@ public class HttpDownloader extends Downloader {
 			throw new IllegalArgumentException("The size is illegal!");
 
 		if (getLength() > 0 && size + getDownloadedLength() > getLength())
-			size = (int)(getLength() - getDownloadedLength());
+			size = (int) (getLength() - getDownloadedLength());
 
 		if (size <= 0) return null;
 
@@ -160,7 +159,7 @@ public class HttpDownloader extends Downloader {
 		char[] chunk = new char[size];
 		int count = 0, read = 0;
 
-		while(count < size) {
+		while (count < size) {
 			if (0 >= (read = source.read(buff, 0, count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE)))
 				return null;
 			System.arraycopy(buff, 0, chunk, count, read);
@@ -170,13 +169,15 @@ public class HttpDownloader extends Downloader {
 		return chunk;
 	}
 
-
 	/**
 	 * The Chunked content parser.
+	 *
 	 * @since 2015/12/2
 	 */
 	public class HttpChunkedParser implements Parser {
-		/** Chunked end flag. */
+		/**
+		 * Chunked end flag.
+		 */
 		public final static byte CHUNKED_END_FLAG = 0x7f;
 
 		/**
@@ -202,9 +203,9 @@ public class HttpDownloader extends Downloader {
 			byte[] crlf = {0xd, 0xa};
 			int matchCount = 0;
 			int lineCount = 0;
-			
+
 			byte aByte;
-			while(-1 != (aByte = (byte)data.read())) {
+			while (-1 != (aByte = (byte) data.read())) {
 				if (aByte == crlf[matchCount])
 					matchCount++;
 				else
@@ -217,7 +218,7 @@ public class HttpDownloader extends Downloader {
 							if (len > 0) {
 								buff = receive(data, len);
 								return buff;
-							}else{
+							} else {
 								return new byte[]{CHUNKED_END_FLAG};
 							}
 						}
@@ -230,14 +231,13 @@ public class HttpDownloader extends Downloader {
 
 				if (matchCount == 0) {
 					buff[lineCount] = aByte;
-					if (++lineCount >= buff.length){
+					if (++lineCount >= buff.length) {
 						throw new RuntimeException("The algorithm is has wrong!");
 					}
 				}
 			}
 			return null;
 		}
-
 
 		public boolean isHex(String hex) {
 			if (hex == null || hex.length() == 0) return false;
@@ -251,7 +251,6 @@ public class HttpDownloader extends Downloader {
 			}
 			return true;
 		}
-
 
 		/**
 		 * Parse data to a kind of format.

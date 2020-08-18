@@ -11,12 +11,14 @@ import java.io.InputStream;
 
 /**
  * The resource manager.
+ *
  * @since 2015/12/14
  */
 public class ResourceManager extends FileManager {
-	/** The sound pool object. */
+	/**
+	 * The sound pool object.
+	 */
 	private SoundPool mSoundPool = new SoundPool(0, 0, 0);
-
 
 	/**
 	 * Constructor a file manager instance by a special directory,
@@ -30,14 +32,12 @@ public class ResourceManager extends FileManager {
 		super(directory);
 	}
 
-
 	/**
 	 * Constructor a file manager instance by default directory setting.
 	 */
 	public ResourceManager() throws IOException {
 		super();
 	}
-
 
 	public InputStream getInputStream(String name) {
 		File file = null;
@@ -47,16 +47,16 @@ public class ResourceManager extends FileManager {
 			if ((file = getByName(name)) != null) {
 				fis = new FileInputStream(file);
 			}
-		}catch(IOException e) {
+		} catch (IOException e) {
 			com.tankwar.util.Log.e(e);
 		}
 
 		return fis;
 	}
 
-
 	/**
 	 * Get a bitmap object by a special resource name.
+	 *
 	 * @param name The resource name.
 	 * @return The bitmap object.
 	 */
@@ -69,9 +69,9 @@ public class ResourceManager extends FileManager {
 		return BitmapFactory.decodeFile(file.getAbsolutePath());
 	}
 
-
 	/**
 	 * Get a sound resource form sound pool by a special name.
+	 *
 	 * @param name The sound resource name.
 	 * @return The id of sound resource in sound pool.
 	 */
@@ -83,12 +83,11 @@ public class ResourceManager extends FileManager {
 		return mSoundPool.load(file.getAbsolutePath(), 0);
 	}
 
-
-	/**
-	 * Get a drawable object by a special name.
-	 * @param name The drawable resource name.
-	 * @return The drawable resource.
-	 */
+/**
+ * Get a drawable object by a special name.
+ * @param name The drawable resource name.
+ * @return The drawable resource.
+ */
 //	public Drawable getDrawable(String name) {
 //	}
 }

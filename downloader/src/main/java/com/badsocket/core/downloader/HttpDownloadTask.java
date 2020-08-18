@@ -163,7 +163,7 @@ public class HttpDownloadTask
 		}
 	}
 
-	protected synchronized void startDownload() throws DownloadTaskException {
+	protected synchronized void download() throws DownloadTaskException {
 		try {
 			prepare();
 			createDownloadRequests();
@@ -201,7 +201,7 @@ public class HttpDownloadTask
 		fileWriter.close();
 	}
 
-	protected void onDownloadStoped() {
+	protected void afterDownloadStop() {
 		for (DownloadSection section : downloadSections) {
 			Log.d(section.toString());
 		}
@@ -230,7 +230,7 @@ public class HttpDownloadTask
 			throw new DownloadTaskException(e);
 		}
 		finally {
-			onDownloadStoped();
+			afterDownloadStop();
 		}
 	}
 
@@ -270,24 +270,24 @@ public class HttpDownloadTask
 	}
 
 	protected void checkDownloadStatus() {
-		if (length < 0 || progress >= 1f) {
+		if (progress > 1f) {
+			throw new RuntimeException("Download progress exception!");
+		}
+
+		if (length < 0 || progress == 1f) {
 			isCompleted = true;
 		}
 
 		if (isCompleted) {
-			onTaskFinish();
+			afterTaskFinish();
 		}
 	}
 
-	public void afterTaskComplete() throws Exception {
-		releaseResource();
-		notifyTaskFinished();
-	}
-
-	public void onTaskFinish() {
+	public void afterTaskFinish() {
 		try {
-			super.onTaskFinish();
-			afterTaskComplete();
+			super.afterTaskFinish();
+			releaseResource();
+			notifyTaskFinished();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -344,12 +344,8 @@ public class HttpDownloadTask
 		}
 	}
 
-	public void run() {
-		call();
-	}
-
 	@Override
-	public Task call() {
+	public Integer call() {
 		try {
 			switch (action) {
 				case DownloadTaskAction.PAUSE:
@@ -363,7 +359,7 @@ public class HttpDownloadTask
 				case DownloadTaskAction.RESUME:
 				case DownloadTaskAction.RESTORE:
 					if (isStoped || isPaused || !isRunning) {
-						startDownload();
+						download();
 					}
 					break;
 			}
@@ -371,7 +367,8 @@ public class HttpDownloadTask
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return this;
+
+		return state;
 	}
 
 	@Override
@@ -385,24 +382,24 @@ public class HttpDownloadTask
 
 	private static class RequestThread implements Runnable {
 
-		HttpRequest rq;
+		HttpRequest request;
 
-		RequestGroup rg;
+		RequestGroup requestGroup;
 
-		public RequestThread(HttpRequest rq, RequestGroup rg) {
-			this.rq = rq;
-			this.rg = rg;
+		public RequestThread(HttpRequest request, RequestGroup requestGroup) {
+			this.request = request;
+			this.requestGroup = requestGroup;
 		}
 
 		@Override
 		public void run() {
-			HttpRequest httpRequest = rq;
+			HttpRequest httpRequest = request;
 			try {
 				if (!httpRequest.connected()) {
 					httpRequest.open();
 				}
 				httpRequest.send();
-				rg.addResponse(httpRequest.response());
+				requestGroup.addResponse(httpRequest.response());
 			}
 			catch (Exception e) {
 				e.printStackTrace();

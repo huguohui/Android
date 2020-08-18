@@ -6,16 +6,17 @@ package com.tankwar.engine;
  *
  * @since 2015/11/21
  */
-public class Timer implements  Runnable {
-    /** The timer start time. */
-    private long mStartTime;
+public class Timer implements Runnable {
+	/**
+	 * The timer start time.
+	 */
+	private long mStartTime;
 
+	/**
+	 * Timer to do.
+	 */
+	@Override
+	public void run() {
 
-    /**
-     * Timer to do.
-     */
-    @Override
-    public void run() {
-
-    }
+	}
 }

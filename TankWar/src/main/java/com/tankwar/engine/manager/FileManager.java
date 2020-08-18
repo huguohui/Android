@@ -12,21 +12,29 @@ import java.util.regex.Pattern;
 /**
  * File manager is manager based directory, managed files is under special directory.
  * To use file manager by pass a special directory path or pass nothing to instancing it.
+ *
  * @since 2015/12/15
  */
 public class FileManager extends AbstractManager<File> {
-	/** The collection of all file. */
+	/**
+	 * The collection of all file.
+	 */
 	private List<File> mFiles = new ArrayList<>();
 
-	/** The home directory. */
+	/**
+	 * The home directory.
+	 */
 	private String mHomeDirectory = "/";
 
-	/** The special directory. */
+	/**
+	 * The special directory.
+	 */
 	private String mManagedDir = "";
 
-	/** The traversal index of iterator. */
+	/**
+	 * The traversal index of iterator.
+	 */
 	private int mCurrentIndex = 0;
-
 
 	/**
 	 * Constructor a file manager instance by a special directory,
@@ -44,14 +52,12 @@ public class FileManager extends AbstractManager<File> {
 		loadFiles(mManagedDir);
 	}
 
-
 	/**
 	 * Constructor a file manager instance by default directory setting.
 	 */
 	public FileManager() throws IOException {
 		loadFiles(mHomeDirectory);
 	}
-
 
 	/**
 	 * Check the directory whatever is valid.
@@ -61,7 +67,7 @@ public class FileManager extends AbstractManager<File> {
 		if (dir.exists()) {
 			if (!dir.isDirectory())
 				throw new RuntimeException("These is a file that name same as the directory!");
-		}else if (!dir.isDirectory()) {
+		} else if (!dir.isDirectory()) {
 			if (!dir.mkdirs())
 				throw new RuntimeException("Can't create the directory " + dir.getAbsolutePath() + "!");
 		}
@@ -70,7 +76,6 @@ public class FileManager extends AbstractManager<File> {
 			throw new IOException("Can't list files of directory " + dir.getAbsolutePath()
 					+ ",Because the directory can't read!");
 	}
-
 
 	/**
 	 * Load all files to list.
@@ -82,13 +87,12 @@ public class FileManager extends AbstractManager<File> {
 		}
 	}
 
-
 	/**
 	 * Search a file.
 	 *
-	* @param schstr A search condition of object will be searched.
-	* @return If searched had result list else null.
-			*/
+	 * @param schstr A search condition of object will be searched.
+	 * @return If searched had result list else null.
+	 */
 	@Override
 	public List<File> search(String schstr) {
 		if (schstr == null)
@@ -99,14 +103,14 @@ public class FileManager extends AbstractManager<File> {
 		List<File> searched = new ArrayList<>();
 		Pattern pattern = Pattern.compile(schstr);
 		Matcher matcher = null;
-		try{
+		try {
 			for (File file : mFiles) {
 				matcher = pattern.matcher(file.getName());
 				if (matcher != null && matcher.matches()) {
 					searched.add(file);
 				}
 			}
-		}catch(Exception ex) {
+		} catch (Exception ex) {
 			Log.e(ex);
 		}
 		return searched;
@@ -121,7 +125,6 @@ public class FileManager extends AbstractManager<File> {
 	public List<File> getList() {
 		return mFiles;
 	}
-
 
 	/**
 	 * Delete a file or directory.
@@ -151,9 +154,9 @@ public class FileManager extends AbstractManager<File> {
 		return obj.delete();
 	}
 
-
 	/**
 	 * Make dir(s) by passed parameter.
+	 *
 	 * @param path The directory's path.
 	 */
 	public boolean makeDir(String path) {
@@ -162,7 +165,6 @@ public class FileManager extends AbstractManager<File> {
 
 		return new File(path).mkdirs();
 	}
-
 
 	/**
 	 * Add a object to management list.
@@ -199,7 +201,6 @@ public class FileManager extends AbstractManager<File> {
 		return null;
 	}
 
-
 	/**
 	 * Add all object to managed list.
 	 *
@@ -210,12 +211,10 @@ public class FileManager extends AbstractManager<File> {
 		mFiles.addAll(list);
 	}
 
-
 	@Override
 	public boolean hasNext() {
 		return mCurrentIndex < mFiles.size();
 	}
-
 
 	@Override
 	public synchronized File next() {
