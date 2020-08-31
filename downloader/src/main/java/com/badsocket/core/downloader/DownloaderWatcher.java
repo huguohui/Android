@@ -1,15 +1,15 @@
 package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.MonitorWatcher;
 
 import java.util.List;
+import java8.util.stream.StreamSupport;
 
 /**
  * Created by skyrim on 2017/10/15.
  */
 
-public class DownloaderWatcher implements MonitorWatcher {
+public class DownloaderWatcher {
 
 	protected Downloader downloader;
 
@@ -34,7 +34,7 @@ public class DownloaderWatcher implements MonitorWatcher {
 
 	protected void handleTask() {
 		try {
-			tasks.stream().forEach((t) -> updateTask(t));
+			StreamSupport.stream(tasks).forEach((t) -> updateTask(t));
 			recordTasks(tasks);
 		}
 		catch (Exception e) {
@@ -42,7 +42,6 @@ public class DownloaderWatcher implements MonitorWatcher {
 		}
 	}
 
-	@Override
 	public void watch(Object o) {
 		tasks = downloader.taskList();
 

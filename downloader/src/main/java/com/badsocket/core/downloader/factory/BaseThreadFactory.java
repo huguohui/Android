@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 public class BaseThreadFactory implements ThreadFactory {
 
-
 	@Override
 	public Thread newThread(@NonNull Runnable runnable) {
 		return createThread(runnable.toString(), runnable, Thread.NORM_PRIORITY);

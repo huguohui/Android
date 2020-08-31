@@ -225,7 +225,7 @@ public abstract class AbstractReceiver implements Receiver {
 		return mReceivedLength;
 	}
 
-	public long getReceivedLengthFromLast() {
+	public long getLastReceivedLength() {
 		long current = mReceivedLength - lastReceivedLength;
 		lastReceivedLength = mReceivedLength;
 		return current;

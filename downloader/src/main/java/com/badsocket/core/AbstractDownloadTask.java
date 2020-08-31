@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import java8.util.stream.StreamSupport;
+
 /**
  * Created by skyrim on 2017/11/28.
  */
@@ -207,27 +209,27 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 	protected void notifyTaskCreated() {
-		onTaskCreateListeners.stream().forEach((listener) -> listener.onTaskCreate(this));
+		StreamSupport.stream(onTaskCreateListeners).forEach(listener -> listener.onTaskCreate(this));
 	}
 
 	protected void notifyTaskFinished() {
-		onTaskFinishListeners.stream().forEach((listener) -> listener.onTaskFinish(this));
+		StreamSupport.stream(onTaskFinishListeners).forEach(listener -> listener.onTaskFinish(this));
 	}
 
 	protected void notifyTaskStarted() {
-		onTaskStartListeners.stream().forEach((listener) -> listener.onTaskStart(this));
+		StreamSupport.stream(onTaskStartListeners).forEach(listener -> listener.onTaskStart(this));
 	}
 
 	protected void notifyTaskPaused() {
-		onDownloadTaskPauseListeners.stream().forEach((listener) -> listener.onDownloadTaskPause(this));
+		StreamSupport.stream(onDownloadTaskPauseListeners).forEach(listener -> listener.onDownloadTaskPause(this));
 	}
 
 	protected void notifyTaskResumed() {
-		onDownloadTaskResumeListeners.stream().forEach((listener) -> listener.onDownloadTaskResume(this));
+		StreamSupport.stream(onDownloadTaskResumeListeners).forEach(listener -> listener.onDownloadTaskResume(this));
 	}
 
 	protected void notifyTaskStoped() {
-		onTaskStopListeners.stream().forEach((listener) -> listener.onTaskStop(this));
+		StreamSupport.stream(onTaskStopListeners).forEach(listener -> listener.onTaskStop(this));
 	}
 
 	@Override

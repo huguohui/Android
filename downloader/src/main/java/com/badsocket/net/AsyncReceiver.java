@@ -39,8 +39,8 @@ public class AsyncReceiver implements Receiver, Callable<Long> {
 	}
 
 	@Override
-	public long getReceivedLengthFromLast() {
-		return receiver.getReceivedLengthFromLast();
+	public long getLastReceivedLength() {
+		return receiver.getLastReceivedLength();
 	}
 
 	/**

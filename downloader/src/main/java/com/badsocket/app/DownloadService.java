@@ -1,6 +1,7 @@
 package com.badsocket.app;
 
 import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -21,7 +22,7 @@ public class DownloadService extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-		Notification.Builder mNotifyBuilder = new Notification.Builder(DownloadService.this)
+		Builder mNotifyBuilder = new Builder(DownloadService.this)
 				.setSmallIcon(R.mipmap.ic_launcher)
 				.setTicker("这是什么东西？")
 				.setWhen(System.currentTimeMillis())

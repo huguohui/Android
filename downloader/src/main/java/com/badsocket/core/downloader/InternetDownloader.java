@@ -2,8 +2,6 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.Monitor;
-import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
@@ -72,7 +70,6 @@ public class InternetDownloader
 		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
 	};
 
-	protected Monitor monitor;
 
 	public InternetDownloader(Context context) {
 		this.context = context;
@@ -87,13 +84,10 @@ public class InternetDownloader
 		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
-		monitor = new DownloadMonitor(this, 1000);
 		downloadTaskInfoStorage = new FileDownloadTaskInfoStorage(
 				new File(DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR));
 
 		taskManager.setAutoStart(true);
-		monitor.addWatcher(new DownloaderWatcher(this));
-		monitor.monitor(this);
 	}
 
 	protected void loadTasks() throws Exception {
@@ -157,7 +151,6 @@ public class InternetDownloader
 
 		task.onCreate(desc.getTaskExtraInfo());
 		taskManager.add(task);
-		monitor.monitorNow(this);
 		return task;
 	}
 
@@ -194,7 +187,6 @@ public class InternetDownloader
 
 	public void stop() throws Exception {
 		taskManager.stopAll();
-		monitor.stop();
 	}
 
 	public void pause() throws Exception {
@@ -280,16 +272,6 @@ public class InternetDownloader
 	@Override
 	public List<Thread> threadList() {
 		return threadManager.list();
-	}
-
-	@Override
-	public void addWatcher(MonitorWatcher w) {
-		monitor.addWatcher(w);
-	}
-
-	@Override
-	public Monitor getMonitor() {
-		return monitor;
 	}
 
 	public void addProtocolHandler(Protocols protocol, ProtocolHandler handler) {

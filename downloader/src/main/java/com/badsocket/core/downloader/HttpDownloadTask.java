@@ -3,7 +3,6 @@ package com.badsocket.core.downloader;
 import com.badsocket.core.AbstractDownloadTask;
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.Protocols;
-import com.badsocket.core.Task;
 import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.downloader.exception.DownloadTaskException;
 import com.badsocket.net.AsyncReceiver;
@@ -242,7 +241,7 @@ public class HttpDownloadTask
 			for (int i = 0; i < receivers.length; i++) {
 				receiver = receivers[i];
 				if (receiver != null) {
-					perReceivedLength = receiver.getReceivedLengthFromLast();
+					perReceivedLength = receiver.getLastReceivedLength();
 					sectionDownloaded = downloadSections[i].getDownloadedLength();
 					downloadSections[i].setDownloadedLength(sectionDownloaded + perReceivedLength);
 				}

@@ -15,11 +15,8 @@ android {
     compileSdkVersion 26
     buildToolsVersion '28.0.3'
     defaultConfig {
-       /* jackOptions {
-            enabled true
-        }*/
         applicationId "com.tankwar"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 26
     }
     buildTypes {

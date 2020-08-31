@@ -23,17 +23,16 @@ import android.widget.Toast;
 import com.badsocket.R;
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.factory.ThreadFactory;
-import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,8 +65,6 @@ public class MainActivity
 
 	protected List<DownloadTask> tasks = new ArrayList<>();
 
-	protected MonitorWatcher watcher;
-
 	protected SimpleTaskListAdspter adapter;
 
 	protected ThreadFactory threadFactory;
@@ -79,7 +76,6 @@ public class MainActivity
 			binder = service;
 			isServiceConnected = true;
 			downloader = (Downloader) service;
-			downloader.addWatcher(watcher);
 			downloaderContext = downloader.getDownloaderContext();
 			threadFactory = downloaderContext.getThreadFactory();
 
@@ -99,20 +95,43 @@ public class MainActivity
 	};
 
 	class MessageHanlder extends Handler {
-
 		public void handleMessage(Message msg) {
-			switch (msg.arg1) {
+			switch (msg.what) {
 				case 1:
+					if (tasks != null && !tasks.isEmpty()) {
+						tasks.clear();
+						tasks.addAll((List<DownloadTask>) msg.obj);
+						adapter.notifyDataSetChanged();
+					}
 					break;
 			}
+		}
+	}
 
-			if (tasks != null) {
-				tasks.clear();
-				tasks.addAll((List<DownloadTask>) msg.obj);
-				adapter.notifyDataSetChanged();
-			}
+	class DownloadStatusMonitor extends TimerTask {
+
+		Downloader downloader;
+
+		Handler handler;
+
+		Timer timer = new Timer();
+
+		DownloadStatusMonitor(Downloader downloader, Handler handler) {
+			this.downloader = downloader;
+			this.handler = handler;
 		}
 
+		void start() {
+			timer.schedule(this, 1000);
+		}
+
+		@Override
+		public void run() {
+			Message msg = handler.obtainMessage();
+			msg.what = 1;
+			msg.obj = downloader.taskList();
+			handler.sendMessage(msg);
+		}
 	}
 
 	@Override
@@ -125,14 +144,15 @@ public class MainActivity
 
 		handler = new MessageHanlder();
 		adapter = new SimpleTaskListAdspter(this, tasks);
-		watcher = new DownloadTaskListWatcher(handler);
+
+		new DownloadStatusMonitor(downloader, handler).start();
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);
 		listView.setOnItemLongClickListener(this);
 		btnAdd.setOnClickListener(this);
 	}
 
-	void taskSwitch(final DownloadTask task) {
+	public void taskSwitch(final DownloadTask task) {
 		if (task.isCompleted()) {
 			return;
 		}
@@ -167,10 +187,6 @@ public class MainActivity
 		switch (v.getId()) {
 			case R.id.button_add:
 				showToast("你点击了？？？");
-				break;
-			case R.id.control_button:
-				DownloadTask task = (DownloadTask) v.getTag();
-				taskSwitch(task);
 				break;
 		}
 	}

@@ -8,8 +8,9 @@ import com.badsocket.core.executor.DownloadTaskExecutor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import java8.util.stream.StreamSupport;
 
 /**
  * Tool for management download task.
@@ -77,9 +78,9 @@ public class DefaultDownloadTaskManager
 	}
 
 	protected List<DownloadTask> getRunnableTask() {
-		return mList.stream()
+		return StreamSupport.stream(mList)
 					.filter((o) -> o.getState() == DownloadTask.DownloadTaskState.UNSTART)
-					.collect(Collectors.toList());
+					.collect(java8.util.stream.Collectors.toList());
 	}
 
 	protected void startRemainTask() throws Exception {

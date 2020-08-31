@@ -1,18 +1,18 @@
 [
     {
-        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\layout_game_launcher.xml.flat",
-        "source": "D:\\Android\\TankWar\\src\\main\\res\\layout\\game_launcher.xml"
+        "merged": "D:\\Workspace\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\layout_game_launcher.xml.flat",
+        "source": "D:\\Workspace\\Android\\TankWar\\src\\main\\res\\layout\\game_launcher.xml"
     },
     {
-        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_splash.png.flat",
-        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
+        "merged": "D:\\Workspace\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_splash.png.flat",
+        "source": "D:\\Workspace\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\splash.png"
     },
     {
-        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ico.png.flat",
-        "source": "D:\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
+        "merged": "D:\\Workspace\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\menu_main.xml.flat",
+        "source": "D:\\Workspace\\Android\\TankWar\\src\\main\\res\\menu\\main.xml"
     },
     {
-        "merged": "D:\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\menu_main.xml.flat",
-        "source": "D:\\Android\\TankWar\\src\\main\\res\\menu\\main.xml"
+        "merged": "D:\\Workspace\\Android\\TankWar\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ico.png.flat",
+        "source": "D:\\Workspace\\Android\\TankWar\\src\\main\\res\\drawable-hdpi\\ico.png"
     }
 ]

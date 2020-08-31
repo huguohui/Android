@@ -4,8 +4,6 @@ import android.os.Binder;
 
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.Monitor;
-import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
@@ -171,16 +169,6 @@ public class DownloadAdapter extends Binder implements Downloader {
 	@Override
 	public boolean isPaused() {
 		return downloader.isPaused();
-	}
-
-	@Override
-	public void addWatcher(MonitorWatcher w) {
-		downloader.addWatcher(w);
-	}
-
-	@Override
-	public Monitor getMonitor() {
-		return downloader.getMonitor();
 	}
 
 	@Override

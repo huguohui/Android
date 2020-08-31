@@ -3,8 +3,6 @@ package com.badsocket.core.downloader;
 import com.badsocket.core.Context;
 import com.badsocket.core.Controlable;
 import com.badsocket.core.DownloadTask;
-import com.badsocket.core.Monitor;
-import com.badsocket.core.MonitorWatcher;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
@@ -67,9 +65,6 @@ public interface Downloader extends Controlable {
 
 	boolean isPaused();
 
-	void addWatcher(MonitorWatcher w);
-
-	Monitor getMonitor();
 
 	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
 
