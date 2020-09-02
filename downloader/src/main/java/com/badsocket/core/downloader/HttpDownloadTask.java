@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -28,7 +29,8 @@ import java.util.concurrent.Future;
  */
 
 public class HttpDownloadTask
-		extends AbstractDownloadTask {
+		extends AbstractDownloadTask
+		implements Receiver.OnReceiveListener {
 
 	private static final long serialVersionUID = 5175561149447466807L;
 
@@ -78,7 +80,7 @@ public class HttpDownloadTask
 	}
 
 	protected void prepareDownload() throws Exception {
-		fileWriter = context.getFileWriter(new File(getStorageDir(), getName()), getLength());
+		fileWriter = context.getFileWriter(new File(getStorageDir(), name()), size());
 	}
 
 	@Override
@@ -129,11 +131,13 @@ public class HttpDownloadTask
 
 	protected void createDownloadReceiver() throws IOException {
 		Request reqs[] = requestGroup.getRequests();
-		AsyncReceiver asyncReceiver = null;
+		Receiver receiver = null;
 		for (int i = 0; i < reqs.length; i++) {
-			receiverGroup.addReceiver(reqs[i] != null
+			receiver = reqs[i] != null
 					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
-							: null);
+							: null;
+			receiver.setOnReceiveListener(this);
+			receiverGroup.addReceiver(receiver);
 		}
 	}
 
@@ -162,6 +166,17 @@ public class HttpDownloadTask
 		}
 	}
 
+	protected void waitForEnd() throws ExecutionException, InterruptedException {
+		int completed = 0;
+		for (Future<Long> future : receiverFutures) {
+			if (future.get() != 0) {
+				completed++;
+			}
+		}
+
+		System.out.println(String.format(" Completed %d of %d.", completed, receiverFutures.size()));
+	}
+
 	protected synchronized void download() throws DownloadTaskException {
 		try {
 			prepare();
@@ -169,6 +184,7 @@ public class HttpDownloadTask
 			createDownloadReceiver();
 			downloadDataByReceiver();
 			onDownloadStarted();
+			waitForEnd();
 		}
 		catch (Exception e) {
 			state = DownloadTaskState.STOPED;
@@ -331,9 +347,7 @@ public class HttpDownloadTask
 		init();
 	}
 
-	@Override
-	public void update() {
-		super.update();
+	public void updateAll() {
 		try {
 			updateDownloadInfo();
 			checkDownloadStatus();
@@ -344,7 +358,7 @@ public class HttpDownloadTask
 	}
 
 	@Override
-	public Integer call() {
+	public Boolean call() {
 		try {
 			switch (action) {
 				case DownloadTaskAction.PAUSE:
@@ -367,12 +381,17 @@ public class HttpDownloadTask
 			e.printStackTrace();
 		}
 
-		return state;
+		return downloadedSize() == size();
 	}
 
 	@Override
 	public boolean isPauseSupport() {
 		return true;
+	}
+
+	@Override
+	public void onReceive(Receiver r, byte[] data) {
+		updateAll();
 	}
 
 	public static abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {

@@ -121,7 +121,7 @@ public class DownloaderContext extends Context {
 	}
 
 	@Override
-	public Config getDownloadConfig() {
+	public Config getDownloaderConfig() {
 		return config;
 	}
 

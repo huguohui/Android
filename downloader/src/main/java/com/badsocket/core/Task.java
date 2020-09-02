@@ -7,55 +7,55 @@ import java.util.concurrent.Callable;
  * Created by skyrim on 2017/11/28.
  */
 public interface Task
-		extends Serializable, Callable<Integer>, TaskLifecycle, Updatable {
+		extends Serializable, Callable, TaskLifecycle {
 
 	/**
 	 * Gets unique id of task.
 	 *
 	 * @return unique id of task.
 	 */
-	int getId();
+	int id();
 
 	/**
 	 * Gets name of task.
 	 *
 	 * @return name of task.
 	 */
-	String getName();
+	String name();
 
-	void setName(String name);
+	void name(String name);
 
 	/**
 	 * Gets start time of task in milliseconds.
 	 *
 	 * @return start time of task in milliseconds.
 	 */
-	long getStartTime();
+	long createTime();
 
 	/**
 	 * Gets progress in precent of task.
 	 *
 	 * @return progress in precent of task.
 	 */
-	float getProgress();
+	float progress();
 
 	/**
 	 * Gets used time of task that from start to finish in milliseconds.
 	 *
 	 * @return used time of task in milliseconds.
 	 */
-	long getUsedTime();
+	long usedTime();
 
 	/**
 	 * Gets finish time of task.
 	 *
 	 * @return finsih time of task.
 	 */
-	long getFinishTime();
+	long finishTime();
 
-	int getPriority();
+	int priority();
 
-	void setPriority(int priority);
+	void priority(int priority);
 
 	boolean isStoped();
 
@@ -65,9 +65,9 @@ public interface Task
 
 	boolean isPauseSupport();
 
-	int getState();
+	int state();
 
-	TaskExtraInfo getExtraInfo();
+	TaskExtraInfo extraInfo();
 
 	boolean equals(Task t);
 

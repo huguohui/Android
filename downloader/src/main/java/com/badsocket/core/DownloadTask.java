@@ -13,23 +13,17 @@ public interface DownloadTask extends Task, DownloadTaskLifecycle {
 
 	boolean isPaused();
 
-	int getSpeedPerSecond();
-
-	int getSpeedAverage();
-
-	int getSpeedRealTime();
-
 	void setSpeedLimit(int speed);
 
 	int getSpeedLimited();
 
-	URI getDownloadAddress();
+	URI getDownloadURI();
 
-	void setDownloadAddress(URI url);
+	void setDownloadURI(URI url);
 
-	long getLength();
+	long size();
 
-	long getDownloadedLength();
+	long downloadedSize();
 
 	void setDownloadPath(String path);
 

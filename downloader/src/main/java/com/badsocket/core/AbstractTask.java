@@ -1,5 +1,6 @@
 package com.badsocket.core;
 
+import android.os.SystemClock;
 /**
  * Created by skyrim on 2017/11/28.
  */
@@ -12,7 +13,7 @@ public abstract class AbstractTask implements Task {
 
 	protected String name = "";
 
-	protected long startTime;
+	protected long createTime;
 
 	protected long finishTime;
 
@@ -39,6 +40,7 @@ public abstract class AbstractTask implements Task {
 			id = UNIQUE_ID++;
 		}
 
+		createTime = System.currentTimeMillis();
 		this.name = name;
 	}
 
@@ -48,7 +50,7 @@ public abstract class AbstractTask implements Task {
 	 * @return unique id of task.
 	 */
 	@Override
-	public int getId() {
+	public int id() {
 		return id;
 	}
 
@@ -58,12 +60,12 @@ public abstract class AbstractTask implements Task {
 	 * @return name of task.
 	 */
 	@Override
-	public String getName() {
+	public String name() {
 		return name == null ? "" : name;
 	}
 
 	@Override
-	public void setName(String name) {
+	public void name(String name) {
 		this.name = name;
 	}
 
@@ -73,8 +75,8 @@ public abstract class AbstractTask implements Task {
 	 * @return start time of task in milliseconds.
 	 */
 	@Override
-	public long getStartTime() {
-		return startTime;
+	public long createTime() {
+		return createTime;
 	}
 
 	/**
@@ -83,7 +85,7 @@ public abstract class AbstractTask implements Task {
 	 * @return progress in precent of task.
 	 */
 	@Override
-	public float getProgress() {
+	public float progress() {
 		return progress;
 	}
 
@@ -93,7 +95,7 @@ public abstract class AbstractTask implements Task {
 	 * @return used time of task in milliseconds.
 	 */
 	@Override
-	public long getUsedTime() {
+	public long usedTime() {
 		return usedTime;
 	}
 
@@ -103,17 +105,17 @@ public abstract class AbstractTask implements Task {
 	 * @return finsih time of task.
 	 */
 	@Override
-	public long getFinishTime() {
+	public long finishTime() {
 		return finishTime;
 	}
 
 	@Override
-	public int getPriority() {
+	public int priority() {
 		return priority;
 	}
 
 	@Override
-	public void setPriority(int priority) {
+	public void priority(int priority) {
 		this.priority = priority;
 	}
 

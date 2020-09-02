@@ -22,12 +22,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	private static final long serialVersionUID = 12341234123413413L;
 
-	protected int speedPerSecond;
-
-	protected int speedAverage;
-
-	protected int speedRealTime;
-
 	protected long length = 0;
 
 	protected long downloadedLength;
@@ -122,7 +116,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	public boolean equals(Task t) {
 		DownloadTask task = (DownloadTask) t;
-		return this.getName().equals(task.getName())
+		return this.name().equals(task.name())
 				&& this.getStorageDir().equals(task.getStorageDir());
 	}
 
@@ -173,7 +167,7 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		isRunning = true;
 		state = DownloadTaskState.STARTING;
 		action = DownloadTaskAction.START;
-		startTime = DateUtils.millisTime();
+		createTime = DateUtils.millisTime();
 	}
 
 	public void onStop() throws Exception {
@@ -202,12 +196,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		action = DownloadTaskAction.STORE;
 	}
 
-	public void update() {
-		if (state == DownloadTaskState.RUNNING) {
-			usedTime += 1000;
-		}
-	}
-
 	protected void notifyTaskCreated() {
 		StreamSupport.stream(onTaskCreateListeners).forEach(listener -> listener.onTaskCreate(this));
 	}
@@ -232,21 +220,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		StreamSupport.stream(onTaskStopListeners).forEach(listener -> listener.onTaskStop(this));
 	}
 
-	@Override
-	public int getSpeedPerSecond() {
-		return speedPerSecond;
-	}
-
-	@Override
-	public int getSpeedAverage() {
-		return speedAverage;
-	}
-
-	@Override
-	public int getSpeedRealTime() {
-		return speedRealTime;
-	}
-
 	public void setSpeedLimit(int limit) {
 		speedLimited = limit;
 	}
@@ -255,11 +228,11 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 		return speedLimited;
 	}
 
-	public URI getDownloadAddress() {
+	public URI getDownloadURI() {
 		return downloadAddress;
 	}
 
-	public void setDownloadAddress(URI address) {
+	public void setDownloadURI(URI address) {
 		this.downloadAddress = address;
 	}
 
@@ -268,12 +241,12 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 	@Override
-	public long getLength() {
+	public long size() {
 		return length;
 	}
 
 	@Override
-	public long getDownloadedLength() {
+	public long downloadedSize() {
 		return downloadedLength;
 	}
 
@@ -308,11 +281,11 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 	}
 
 	@Override
-	public TaskExtraInfo getExtraInfo() {
+	public TaskExtraInfo extraInfo() {
 		return extraInfo;
 	}
 
-	public int getState() {
+	public int state() {
 		return state;
 	}
 }

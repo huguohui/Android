@@ -8,7 +8,6 @@ import com.badsocket.core.executor.DownloadTaskExecutor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import java8.util.stream.StreamSupport;
 
@@ -18,12 +17,11 @@ import java8.util.stream.StreamSupport;
  * @since 2016/12/26 15:45
  */
 public class DefaultDownloadTaskManager
-		extends
-		AbstractManager<DownloadTask>
-		implements
-		DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
-		Task.OnTaskStopListener, DownloadTask.OnDownloadTaskPauseListener,
-		DownloadTask.OnDownloadTaskResumeListener {
+		extends AbstractManager<DownloadTask>
+		implements DownloadTaskManager, Task.OnTaskFinishListener, Task.OnTaskStartListener,
+					Task.OnTaskStopListener, DownloadTask.OnDownloadTaskPauseListener,
+					DownloadTask.OnDownloadTaskResumeListener
+{
 	/**
 	 * Instance of manager.
 	 */
@@ -55,31 +53,14 @@ public class DefaultDownloadTaskManager
 		START, PAUSE, RESUME, STOP
 	}
 
-	/**
-	 * Private constructor for singleton pattern.
-	 */
-	private DefaultDownloadTaskManager(Downloader downloader) {
+	public DefaultDownloadTaskManager(Downloader downloader) {
 		this.downloader = downloader;
 		taskExecutor = downloader.getDownloaderContext().getDownloadTaskExecutor();
 	}
 
-	/**
-	 * Gets instance of manager.
-	 *
-	 * @return Instance of manager.
-	 */
-	public final synchronized static DefaultDownloadTaskManager getInstance(Downloader downloader) {
-		synchronized (DefaultDownloadTaskManager.class) {
-			if (mInstance == null) {
-				mInstance = new DefaultDownloadTaskManager(downloader);
-			}
-			return mInstance;
-		}
-	}
-
 	protected List<DownloadTask> getRunnableTask() {
 		return StreamSupport.stream(mList)
-					.filter((o) -> o.getState() == DownloadTask.DownloadTaskState.UNSTART)
+					.filter((o) -> o.state() == DownloadTask.DownloadTaskState.UNSTART)
 					.collect(java8.util.stream.Collectors.toList());
 	}
 
@@ -92,7 +73,7 @@ public class DefaultDownloadTaskManager
 			runningTaskNum += needStartTask;
 		}
 		else {
-			//TODO: all done.
+			// TODO: all done.
 		}
 	}
 
@@ -265,7 +246,7 @@ public class DefaultDownloadTaskManager
 	@Override
 	public DownloadTask getTaskById(int id) {
 		for (DownloadTask task : mList) {
-			if (task != null && task.getId() == id) {
+			if (task != null && task.id() == id) {
 				return task;
 			}
 		}

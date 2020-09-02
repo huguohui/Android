@@ -34,7 +34,7 @@ public abstract class AbstractReceiver implements Receiver {
 	/**
 	 * Received data length.
 	 */
-	protected volatile long mReceivedLength;
+	protected long mReceivedLength;
 
 	/**
 	 * Is stop receive?
@@ -156,7 +156,6 @@ public abstract class AbstractReceiver implements Receiver {
 		isFinished = !isStop;
 		invokeListener();
 		flushWriter();
-		Log.d("Received length " + mReceivedLength + " of data.");
 	}
 
 	protected void flushWriter() throws IOException {

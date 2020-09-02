@@ -7,7 +7,6 @@ import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
 import com.badsocket.io.writer.Writer;
-import com.badsocket.net.DownloadAddress;
 import com.badsocket.net.Receiver;
 import com.badsocket.net.Request;
 import com.badsocket.net.Response;
@@ -17,7 +16,6 @@ import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
 import com.badsocket.net.newidea.URI;
-import com.badsocket.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 
 	@Override
 	public Request createRequest(DownloadTask i) throws IOException {
-		return createRequest(i.getDownloadAddress());
+		return createRequest(i.getDownloadURI());
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 			throws IOException {
 		DownloadTask.DownloadSection[] oldSections = task.getSections();
 		int num = oldSections != null && oldSections.length != 0 ? oldSections.length : stategy.alloc(task);
-		long length = task.getLength(), blockSize = length / num, curBlockSize = 0,
+		long length = task.size(), blockSize = length / num, curBlockSize = 0,
 				offsetBegin = 0, offsetEnd = 0;
 
 		List<Request> requestList = new ArrayList<>();

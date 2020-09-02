@@ -7,21 +7,20 @@ import com.badsocket.core.Protocols;
 import com.badsocket.core.Task;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
-import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
-import com.badsocket.worker.AsyncWorker;
-import com.badsocket.worker.Worker;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import java8.util.stream.StreamSupport;
 
 /**
  * Downloads data based http protocol.
@@ -35,8 +34,6 @@ public class InternetDownloader
 	protected Writer fileWriter;
 
 	protected ThreadManager threadManager = ThreadManager.getInstance();
-
-	protected Worker worker;
 
 	protected boolean isResumeFromInfo;
 
@@ -65,7 +62,7 @@ public class InternetDownloader
 	protected DownloadTaskInfoStorage downloadTaskInfoStorage;
 
 	protected ThreadAllocStategy stategy = (task) -> {
-		long len = Math.max(task.getLength(), 1);
+		long len = Math.max(task.size(), 1);
 		int num = 3;
 		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
 	};
@@ -77,9 +74,8 @@ public class InternetDownloader
 	}
 
 	protected void initEnvironment() {
-		worker = new AsyncWorker(threadManager);
-		taskManager = DefaultDownloadTaskManager.getInstance(this);
-		config = context.getDownloadConfig();
+		taskManager = new DefaultDownloadTaskManager(this);
+		config = context.getDownloaderConfig();
 		downloadTaskExecutor = context.getDownloadTaskExecutor();
 		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
 		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
@@ -108,12 +104,12 @@ public class InternetDownloader
 	}
 
 	protected boolean checkDownloadTaskExists(DownloadTask task) {
-		File completeTask = new File(task.getStorageDir(), task.getName()),
+		File completeTask = new File(task.getStorageDir(), task.name()),
 				uncompleteTask = new File(completeTask.getPath()
 						+ Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 
 		return completeTask.exists() || uncompleteTask.exists()
-				|| taskList().stream().filter((t) -> t.equals(task)).count() != 0;
+				|| StreamSupport.stream(taskList()).filter((t) -> t.equals(task)).count() != 0;
 	}
 
 	protected boolean isSupportProtocol(Protocols protocol) {
@@ -146,7 +142,7 @@ public class InternetDownloader
 
 		task = createTask(desc, protocolHandlers.get(protocol));
 		if (checkDownloadTaskExists(task)) {
-			throw new FileAlreadyExistsException("下载任务: " + task.getName() + "已存在！");
+			//throw new FileAlreadyExistsException("下载任务: " + task.name() + "已存在！");
 		}
 
 		task.onCreate(desc.getTaskExtraInfo());
@@ -155,9 +151,9 @@ public class InternetDownloader
 	}
 
 	protected void trimUncompleteSuffix(DownloadTask task) {
-		File uncompleteFile = new File(task.getStorageDir(), task.getName() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
+		File uncompleteFile = new File(task.getStorageDir(), task.name() + UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
 		if (uncompleteFile.exists()) {
-			uncompleteFile.renameTo(new File(task.getStorageDir(), task.getName()));
+			uncompleteFile.renameTo(new File(task.getStorageDir(), task.name()));
 		}
 	}
 
@@ -165,7 +161,7 @@ public class InternetDownloader
 	public void onTaskFinish(Task t) {
 		DownloadTask task = (DownloadTask) t;
 		trimUncompleteSuffix(task);
-		File dtiFile = new File(task.getStorageDir(), task.getName() + DOWNLOAD_TASK_INFO_SUFFIX);
+		File dtiFile = new File(task.getStorageDir(), task.name() + DOWNLOAD_TASK_INFO_SUFFIX);
 		if (dtiFile.exists()) {
 			dtiFile.delete();
 		}
@@ -182,6 +178,7 @@ public class InternetDownloader
 	}
 
 	public void start() throws Exception {
+		init();
 //		taskManager.startAll();
 	}
 
@@ -203,9 +200,9 @@ public class InternetDownloader
 	}
 
 	private void deleteTaskFile(DownloadTask task) {
-		File taskFile = new File(task.getStorageDir(), task.getName()
+		File taskFile = new File(task.getStorageDir(), task.name()
 				+ (task.isCompleted() ? "" : UNCOMPLETE_DOWNLAOD_TASK_SUFFIX));
-		File taskInfoFile = new File(task.getStorageDir(), task.getName()
+		File taskInfoFile = new File(task.getStorageDir(), task.name()
 				+ DOWNLOAD_TASK_INFO_SUFFIX);
 
 		taskFile.delete();

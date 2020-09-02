@@ -1,16 +1,14 @@
 package com.badsocket;
 
-import com.badsocket.core.Protocols;
+import com.badsocket.core.DownloadTask;
+import com.badsocket.core.GenericDownloadTaskExecutor;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
-import com.badsocket.core.downloader.Downloader;
-import com.badsocket.core.downloader.HttpProtocolHandler;
-import com.badsocket.core.downloader.InternetDownloader;
+import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.SimpleFileWriter;
 import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.newidea.URI;
-import com.badsocket.worker.AbstractWorker;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,20 +16,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import java8.util.stream.StreamSupport;
-
 public class Test {
 	static long length = 0;
 
 	static ThreadLocal<Date> date = new ThreadLocal<>();
 
 	public HttpReceiver mRec = null;
-	public AbstractWorker t;
 	long time;
 	ConcurrentFileWriter fw;
 	SimpleFileWriter sfw;
 	static String[] urls = {
-			"http://a10.pc6.com/lhy9/banliyunshsij.apk"
+			"http://sta-op.douyucdn.cn/dypc-client/pkg/Douyu_Live_PC_Client/20200813212236902/DouyuLive_8.3.7.5.exe"
 	};
 
 
@@ -41,7 +36,57 @@ public class Test {
 //		long a = ~1;
 //		System.out.println(a + ", " + Long.toBinaryString(a));
 
-		machineTest();
+//		machineTest();
+		test2();
+	}
+
+
+
+	static void machineTest() throws InterruptedException, IOException {
+		Machine machine = new Machine(new Engine());
+		machine.run();
+	}
+
+	static void debugTest() throws IOException {
+		BaseHttpRequest request = new BaseHttpRequest(new URI(urls[0]));
+		request.open();
+		//request.setHeader(Http.RANGE, new HttpRequest.Range().toString());
+	}
+
+	static void test2() throws Exception {
+
+	}
+
+
+	class A {
+		int val = 0;
+	}
+
+	void lockTest() {
+		final A a = new A();
+		new Thread(() -> {
+			synchronized (a) {
+				a.val = 100;
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println(Thread.currentThread().getName() + "," + a.val);
+			}
+		}).start();
+
+		new Thread(() -> {
+			synchronized (a) {
+				a.val = 200;
+				System.out.println(Thread.currentThread().getName() + "," + a.val);
+			}
+		}).start();
+	}
+
+	public static void println(String args) {
+		System.out.println(args);
 	}
 
 	static class Machine {
@@ -123,68 +168,4 @@ public class Test {
 		}
 	}
 
-
-	static void machineTest() throws InterruptedException, IOException {
-		Machine machine = new Machine(new Engine());
-		machine.run();
-	}
-
-	static void debugTest() throws IOException {
-		BaseHttpRequest request = new BaseHttpRequest(new URI(urls[0]));
-		request.open();
-		//request.setHeader(Http.RANGE, new HttpRequest.Range().toString());
-	}
-
-	static void test2() throws Exception {
-		Downloader d = new InternetDownloader(null);
-		d.addProtocolHandler(Protocols.HTTP, new HttpProtocolHandler());
-
-		d.setParallelTaskNum(3);
-		d.newTask(new DownloadTaskDescriptor.Builder()
-				.setURI(new URI(urls[1]))
-				.setPath("d:/")
-				.build()
-		);
-
-		d.newTask(new DownloadTaskDescriptor.Builder()
-				.setURI(new URI(urls[2]))
-				.setPath("d:/")
-				.build()
-		);
-
-		d.start();
-
-	}
-
-
-	class A {
-		int val = 0;
-	}
-
-	void lockTest() {
-		final A a = new A();
-		new Thread(() -> {
-			synchronized (a) {
-				a.val = 100;
-				try {
-					Thread.sleep(1000);
-				}
-				catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				System.out.println(Thread.currentThread().getName() + "," + a.val);
-			}
-		}).start();
-
-		new Thread(() -> {
-			synchronized (a) {
-				a.val = 200;
-				System.out.println(Thread.currentThread().getName() + "," + a.val);
-			}
-		}).start();
-	}
-
-	public static void println(String args) {
-		System.out.println(args);
-	}
 }

@@ -84,11 +84,15 @@ final public class DownloaderMonitor extends TimerTask implements MonitorDefines
 
 	@Override
 	public void run() {
+		downloadTasks = downloader.taskList();
+		for (DownloadTask task : downloadTasks) {
 
+		}
 	}
 
 
 }
+
 
 interface MonitorDefines {
 

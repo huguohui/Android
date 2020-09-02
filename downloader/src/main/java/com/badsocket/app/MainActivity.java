@@ -78,6 +78,7 @@ public class MainActivity
 			downloader = (Downloader) service;
 			downloaderContext = downloader.getDownloaderContext();
 			threadFactory = downloaderContext.getThreadFactory();
+			new DownloadStatusMonitor(downloader, handler).start();
 
 			try {
 				downloader.start();
@@ -98,7 +99,7 @@ public class MainActivity
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case 1:
-					if (tasks != null && !tasks.isEmpty()) {
+					if (tasks != null) {
 						tasks.clear();
 						tasks.addAll((List<DownloadTask>) msg.obj);
 						adapter.notifyDataSetChanged();
@@ -122,11 +123,14 @@ public class MainActivity
 		}
 
 		void start() {
-			timer.schedule(this, 1000);
+			timer.schedule(this, 0, 1000);
 		}
 
 		@Override
 		public void run() {
+			if (downloader == null)
+				return;
+
 			Message msg = handler.obtainMessage();
 			msg.what = 1;
 			msg.obj = downloader.taskList();
@@ -137,7 +141,7 @@ public class MainActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		startServiceAsync();
+		startService();
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		PermissionChecker.requestPermissions(this);
@@ -145,7 +149,6 @@ public class MainActivity
 		handler = new MessageHanlder();
 		adapter = new SimpleTaskListAdspter(this, tasks);
 
-		new DownloadStatusMonitor(downloader, handler).start();
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(this);
 		listView.setOnItemLongClickListener(this);
@@ -158,27 +161,25 @@ public class MainActivity
 		}
 
 		if (threadFactory != null) {
-			threadFactory.createThread(() -> {
-				try {
-					int state = task.getState();
-					switch(state) {
-						case DownloadTask.DownloadTaskState.RUNNING:
-							downloader.pauseTask(task);
-							break;
-						case DownloadTask.DownloadTaskState.UNSTART:
-							downloader.startTask(task);
-							break;
-						case DownloadTask.DownloadTaskState.PAUSED:
-						case DownloadTask.DownloadTaskState.STOPED:
-						case DownloadTask.DownloadTaskState.STORED:
-							downloader.resumeTask(task);
-							break;
-					}
+			try {
+				int state = task.state();
+				switch(state) {
+					case DownloadTask.DownloadTaskState.RUNNING:
+						downloader.pauseTask(task);
+						break;
+					case DownloadTask.DownloadTaskState.UNSTART:
+						downloader.startTask(task);
+						break;
+					case DownloadTask.DownloadTaskState.PAUSED:
+					case DownloadTask.DownloadTaskState.STOPED:
+					case DownloadTask.DownloadTaskState.STORED:
+						downloader.resumeTask(task);
+						break;
 				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}).start();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -250,7 +251,7 @@ public class MainActivity
 			case R.id.action_new_task:
 				final EditText ev = new EditText(this);
 				ev.setText(
-						"http://a10.pc6.com/lhy9/banliyunshsij.apk"
+						"http://sta-op.douyucdn.cn/dypc-client/pkg/Douyu_Live_PC_Client/20200813212236902/DouyuLive_8.3.7.5.exe"
 				);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);

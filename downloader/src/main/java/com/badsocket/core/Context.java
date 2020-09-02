@@ -23,7 +23,7 @@ public abstract class Context {
 
 	public abstract FileManager getFileManager();
 
-	public abstract Config getDownloadConfig();
+	public abstract Config getDownloaderConfig();
 
 	public abstract ThreadFactory getThreadFactory();
 

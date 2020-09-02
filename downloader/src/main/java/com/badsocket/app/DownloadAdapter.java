@@ -25,7 +25,6 @@ public class DownloadAdapter extends Binder implements Downloader {
 
 	public DownloadAdapter(Downloader downloader) throws Exception {
 		this.downloader = downloader;
-		init();
 	}
 
 	/**

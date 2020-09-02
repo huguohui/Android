@@ -51,7 +51,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 			DownloadTask task = tasks.get(i);
 			if (task != null) {
 				DownloadTaskInfoListItem item = new DownloadTaskInfoListItem(
-						i + 1, task.getStorageDir() + DownloaderContext.DS + task.getName()
+						i + 1, task.getStorageDir() + DownloaderContext.DS + task.name()
 						+ Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
 
 				taskInfoItems.add(item);
@@ -103,7 +103,7 @@ public class FileDownloadTaskInfoStorage implements DownloadTaskInfoStorage {
 	@Override
 	public void writeTask(DownloadTask task) throws Exception {
 		if (task != null && task.isRunning() && !task.isCompleted()) {
-			File file = new File(task.getStorageDir(), task.getName() + Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
+			File file = new File(task.getStorageDir(), task.name() + Downloader.DOWNLOAD_TASK_INFO_SUFFIX);
 			ObjectUtils.writeObject(task, file);
 		}
 	}

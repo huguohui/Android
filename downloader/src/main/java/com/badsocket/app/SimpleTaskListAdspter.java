@@ -61,17 +61,17 @@ public class SimpleTaskListAdspter extends BaseAdapter {
 			DownloadTask task = data.get(position);
 
 			if (task != null) {
-				ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", (int) (task.getProgress() * 100));
+				ObjectAnimator animation = ObjectAnimator.ofInt(pb, "progress", (int) (task.progress() * 100));
 				animation.setDuration(100);
 				animation.start();
 
-				fileName.setText(task.getName());
-				progressText.setText(CalculationUtils.getFriendlyUnitOfBytes(task.getDownloadedLength(), 2)
-						+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.getLength(), 2));
-				progressPercent.setText(new DecimalFormat("##0.00").format(task.getProgress() * 100) + "%");
+				fileName.setText(task.name());
+				progressText.setText(CalculationUtils.getFriendlyUnitOfBytes(task.downloadedSize(), 2)
+						+ "/" + CalculationUtils.getFriendlyUnitOfBytes(task.size(), 2));
+				progressPercent.setText(new DecimalFormat("##0.00").format(task.progress() * 100) + "%");
 
 				int resourceId = R.drawable.paused;
-				switch (task.getState()) {
+				switch (task.state()) {
 					case DownloadTask.DownloadTaskState.RUNNING:
 					case DownloadTask.DownloadTaskState.STARTING:
 					case DownloadTask.DownloadTaskState.PREPARING:
