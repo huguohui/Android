@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @since 2015/12/14
  */
-public abstract class AbstractManager<T> implements Manager<T> {
+public abstract class AbstractManager<T> extends LinkedList<T> implements Manager<T> {
 	/**
 	 * List of managed objects.
 	 */
@@ -32,42 +32,6 @@ public abstract class AbstractManager<T> implements Manager<T> {
 	}
 
 	/**
-	 * Get a managed object by index.
-	 *
-	 * @param idx Index of object.
-	 * @return Managed object.
-	 */
-	@Override
-	public synchronized T get(int idx) {
-		return mList.get(idx);
-	}
-
-	/**
-	 * Add a object for management.
-	 *
-	 * @param obj Object what will to managing.
-	 */
-	@Override
-	public synchronized boolean add(T obj) throws Exception {
-		return mList.add(obj);
-	}
-
-	public synchronized boolean addAll(Collection<? extends T> objs) {
-		return mList.addAll(objs);
-	}
-
-	/**
-	 * Remove a managed object by index.
-	 *
-	 * @param idx Index of managed object.
-	 * @return Removed object or null on remove failed.
-	 */
-	@Override
-	public synchronized T remove(int idx) {
-		return mList.remove(idx);
-	}
-
-	/**
 	 * Get a list that inArray all managed objects.
 	 *
 	 * @return A list that inArray all managed objects.
@@ -84,7 +48,7 @@ public abstract class AbstractManager<T> implements Manager<T> {
 		}
 
 		int f = Arrays.binarySearch(mList.toArray(), o),
-				s = Arrays.binarySearch(mList.toArray(), e);
+			s = Arrays.binarySearch(mList.toArray(), e);
 
 		mList.set(f, e);
 		mList.set(s, o);
@@ -111,19 +75,5 @@ public abstract class AbstractManager<T> implements Manager<T> {
 		}
 
 		return searched;
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return mList.iterator();
-	}
-
-	public void finalize() {
-		if (mList != null) {
-			synchronized (mList) {
-				mList.clear();
-				mList = null;
-			}
-		}
 	}
 }

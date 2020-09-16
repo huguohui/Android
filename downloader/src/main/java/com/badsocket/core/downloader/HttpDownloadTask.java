@@ -29,8 +29,7 @@ import java.util.concurrent.Future;
  */
 
 public class HttpDownloadTask
-		extends AbstractDownloadTask
-		implements Receiver.OnReceiveListener {
+		extends AbstractDownloadTask {
 
 	private static final long serialVersionUID = 5175561149447466807L;
 
@@ -136,7 +135,6 @@ public class HttpDownloadTask
 			receiver = reqs[i] != null
 					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
 							: null;
-			receiver.setOnReceiveListener(this);
 			receiverGroup.addReceiver(receiver);
 		}
 	}
@@ -347,6 +345,12 @@ public class HttpDownloadTask
 		init();
 	}
 
+	@Override
+	public void onTick() {
+		super.onTick();
+		updateAll();
+	}
+
 	public void updateAll() {
 		try {
 			updateDownloadInfo();
@@ -387,11 +391,6 @@ public class HttpDownloadTask
 	@Override
 	public boolean isPauseSupport() {
 		return true;
-	}
-
-	@Override
-	public void onReceive(Receiver r, byte[] data) {
-		updateAll();
 	}
 
 	public static abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {

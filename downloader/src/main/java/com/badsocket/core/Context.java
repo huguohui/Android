@@ -51,6 +51,4 @@ public abstract class Context {
 
 	public abstract DownloadTaskExecutor getDownloadTaskExecutor();
 
-	public abstract void finalize();
-
 }

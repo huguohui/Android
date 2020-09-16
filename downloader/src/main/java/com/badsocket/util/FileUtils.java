@@ -19,7 +19,7 @@ import java.nio.file.FileAlreadyExistsException;
 
 public abstract class FileUtils {
 
-	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
+	public static void copyTo(InputStream src, OutputStream dst, boolean closeStream) throws IOException {
 		try (
 				ReadableByteChannel channel = Channels.newChannel(src);
 				WritableByteChannel dstChannel = Channels.newChannel(dst);
@@ -32,9 +32,15 @@ public abstract class FileUtils {
 			}
 		}
 		finally {
-			src.close();
-			dst.close();
+			if (closeStream) {
+				src.close();
+				dst.close();
+			}
 		}
+	}
+
+	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
+		copyTo(src, dst, true);
 	}
 
 	public static void copyTo(InputStream src, File dst) throws IOException {
@@ -146,6 +152,23 @@ public abstract class FileUtils {
 
 	public static File[] listDirectory(String dir) {
 		return listDirectory(new File(dir));
+	}
+
+	public static boolean delete(File name) throws IOException {
+		if (!name.isFile() && !name.isDirectory())
+			return false;
+
+		if (name.isDirectory()) {
+			if (!name.canWrite() && !name.setWritable(true))
+				throw new IOException("Can't delete this directory cause the directory is read-only!");
+
+			File[] deletedFiles = name.listFiles();
+			for (File file : deletedFiles) {
+				if (!delete(name)) return false;
+			}
+		}
+
+		return name.delete();
 	}
 
 	public interface CopyExceptionHandler {

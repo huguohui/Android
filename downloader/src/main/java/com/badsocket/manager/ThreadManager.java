@@ -62,9 +62,4 @@ public class ThreadManager extends AbstractThreadManager {
 
 		return th;
 	}
-
-	public final static void release() {
-		mManager.list().clear();
-		mManager = null;
-	}
 }

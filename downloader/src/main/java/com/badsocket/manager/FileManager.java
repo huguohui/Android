@@ -9,17 +9,9 @@ import java.io.IOException;
 
 public interface FileManager extends Manager<File> {
 
-	public abstract void createDirectory(File parent, String name) throws IOException;
+	public  void createDirectory(File parent, String name) throws IOException;
 
-	public abstract void createDirectory(File dir) throws IOException;
-
-	/**
-	 * Delete a file or directory.
-	 *
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
-	public abstract boolean delete(File obj) throws IOException;
+	public  void createDirectory(String dir) throws IOException;
 
 	/**
 	 * Delete a file or directory.
@@ -27,21 +19,21 @@ public interface FileManager extends Manager<File> {
 	 * @param idx Index of File.
 	 * @return If deleted.
 	 */
-	public abstract boolean delete(int idx) throws IOException;
+	public boolean delete(int idx) throws IOException;
 
 	/**
 	 * Delete all Files.
 	 *
 	 * @return If deleted true else false.
 	 */
-	public abstract void deleteAll() throws IOException;
+	public void deleteAll() throws IOException;
 
 	/**
 	 * Load files in special directory.
 	 *
 	 * @param dir The special directory.
 	 */
-	public abstract void loadDirectory(String dir) throws IOException;
+	public void loadDirectory(String dir) throws IOException;
 
 	/**
 	 * Get a file of managing by name.
@@ -49,5 +41,5 @@ public interface FileManager extends Manager<File> {
 	 * @param name The name of file.
 	 * @return file equals given name.
 	 */
-	public abstract File getByName(String name);
+	public  File getByName(String name);
 }

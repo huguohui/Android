@@ -23,10 +23,10 @@ public interface DownloadTaskInfoStorage {
 
 	void writeTask(DownloadTask task) throws Exception;
 
+	void writeAllTasks(List<DownloadTask> tasks) throws Exception;
+
 	File location();
 
 	void setLocation(File location);
-
-	void finish();
 
 }

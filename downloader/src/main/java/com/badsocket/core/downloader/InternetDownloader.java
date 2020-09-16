@@ -1,5 +1,6 @@
 package com.badsocket.core.downloader;
 
+import com.badsocket.core.SimpleControlableClock;
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.ProtocolHandler;
@@ -27,7 +28,7 @@ import java8.util.stream.StreamSupport;
  */
 public class InternetDownloader
 		extends AbstractDownloader
-		implements Task.OnTaskFinishListener {
+		implements Task.OnTaskFinishListener, ControlableClock.OnTickListener {
 
 	public static int MAX_PARALLEL_TASKS = 10;
 
@@ -61,16 +62,18 @@ public class InternetDownloader
 
 	protected DownloadTaskInfoStorage downloadTaskInfoStorage;
 
+	protected InternalClock clock;
+
 	protected ThreadAllocStategy stategy = (task) -> {
 		long len = Math.max(task.size(), 1);
 		int num = 3;
 		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
 	};
 
-
-	public InternetDownloader(Context context) {
+	public InternetDownloader(Context context) throws Exception {
 		this.context = context;
 		androidContext = context.getAndroidContext();
+		init();
 	}
 
 	protected void initEnvironment() {
@@ -84,13 +87,15 @@ public class InternetDownloader
 				new File(DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR));
 
 		taskManager.setAutoStart(true);
+		clock = new InternalClock(this);
+		clock.addOnTickListener(this);
 	}
 
 	protected void loadTasks() throws Exception {
 		List<DownloadTask> tasks = downloadTaskInfoStorage.readList();
 		for (DownloadTask task : tasks) {
-			taskManager.addTask(task);
 			task.onRestore(this);
+			addTask(task);
 		}
 	}
 
@@ -103,7 +108,7 @@ public class InternetDownloader
 		initTasks();
 	}
 
-	protected boolean checkDownloadTaskExists(DownloadTask task) {
+	protected boolean isDownloadTaskExists(DownloadTask task) {
 		File completeTask = new File(task.getStorageDir(), task.name()),
 				uncompleteTask = new File(completeTask.getPath()
 						+ Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX);
@@ -141,12 +146,12 @@ public class InternetDownloader
 		}
 
 		task = createTask(desc, protocolHandlers.get(protocol));
-		if (checkDownloadTaskExists(task)) {
+		if (isDownloadTaskExists(task)) {
 			//throw new FileAlreadyExistsException("下载任务: " + task.name() + "已存在！");
 		}
 
 		task.onCreate(desc.getTaskExtraInfo());
-		taskManager.add(task);
+		addTask(task);
 		return task;
 	}
 
@@ -165,6 +170,8 @@ public class InternetDownloader
 		if (dtiFile.exists()) {
 			dtiFile.delete();
 		}
+
+		onTaskListChange();
 	}
 
 	@Override
@@ -178,25 +185,32 @@ public class InternetDownloader
 	}
 
 	public void start() throws Exception {
-		init();
+		super.start();
+		clock.start();
 //		taskManager.startAll();
 	}
 
 	public void stop() throws Exception {
+		super.stop();
+		clock.stop();
 		taskManager.stopAll();
 	}
 
 	public void pause() throws Exception {
+		super.pause();
 		taskManager.pauseAll();
 	}
 
 	public void resume() throws Exception {
+		super.resume();
 		taskManager.resumeAll();
 	}
 
 	@Override
 	public void addTask(DownloadTask t) throws Exception {
 		taskManager.add(t);
+		clock.addOnTickListener(t);
+		onTaskListChange();
 	}
 
 	private void deleteTaskFile(DownloadTask task) {
@@ -209,16 +223,37 @@ public class InternetDownloader
 		taskInfoFile.delete();
 	}
 
+	protected void writeTasksInfo() throws Exception {
+		List<DownloadTask> tasks = taskManager.list();
+		downloadTaskInfoStorage.writeAllTasks(tasks);
+	}
+
+	protected void writeListInfo() {
+		List<DownloadTask> tasks = taskManager.list();
+		try {
+			downloadTaskInfoStorage.writeList(tasks);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void onTaskListChange() {
+		writeListInfo();
+	}
+
 	@Override
 	public void deleteTask(int id) {
 		deleteTaskFile(taskManager.getTask(id));
 		taskManager.remove(id);
+		onTaskListChange();
 	}
 
 	@Override
 	public void deleteTask(DownloadTask task) {
 		deleteTaskFile(task);
 		taskManager.deleteTask(task);
+		onTaskListChange();
 	}
 
 	@Override
@@ -313,16 +348,50 @@ public class InternetDownloader
 	@Override
 	public void exit() throws Exception {
 		stop();
-		taskManager.finalize();
+	}
+
+	@Override
+	public long runtime() {
+		return clock.runtime();
 	}
 
 	public ProtocolHandler getProtocolHandler(Protocols p) {
 		return protocolHandlers.get(p);
 	}
 
+	@Override
+	public void onTick() {
+		try {
+			writeTasksInfo();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public interface ThreadAllocStategy {
 
 		int alloc(DownloadTask info);
 
+	}
+
+	private static class InternalClock extends SimpleControlableClock {
+
+		private InternetDownloader downloader;
+
+		public InternalClock(InternetDownloader downloader) {
+			clockTicker = new AsyncClockTicker();
+			this.downloader = downloader;
+		}
+
+		class AsyncClockTicker extends ClockTicker {
+			@Override
+			public void run() {
+				time += MS_SECOND;
+				downloader.threadManager.create(() -> {
+					StreamSupport.stream(onTickListeners).forEach(listener -> listener.onTick());
+				}).start();
+			}
+		}
 	}
 }

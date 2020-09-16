@@ -54,7 +54,7 @@ public class DownloaderContext extends Context {
 
 	private android.content.Context androidContext;
 
-	private Manager threadManager;
+	private ThreadManager threadManager;
 
 	private ThreadFactory threadFactory;
 
@@ -199,10 +199,4 @@ public class DownloaderContext extends Context {
 	public DownloadTaskExecutor getDownloadTaskExecutor() {
 		return downloadTaskExecutor;
 	}
-
-	@Override
-	public void finalize() {
-
-	}
-
 }

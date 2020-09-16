@@ -1,6 +1,8 @@
 package com.badsocket.core;
 
 import android.os.SystemClock;
+
+import static com.badsocket.core.downloader.ControlableClock.MS_SECOND;
 /**
  * Created by skyrim on 2017/11/28.
  */
@@ -52,6 +54,12 @@ public abstract class AbstractTask implements Task {
 	@Override
 	public int id() {
 		return id;
+	}
+
+	public void onTick() {
+		if (isRunning) {
+			usedTime += MS_SECOND;
+		}
 	}
 
 	/**

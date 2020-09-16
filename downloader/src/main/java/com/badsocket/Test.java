@@ -1,20 +1,23 @@
 package com.badsocket;
 
-import com.badsocket.core.DownloadTask;
-import com.badsocket.core.GenericDownloadTaskExecutor;
-import com.badsocket.core.downloader.DownloadTaskDescriptor;
-import com.badsocket.core.downloader.HttpDownloadTask;
+import com.badsocket.core.downloader.FileDownloadTaskInfoStorage;
 import com.badsocket.io.writer.ConcurrentFileWriter;
 import com.badsocket.io.writer.SimpleFileWriter;
 import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.HttpReceiver;
 import com.badsocket.net.newidea.URI;
+import com.badsocket.util.ObjectUtils;
+import com.badsocket.util.TimeCounter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Test {
 	static long length = 0;
@@ -37,9 +40,24 @@ public class Test {
 //		System.out.println(a + ", " + Long.toBinaryString(a));
 
 //		machineTest();
-		test2();
-	}
+//		test2();
 
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					serializeTest();
+					deserializeTest();
+					clean();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} , 0, 1000);
+
+
+	}
 
 
 	static void machineTest() throws InterruptedException, IOException {
@@ -53,17 +71,44 @@ public class Test {
 		//request.setHeader(Http.RANGE, new HttpRequest.Range().toString());
 	}
 
+	static void serializeTest() throws IOException {
+
+		FileDownloadTaskInfoStorage.DownloadTaskInfoList list = new FileDownloadTaskInfoStorage.DownloadTaskInfoList();
+		for (int i = 0; i < 1024; i++) {
+			list.list().add(new FileDownloadTaskInfoStorage.DownloadTaskInfoListItem(i * 100, new String(i * 1024 * 1024 + "")));
+		}
+
+		TimeCounter.begin();
+		ObjectUtils.writeObject(list, new File("D:\\temp\\a.txt"));
+		System.out.println("Protostuff Serialize:\t\t" + TimeCounter.end());
+
+		TimeCounter.begin();
+		ObjectUtils.writeObject2(list, new FileOutputStream("D:\\temp\\b.txt"));
+		System.out.println("Java Origin Serialize:\t\t" + TimeCounter.end());
+	}
+
+	static void deserializeTest() throws Exception {
+		TimeCounter.begin();
+		Object a = ObjectUtils.readObject(FileDownloadTaskInfoStorage.DownloadTaskInfoList.class, new FileInputStream("D:\\temp\\a.txt"));
+		System.out.println("Protostuff Deserialize:\t\t" + TimeCounter.end());
+
+		TimeCounter.begin();
+		Object b = ObjectUtils.readObject2(new File("D:\\temp\\b.txt"));
+		System.out.println("Java Origin Deserialize:\t\t" + TimeCounter.end());
+		
+	}
+
 	static void test2() throws Exception {
 
 	}
 
 
-	class A {
+	static class AA {
 		int val = 0;
 	}
 
 	void lockTest() {
-		final A a = new A();
+		final AA a = new AA();
 		new Thread(() -> {
 			synchronized (a) {
 				a.val = 100;
@@ -88,6 +133,13 @@ public class Test {
 	public static void println(String args) {
 		System.out.println(args);
 	}
+
+	public static void clean() {
+//		System.out.println("\33[2J");
+//		System.out.println("\33[K");
+		System.out.println("\\x1b[K");
+	}
+
 
 	static class Machine {
 		SimpleFileWriter sfw;

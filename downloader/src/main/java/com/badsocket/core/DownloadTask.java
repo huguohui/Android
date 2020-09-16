@@ -1,5 +1,6 @@
 package com.badsocket.core;
 
+import com.badsocket.core.downloader.ControlableClock;
 import com.badsocket.net.newidea.URI;
 
 import java.io.File;

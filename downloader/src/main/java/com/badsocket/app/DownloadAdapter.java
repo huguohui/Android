@@ -219,4 +219,9 @@ public class DownloadAdapter extends Binder implements Downloader {
 	public void exit() throws Exception {
 		downloader.exit();
 	}
+
+	@Override
+	public long runtime() {
+		return downloader.runtime();
+	}
 }

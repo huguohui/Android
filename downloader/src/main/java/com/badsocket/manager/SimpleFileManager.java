@@ -94,7 +94,8 @@ public class SimpleFileManager extends AbstractFileManager {
 	}
 
 	@Override
-	public void createDirectory(File dir) throws IOException {
+	public void createDirectory(String dirStr) throws IOException {
+		File dir = new File(dirStr);
 		if (dir.exists()) {
 			throw new FileAlreadyExistsException(dir.getAbsolutePath());
 		}
@@ -102,36 +103,9 @@ public class SimpleFileManager extends AbstractFileManager {
 		dir.mkdirs();
 	}
 
-	/**
-	 * Delete a file or directory.
-	 *
-	 * @param obj The object to deleting.
-	 * @return If deleted true else false.
-	 */
-	@Override
-	public synchronized boolean delete(File obj) throws IOException {
-		if (obj == null || !obj.isFile() && !obj.isDirectory())
-			return false;
-
-		if (obj.isDirectory()) {
-			if (!obj.canWrite())
-				throw new IOException("Can't delete this directory cause the directory is readTask-only!");
-
-			File[] deletedFiles = obj.listFiles();
-			for (File file : deletedFiles) {
-				if (!obj.isFile() && !obj.isDirectory())
-					continue;
-
-				if (!delete(obj)) return false;
-			}
-		}
-
-		return !obj.exists() || obj.delete();
-	}
-
 	@Override
 	public synchronized boolean delete(int idx) throws IOException {
-		return false;
+		return get(idx).delete();
 	}
 
 	/**

@@ -125,7 +125,7 @@ public class DefaultDownloadTaskManager
 		}
 	}
 
-	public boolean add(DownloadTask task) throws Exception {
+	public boolean add(DownloadTask task) {
 		boolean isAdd = super.add(task);
 		task.addOnTaskFinishListener(this);
 		task.addOnTaskStartListener(this);
@@ -134,17 +134,16 @@ public class DefaultDownloadTaskManager
 		task.addOnDownloadTaskResumeListener(this);
 
 		if (isAutoStart()) {
-			startTask(task);
+			try {
+				startTask(task);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return isAdd;
 	}
 
-	public void finalize() {
-		super.finalize();
-		synchronized (mInstance) {
-			mInstance = null;
-		}
-	}
 
 	/**
 	 * Controls the task start.

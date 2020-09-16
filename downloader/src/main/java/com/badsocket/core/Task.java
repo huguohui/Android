@@ -1,5 +1,7 @@
 package com.badsocket.core;
 
+import com.badsocket.core.downloader.ControlableClock;
+
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -7,7 +9,7 @@ import java.util.concurrent.Callable;
  * Created by skyrim on 2017/11/28.
  */
 public interface Task
-		extends Serializable, Callable, TaskLifecycle {
+		extends Serializable, Callable, TaskLifecycle, ControlableClock.OnTickListener {
 
 	/**
 	 * Gets unique id of task.

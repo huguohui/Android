@@ -9,30 +9,7 @@ import java.util.List;
  *
  * @since 2015/12/14
  */
-public interface Manager<T> extends Iterable<T> {
-	/**
-	 * Get a managed object by index.
-	 *
-	 * @param idx Index of object.
-	 * @return Managed object.
-	 */
-	T get(int idx);
-
-	/**
-	 * Add a object for management.
-	 *
-	 * @param obj Object what will to managing.
-	 */
-	boolean add(T obj) throws Exception;
-
-	/**
-	 * Add all object to list.
-	 *
-	 * @param objs All objects.
-	 * @return ture for successing
-	 */
-	boolean addAll(Collection<? extends T> objs);
-
+public interface Manager<T> extends List<T> {
 	/**
 	 * Set position in manager list.
 	 *
@@ -52,14 +29,6 @@ public interface Manager<T> extends Iterable<T> {
 	void replace(T o, T e);
 
 	/**
-	 * Remove a managed object by index.
-	 *
-	 * @param idx Index of managed object.
-	 * @return Removed object or null on remove failed.
-	 */
-	T remove(int idx);
-
-	/**
 	 * Search a object.
 	 *
 	 * @param sf A search condition of object will be searched.
@@ -73,8 +42,6 @@ public interface Manager<T> extends Iterable<T> {
 	 * @return A list that inArray all managed objects.
 	 */
 	List<T> list();
-
-	void finalize();
 
 	/**
 	 * SearchFilter of searching.

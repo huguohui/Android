@@ -22,11 +22,6 @@ public interface Downloader extends Controlable {
 
 	boolean isTaskExists(Task task);
 
-	/**
-	 * Create a new download task.
-	 *
-	 * @param desc Descriptor.
-	 */
 	DownloadTask newTask(DownloadTaskDescriptor desc) throws Exception;
 
 	DownloadTask findTask(int idx);
@@ -65,7 +60,6 @@ public interface Downloader extends Controlable {
 
 	boolean isPaused();
 
-
 	void addProtocolHandler(Protocols ptl, ProtocolHandler ph);
 
 	ProtocolHandler getProtocolHandler(Protocols ptl);
@@ -86,11 +80,17 @@ public interface Downloader extends Controlable {
 
 	void exit() throws Exception;
 
+	long runtime();
+
 	interface OnDownloadStartListener {
-		void onDownloadStart(AbstractDownloader d);
+
+		void onDownloadStart(Downloader d);
+
 	}
 
 	interface OnDownloadFinishListener {
-		void onDownloadFinish(AbstractDownloader d);
+
+		void onDownloadFinish(Downloader d);
+
 	}
 }

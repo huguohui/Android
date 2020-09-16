@@ -14,6 +14,8 @@ import java.util.List;
 
 import java8.util.stream.StreamSupport;
 
+import static com.badsocket.core.downloader.ControlableClock.MS_SECOND;
+
 /**
  * Created by skyrim on 2017/11/28.
  */

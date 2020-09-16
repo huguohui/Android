@@ -10,20 +10,20 @@ public abstract class TimeCounter {
 
 	private static long usedTime;
 
-	public static final void begin() {
+	public static synchronized final void begin() {
 		startTime = DateUtils.millisTime();
 	}
 
-	public static final long end() {
+	public static synchronized final long end() {
 		usedTime = DateUtils.millisTime() - startTime;
 		return usedTime();
 	}
 
-	public static final long usedTime() {
+	public static synchronized final long usedTime() {
 		return usedTime;
 	}
 
-	public static final void logUsedTime() {
+	public static synchronized final void logUsedTime() {
 		Log.e("-->", end() + "");
 	}
 
