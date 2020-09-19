@@ -1,16 +1,15 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.core.SimpleControlableClock;
 import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
+import com.badsocket.core.SimpleControlableClock;
 import com.badsocket.core.Task;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.core.executor.DownloadTaskExecutor;
-import com.badsocket.io.writer.Writer;
 import com.badsocket.manager.DefaultDownloadTaskManager;
 import com.badsocket.manager.DownloadTaskManager;
 import com.badsocket.manager.ThreadManager;
@@ -31,8 +30,6 @@ public class InternetDownloader
 		implements Task.OnTaskFinishListener, ControlableClock.OnTickListener {
 
 	public static int MAX_PARALLEL_TASKS = 10;
-
-	protected Writer fileWriter;
 
 	protected ThreadManager threadManager = ThreadManager.getInstance();
 
@@ -58,13 +55,13 @@ public class InternetDownloader
 
 	protected DownloadTaskExecutor downloadTaskExecutor;
 
-	protected String defaultDownloadPath;
+	protected String downloadPath;
 
 	protected DownloadTaskInfoStorage downloadTaskInfoStorage;
 
 	protected InternalClock clock;
 
-	protected ThreadAllocStategy stategy = (task) -> {
+	protected ThreadAllocStategy stategy = task -> {
 		long len = Math.max(task.size(), 1);
 		int num = 3;
 		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
@@ -81,10 +78,12 @@ public class InternetDownloader
 		config = context.getDownloaderConfig();
 		downloadTaskExecutor = context.getDownloadTaskExecutor();
 		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
-		defaultDownloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
+		downloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
 				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
-		downloadTaskInfoStorage = new FileDownloadTaskInfoStorage(
-				new File(DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR));
+		downloadTaskInfoStorage = new BaseFileDownloadTaskInfoStorage(new FileDownloadTaskInfoStorage.Locations(
+				DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR,
+				downloadPath
+		));
 
 		taskManager.setAutoStart(true);
 		clock = new InternalClock(this);
@@ -92,8 +91,9 @@ public class InternetDownloader
 	}
 
 	protected void loadTasks() throws Exception {
-		List<DownloadTask> tasks = downloadTaskInfoStorage.readList();
-		for (DownloadTask task : tasks) {
+		DownloadTaskInfoStorage.TaskList taskList = downloadTaskInfoStorage.read();
+		for (DownloadTaskInfoStorage.TaskListItem taskItem : taskList.list()) {
+			DownloadTask task = downloadTaskInfoStorage.read(taskItem.taskIndex);
 			task.onRestore(this);
 			addTask(task);
 		}
@@ -142,7 +142,7 @@ public class InternetDownloader
 			throw new UnsupportedProtocolException("暂不支持此下载协议:" + protocolName.toUpperCase() + "！");
 		}
 		if (desc.getPath() == null || desc.getPath().length() == 0) {
-			desc.setPath(defaultDownloadPath);
+			desc.setPath(downloadPath);
 		}
 
 		task = createTask(desc, protocolHandlers.get(protocol));
@@ -225,13 +225,13 @@ public class InternetDownloader
 
 	protected void writeTasksInfo() throws Exception {
 		List<DownloadTask> tasks = taskManager.list();
-		downloadTaskInfoStorage.writeAllTasks(tasks);
+		downloadTaskInfoStorage.write(tasks);
 	}
 
 	protected void writeListInfo() {
 		List<DownloadTask> tasks = taskManager.list();
 		try {
-			downloadTaskInfoStorage.writeList(tasks);
+			downloadTaskInfoStorage.write(tasks);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

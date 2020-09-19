@@ -1,7 +1,5 @@
 package com.badsocket.net;
 
-import com.badsocket.io.writer.Writer;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -24,7 +22,7 @@ public class AsyncReceiver implements Receiver, Callable<Long> {
 		receiver.receive();
 	}
 
-	public void receive(long size) {
+	public void receive(int size) {
 		this.size = size;
 	}
 
@@ -52,11 +50,11 @@ public class AsyncReceiver implements Receiver, Callable<Long> {
 	}
 
 	@Override
-	public boolean isStoped() {
+	public boolean stoped() {
 		return false;
 	}
 
-	public InputStream getInputStream() {
+	public InputStream inputStream() {
 		return receiver.getInputStream();
 	}
 
@@ -64,20 +62,8 @@ public class AsyncReceiver implements Receiver, Callable<Long> {
 		return receiver.getReceivedLength();
 	}
 
-	public boolean isFinished() {
-		return receiver.isFinished();
-	}
-
-	public boolean isStop() {
-		return receiver.isStop();
-	}
-
-	public Writer getFileWriter() {
-		return receiver.getFileWriter();
-	}
-
-	public void setFileWriter(Writer fileWriter) {
-		receiver.setFileWriter(fileWriter);
+	public boolean finished() {
+		return receiver.finished();
 	}
 
 	public void setOnFinishedListener(OnFinishedListener onFinishedListener) {

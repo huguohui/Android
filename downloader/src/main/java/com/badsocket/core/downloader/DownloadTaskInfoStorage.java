@@ -2,7 +2,8 @@ package com.badsocket.core.downloader;
 
 import com.badsocket.core.DownloadTask;
 
-import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,22 +12,33 @@ import java.util.List;
 
 public interface DownloadTaskInfoStorage {
 
-	List<DownloadTask> readList() throws Exception;
+	void open() throws Exception;
 
-	List<DownloadTask> readList(File location) throws Exception;
+	void close() throws Exception;
 
-	DownloadTask readTask(File infoFile) throws Exception;
+	TaskList read() throws Exception;
 
-	void writeList(List<DownloadTask> tasks) throws Exception;
+	DownloadTask read(int idx) throws Exception;
 
-	void writeList(List<DownloadTask> tasks, File location) throws Exception;
+	void write(List<DownloadTask> tasks) throws Exception;
 
-	void writeTask(DownloadTask task) throws Exception;
+	void update(DownloadTask task) throws Exception;
 
-	void writeAllTasks(List<DownloadTask> tasks) throws Exception;
+	void delete(DownloadTask task) throws Exception;
 
-	File location();
+	final class TaskList implements Serializable {
+		List<TaskListItem> items = new ArrayList<>();
+		public final List<TaskListItem> list() {
+			return items;
+		}
+	}
 
-	void setLocation(File location);
-
+	final class TaskListItem implements Serializable {
+		int taskIndex;
+		String taskName;
+		public TaskListItem(int idx, String name) {
+			taskIndex = idx;
+			taskName = name;
+		}
+	}
 }

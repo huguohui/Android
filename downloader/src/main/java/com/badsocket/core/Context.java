@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.core.executor.DownloadTaskExecutor;
-import com.badsocket.io.writer.FileWriter;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
 
@@ -26,14 +25,6 @@ public abstract class Context {
 	public abstract Config getDownloaderConfig();
 
 	public abstract ThreadFactory getThreadFactory();
-
-	public abstract FileWriter getFileWriter(String path) throws IOException;
-
-	public abstract FileWriter getFileWriter(File path) throws IOException;
-
-	public abstract FileWriter getFileWriter(String path, long size) throws IOException;
-
-	public abstract FileWriter getFileWriter(File path, long size) throws IOException;
 
 	public abstract android.content.Context getAndroidContext();
 

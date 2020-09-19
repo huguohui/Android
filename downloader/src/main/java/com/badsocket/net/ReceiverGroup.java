@@ -60,7 +60,7 @@ public class ReceiverGroup {
 
 	public void stopAll() throws IOException {
 		for (Receiver r : receivers) {
-			if (r != null && !r.isStoped()) {
+			if (r != null && !r.stoped()) {
 				r.stop();
 			}
 		}
@@ -69,7 +69,7 @@ public class ReceiverGroup {
 	public int activeCount() {
 		int activeCount = receivers.size();
 		for (Receiver r : receivers) {
-			if (r != null && r.isStoped()) {
+			if (r != null && r.stoped()) {
 				--activeCount;
 			}
 		}

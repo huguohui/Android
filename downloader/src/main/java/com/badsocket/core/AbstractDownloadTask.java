@@ -2,7 +2,6 @@ package com.badsocket.core;
 
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
-import com.badsocket.io.writer.FileWriter;
 import com.badsocket.net.Response;
 import com.badsocket.net.newidea.URI;
 import com.badsocket.util.DateUtils;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import java8.util.stream.StreamSupport;
-
-import static com.badsocket.core.downloader.ControlableClock.MS_SECOND;
 
 /**
  * Created by skyrim on 2017/11/28.
@@ -58,7 +55,6 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	transient protected Response response;
 
-	transient protected FileWriter fileWriter;
 
 	transient protected List<OnTaskCreateListener> onTaskCreateListeners = new ArrayList<>();
 

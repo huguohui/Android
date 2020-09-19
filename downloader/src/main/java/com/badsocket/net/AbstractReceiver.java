@@ -1,10 +1,11 @@
 package com.badsocket.net;
 
-import com.badsocket.io.writer.Writer;
 import com.badsocket.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
 /**
@@ -14,17 +15,19 @@ public abstract class AbstractReceiver implements Receiver {
 	/**
 	 * Default buffer size.
 	 */
-	public final static int BUFFER_SIZE = 1024 << 3;
+	public final static int BUFFER_SIZE = (1024 << 3) * 10;
 
 	/**
 	 * The requester object.
 	 */
 	protected InputStream mInputStream;
 
+	protected OutputStream outputStream;
+
 	/**
 	 * Writable of receiver.
 	 */
-	protected Writer mFileWriter;
+	protected FileChannel fileChannel;
 
 	/**
 	 * Is finished?
@@ -44,7 +47,6 @@ public abstract class AbstractReceiver implements Receiver {
 	/**
 	 * Size for next downloading.
 	 */
-	protected long mSizeWillReceive = 0;
 
 	protected long lastReceivedLength = 0;
 
@@ -62,10 +64,11 @@ public abstract class AbstractReceiver implements Receiver {
 	 * Construct a downloader by requester.
 	 *
 	 * @param is A {@link AbstractRequest}.
+	 * @param writable
 	 */
-	public AbstractReceiver(InputStream is, Writer writable) {
+	public AbstractReceiver(InputStream is, OutputStream os) {
 		mInputStream = is;
-		mFileWriter = writable;
+		outputStream = os;
 	}
 
 	protected AbstractReceiver() {
@@ -80,14 +83,13 @@ public abstract class AbstractReceiver implements Receiver {
 		if (size <= 0)
 			throw new IllegalArgumentException("The size is illegal!");
 
-		byte[] chunk = new byte[size], buff;
-		int count = 0, read = 0, freeLoop = 0;
-
+		byte[] chunk = new byte[size], buff = new byte[0];
+		int count = 0, read = 0;
 		while (!isStop && count < size) {
 			checkAvaliable(mInputStream);
 			if (null == (buff = receiveFromStream(mInputStream,
 					count + BUFFER_SIZE > size ? size - count : BUFFER_SIZE))) {
-				return null;
+				break;
 			}
 
 			read = buff.length;
@@ -96,7 +98,7 @@ public abstract class AbstractReceiver implements Receiver {
 			mReceivedLength += read;
 		}
 
-		return chunk;
+		return buff == null || read == 0 ? null : Arrays.copyOf(chunk, count);
 	}
 
 	protected void checkAvaliable(InputStream is) throws IOException {
@@ -117,8 +119,6 @@ public abstract class AbstractReceiver implements Receiver {
 		}
 
 		buff = Arrays.copyOf(buff, read);
-		onReceive(buff);
-
 		return buff;
 	}
 
@@ -127,20 +127,32 @@ public abstract class AbstractReceiver implements Receiver {
 	 *
 	 * @param size Special length.
 	 */
-	protected void receiveAndWrite(long size) throws IOException {
+	protected void receiveAndWrite(int size) throws IOException {
 		int willRec = 0;
-		while (!isStop && size > 0) {
-			willRec = BUFFER_SIZE >= size ? (int) size : BUFFER_SIZE;
-			writeData(receiveData(willRec));
-			size -= willRec;
+		boolean fully = size < 0;
+		while (!isStop) {
+			if (fully) {
+				willRec = BUFFER_SIZE;
+			}
+			else {
+				if (size <= 0) {
+					break;
+				}
+				willRec = Math.min(BUFFER_SIZE, size);
+				size -= willRec;
+			}
+
+			byte[] data = receiveData(willRec);
+			if (data == null) {
+				break;
+			}
+			outputStream.write(data);
 		}
 	}
 
 	protected void invokeListener() {
 		if (!isStop && isFinished && onFinishedListener != null) {
-			if (mSizeWillReceive < 0 || mSizeWillReceive == mReceivedLength) {
-				onFinishedListener.onFinished(this);
-			}
+			onFinishedListener.onFinished(this);
 		}
 
 		if (isStop && onStopListener != null) {
@@ -148,18 +160,9 @@ public abstract class AbstractReceiver implements Receiver {
 		}
 	}
 
-	protected void writeData(byte[] data) throws IOException {
-		mFileWriter.write(mReceivedLength - data.length, data);
-	}
-
 	protected void finishReceive() throws IOException {
 		isFinished = !isStop;
 		invokeListener();
-		flushWriter();
-	}
-
-	protected void flushWriter() throws IOException {
-
 	}
 
 	/**
@@ -170,12 +173,8 @@ public abstract class AbstractReceiver implements Receiver {
 	 */
 	@Override
 	public void receive() throws IOException {
-		Log.d("Start receive data...");
 		byte[] data = null;
-		while (null != (data = receiveData(BUFFER_SIZE))) {
-			writeData(data);
-		}
-
+		receiveAndWrite(-1);
 		finishReceive();
 	}
 
@@ -185,7 +184,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 * @param size
 	 */
 	@Override
-	public void receive(long size) throws IOException {
+	public void receive(int size) throws IOException {
 		receiveAndWrite(size);
 		finishReceive();
 	}
@@ -216,7 +215,7 @@ public abstract class AbstractReceiver implements Receiver {
 		isStop = true;
 	}
 
-	public InputStream getInputStream() {
+	public InputStream inputStream() {
 		return mInputStream;
 	}
 
@@ -230,20 +229,12 @@ public abstract class AbstractReceiver implements Receiver {
 		return current;
 	}
 
-	public boolean isFinished() {
+	public boolean finished() {
 		return isFinished;
 	}
 
-	public boolean isStop() {
+	public boolean stoped() {
 		return isStop;
-	}
-
-	public Writer getFileWriter() {
-		return mFileWriter;
-	}
-
-	public void setFileWriter(Writer fileWriter) {
-		mFileWriter = fileWriter;
 	}
 
 	public void setOnFinishedListener(OnFinishedListener onFinishedListener) {

@@ -1,7 +1,6 @@
 package com.badsocket.net;
 
 import com.badsocket.core.Stopable;
-import com.badsocket.io.writer.Writer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +30,7 @@ public interface Receiver extends Stopable {
 	 *
 	 * @param len Length of data.
 	 */
-	void receive(long len) throws IOException;
+	void receive(int len) throws IOException;
 
 	long dataOffsetBegin();
 
@@ -47,15 +46,9 @@ public interface Receiver extends Stopable {
 
 	void setOnReceiveListener(OnReceiveListener onReceiveListener);
 
-	void setFileWriter(Writer fileWriter);
+	InputStream inputStream();
 
-	Writer getFileWriter();
-
-	InputStream getInputStream();
-
-	boolean isFinished();
-
-	boolean isStop();
+	boolean finished();
 
 	interface OnFinishedListener {
 		void onFinished(Receiver r);

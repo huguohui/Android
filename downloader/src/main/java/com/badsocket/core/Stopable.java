@@ -10,6 +10,6 @@ public interface Stopable {
 	 */
 	void stop();
 
-	boolean isStoped();
+	boolean stoped();
 
 }

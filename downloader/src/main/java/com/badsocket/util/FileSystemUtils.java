@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.FileAlreadyExistsException;
@@ -17,9 +19,39 @@ import java.nio.file.FileAlreadyExistsException;
  * Created by skyrim on 2017/12/16.
  */
 
-public abstract class FileUtils {
+public abstract class FileSystemUtils {
 
-	public static void copyTo(InputStream src, OutputStream dst, boolean closeStream) throws IOException {
+	public static void mkdir(File dir) throws IOException {
+		if (dir.exists()) {
+			if (!dir.isDirectory())
+				throw new IOException("Can't create directory, file is exists!");
+			return;
+		}
+		if (!dir.mkdirs()) {
+			throw new IOException("Can't create directory!");
+		}
+	}
+
+	public static void transfer(File src, File dst) throws IOException {
+		if (src.isDirectory()) {
+			dst = new File(dst, src.getName());
+			mkdir(dst);
+			for (File file : src.listFiles()) {
+				transfer(file, dst);
+			}
+		}
+		else {
+			File dstFile = dst.isDirectory() ? new File(dst, src.getName()) : dst;
+			try (
+					FileChannel srcChannel = new RandomAccessFile(src, "r").getChannel();
+					FileChannel dstChannel = new RandomAccessFile(dstFile, "rw").getChannel();
+			) {
+				srcChannel.transferTo(0, srcChannel.size(), dstChannel);
+			}
+		}
+	}
+
+	public static void copy(InputStream src, OutputStream dst, boolean closeStream) throws IOException {
 		try (
 				ReadableByteChannel channel = Channels.newChannel(src);
 				WritableByteChannel dstChannel = Channels.newChannel(dst);
@@ -39,45 +71,42 @@ public abstract class FileUtils {
 		}
 	}
 
-	public static void copyTo(InputStream src, OutputStream dst) throws IOException {
-		copyTo(src, dst, true);
+	public static void copy(InputStream src, OutputStream dst) throws IOException {
+		copy(src, dst, true);
 	}
 
-	public static void copyTo(InputStream src, File dst) throws IOException {
+	public static void copy(InputStream src, File dst) throws IOException {
 		if (src == null || dst == null) {
 			throw new IllegalArgumentException("Arguments can't NULL!");
 		}
 		if (dst.isDirectory()) {
-			throw new FileAlreadyExistsException("The path: " + dst + " isn't a directory!");
-		}
-		if (!dst.getParentFile().exists()) {
-			dst.getParentFile().mkdirs();
-		}
-		if (!dst.exists()) {
-			dst.createNewFile();
+			throw new FileAlreadyExistsException("The path: " + dst + " is a directory!");
 		}
 
-		copyTo(src, new FileOutputStream(dst));
+		copy(src, new FileOutputStream(dst));
 	}
 
-	public static void copyTo(File src, File dst) throws IOException {
+	public static void copy(File src, File dst) throws IOException {
 		if (src.isDirectory()) {
+			dst = new File(dst, src.getName());
+			mkdir(dst);
 			for (File file : src.listFiles()) {
-				copyTo(new FileInputStream(file), new File(dst, src.getName()));
+				copy(file, dst);
 			}
 		}
 		else {
-			copyTo(new FileInputStream(src), new File(dst, src.getName()));
+			File dstFile = dst.isDirectory() ? new File(dst, src.getName()) : dst;
+			copy(new FileInputStream(src), dstFile);
 		}
 	}
 
-	public static void copyTo(File[] srcs, File dst) throws IOException {
+	public static void copy(File[] srcs, File dst) throws IOException {
 		for (File src : srcs) {
-			copyTo(src, dst);
+			copy(src, dst);
 		}
 	}
 
-	public static void copyTo(File[] srcs, File dst, CopyFrontFilter filter,
+	public static void copy(File[] srcs, File dst, CopyFrontFilter filter,
 							  CopyExceptionHandler eh, CopySuccessHandler sh) throws IOException {
 		for (File src : srcs) {
 			try {
@@ -85,7 +114,7 @@ public abstract class FileUtils {
 					continue;
 				}
 
-				copyTo(src, dst);
+				copy(src, dst);
 				sh.handleCopySuccess(src, dst);
 			}
 			catch (Exception e) {
@@ -94,13 +123,13 @@ public abstract class FileUtils {
 		}
 	}
 
-	public static void copyTo(File[] srcs, File[] dsts) throws IOException {
+	public static void copy(File[] srcs, File[] dsts) throws IOException {
 		for (int i = 0, j = 0; i < srcs.length; i++, j++) {
-			copyTo(srcs[i], dsts[i]);
+			copy(srcs[i], dsts[i]);
 		}
 	}
 
-	public static void copyTo(File[] srcs, File[] dsts, CopyFrontFilter filter,
+	public static void copy(File[] srcs, File[] dsts, CopyFrontFilter filter,
 							  CopyExceptionHandler eh, CopySuccessHandler sh) throws IOException {
 		for (int i = 0, j = 0; i < srcs.length; i++, j++) {
 			File src = srcs[i], dst = dsts[i];
@@ -109,7 +138,7 @@ public abstract class FileUtils {
 					continue;
 				}
 
-				copyTo(src, dst);
+				copy(src, dst);
 				sh.handleCopySuccess(src, dst);
 			}
 			catch (Exception e) {
@@ -126,7 +155,7 @@ public abstract class FileUtils {
 			throw new FileAlreadyExistsException(dst.getAbsolutePath());
 		}
 
-		copyTo(src, dst);
+		copy(src, dst);
 		src.delete();
 	}
 

@@ -1,12 +1,12 @@
 package com.badsocket.net.http;
 
-import com.badsocket.io.writer.ConcurrentWriter;
-import com.badsocket.io.writer.Writer;
 import com.badsocket.net.AbstractReceiver;
 import com.badsocket.net.Receiver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 /**
  * Download data from URL, based HTTP protocol.
@@ -32,25 +32,25 @@ public class HttpReceiver extends AbstractReceiver {
 	/**
 	 * Buffer for receiver.
 	 */
-	protected byte[] mBuffer = new byte[0x100000];
+	protected byte[] mBuffer = new byte[81920];
 
 	/**
 	 * Size of current downloading chunked block.
 	 */
-	protected long mCurrentChunkedSize = 0;
+	protected int mCurrentChunkSize = 0;
+
+	protected int lastChunkRemainData = 0;
 
 	protected HttpHeader mHeader;
 
 	protected HttpResponse httpResponse;
 
-	protected ConcurrentWriter fileWriter;
+	protected FileChannel fileChannel;
 
-	public HttpReceiver(BaseHttpRequest d, Writer w) throws IOException {
-		super(d.socket().getInputStream(), w);
-		fileWriter = (ConcurrentWriter) w;
+	public HttpReceiver(BaseHttpRequest d, OutputStream os) throws IOException {
+		super(d.socket().getInputStream(), os);
 		httpResponse = (HttpResponse) d.response();
 		isChunked = httpResponse.isChunked();
-		mSizeWillReceive = isChunked ? -1 : httpResponse.getContentLength();
 		dataOffsetBegin = d.getRange() != null ? d.getRange().start : 0;
 		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange() + 1;
 	}
@@ -60,29 +60,32 @@ public class HttpReceiver extends AbstractReceiver {
 	 *
 	 * @return Parsed chunk data.
 	 */
-	protected void receiveChunked(long size) throws IOException {
-		if (size < 0) {
-			while (!isStop && mCurrentChunkedSize > 0
-					|| (mCurrentChunkedSize = getChunkSize(mInputStream)) != 0) {
-				receiveAndWrite(mCurrentChunkedSize);
-				mCurrentChunkedSize = 0;
+	protected void receiveChunked(int size) throws IOException {
+		boolean receiveAll = size == -1;
+		int sizeToReceive = 0;
+		while (!isStop) {
+			if (size == 0) {
+				break;
 			}
-
-			isFinished = !isStop;
-		}
-		else {
-			while (!isStop && size > 0) {
-				if (mCurrentChunkedSize <= 0) {
-					if ((mCurrentChunkedSize = getChunkSize(mInputStream)) == 0) {
-						isFinished = true;
-						return;
-					}
+			if (receiveAll) {
+				mCurrentChunkSize = getChunkSize(mInputStream);
+				sizeToReceive = mCurrentChunkSize;
+			}
+			else {
+				if (lastChunkRemainData > 0) {
+					sizeToReceive = Math.min(size, lastChunkRemainData);
+					size -= sizeToReceive;
+					lastChunkRemainData -= sizeToReceive;
 				}
-
-				long willToReceiving = mCurrentChunkedSize;
-				receiveAndWrite(willToReceiving);
-				mCurrentChunkedSize = 0;
+				else {
+					mCurrentChunkSize = getChunkSize(mInputStream);
+					sizeToReceive = Math.min(mCurrentChunkSize, size);
+					size -= sizeToReceive;
+					lastChunkRemainData = mCurrentChunkSize - sizeToReceive;
+				}
 			}
+
+			receiveAndWrite(sizeToReceive);
 		}
 
 		finishReceive();
@@ -121,28 +124,12 @@ public class HttpReceiver extends AbstractReceiver {
 		return emptyLine > 1 ? 0 : -1;
 	}
 
-	protected void writeData(byte[] data) throws IOException {
-		if (data == null) {
-			return;
-		}
-		if (dataOffsetBegin != -1) {
-			fileWriter.write(dataOffsetBegin, mReceivedLength - data.length, data);
-			return;
-		}
-
-		super.writeData(data);
-	}
-
-	protected void flushWriter() throws IOException {
-		fileWriter.flushBuffer(dataOffsetBegin);
-	}
-
 	/**
 	 * To downloading data from source, and save data to somewhere.
 	 *
 	 * @param size Size of will downloading.
 	 */
-	protected void receiveData(long size) throws IOException {
+	public void receive(int size) throws IOException {
 		if (size == 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 
@@ -157,11 +144,6 @@ public class HttpReceiver extends AbstractReceiver {
 		}
 	}
 
-	public void receive(long size) throws IOException {
-		mSizeWillReceive = size > 0 ? size : mSizeWillReceive;
-		receiveData(mSizeWillReceive);
-	}
-
 	public void receive() throws IOException {
 		receive(-1);
 	}
@@ -170,20 +152,10 @@ public class HttpReceiver extends AbstractReceiver {
 		return httpResponse;
 	}
 
-	public void stop() {
-		isStop = true;
-	}
 
 	@Override
-	public boolean isStoped() {
+	public boolean stoped() {
 		return false;
 	}
 
-	public Writer getFileWriter() {
-		return fileWriter;
-	}
-
-	public void setFileWriter(Writer fileWriter) {
-		this.fileWriter = (ConcurrentWriter) fileWriter;
-	}
 }

@@ -16,7 +16,6 @@ import com.badsocket.net.http.HttpResponse;
 import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
@@ -79,7 +78,6 @@ public class HttpDownloadTask
 	}
 
 	protected void prepareDownload() throws Exception {
-		fileWriter = context.getFileWriter(new File(getStorageDir(), name()), size());
 	}
 
 	@Override
@@ -133,7 +131,7 @@ public class HttpDownloadTask
 		Receiver receiver = null;
 		for (int i = 0; i < reqs.length; i++) {
 			receiver = reqs[i] != null
-					? downloadComponentFactory.createReceiver(reqs[i], fileWriter)
+					? downloadComponentFactory.createReceiver(reqs[i])
 							: null;
 			receiverGroup.addReceiver(receiver);
 		}
@@ -211,7 +209,6 @@ public class HttpDownloadTask
 
 	protected void releaseResource() throws Exception {
 		clearGroups();
-		fileWriter.close();
 	}
 
 	protected void afterDownloadStop() {

@@ -16,8 +16,7 @@ import com.badsocket.core.config.PropertiesConfigReader;
 import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.core.executor.DownloadTaskExecutor;
-import com.badsocket.io.writer.ConcurrentFileWriter;
-import com.badsocket.io.writer.FileWriter;
+import com.badsocket.io.ConcurrentFileAccessor;
 import com.badsocket.manager.FileManager;
 import com.badsocket.manager.Manager;
 import com.badsocket.manager.ThreadManager;
@@ -76,7 +75,7 @@ public class DownloaderContext extends Context {
 
 	private DownloadTaskExecutor downloadTaskExecutor;
 
-	private Map<String, ConcurrentFileWriter> fileWriters = new HashMap<>();
+	private Map<String, ConcurrentFileAccessor> fileWriters = new HashMap<>();
 
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
@@ -128,31 +127,6 @@ public class DownloaderContext extends Context {
 	@Override
 	public ThreadFactory getThreadFactory() {
 		return threadFactory;
-	}
-
-	@Override
-	public FileWriter getFileWriter(String path) throws IOException {
-		return getFileWriter(new File(path));
-	}
-
-	@Override
-	public FileWriter getFileWriter(File path) throws IOException {
-		return new ConcurrentFileWriter(path);
-	}
-
-	@Override
-	public FileWriter getFileWriter(String path, long size) throws IOException {
-		return getFileWriter(new File(path), size);
-	}
-
-	@Override
-	public FileWriter getFileWriter(File path, long size) throws IOException {
-		ConcurrentFileWriter fileWriter = new ConcurrentFileWriter(new File(
-				path.getPath() + Downloader.UNCOMPLETE_DOWNLAOD_TASK_SUFFIX), size);
-		synchronized (fileWriters) {
-			fileWriters.put(path.getAbsolutePath(), fileWriter);
-		}
-		return fileWriter;
 	}
 
 	@Override

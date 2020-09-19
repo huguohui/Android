@@ -90,7 +90,7 @@ public class Bootstrap extends Application {
 					extractDir.mkdirs();
 				}
 				for (String file : assetManager.list(assetsDir)) {
-					FileUtils.copyTo(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
+					FileUtils.copy(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
 				}
 			}
 			catch (Exception e) {
