@@ -7,8 +7,7 @@ import com.badsocket.net.Request;
 import com.badsocket.net.Response;
 import com.badsocket.net.http.Http.Method;
 import com.badsocket.net.newidea.URI;
-import com.badsocket.util.Log;
-import com.badsocket.util.URLUtils;
+import com.badsocket.util.URIUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,7 +67,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 			this.mMethod = method;
 
 		mUri = address;
-		mAddress = URLUtils.socketAddressByUri(address);
+		mAddress = URIUtils.socketAddressByUri(address);
 		initHeader();
 	}
 
@@ -106,7 +105,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 		HttpHeader mHeader = (HttpHeader) this.mHeader;
 		mHeader.setUrl(mUri.toString());
 		mHeader.setMethod(mMethod);
-		mHeader.set(Http.HOST, URLUtils.domainWithPort(mUri));
+		mHeader.set(Http.HOST, URIUtils.domainWithPort(mUri));
 	}
 
 	protected void afterSend() {
@@ -161,7 +160,7 @@ public class BaseHttpRequest extends AbstractRequest implements HttpRequest {
 	public void open(URI uri, Method method) throws IOException {
 		setUri(uri);
 		setMethod(method == null ? Method.GET : method);
-		super.open(URLUtils.socketAddressByUri(uri));
+		super.open(URIUtils.socketAddressByUri(uri));
 	}
 
 	public void open(URI uri) throws IOException {

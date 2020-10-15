@@ -1,4 +1,6 @@
-package com.badsocket.manager;
+package com.badsocket.util;
+
+import com.badsocket.core.Manager;
 
 import java.io.File;
 import java.io.IOException;

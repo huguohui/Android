@@ -1,6 +1,5 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.Controlable;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.ProtocolHandler;
@@ -68,7 +67,7 @@ public interface Downloader extends Controlable {
 
 	int getParallelTaskNum();
 
-	Context getDownloaderContext();
+	DownloaderContext getDownloaderContext();
 
 	InternetDownloader.ThreadAllocStategy getThreadAllocStategy();
 

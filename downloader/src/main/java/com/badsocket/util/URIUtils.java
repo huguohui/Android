@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @since 2017/01/15 16:19
  */
-final public class URLUtils {
+final public class URIUtils {
 	/**
 	 * Get the top domain of url.
 	 *

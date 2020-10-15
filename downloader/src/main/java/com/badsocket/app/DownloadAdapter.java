@@ -2,7 +2,6 @@ package com.badsocket.app;
 
 import android.os.Binder;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
@@ -10,6 +9,7 @@ import com.badsocket.core.Task;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.DownloadTaskInfoStorage;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.downloader.HttpProtocolHandler;
 import com.badsocket.core.downloader.InternetDownloader;
 
@@ -191,7 +191,7 @@ public class DownloadAdapter extends Binder implements Downloader {
 	}
 
 	@Override
-	public Context getDownloaderContext() {
+	public DownloaderContext getDownloaderContext() {
 		return downloader.getDownloaderContext();
 	}
 

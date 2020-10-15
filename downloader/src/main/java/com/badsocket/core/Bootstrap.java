@@ -7,8 +7,8 @@ import android.os.Environment;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.ConfigReader;
 import com.badsocket.core.downloader.DownloaderContext;
-import com.badsocket.manager.FileManager;
-import com.badsocket.util.FileUtils;
+import com.badsocket.util.FileManager;
+import com.badsocket.util.FileSystemUtils;
 import com.badsocket.util.Log;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class Bootstrap extends Application {
 
-	private Context context;
+	private DownloaderContext context;
 
 	private ConfigReader configReader;
 
@@ -69,7 +69,7 @@ public class Bootstrap extends Application {
 	}
 
 	public void extractAssets() {
-		File rootPath = new File(DownloaderContext.ROOT_PATH, packageName);
+		File rootPath = new File(DownloaderContext.EXTERNAL_STORAGE_ROOT, packageName);
 		if (!rootPath.exists()) {
 			rootPath.mkdirs();
 		}
@@ -90,7 +90,7 @@ public class Bootstrap extends Application {
 					extractDir.mkdirs();
 				}
 				for (String file : assetManager.list(assetsDir)) {
-					FileUtils.copy(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
+					FileSystemUtils.copy(assetManager.open(assetsDir + DS + file), new File(extractDir, file));
 				}
 			}
 			catch (Exception e) {

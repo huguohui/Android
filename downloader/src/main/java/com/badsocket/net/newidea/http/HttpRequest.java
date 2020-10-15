@@ -6,14 +6,14 @@ import com.badsocket.net.newidea.URI;
 
 import java.util.HashMap;
 
-public abstract class HttpRequest extends Request {
+public abstract class HttpRequest implements Request {
 
 	private Entity entity;
 
 	private HashMap<String, String> headerMap = new HashMap<>();
 
 	public HttpRequest(URI uri) {
-		super(uri);
+
 	}
 
 	public void setHeader(String name, String val) {

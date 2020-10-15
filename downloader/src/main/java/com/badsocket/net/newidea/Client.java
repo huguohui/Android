@@ -1,14 +1,17 @@
 package com.badsocket.net.newidea;
 
-/**
- * A client that can send request for some protocol.
- *
- * @since 2019/01/24
- */
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+
 public interface Client {
 
-	void send(Request request);
+	void close() throws Exception;
 
-	Response receive();
+	Connection open(URI uri) throws Exception;
+
+	void send(Request request) throws Exception;
+
+	Response receive() throws Exception;
+
 
 }

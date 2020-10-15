@@ -192,6 +192,10 @@ public class URI implements Serializable {
 		}
 	}
 
+	public boolean isAbsoulteURI() {
+		return host == null && scheme == null;
+	}
+
 	private void parseHashComponent() {
 		fragment = parsingUri.toString().replace("#", "");
 	}

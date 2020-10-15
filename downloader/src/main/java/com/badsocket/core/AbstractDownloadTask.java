@@ -2,6 +2,7 @@ package com.badsocket.core;
 
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.net.Response;
 import com.badsocket.net.newidea.URI;
 import com.badsocket.util.DateUtils;
@@ -49,12 +50,11 @@ public abstract class AbstractDownloadTask extends AbstractTask implements Downl
 
 	protected boolean isPaused = false;
 
-	transient protected Context context;
+	transient protected DownloaderContext context;
 
 	transient protected Downloader downloader;
 
 	transient protected Response response;
-
 
 	transient protected List<OnTaskCreateListener> onTaskCreateListeners = new ArrayList<>();
 

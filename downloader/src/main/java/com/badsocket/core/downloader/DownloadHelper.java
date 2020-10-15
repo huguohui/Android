@@ -1,6 +1,5 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.net.Request;
@@ -26,7 +25,7 @@ public abstract class DownloadHelper {
 		return rep;
 	}
 
-	public static void fetchTaskInfoAsync(Context context, final DownloadTaskDescriptor desc,
+	public static void fetchTaskInfoAsync(DownloaderContext context, final DownloadTaskDescriptor desc,
 										  ProtocolHandler handler, final OnFetchTaskInfoListener listener) throws IOException {
 		final DownloadComponentFactory factory = handler.downloadComponentFactory();
 		final Request req = factory.createRequest(desc);

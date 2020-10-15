@@ -1,4 +1,4 @@
-package com.badsocket.manager;
+package com.badsocket.core;
 
 import java.util.Collection;
 import java.util.List;

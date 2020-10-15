@@ -1,4 +1,4 @@
-package com.badsocket.manager;
+package com.badsocket.core;
 
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.Task;

@@ -11,54 +11,27 @@ import java.io.InputStream;
  * @since 2015/11/29
  */
 public interface Receiver extends Stopable {
-	/**
-	 * Flag of stream end.
-	 */
+	/** Flag of stream end. */
 	int END_OF_STREAM = -1;
 
-	/**
-	 * Receiving data.
-	 *
-	 * @return Received data by byte.
-	 * @throws IOException               When I/O exception.
-	 * @throws java.net.ConnectException When connection exception.
-	 */
 	void receive() throws IOException;
 
-	/**
-	 * To downloading data from source, and save data to somewhere.
-	 *
-	 * @param len Length of data.
-	 */
-	void receive(int len) throws IOException;
-
-	long dataOffsetBegin();
-
-	long dataOffsetEnd();
+	void receive(long len) throws IOException;
 
 	long getLastReceivedLength();
 
 	long getReceivedLength();
 
-	void setOnFinishedListener(OnFinishedListener onFinishedListener);
+	long getAverageSpeed();
 
-	void setOnStopListener(OnStopListener onStopListener);
+	boolean completed();
+
+	InputStream getInputStream();
 
 	void setOnReceiveListener(OnReceiveListener onReceiveListener);
-
-	InputStream inputStream();
-
-	boolean finished();
-
-	interface OnFinishedListener {
-		void onFinished(Receiver r);
-	}
-
-	interface OnStopListener {
-		void onStop(Receiver r);
-	}
 
 	interface OnReceiveListener {
 		void onReceive(Receiver r, byte[] data);
 	}
+
 }

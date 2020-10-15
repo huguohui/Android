@@ -31,7 +31,7 @@ public class PropertiesConfigReader implements ConfigReader {
 
 	@Override
 	public Config read() throws IOException {
-		Config config = new DownloadConfig(configFile);
+		Config config = null;
 		if (configFile != null) {
 			config = read(configFile);
 		}

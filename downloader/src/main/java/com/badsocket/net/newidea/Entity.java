@@ -2,8 +2,12 @@ package com.badsocket.net.newidea;
 
 import java.io.InputStream;
 
-public abstract class Entity {
+public interface Entity {
 
-	public abstract InputStream inputStream();
+	long size();
+
+	void write(byte[] data);
+
+	void read(byte[] buff);
 
 }

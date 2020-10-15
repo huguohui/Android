@@ -1,9 +1,7 @@
-package com.badsocket.manager;
+package com.badsocket.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 

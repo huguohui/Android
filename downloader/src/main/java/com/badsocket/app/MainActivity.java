@@ -21,10 +21,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.badsocket.R;
-import com.badsocket.core.Context;
 import com.badsocket.core.DownloadTask;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
+import com.badsocket.core.downloader.DownloaderContext;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.net.newidea.URI;
 import com.badsocket.util.Log;
@@ -49,7 +49,7 @@ public class MainActivity
 
 	protected Downloader downloader;
 
-	protected Context downloaderContext;
+	protected DownloaderContext downloaderContext;
 
 	protected IBinder binder;
 

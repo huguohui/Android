@@ -3,14 +3,14 @@ package com.badsocket.core.downloader;
 import com.badsocket.core.AbstractDownloadTask;
 import com.badsocket.core.DownloadComponentFactory;
 import com.badsocket.core.Protocols;
-import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.downloader.exception.DownloadTaskException;
 import com.badsocket.net.AsyncReceiver;
-import com.badsocket.net.Receiver;
+import com.badsocket.net.AsyncReceiverWrapper;
 import com.badsocket.net.ReceiverGroup;
 import com.badsocket.net.Request;
 import com.badsocket.net.RequestGroup;
 import com.badsocket.net.Response;
+import com.badsocket.net.Receiver;
 import com.badsocket.net.http.HttpRequest;
 import com.badsocket.net.http.HttpResponse;
 import com.badsocket.net.newidea.URI;
@@ -21,6 +21,7 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
@@ -36,11 +37,11 @@ public class HttpDownloadTask
 
 	transient protected ReceiverGroup receiverGroup;
 
-	transient protected List<Future<Long>> receiverFutures;
+	transient protected List<Future<Boolean>> receiverFutures;
 
 	transient protected DownloadComponentFactory downloadComponentFactory;
 
-	public static Protocols PROTOCOL;
+	final public static Protocols PROTOCOL = Protocols.HTTP;
 
 	public HttpDownloadTask(Downloader c, URI url) {
 		this(c, url, "");
@@ -61,7 +62,6 @@ public class HttpDownloadTask
 	}
 
 	protected void init() {
-		PROTOCOL = Protocols.HTTP;
 		downloadComponentFactory = downloader.getProtocolHandler(PROTOCOL)
 				.downloadComponentFactory();
 		requestGroup = new RequestGroup();
@@ -126,27 +126,22 @@ public class HttpDownloadTask
 		requestGroup.addRequests(reqs);
 	}
 
-	protected void createDownloadReceiver() throws IOException {
+	protected void createDownloadSocketReceiver() throws IOException {
 		Request reqs[] = requestGroup.getRequests();
 		Receiver receiver = null;
 		for (int i = 0; i < reqs.length; i++) {
 			receiver = reqs[i] != null
 					? downloadComponentFactory.createReceiver(reqs[i])
 							: null;
-			receiverGroup.addReceiver(receiver);
+			receiverGroup.addReceiver(new AsyncReceiverWrapper(context.getThreadExecutor(), receiver));
 		}
 	}
 
-	protected void downloadDataByReceiver() {
+	protected void downloadDataBySocketReceiver() throws IOException {
 		AsyncReceiver asyncReceiver = null;
 		Receiver[] receivers = receiverGroup.getReceivers();
-		ThreadExecutor executor = (ThreadExecutor) context.getThreadExecutor();
-		for (int i = 0; i < receivers.length; i++) {
-			if (receivers[i] != null) {
-				asyncReceiver = new AsyncReceiver(receivers[i]);
-				receiverFutures.add(executor.submit(asyncReceiver));
-			}
-		}
+		ExecutorService executor = context.getThreadExecutor();
+		receiverGroup.receiveAll();
 	}
 
 	protected void onDownloadStarted() throws Exception {
@@ -164,8 +159,8 @@ public class HttpDownloadTask
 
 	protected void waitForEnd() throws ExecutionException, InterruptedException {
 		int completed = 0;
-		for (Future<Long> future : receiverFutures) {
-			if (future.get() != 0) {
+		for (Future<Boolean> future : receiverFutures) {
+			if (future.get()) {
 				completed++;
 			}
 		}
@@ -177,8 +172,8 @@ public class HttpDownloadTask
 		try {
 			prepare();
 			createDownloadRequests();
-			createDownloadReceiver();
-			downloadDataByReceiver();
+			createDownloadSocketReceiver();
+			downloadDataBySocketReceiver();
 			onDownloadStarted();
 			waitForEnd();
 		}
@@ -202,7 +197,7 @@ public class HttpDownloadTask
 	}
 
 	protected void interruptExecutor() throws Exception {
-		for (Future<Long> future : receiverFutures) {
+		for (Future<Boolean> future : receiverFutures) {
 			future.cancel(true);
 		}
 	}
@@ -387,7 +382,7 @@ public class HttpDownloadTask
 
 	@Override
 	public boolean isPauseSupport() {
-		return true;
+		return false;
 	}
 
 	public static abstract class HttpDownloadTaskExtraInfo extends TaskExtraInfo {

@@ -54,6 +54,14 @@ public class ReceiverGroup {
 		receivers.get(idx).receive();
 	}
 
+	public void receiveAll() throws IOException {
+		for (Receiver r : receivers) {
+			if (r != null && !r.stoped()) {
+				r.receive();
+			}
+		}
+	}
+
 	public void stop(int idx) throws IOException {
 		receivers.get(idx).stop();
 	}
@@ -79,7 +87,7 @@ public class ReceiverGroup {
 	public long getTotalReceivedLength() {
 		long length = 0;
 		for (Receiver r : receivers) {
-			if (r != null && r != null) {
+			if (r != null) {
 				length += r.getReceivedLength();
 			}
 		}

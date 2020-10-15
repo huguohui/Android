@@ -32,8 +32,8 @@ public abstract class AbstractDownloadTaskExecutor extends ScheduledThreadPoolEx
 		super(coolPoolSize, factory);
 	}
 
-	public AbstractDownloadTaskExecutor(DownloaderContext context, int corePoolSize) {
-		super(corePoolSize);
+	public AbstractDownloadTaskExecutor(DownloaderContext context, int corePoolSize, ThreadFactory factory) {
+		super(corePoolSize, factory);
 		this.context = context;
 	}
 

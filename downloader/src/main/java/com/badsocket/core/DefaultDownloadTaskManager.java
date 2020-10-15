@@ -1,7 +1,5 @@
-package com.badsocket.manager;
+package com.badsocket.core;
 
-import com.badsocket.core.DownloadTask;
-import com.badsocket.core.Task;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.executor.DownloadTaskExecutor;
 

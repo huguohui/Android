@@ -1,6 +1,6 @@
 package com.badsocket.net.http;
 
-import com.badsocket.net.AbstractReceiver;
+import com.badsocket.net.AbstractLimitableReceiver;
 import com.badsocket.net.Receiver;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.nio.channels.FileChannel;
  *
  * @since 2015/11/29
  */
-public class HttpReceiver extends AbstractReceiver {
+public class HttpReceiver extends AbstractLimitableReceiver {
 	/**
 	 * Chunked of key value for http header Transfer-Encoding.
 	 */
@@ -30,16 +30,11 @@ public class HttpReceiver extends AbstractReceiver {
 	protected boolean isGzip = false;
 
 	/**
-	 * Buffer for receiver.
-	 */
-	protected byte[] mBuffer = new byte[81920];
-
-	/**
 	 * Size of current downloading chunked block.
 	 */
-	protected int mCurrentChunkSize = 0;
+	protected long mCurrentChunkSize = 0;
 
-	protected int lastChunkRemainData = 0;
+	protected long lastChunkRemainSize = 0;
 
 	protected HttpHeader mHeader;
 
@@ -47,12 +42,12 @@ public class HttpReceiver extends AbstractReceiver {
 
 	protected FileChannel fileChannel;
 
-	public HttpReceiver(BaseHttpRequest d, OutputStream os) throws IOException {
-		super(d.socket().getInputStream(), os);
-		httpResponse = (HttpResponse) d.response();
+	public HttpReceiver(BaseHttpRequest req, OutputStream os) throws IOException {
+		super(req.socket().getInputStream(), os);
+		httpResponse = (HttpResponse) req.response();
 		isChunked = httpResponse.isChunked();
-		dataOffsetBegin = d.getRange() != null ? d.getRange().start : 0;
-		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange() + 1;
+//		dataOffsetBegin = d.getRange() != null ? d.getRange().start : 0;
+//		dataOffsetEnd = isChunked ? -1 : dataOffsetBegin + d.getRange().getRange() + 1;
 	}
 
 	/**
@@ -60,28 +55,29 @@ public class HttpReceiver extends AbstractReceiver {
 	 *
 	 * @return Parsed chunk data.
 	 */
-	protected void receiveChunked(int size) throws IOException {
-		boolean receiveAll = size == -1;
-		int sizeToReceive = 0;
+	protected void receiveChunked(long size) throws IOException {
+		long sizeToReceive = 0;
+		boolean receiveAll = size <= 0;
+
 		while (!isStop) {
-			if (size == 0) {
+			if (!receiveAll && size <= 0) {
 				break;
 			}
-			if (receiveAll) {
-				mCurrentChunkSize = getChunkSize(mInputStream);
-				sizeToReceive = mCurrentChunkSize;
+			if (lastChunkRemainSize > 0) {
+				sizeToReceive = Math.min(size, lastChunkRemainSize);
+				size -= sizeToReceive;
+				lastChunkRemainSize -= sizeToReceive;
 			}
 			else {
-				if (lastChunkRemainData > 0) {
-					sizeToReceive = Math.min(size, lastChunkRemainData);
-					size -= sizeToReceive;
-					lastChunkRemainData -= sizeToReceive;
+				mCurrentChunkSize = getChunkSize(mInputStream);
+				if (mCurrentChunkSize == 0) {
+					break;
 				}
-				else {
-					mCurrentChunkSize = getChunkSize(mInputStream);
-					sizeToReceive = Math.min(mCurrentChunkSize, size);
+				sizeToReceive = mCurrentChunkSize;
+				if (!receiveAll) {
+					sizeToReceive = receiveAll ? mCurrentChunkSize : Math.min(mCurrentChunkSize, size);
 					size -= sizeToReceive;
-					lastChunkRemainData = mCurrentChunkSize - sizeToReceive;
+					lastChunkRemainSize = mCurrentChunkSize - sizeToReceive;
 				}
 			}
 
@@ -101,16 +97,18 @@ public class HttpReceiver extends AbstractReceiver {
 	protected int getChunkSize(InputStream is) throws IOException {
 		byte aByte;
 		int matchCount = 0, byteCount = 0, emptyLine = 0;
-		byte[] buff = new byte[AbstractReceiver.BUFFER_SIZE], crlf = {0x0D, 0x0A};
+		byte[] buff = new byte[BUFFER_SIZE],
+			   crlf = {0x0D, 0x0A}; // \r\n
 
 		while (Receiver.END_OF_STREAM != (aByte = (byte) is.read())) {
 			if (aByte == crlf[matchCount]) {
 				if (++matchCount == 2) {
-					if (byteCount != 0)
+					if (byteCount != 0) {
 						return Integer.parseInt(new String(buff, 0, byteCount), 16);
-					else
+					}
+					else {
 						emptyLine++;
-
+					}
 					byteCount = 0;
 					matchCount = 0;
 				}
@@ -129,7 +127,7 @@ public class HttpReceiver extends AbstractReceiver {
 	 *
 	 * @param size Size of will downloading.
 	 */
-	public void receive(int size) throws IOException {
+	public void receive(long size) throws IOException {
 		if (size == 0)
 			throw new IllegalArgumentException("Size of receive is illegal!");
 
@@ -137,10 +135,7 @@ public class HttpReceiver extends AbstractReceiver {
 			receiveChunked(size);
 		}
 		else {
-			if (size < 0)
-				super.receive();
-			else
-				super.receive(size);
+			super.receive(size);
 		}
 	}
 
@@ -151,11 +146,4 @@ public class HttpReceiver extends AbstractReceiver {
 	public HttpResponse getHttpResponse() {
 		return httpResponse;
 	}
-
-
-	@Override
-	public boolean stoped() {
-		return false;
-	}
-
 }

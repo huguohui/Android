@@ -3,9 +3,9 @@ package com.badsocket.core;
 import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.InternetDownloader;
-import com.badsocket.net.Receiver;
 import com.badsocket.net.Request;
 import com.badsocket.net.Response;
+import com.badsocket.net.Receiver;
 import com.badsocket.net.newidea.URI;
 
 import java.io.IOException;

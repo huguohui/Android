@@ -1,18 +1,18 @@
 package com.badsocket.core.downloader;
 
-import com.badsocket.core.Context;
+import com.badsocket.core.DefaultDownloadTaskManager;
 import com.badsocket.core.DownloadTask;
+import com.badsocket.core.DownloadTaskManager;
 import com.badsocket.core.ProtocolHandler;
 import com.badsocket.core.Protocols;
 import com.badsocket.core.SimpleControlableClock;
 import com.badsocket.core.Task;
+import com.badsocket.core.ThreadManager;
 import com.badsocket.core.config.Config;
+import com.badsocket.core.config.ConfigKeys;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.downloader.exception.UnsupportedProtocolException;
 import com.badsocket.core.executor.DownloadTaskExecutor;
-import com.badsocket.manager.DefaultDownloadTaskManager;
-import com.badsocket.manager.DownloadTaskManager;
-import com.badsocket.manager.ThreadManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class InternetDownloader
 
 	protected Map<Protocols, ProtocolHandler> protocolHandlers = new HashMap<>();
 
-	protected Context context;
+	protected DownloaderContext context;
 
 	protected Config config;
 
@@ -67,7 +67,7 @@ public class InternetDownloader
 		return len < 3 ? 1 : (len > 1024 * 1024 ? 10 : num);
 	};
 
-	public InternetDownloader(Context context) throws Exception {
+	public InternetDownloader(DownloaderContext context) throws Exception {
 		this.context = context;
 		androidContext = context.getAndroidContext();
 		init();
@@ -77,11 +77,10 @@ public class InternetDownloader
 		taskManager = new DefaultDownloadTaskManager(this);
 		config = context.getDownloaderConfig();
 		downloadTaskExecutor = context.getDownloadTaskExecutor();
-		MAX_PARALLEL_TASKS = config.getInteger(DownloadConfig.GLOBAL_MAX_PARALLEL_TASKS);
-		downloadPath = DownloaderContext.ROOT_PATH + DownloaderContext.DS
-				+ config.get(DownloadConfig.GLOBAL_DOWNLAOD_PATH);
+		MAX_PARALLEL_TASKS = config.getInteger(ConfigKeys.GLOBAL_MAX_PARALLEL_TASKS);
+		downloadPath = DownloaderContext.getExternalFile(config.get(ConfigKeys.GLOBAL_DOWNLAOD_PATH)).getAbsolutePath();
 		downloadTaskInfoStorage = new BaseFileDownloadTaskInfoStorage(new FileDownloadTaskInfoStorage.Locations(
-				DownloaderContext.HOME_DIRECTORY + DownloaderContext.DS + DownloaderContext.HISTORY_DIR,
+				DownloaderContext.getExternalFile(DownloaderContext.HISTORY_DIR).getAbsolutePath(),
 				downloadPath
 		));
 
@@ -321,7 +320,7 @@ public class InternetDownloader
 	}
 
 	@Override
-	public Context getDownloaderContext() {
+	public DownloaderContext getDownloaderContext() {
 		return context;
 	}
 
@@ -388,7 +387,7 @@ public class InternetDownloader
 			@Override
 			public void run() {
 				time += MS_SECOND;
-				downloader.threadManager.create(() -> {
+				downloader.threadManager.createThread(() -> {
 					StreamSupport.stream(onTickListeners).forEach(listener -> listener.onTick());
 				}).start();
 			}

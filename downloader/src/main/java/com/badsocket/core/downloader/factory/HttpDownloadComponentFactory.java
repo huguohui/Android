@@ -6,9 +6,9 @@ import com.badsocket.core.downloader.DownloadTaskDescriptor;
 import com.badsocket.core.downloader.Downloader;
 import com.badsocket.core.downloader.HttpDownloadTask;
 import com.badsocket.core.downloader.InternetDownloader;
-import com.badsocket.net.Receiver;
 import com.badsocket.net.Request;
 import com.badsocket.net.Response;
+import com.badsocket.net.Receiver;
 import com.badsocket.net.http.BaseHttpRequest;
 import com.badsocket.net.http.Http;
 import com.badsocket.net.http.HttpReceiver;
@@ -111,7 +111,7 @@ public class HttpDownloadComponentFactory implements DownloadComponentFactory {
 	@Override
 	public Receiver createReceiver(Request r) throws IOException {
 		BaseHttpRequest req = (BaseHttpRequest) r;
-		HttpReceiver rec = new HttpReceiver((BaseHttpRequest) r);
+		HttpReceiver rec = new HttpReceiver((BaseHttpRequest) r, null);
 		return rec;
 	}
 

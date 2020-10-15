@@ -1,5 +1,6 @@
-package com.badsocket.manager;
+package com.badsocket.util;
 
+import com.badsocket.core.ThreadManager;
 import com.badsocket.core.downloader.exception.FileAlreadyExistsException;
 
 import java.io.File;

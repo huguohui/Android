@@ -8,7 +8,7 @@ import com.badsocket.net.newidea.URI;
 import com.badsocket.util.DateUtils;
 import com.badsocket.util.Log;
 import com.badsocket.util.StringUtils;
-import com.badsocket.util.URLUtils;
+import com.badsocket.util.URIUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,7 +83,7 @@ public class HttpResponse extends Response {
 		HttpHeader header = (HttpHeader) this.header;
 		contentLength = StringUtils.str2Long(header.get(Http.CONTENT_LENGTH), 0L);
 		mTransferEncoding = header.get(Http.TRANSFER_ENCODING);
-		mFileName = URLUtils.decode(URLUtils.filename(httpRequest.getUri()), "UTF-8");
+		mFileName = URIUtils.decode(URIUtils.filename(httpRequest.getUri()), "UTF-8");
 		mContentType = header.get(Http.CONTENT_TYPE);
 		try {
 			mHttpVersion = Float.parseFloat(header.getVersion());
@@ -110,7 +110,7 @@ public class HttpResponse extends Response {
 				arr = disp.trim().split(";");
 				mContentType = arr[0];
 				if ((off = arr[1].indexOf("filename")) != -1) {
-					mFileName = URLUtils.decode(arr[1].substring(off + 9), "UTF-8");
+					mFileName = URIUtils.decode(arr[1].substring(off + 9), "UTF-8");
 					if (mFileName.startsWith("\"") && mFileName.endsWith("\"")) {
 						mFileName = mFileName.substring(1, mFileName.length() - 1);
 					}
@@ -131,7 +131,7 @@ public class HttpResponse extends Response {
 			}
 
 			Log.d("连接被重定向到" + newUrl);
-			httpRequest.setUri(URLUtils.fullURI(mUri, newUrl));
+			httpRequest.setUri(URIUtils.fullURI(mUri, newUrl));
 			httpRequest.reopen();
 			parseResponse();
 			checkRedirect();

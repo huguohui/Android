@@ -12,14 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DownloadConfig implements FileConfig {
 
-	public static final String GLOBAL_MAX_DOWNLOAD_THREADS = "global.max_download_threads";
-
-	public static final String GLOBAL_MAX_PARALLEL_TASKS = "global.max_parallel_tasks";
-
-	public static final String GLOBAL_MAX_CONNECTIONS = "global.max_connections";
-
-	public static final String GLOBAL_DOWNLAOD_PATH = "global.default_download_path";
-
 	public static final String CONFIG_FILE_NAME = "config";
 
 	public static final String CONFIG_FILE_EXT = ".properties";

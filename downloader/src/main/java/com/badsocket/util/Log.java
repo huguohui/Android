@@ -3,9 +3,7 @@ package com.badsocket.util;
 import java.util.Date;
 
 final public class Log {
-	public static String LOG_FILE_NAME = "game.log";
-
-	public static String LOG_FILE_PATH = "/sdcard/" + LOG_FILE_NAME;
+	public static String LOG_FILE_NAME = "log.log";
 
 	public static boolean isDebugMode = true;
 

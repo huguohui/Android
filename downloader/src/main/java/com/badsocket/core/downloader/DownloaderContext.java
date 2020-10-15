@@ -6,36 +6,35 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
-import com.badsocket.core.Context;
 import com.badsocket.core.GenericDownloadTaskExecutor;
 import com.badsocket.core.NetworkType;
-import com.badsocket.core.ThreadExecutor;
 import com.badsocket.core.config.Config;
 import com.badsocket.core.config.DownloadConfig;
 import com.badsocket.core.config.PropertiesConfigReader;
-import com.badsocket.core.downloader.factory.BaseThreadFactory;
 import com.badsocket.core.downloader.factory.ThreadFactory;
 import com.badsocket.core.executor.DownloadTaskExecutor;
 import com.badsocket.io.ConcurrentFileAccessor;
-import com.badsocket.manager.FileManager;
-import com.badsocket.manager.Manager;
-import com.badsocket.manager.ThreadManager;
+import com.badsocket.util.FileManager;
+import com.badsocket.core.ThreadManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import static com.badsocket.core.config.DownloadConfig.GLOBAL_MAX_DOWNLOAD_THREADS;
+import static com.badsocket.core.config.ConfigKeys.GLOBAL_MAX_PARALLEL_TASKS;
+import static com.badsocket.core.config.ConfigKeys.THREAD_POOL_SIZE;
 
 /**
  * Created by skyrim on 2017/12/15.
  */
 
-public class DownloaderContext extends Context {
+public class DownloaderContext  {
 
-	public static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+	public static final String EXTERNAL_STORAGE_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
 
 	public static final String DS = "/";
 
@@ -71,7 +70,7 @@ public class DownloaderContext extends Context {
 
 	private ConnectivityManager connectivityManager;
 
-	private ExecutorService threadExecutor;
+	private ScheduledExecutorService threadExecutor;
 
 	private DownloadTaskExecutor downloadTaskExecutor;
 
@@ -79,7 +78,7 @@ public class DownloaderContext extends Context {
 
 	public DownloaderContext(android.content.Context androidContext) {
 		this.androidContext = androidContext;
-		HOME_DIRECTORY = ROOT_PATH + DS + androidContext.getApplicationInfo().packageName;
+		HOME_DIRECTORY = EXTERNAL_STORAGE_ROOT + DS + androidContext.getApplicationInfo().packageName;
 
 		try {
 			init();
@@ -95,81 +94,73 @@ public class DownloaderContext extends Context {
 
 	protected void init() throws IOException {
 		threadManager = ThreadManager.getInstance();
-		threadFactory = new BaseThreadFactory();
+		threadFactory = threadManager;
 		connectivityManager = (ConnectivityManager) androidContext.getSystemService(
 				android.content.Context.CONNECTIVITY_SERVICE);
 		networkInfo = connectivityManager.getActiveNetworkInfo();
-		config = new PropertiesConfigReader(
-				new File(HOME_DIRECTORY + DS + CONFIG_DIR, DownloadConfig.CONFIG_FILE)).read();
-		threadExecutor = new ThreadExecutor(config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS), threadFactory);
-		downloadTaskExecutor = new GenericDownloadTaskExecutor(this,config.getInteger(GLOBAL_MAX_DOWNLOAD_THREADS));
+		config = new PropertiesConfigReader(new File(getExternalFile(CONFIG_DIR), DownloadConfig.CONFIG_FILE)).read();
+		threadExecutor = new ScheduledThreadPoolExecutor(config.getInteger(THREAD_POOL_SIZE), threadFactory);
+		downloadTaskExecutor = new GenericDownloadTaskExecutor(this, config.getInteger(GLOBAL_MAX_PARALLEL_TASKS), threadFactory);
+	}
+
+	public static File getExternalFile(String file) {
+		return new File(HOME_DIRECTORY, file);
 	}
 
 	protected void checkEnvironment() {
 		isNetworkAvailable = networkInfo.isConnected() && networkInfo.isAvailable();
 	}
 
-	@Override
-	public Manager getThreadManager() {
+	public ThreadManager getThreadManager() {
 		return threadManager;
 	}
 
-	@Override
 	public FileManager getFileManager() {
 		return fileManger;
 	}
 
-	@Override
 	public Config getDownloaderConfig() {
 		return config;
 	}
 
-	@Override
 	public ThreadFactory getThreadFactory() {
 		return threadFactory;
 	}
 
-	@Override
 	public android.content.Context getAndroidContext() {
 		return androidContext;
 	}
 
-	@Override
 	public NetworkInfo getNetworkInfo() {
 		return networkInfo;
 	}
 
-	@Override
 	public boolean isNetworkAvailable() {
 		return isNetworkAvailable;
 	}
 
-	@Override
-	public long getAvailableSpaceSize(File path) {
+	public long getAvailableSpaceSize(String path) {
+		pathStat = new StatFs(path);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			return pathStat.getFreeBytes();
+			return pathStat.getAvailableBytes();
 		}
 		else {
 			return 0;
 		}
 	}
 
-	@Override
 	public NetworkType getNetworkType() {
 		return networkType;
 	}
 
-	@Override
 	public ConnectivityManager getConnectivityManager() {
 		return connectivityManager;
 	}
 
-	@Override
 	public ExecutorService getThreadExecutor() {
 		return threadExecutor;
 	}
 
-	@Override
 	public DownloadTaskExecutor getDownloadTaskExecutor() {
 		return downloadTaskExecutor;
 	}

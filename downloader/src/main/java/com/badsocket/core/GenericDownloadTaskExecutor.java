@@ -18,7 +18,7 @@ public class GenericDownloadTaskExecutor extends com.badsocket.core.AbstractDown
 		super(coolPoolSize, factory);
 	}
 
-	public GenericDownloadTaskExecutor(DownloaderContext context, int corePoolSize) {
-		super(context, corePoolSize);
+	public GenericDownloadTaskExecutor(DownloaderContext context, int corePoolSize, com.badsocket.core.downloader.factory.ThreadFactory factory) {
+		super(context, corePoolSize, factory);
 	}
 }
